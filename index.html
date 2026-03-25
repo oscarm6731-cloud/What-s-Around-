@@ -17,8 +17,6 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--t
 .orb3{width:450px;height:450px;background:#60a5fa;top:45%;left:45%;animation-delay:-15s;}
 @keyframes drift{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(50px,-40px) scale(1.06);}66%{transform:translate(-35px,50px) scale(0.94);}}
 .wrapper{position:relative;z-index:1;}
-
-/* NAV */
 nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 2.5rem;position:fixed;top:0;left:0;right:0;z-index:300;background:rgba(9,9,15,0.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
 .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-0.02em;color:var(--text);display:flex;align-items:center;gap:0.5rem;cursor:pointer;}
 .logo-dot{width:8px;height:8px;background:var(--accent);border-radius:50%;box-shadow:0 0 12px var(--accent);animation:pulse 2s ease-in-out infinite;flex-shrink:0;}
@@ -27,17 +25,13 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem
 .nav-link{padding:0.5rem 1rem;font-size:0.82rem;color:var(--muted);background:none;border:none;cursor:pointer;transition:color 0.2s;font-family:'Instrument Sans',sans-serif;border-radius:8px;}
 .nav-link:hover,.nav-link.active{color:var(--text);background:rgba(255,255,255,0.05);}
 .nav-link.active{color:var(--accent);}
-
-/* PAGES */
 .page{display:none;min-height:100vh;}
 .page.active{display:block;}
-
-/* HERO */
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:8rem 2rem 5rem;text-align:center;}
 .hero-badge{display:inline-flex;align-items:center;gap:0.5rem;padding:0.4rem 1rem;border:1px solid var(--border);border-radius:100px;background:rgba(255,255,255,0.03);font-size:0.72rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2.5rem;animation:fadeDown 0.7s ease both;}
-.hero-badge span{width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 8px var(--accent);}
+.hero-badge-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 8px var(--accent);}
 h1{font-family:'Syne',sans-serif;font-size:clamp(3rem,9vw,7rem);font-weight:800;line-height:0.95;letter-spacing:-0.04em;margin-bottom:1.8rem;animation:fadeDown 0.7s 0.1s ease both;}
-h1 .grad{background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.grad{background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .hero-sub{font-size:1rem;color:var(--muted);max-width:400px;line-height:1.7;font-weight:300;margin-bottom:3rem;animation:fadeDown 0.7s 0.2s ease both;}
 .search-wrap{width:100%;max-width:580px;animation:fadeDown 0.7s 0.3s ease both;}
 .search-box{display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:0.5rem 0.5rem 0.5rem 1.2rem;transition:border-color 0.3s,box-shadow 0.3s;}
@@ -51,15 +45,11 @@ h1 .grad{background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit
 .quick-row{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-top:1.4rem;}
 .city-chip{padding:0.42rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:100px;font-size:0.78rem;color:var(--muted);cursor:pointer;transition:all 0.2s;font-family:'Instrument Sans',sans-serif;}
 .city-chip:hover{background:rgba(255,255,255,0.09);color:var(--text);transform:translateY(-1px);}
-
-/* LOADING */
 #loading{display:none;flex-direction:column;align-items:center;justify-content:center;padding:6rem 2rem;gap:1.2rem;}
 .loader-ring{width:40px;height:40px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.85s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .loader-text{font-size:0.78rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;}
-
-/* RESULTS */
-#results{display:none;max-width:1200px;margin:0 auto;padding:0 2rem 6rem;animation:fadeUp 0.5s ease both;}
+#results{display:none;max-width:1200px;margin:0 auto;padding:0 2rem 6rem;}
 .results-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);}
 .results-city-name{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;letter-spacing:-0.03em;}
 .results-city-name em{font-style:normal;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
@@ -73,15 +63,11 @@ h1 .grad{background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit
 .tab.active-stay{background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.3);color:var(--stay);}
 .tab-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 .dot-eat{background:var(--eat);}.dot-drink{background:var(--drink);}.dot-explore{background:var(--explore);}.dot-stay{background:var(--stay);}
-
-/* FILTERS */
 .filters-bar{display:flex;gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap;align-items:center;}
 .filter-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
 .filter-btn{padding:0.32rem 0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:0.74rem;color:var(--muted);cursor:pointer;font-family:'Instrument Sans',sans-serif;transition:all 0.2s;}
 .filter-btn:hover,.filter-btn.active{background:rgba(110,231,183,0.1);border-color:rgba(110,231,183,0.3);color:var(--accent);}
 .filter-sep{width:1px;height:18px;background:var(--border);}
-
-/* CARDS */
 .tab-content{display:none;}
 .tab-content.active{display:block;animation:fadeUp 0.4s ease both;}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.4rem;}
@@ -121,13 +107,9 @@ h1 .grad{background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit
 .meta-pill{background:rgba(255,255,255,0.04);padding:0.18rem 0.52rem;border-radius:6px;font-size:0.68rem;color:var(--muted);}
 .card-btn{font-size:0.7rem;font-weight:600;font-family:'Instrument Sans',sans-serif;color:var(--accent);background:rgba(110,231,183,0.08);border:1px solid rgba(110,231,183,0.15);padding:0.36rem 0.82rem;border-radius:8px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .card-btn:hover{background:rgba(110,231,183,0.15);}
-
-/* LOAD MORE */
 .load-more-wrap{text-align:center;margin-top:2.5rem;}
 .load-more-btn{padding:0.8rem 2.5rem;background:var(--surface);border:1px solid var(--border2);border-radius:12px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:var(--text);cursor:pointer;transition:all 0.2s;}
 .load-more-btn:hover{background:var(--surface2);border-color:rgba(110,231,183,0.3);color:var(--accent);}
-
-/* DETAIL MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;backdrop-filter:blur(10px);}
 .modal-overlay.open{display:flex;align-items:center;justify-content:center;padding:1.5rem;animation:fadeIn 0.2s ease;}
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
@@ -146,10 +128,11 @@ h1 .grad{background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit
 .detail-section-title{font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:0.8rem;}
 .hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;}
 .hour-row{display:flex;justify-content:space-between;font-size:0.82rem;padding:0.4rem 0.7rem;background:var(--surface2);border-radius:7px;}
-.hour-day{color:var(--muted);font-weight:400;}
+.hour-day{color:var(--muted);}
 .hour-time{color:var(--text);font-weight:500;}
 .menu-grid{display:grid;gap:0.5rem;}
 .menu-item{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.8rem;background:var(--surface2);border-radius:8px;border:1px solid var(--border);}
+.menu-item-left{flex:1;}
 .menu-item-name{font-size:0.85rem;font-weight:500;}
 .menu-item-desc{font-size:0.75rem;color:var(--muted);margin-top:0.1rem;}
 .menu-item-price{font-size:0.82rem;font-weight:600;color:var(--accent);white-space:nowrap;margin-left:1rem;}
@@ -157,8 +140,6 @@ h1 .grad{background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit
 .detail-review-meta{margin-top:0.6rem;font-size:0.72rem;color:var(--muted2);font-style:normal;}
 .directions-btn{display:flex;align-items:center;justify-content:center;gap:0.5rem;width:100%;padding:0.85rem;background:rgba(110,231,183,0.08);border:1px solid rgba(110,231,183,0.2);border-radius:12px;color:var(--accent);font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:1rem;}
 .directions-btn:hover{background:rgba(110,231,183,0.15);}
-
-/* BLOG */
 #blog-page{padding:7rem 2rem 5rem;}
 .blog-inner{max-width:1100px;margin:0 auto;}
 .page-eyebrow{font-size:0.72rem;color:var(--accent);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.8rem;}
@@ -188,10 +169,8 @@ h1 .grad{background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit
 .blog-date{font-size:0.7rem;color:var(--muted2);}
 .read-btn{font-size:0.7rem;font-weight:600;color:var(--accent3);background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.15);padding:0.33rem 0.78rem;border-radius:7px;cursor:pointer;font-family:'Instrument Sans',sans-serif;transition:all 0.2s;}
 .read-btn:hover{background:rgba(96,165,250,0.15);}
-
-/* WRITE MODAL */
-.write-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;backdrop-filter:blur(10px);}
-.write-modal-overlay.open{display:flex;align-items:center;justify-content:center;padding:1.5rem;animation:fadeIn 0.2s ease;}
+.write-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;backdrop-filter:blur(10px);}
+.write-overlay.open{display:flex;align-items:center;justify-content:center;padding:1.5rem;animation:fadeIn 0.2s ease;}
 .write-modal{background:var(--surface);border:1px solid var(--border2);border-radius:22px;padding:2.5rem;width:100%;max-width:620px;max-height:90vh;overflow-y:auto;animation:slideUp 0.3s ease;}
 .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;}
 .modal-title{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-0.02em;}
@@ -200,45 +179,27 @@ h1 .grad{background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit
 .form-input,.form-textarea,.form-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.72rem 1rem;font-family:'Instrument Sans',sans-serif;font-size:0.88rem;color:var(--text);outline:none;transition:border-color 0.2s;}
 .form-input:focus,.form-textarea:focus,.form-select:focus{border-color:rgba(110,231,183,0.35);}
 .form-textarea{resize:vertical;min-height:110px;line-height:1.6;}
-.form-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(237,237,242,0.4)' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;}
+.form-select{cursor:pointer;appearance:none;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 .tag-picker{display:flex;flex-wrap:wrap;gap:0.5rem;}
 .tag-pick{padding:0.32rem 0.78rem;border:1px solid var(--border);border-radius:100px;font-size:0.74rem;cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.03);color:var(--muted);font-family:'Instrument Sans',sans-serif;}
 .tag-pick.selected{background:rgba(110,231,183,0.1);border-color:rgba(110,231,183,0.3);color:var(--accent);}
-
-/* IMAGE UPLOAD */
-.img-upload-area{border:2px dashed var(--border);border-radius:12px;padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
+.img-upload-area{border:2px dashed var(--border);border-radius:12px;padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
 .img-upload-area:hover{border-color:rgba(110,231,183,0.3);background:rgba(110,231,183,0.03);}
-.img-upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.img-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
 .img-upload-icon{font-size:1.8rem;margin-bottom:0.5rem;}
 .img-upload-text{font-size:0.82rem;color:var(--muted);}
-.img-preview{width:100%;height:160px;object-fit:cover;border-radius:10px;margin-top:0.8rem;display:none;}
 .img-upload-hint{font-size:0.68rem;color:var(--muted2);margin-top:0.3rem;}
-
+.img-preview{width:100%;height:160px;object-fit:cover;border-radius:10px;margin-top:0.8rem;display:none;}
+.profanity-warning{display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:0.6rem 1rem;font-size:0.8rem;color:#fca5a5;margin-top:0.5rem;}
 .submit-btn{width:100%;padding:0.88rem;background:var(--accent);color:#09090f;font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;border:none;border-radius:12px;cursor:pointer;transition:all 0.2s;margin-top:0.5rem;}
 .submit-btn:hover{background:#a7f3d0;}
-
-/* PROFANITY WARNING */
-.profanity-warning{display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:0.6rem 1rem;font-size:0.8rem;color:#fca5a5;margin-top:0.5rem;}
-
 .error-msg{text-align:center;padding:4rem 2rem;color:var(--muted);font-size:0.88rem;}
 .error-msg strong{color:var(--text);display:block;margin-bottom:0.5rem;font-family:'Syne',sans-serif;font-size:1.1rem;}
-
 footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-size:0.75rem;color:var(--muted2);}
-
 @keyframes fadeDown{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-
-@media(max-width:680px){
-  nav{padding:1rem 1.3rem;}
-  .nav-link{padding:0.4rem 0.65rem;font-size:0.74rem;}
-  .hero{padding:7rem 1.3rem 4rem;}
-  h1{font-size:2.8rem;}
-  #results,#blog-page{padding-left:1.3rem;padding-right:1.3rem;}
-  .cards-grid,.blog-grid{grid-template-columns:1fr;}
-  .form-row{grid-template-columns:1fr;}
-  .hours-grid{grid-template-columns:1fr;}
-}
+@media(max-width:680px){nav{padding:1rem 1.3rem;}.nav-link{padding:0.4rem 0.65rem;font-size:0.74rem;}.hero{padding:7rem 1.3rem 4rem;}h1{font-size:2.8rem;}#results,#blog-page{padding-left:1.3rem;padding-right:1.3rem;}.cards-grid,.blog-grid{grid-template-columns:1fr;}.form-row{grid-template-columns:1fr;}.hours-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -253,10 +214,9 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-si
   </div>
 </nav>
 
-<!-- EXPLORE PAGE -->
 <div class="page active" id="explore-page">
   <section class="hero">
-    <div class="hero-badge"><span></span>AI-Powered City Guide</div>
+    <div class="hero-badge"><span class="hero-badge-dot"></span>AI-Powered City Guide</div>
     <h1>Find what's<br><span class="grad">around you.</span></h1>
     <p class="hero-sub">Search any city and instantly discover the best places to eat, drink, explore, and stay.</p>
     <div class="search-wrap">
@@ -277,12 +237,10 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-si
       </div>
     </div>
   </section>
-
   <div id="loading" style="display:none;flex-direction:column;align-items:center;padding:6rem 2rem;gap:1.2rem;">
     <div class="loader-ring"></div>
     <div class="loader-text">Discovering your city</div>
   </div>
-
   <div id="results">
     <div class="results-bar">
       <div class="results-city-name" id="resultsTitle">— <em>Guide</em></div>
@@ -314,11 +272,10 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-si
   </div>
 </div>
 
-<!-- BLOG PAGE -->
 <div class="page" id="blog-page">
   <div class="blog-inner">
     <div class="page-eyebrow">✦ Community</div>
-    <h2 class="page-title">Travel stories,<br><span style="background:linear-gradient(135deg,var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">from real people.</span></h2>
+    <h2 class="page-title">Travel stories,<br><span class="grad">from real people.</span></h2>
     <p class="page-sub">Share the spots you love. Real experiences, honest takes, and hidden gems from travelers around the world.</p>
     <div class="blog-toolbar">
       <div class="blog-filters" id="blogFilters">
@@ -331,7 +288,7 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-si
         <span class="tag" onclick="filterBlog('Lisbon',this)">Lisbon</span>
         <span class="tag" onclick="filterBlog('Sydney',this)">Sydney</span>
       </div>
-      <button class="write-btn" onclick="openWriteModal()">+ Write a Post</button>
+      <button class="write-btn" onclick="openWrite()">+ Write a Post</button>
     </div>
     <div class="blog-grid" id="blogGrid"></div>
   </div>
@@ -340,36 +297,20 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-si
 <footer>What's Around? — Powered by AI · Discover every city</footer>
 </div>
 
-<!-- DETAIL MODAL -->
 <div class="modal-overlay" id="detailOverlay" onclick="closeDetailOutside(event)">
   <div class="detail-modal" id="detailModal"></div>
 </div>
 
-<!-- WRITE MODAL -->
-<div class="write-modal-overlay" id="writeOverlay" onclick="closeWriteOutside(event)">
+<div class="write-overlay" id="writeOverlay" onclick="closeWriteOutside(event)">
   <div class="write-modal">
     <div class="modal-header">
       <div class="modal-title">Share a Place</div>
-      <button class="modal-close" onclick="closeWriteModal()">✕</button>
+      <button class="modal-close" onclick="closeWrite()">✕</button>
     </div>
-    <div class="form-group">
-      <label class="form-label">Post Title</label>
-      <input class="form-input" id="postTitle" placeholder="e.g. The best hidden ramen in Tokyo..."/>
-    </div>
+    <div class="form-group"><label class="form-label">Post Title</label><input class="form-input" id="postTitle" placeholder="e.g. The best hidden ramen in Tokyo..."/></div>
     <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Your Name</label>
-        <input class="form-input" id="postAuthor" placeholder="e.g. Maria S."/>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Category</label>
-        <select class="form-select" id="postCategory">
-          <option value="Eat">🍽 Eat</option>
-          <option value="Drink">🍸 Drink</option>
-          <option value="Explore">🗺 Explore</option>
-          <option value="Stay">🏨 Stay</option>
-        </select>
-      </div>
+      <div class="form-group"><label class="form-label">Your Name</label><input class="form-input" id="postAuthor" placeholder="e.g. Maria S."/></div>
+      <div class="form-group"><label class="form-label">Category</label><select class="form-select" id="postCategory"><option value="Eat">🍽 Eat</option><option value="Drink">🍸 Drink</option><option value="Explore">🗺 Explore</option><option value="Stay">🏨 Stay</option></select></div>
     </div>
     <div class="form-group">
       <label class="form-label">Your Experience</label>
@@ -378,8 +319,8 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-si
     </div>
     <div class="form-group">
       <label class="form-label">Add a Photo</label>
-      <div class="img-upload-area" id="uploadArea">
-        <input type="file" accept="image/*" id="photoInput" onchange="previewPhoto(event)"/>
+      <div class="img-upload-area">
+        <input type="file" accept="image/*" onchange="previewPhoto(event)"/>
         <div class="img-upload-icon">📷</div>
         <div class="img-upload-text">Tap to upload a photo</div>
         <div class="img-upload-hint">JPG, PNG or WEBP · Max 5MB</div>
@@ -404,287 +345,113 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-si
 </div>
 
 <script>
-// ============ STATE ============
-let allCards = {eat:[],drink:[],explore:[],stay:[]};
-let visibleCount = {eat:6,drink:6,explore:6,stay:6};
-let currentTab = 'eat';
-let activeFilter = 'all';
-let activePriceFilter = null;
-let selectedTags = [];
-let uploadedPhotoData = null;
-
-const PAGE_SIZE = 6;
-
-// ============ PROFANITY FILTER ============
-const badWords = ['fuck','shit','ass','bitch','bastard','cunt','dick','piss','cock','damn','crap','asshole','bullshit','motherfucker','nigger','faggot','whore','slut','retard'];
-function containsProfanity(text) {
-  const lower = text.toLowerCase().replace(/[^a-z\s]/g,'');
-  return badWords.some(w => lower.split(/\s+/).includes(w));
-}
-function checkProfanity(el) {
-  const warn = document.getElementById('profanityWarning');
-  warn.style.display = containsProfanity(el.value) ? 'block' : 'none';
-}
-
-// ============ PAGE NAV ============
-function showPage(page) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
-  document.getElementById(page+'-page').classList.add('active');
-  document.getElementById('nav-'+page).classList.add('active');
-  if(page==='blog') renderBlog('all');
-}
-
-// ============ EXPLORE ============
-function quickCity(city){document.getElementById('cityInput').value=city;searchCity();window.scrollTo({top:0,behavior:'smooth'});}
-
-function switchTab(tab,btn){
-  document.querySelectorAll('.tab').forEach(t=>t.className='tab');
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active-'+tab);
-  document.getElementById('tab-'+tab).classList.add('active');
-  currentTab=tab;
-}
-
-function applyFilter(type,btn){
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  activeFilter=type; activePriceFilter=null;
-  visibleCount={eat:PAGE_SIZE,drink:PAGE_SIZE,explore:PAGE_SIZE,stay:PAGE_SIZE};
-  renderAllTabs();
-}
-function applyPriceFilter(level,btn){
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  activePriceFilter=level; activeFilter='all';
-  visibleCount={eat:PAGE_SIZE,drink:PAGE_SIZE,explore:PAGE_SIZE,stay:PAGE_SIZE};
-  renderAllTabs();
-}
-
-function getFiltered(tab){
-  let cards=[...allCards[tab]];
-  if(activePriceFilter) cards=cards.filter(c=>(c.price||'$').length===activePriceFilter);
-  if(activeFilter==='rating') cards.sort((a,b)=>(b.rating||4)-(a.rating||4));
-  if(activeFilter==='price-low') cards.sort((a,b)=>(a.price||'$').length-(b.price||'$').length);
-  if(activeFilter==='price-high') cards.sort((a,b)=>(b.price||'$').length-(a.price||'$').length);
-  if(activeFilter==='featured') cards=cards.filter(c=>c.featured);
-  return cards;
-}
-
-function loadMore(tab){
-  visibleCount[tab]+=PAGE_SIZE;
-  renderTab(tab,getFiltered(tab));
-}
-
-function renderAllTabs(){['eat','drink','explore','stay'].forEach(t=>renderTab(t,getFiltered(t)));}
+let allCards={eat:[],drink:[],explore:[],stay:[]};
+let visible={eat:6,drink:6,explore:6,stay:6};
+let activeFilter='all';
+let activePriceFilter=null;
+let selectedTags=[];
+let uploadedPhoto=null;
+const PS=6;
+const BAD=['fuck','shit','bitch','bastard','cunt','dick','crap','asshole','bullshit','whore','slut'];
+function hasBad(t){const w=t.toLowerCase().replace(/[^a-z\s]/g,'').split(/\s+/);return BAD.some(b=>w.includes(b));}
+function checkProfanity(el){document.getElementById('profanityWarning').style.display=hasBad(el.value)?'block':'none';}
+function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));document.getElementById(p+'-page').classList.add('active');document.getElementById('nav-'+p).classList.add('active');if(p==='blog')renderBlog('all');}
+function quickCity(c){document.getElementById('cityInput').value=c;searchCity();window.scrollTo({top:0,behavior:'smooth'});}
+function switchTab(tab,btn){document.querySelectorAll('.tab').forEach(t=>t.className='tab');document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));btn.classList.add('active-'+tab);document.getElementById('tab-'+tab).classList.add('active');}
+function applyFilter(type,btn){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');activeFilter=type;activePriceFilter=null;visible={eat:PS,drink:PS,explore:PS,stay:PS};renderAll();}
+function applyPriceFilter(lvl,btn){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');activePriceFilter=lvl;activeFilter='all';visible={eat:PS,drink:PS,explore:PS,stay:PS};renderAll();}
+function loadMore(tab){visible[tab]+=PS;renderTab(tab,getFiltered(tab));}
+function getFiltered(tab){let c=[...allCards[tab]];if(activePriceFilter)c=c.filter(x=>(x.price||'$').length===activePriceFilter);if(activeFilter==='rating')c.sort((a,b)=>(b.rating||4)-(a.rating||4));if(activeFilter==='price-low')c.sort((a,b)=>(a.price||'$').length-(b.price||'$').length);if(activeFilter==='price-high')c.sort((a,b)=>(b.price||'$').length-(a.price||'$').length);if(activeFilter==='featured')c=c.filter(x=>x.featured);return c;}
+function renderAll(){['eat','drink','explore','stay'].forEach(t=>renderTab(t,getFiltered(t)));}
 
 async function searchCity(){
   const city=document.getElementById('cityInput').value.trim();
-  if(!city) return;
+  if(!city)return;
   const btn=document.getElementById('searchBtn');
-  btn.disabled=true; btn.textContent='...';
+  btn.disabled=true;btn.textContent='...';
   document.getElementById('results').style.display='none';
   document.getElementById('loading').style.display='flex';
   document.getElementById('resultsTitle').innerHTML=city+' <em>Guide</em>';
-  visibleCount={eat:PAGE_SIZE,drink:PAGE_SIZE,explore:PAGE_SIZE,stay:PAGE_SIZE};
-
+  visible={eat:PS,drink:PS,explore:PS,stay:PS};
   try{
-    const response=await fetch('/api/chat',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:8000,
-        messages:[{role:'user',content:`You are an expert travel curator. Give EXACTLY 30 authentic, specific, real recommendations for ${city} in each category (eat, drink, explore, stay) — that is 120 total.
-
-Return ONLY valid JSON (no markdown, no backticks):
-{
-  "eat": [30 items],
-  "drink": [30 items],
-  "explore": [30 items],
-  "stay": [30 items]
-}
-
-Each item follows this schema:
-{
-  "name": "Real place name",
-  "desc": "One vivid sentence under 18 words.",
-  "price": "$$ (use $, $$, or $$$)",
-  "vibe": "e.g. Fine Dining / Street Food / Rooftop etc",
-  "rating": 4.5,
-  "reviewCount": 1240,
-  "review": "One sentence consolidating what reviewers say across platforms, under 20 words.",
-  "reviewSources": "Google, TripAdvisor, Yelp",
-  "featured": false,
-  "photoQuery": "specific search query for unsplash photo e.g. Tokyo ramen restaurant interior",
-  "hours": [
-    {"day":"Monday","time":"11am – 10pm"},
-    {"day":"Tuesday","time":"11am – 10pm"},
-    {"day":"Wednesday","time":"11am – 10pm"},
-    {"day":"Thursday","time":"11am – 10pm"},
-    {"day":"Friday","time":"11am – 11pm"},
-    {"day":"Saturday","time":"10am – 11pm"},
-    {"day":"Sunday","time":"10am – 9pm"}
-  ],
-  "menu": [
-    {"name":"Dish/Item name","desc":"Brief description","price":"¥800"},
-    {"name":"Dish/Item name","desc":"Brief description","price":"¥1200"},
-    {"name":"Dish/Item name","desc":"Brief description","price":"¥600"}
-  ]
-}
-
-For explore and stay items, menu can be replaced with highlights:
-[{"name":"Highlight","desc":"brief detail","price":""},...]
-
-Make sure exactly 3 items per category have featured:true. All names must be real places in ${city}. Vary ratings between 3.8–4.9.`}]
-      })
-    });
-    const data=await response.json();
+    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',max_tokens:8000,
+      messages:[{role:'user',content:'You are a travel expert. Return ONLY a JSON object with exactly 30 items in each of these 4 arrays: eat, drink, explore, stay. No markdown, no explanation, just the raw JSON.\n\nCity: '+city+'\n\nEach item must have: name, desc (under 15 words), price ($/$$/$$$$), vibe, rating (3.8-4.9), reviewCount, review (under 18 words), reviewSources, featured (bool, max 3 true total), photoQuery (specific unsplash query), hours (array of 7 objects with day and time fields), menu (array of 3 objects with name, desc, price fields).'}]
+    })});
+    const data=await res.json();
+    if(data.error){throw new Error(data.error);}
     const text=data.content?.find(b=>b.type==='text')?.text||'';
     const clean=text.replace(/```json|```/g,'').trim();
     const parsed=JSON.parse(clean);
     allCards={eat:parsed.eat||[],drink:parsed.drink||[],explore:parsed.explore||[],stay:parsed.stay||[]};
-    activeFilter='all'; activePriceFilter=null;
+    activeFilter='all';activePriceFilter=null;
     document.querySelectorAll('.filter-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
-    renderAllTabs();
+    renderAll();
     const total=Object.values(allCards).reduce((s,a)=>s+a.length,0);
     document.getElementById('resultsCount').textContent=total+' spots';
     document.querySelectorAll('.tab').forEach(t=>t.className='tab');
     document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
     document.getElementById('tab-btn-eat').classList.add('active-eat');
     document.getElementById('tab-eat').classList.add('active');
-    currentTab='eat';
     document.getElementById('loading').style.display='none';
     document.getElementById('results').style.display='block';
     document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
-  } catch(err){
+  }catch(err){
+    console.error(err);
     document.getElementById('loading').style.display='none';
     document.getElementById('results').style.display='block';
-    document.getElementById('grid-eat').innerHTML=`<div class="error-msg"><strong>API key needed</strong>Add your Anthropic API key via Vercel environment variables.</div>`;
+    document.getElementById('grid-eat').innerHTML='<div class="error-msg"><strong>Could not load results</strong>Error: '+err.message+'<br><br>Check that ANTHROPIC_API_KEY is set in Vercel environment variables and redeploy.</div>';
     document.getElementById('tab-eat').classList.add('active');
-    console.error(err);
   }
-  btn.disabled=false; btn.textContent='Explore';
+  btn.disabled=false;btn.textContent='Explore';
 }
 
-// ============ RENDER ============
-function renderStars(r){
-  const f=Math.floor(r),h=r%1>=0.5;
-  let s='';
-  for(let i=1;i<=5;i++){
-    if(i<=f) s+=`<span class="star filled">★</span>`;
-    else if(i===f+1&&h) s+=`<span class="star filled" style="opacity:0.55">★</span>`;
-    else s+=`<span class="star">★</span>`;
-  }
-  return s;
-}
-function renderPrice(p){
-  const l=(p||'$').length,html=[];
-  for(let i=1;i<=3;i++) html.push(`<span class="price-dot ${i<=l?'on':'off'}">$</span>`);
-  return html.join('');
-}
-function photoUrl(item){return `https://source.unsplash.com/600x400/?${encodeURIComponent(item.photoQuery||item.name)}`;}
+function mkStars(r){const f=Math.floor(r),h=r%1>=0.5;let s='';for(let i=1;i<=5;i++){if(i<=f)s+='<span class="star filled">★</span>';else if(i===f+1&&h)s+='<span class="star filled" style="opacity:0.55">★</span>';else s+='<span class="star">★</span>';}return s;}
+function mkPrice(p){const l=(p||'$').length;return[1,2,3].map(i=>'<span class="price-dot '+(i<=l?'on':'off')+'">$</span>').join('');}
+function mkPhoto(item){return'https://source.unsplash.com/600x400/?'+encodeURIComponent(item.photoQuery||item.name);}
 
-function renderTab(tabId,items){
-  const grid=document.getElementById('grid-'+tabId);
-  const moreWrap=document.getElementById('more-'+tabId);
+function renderTab(tab,items){
+  const grid=document.getElementById('grid-'+tab);
+  const more=document.getElementById('more-'+tab);
   grid.innerHTML='';
-  if(!items||!items.length){grid.innerHTML='<div class="error-msg"><strong>No results</strong>Try adjusting filters.</div>';moreWrap.style.display='none';return;}
-  const visible=items.slice(0,visibleCount[tabId]);
-  const emojiMap={eat:'🍽',drink:'🍸',explore:'🗺',stay:'🏨'};
-  const ctaMap={eat:'View details',drink:'View details',explore:'View details',stay:'View details'};
-  visible.forEach((item,idx)=>{
+  if(!items||!items.length){grid.innerHTML='<div class="error-msg"><strong>No results</strong>Try adjusting filters.</div>';more.style.display='none';return;}
+  const em={eat:'🍽',drink:'🍸',explore:'🗺',stay:'🏨'};
+  items.slice(0,visible[tab]).forEach(function(item){
+    const idx=allCards[tab].indexOf(item);
+    const label=tab==='eat'?(item.vibe||'Restaurant'):tab==='drink'?(item.vibe||'Bar'):tab==='explore'?(item.type||'Attraction'):'Hotel';
+    let pills='';
+    if(tab==='eat'||tab==='drink')pills='<span class="meta-pill">'+(item.vibe||'')+'</span>';
+    if(tab==='explore')pills='<span class="meta-pill">'+(item.type||'Attraction')+'</span>';
+    if(tab==='stay')pills='<span class="meta-pill">'+'★'.repeat(item.stars||4)+'</span>';
     const card=document.createElement('div');
     card.className='card';
-    const badgeLabel=tabId==='eat'?(item.vibe||'Restaurant'):tabId==='drink'?(item.vibe||'Bar'):tabId==='explore'?(item.type||'Attraction'):(item.stars?'★'.repeat(item.stars):'Hotel');
-    let metaPills='';
-    if(tabId==='eat'||tabId==='drink') metaPills=`<span class="meta-pill">${item.vibe||''}</span>`;
-    if(tabId==='explore') metaPills=`<span class="meta-pill">${item.type||''}</span>`;
-    if(tabId==='stay') metaPills=`<span class="meta-pill">${'★'.repeat(item.stars||3)}</span>`;
-    card.innerHTML=`
-      <div class="card-img-wrap">
-        <img class="card-img" src="${photoUrl(item)}" alt="${item.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" loading="lazy"/>
-        <div class="card-img-placeholder" style="display:none;">${emojiMap[tabId]}</div>
-        ${item.featured?'<div class="card-featured-badge">✦ Featured</div>':''}
-      </div>
-      <div class="card-body">
-        <div class="card-top"><span class="card-type-badge badge-${tabId}">${badgeLabel}</span></div>
-        <div class="card-name">${item.name}</div>
-        <div class="card-desc">${item.desc}</div>
-        <div class="card-rating-row">
-          <div class="stars">${renderStars(item.rating||4.3)}</div>
-          <span class="rating-num">${(item.rating||4.3).toFixed(1)}</span>
-          <span class="rating-count">(${(item.reviewCount||800).toLocaleString()})</span>
-          <div class="price-dots">${renderPrice(item.price)}</div>
-        </div>
-        <div class="review-snippet">
-          <div class="review-text">"${item.review||'Highly recommended by visitors.'}"</div>
-          <div class="review-meta"><span class="review-source">Consolidated reviews</span><span class="review-platforms">${item.reviewSources||'Google, TripAdvisor'}</span></div>
-        </div>
-        <div class="card-footer">
-          <div class="meta-pills">${metaPills}</div>
-          <button class="card-btn" onclick="openDetail(event,'${tabId}',${allCards[tabId].indexOf(item)})">${ctaMap[tabId]} →</button>
-        </div>
-      </div>`;
+    card.innerHTML='<div class="card-img-wrap"><img class="card-img" src="'+mkPhoto(item)+'" alt="'+item.name+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';" loading="lazy"/><div class="card-img-placeholder" style="display:none;">'+em[tab]+'</div>'+(item.featured?'<div class="card-featured-badge">✦ Featured</div>':'')+'</div><div class="card-body"><div class="card-top"><span class="card-type-badge badge-'+tab+'">'+label+'</span></div><div class="card-name">'+item.name+'</div><div class="card-desc">'+item.desc+'</div><div class="card-rating-row"><div class="stars">'+mkStars(item.rating||4.3)+'</div><span class="rating-num">'+(item.rating||4.3).toFixed(1)+'</span><span class="rating-count">('+((item.reviewCount||800)).toLocaleString()+')</span><div class="price-dots">'+mkPrice(item.price)+'</div></div><div class="review-snippet"><div class="review-text">"'+(item.review||'Highly recommended.')+'"</div><div class="review-meta"><span class="review-source">Consolidated reviews</span><span class="review-platforms">'+(item.reviewSources||'Google, TripAdvisor')+'</span></div></div><div class="card-footer"><div class="meta-pills">'+pills+'</div><button class="card-btn" onclick="openDetail(\''+tab+'\','+idx+')">View details →</button></div></div>';
     grid.appendChild(card);
   });
-  moreWrap.style.display=items.length>visibleCount[tabId]?'block':'none';
+  more.style.display=items.length>visible[tab]?'block':'none';
 }
 
-// ============ DETAIL MODAL ============
-function openDetail(e,tab,idx){
-  e.stopPropagation();
+function openDetail(tab,idx){
   const item=allCards[tab][idx];
-  if(!item) return;
-  const emojiMap={eat:'🍽',drink:'🍸',explore:'🗺',stay:'🏨'};
-  const menuTitle=tab==='eat'?'Menu Highlights':tab==='drink'?'Drinks Menu':tab==='explore'?'Highlights':'What\'s Included';
+  if(!item)return;
+  const em={eat:'🍽',drink:'🍸',explore:'🗺',stay:'🏨'};
+  const mLabel=tab==='eat'?'Menu':tab==='drink'?'Drinks':tab==='explore'?'Highlights':'Included';
   let hoursHTML='';
   if(item.hours&&item.hours.length){
-    hoursHTML=`<div class="detail-section">
-      <div class="detail-section-title">Opening Hours</div>
-      <div class="hours-grid">${item.hours.map(h=>`<div class="hour-row"><span class="hour-day">${h.day}</span><span class="hour-time">${h.time}</span></div>`).join('')}</div>
-    </div>`;
+    hoursHTML='<div class="detail-section"><div class="detail-section-title">Opening Hours</div><div class="hours-grid">'+item.hours.map(function(h){return'<div class="hour-row"><span class="hour-day">'+h.day+'</span><span class="hour-time">'+h.time+'</span></div>';}).join('')+'</div></div>';
   }
   let menuHTML='';
   if(item.menu&&item.menu.length){
-    menuHTML=`<div class="detail-section">
-      <div class="detail-section-title">${menuTitle}</div>
-      <div class="menu-grid">${item.menu.map(m=>`<div class="menu-item"><div><div class="menu-item-name">${m.name}</div><div class="menu-item-desc">${m.desc}</div></div>${m.price?`<div class="menu-item-price">${m.price}</div>`:''}</div>`).join('')}</div>
-    </div>`;
+    menuHTML='<div class="detail-section"><div class="detail-section-title">'+mLabel+'</div><div class="menu-grid">'+item.menu.map(function(m){return'<div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">'+m.name+'</div><div class="menu-item-desc">'+(m.desc||'')+'</div></div>'+(m.price?'<div class="menu-item-price">'+m.price+'</div>':'')+'</div>';}).join('')+'</div></div>';
   }
-  document.getElementById('detailModal').innerHTML=`
-    <div style="position:relative;">
-      <img class="detail-img" src="${photoUrl(item)}" alt="${item.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"/>
-      <div class="detail-img-placeholder" style="display:none;">${emojiMap[tab]}</div>
-    </div>
-    <div class="detail-body">
-      <div class="detail-header">
-        <div class="detail-title">${item.name}</div>
-        <button class="modal-close" onclick="closeDetail()">✕</button>
-      </div>
-      <div class="detail-rating-row">
-        <div class="stars">${renderStars(item.rating||4.3)}</div>
-        <span class="rating-num">${(item.rating||4.3).toFixed(1)}</span>
-        <span class="rating-count">(${(item.reviewCount||800).toLocaleString()} reviews)</span>
-        <div class="price-dots" style="margin-left:auto;">${renderPrice(item.price)}</div>
-      </div>
-      <div class="detail-desc">${item.desc}</div>
-      ${hoursHTML}
-      ${menuHTML}
-      <div class="detail-section">
-        <div class="detail-section-title">What People Say</div>
-        <div class="detail-review">"${item.review||'Highly recommended by visitors.'}"<div class="detail-review-meta">Consolidated from ${item.reviewSources||'Google, TripAdvisor'}</div></div>
-      </div>
-      <button class="directions-btn" onclick="window.open('https://www.google.com/maps/search/${encodeURIComponent(item.name)}','_blank')">🗺 Get Directions on Google Maps</button>
-    </div>`;
+  document.getElementById('detailModal').innerHTML='<div style="position:relative;"><img class="detail-img" src="'+mkPhoto(item)+'" alt="'+item.name+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';"/><div class="detail-img-placeholder" style="display:none;">'+em[tab]+'</div></div><div class="detail-body"><div class="detail-header"><div class="detail-title">'+item.name+'</div><button class="modal-close" onclick="closeDetail()">✕</button></div><div class="detail-rating-row"><div class="stars">'+mkStars(item.rating||4.3)+'</div><span class="rating-num">'+(item.rating||4.3).toFixed(1)+'</span><span class="rating-count">('+((item.reviewCount||800)).toLocaleString()+' reviews)</span><div class="price-dots" style="margin-left:auto;">'+mkPrice(item.price)+'</div></div><div class="detail-desc">'+item.desc+'</div>'+hoursHTML+menuHTML+'<div class="detail-section"><div class="detail-section-title">What People Say</div><div class="detail-review">"'+(item.review||'Highly recommended.')+'"<div class="detail-review-meta">From '+( item.reviewSources||'Google, TripAdvisor')+'</div></div></div><button class="directions-btn" onclick="window.open(\'https://www.google.com/maps/search/'+encodeURIComponent(item.name)+'\',\'_blank\')">🗺 Get Directions on Google Maps</button></div>';
   document.getElementById('detailOverlay').classList.add('open');
   document.body.style.overflow='hidden';
 }
 function closeDetail(){document.getElementById('detailOverlay').classList.remove('open');document.body.style.overflow='';}
 function closeDetailOutside(e){if(e.target===document.getElementById('detailOverlay'))closeDetail();}
 
-// ============ BLOG ============
-let blogPosts=[
+var blogPosts=[
   {id:1,title:"The tiny yakitori alley that changed my life",author:"James T.",authorInit:"JT",city:"Tokyo",category:"Eat",date:"Mar 18 2026",excerpt:"Tucked behind Shinjuku station, Omoide Yokocho is everything you want late-night Tokyo to be — smoke, skewers, and strangers becoming friends.",emoji:"🍢",photo:null},
   {id:2,title:"Paris wine bars vs tourist traps — what I learned",author:"Céline M.",authorInit:"CM",city:"Paris",category:"Drink",date:"Mar 12 2026",excerpt:"After three visits I finally figured out how to find the real caves à vin. Hint: avoid anything with an English menu on the door.",emoji:"🍷",photo:null},
   {id:3,title:"How to spend 48 hours in Barcelona's born district",author:"Ravi K.",authorInit:"RK",city:"Barcelona",category:"Explore",date:"Mar 5 2026",excerpt:"El Born is walkable, beautiful, and genuinely underrated next to the Gothic Quarter. Here's my honest 48-hour itinerary.",emoji:"🏛",photo:null},
@@ -694,96 +461,51 @@ let blogPosts=[
 ];
 
 function renderBlog(cityFilter){
-  const grid=document.getElementById('blogGrid');
+  var grid=document.getElementById('blogGrid');
   grid.innerHTML='';
-  const filtered=cityFilter==='all'?blogPosts:blogPosts.filter(p=>p.city===cityFilter);
-  if(!filtered.length){grid.innerHTML='<div class="error-msg"><strong>No posts yet</strong>Be the first to write about this city!</div>';return;}
-  filtered.forEach(post=>{
-    const card=document.createElement('div');
+  var list=cityFilter==='all'?blogPosts:blogPosts.filter(function(p){return p.city===cityFilter;});
+  if(!list.length){grid.innerHTML='<div class="error-msg"><strong>No posts yet</strong>Be the first to write about this city!</div>';return;}
+  list.forEach(function(post){
+    var card=document.createElement('div');
     card.className='blog-card';
-    const imgHTML=post.photo
-      ?`<img class="blog-card-img" src="${post.photo}" alt="${post.title}"/>`
-      :`<div class="blog-card-img-placeholder">${post.emoji}</div>`;
-    card.innerHTML=`
-      ${imgHTML}
-      <div class="blog-card-body">
-        <div class="blog-card-tags"><span class="blog-city-tag">${post.city}</span><span class="blog-cat-tag">${post.category}</span></div>
-        <div class="blog-card-title">${post.title}</div>
-        <div class="blog-card-excerpt">${post.excerpt}</div>
-        <div class="blog-card-footer">
-          <div class="blog-author"><div class="author-avatar">${post.authorInit}</div><span class="author-name">${post.author}</span></div>
-          <div style="display:flex;align-items:center;gap:0.6rem;"><span class="blog-date">${post.date}</span><button class="read-btn">Read →</button></div>
-        </div>
-      </div>`;
+    var imgHTML=post.photo?'<img class="blog-card-img" src="'+post.photo+'" alt="'+post.title+'"/>':'<div class="blog-card-img-placeholder">'+post.emoji+'</div>';
+    card.innerHTML=imgHTML+'<div class="blog-card-body"><div class="blog-card-tags"><span class="blog-city-tag">'+post.city+'</span><span class="blog-cat-tag">'+post.category+'</span></div><div class="blog-card-title">'+post.title+'</div><div class="blog-card-excerpt">'+post.excerpt+'</div><div class="blog-card-footer"><div class="blog-author"><div class="author-avatar">'+post.authorInit+'</div><span class="author-name">'+post.author+'</span></div><div style="display:flex;align-items:center;gap:0.6rem;"><span class="blog-date">'+post.date+'</span><button class="read-btn">Read →</button></div></div></div>';
     grid.appendChild(card);
   });
 }
-
-function filterBlog(city,el){
-  document.querySelectorAll('#blogFilters .tag').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  renderBlog(city);
-}
-
-// ============ PHOTO UPLOAD ============
-function previewPhoto(event){
-  const file=event.target.files[0];
-  if(!file) return;
-  if(file.size>5*1024*1024){alert('Photo must be under 5MB');return;}
-  const reader=new FileReader();
-  reader.onload=e=>{
-    uploadedPhotoData=e.target.result;
-    const preview=document.getElementById('photoPreview');
-    preview.src=uploadedPhotoData;
-    preview.style.display='block';
-  };
-  reader.readAsDataURL(file);
-}
-
-// ============ WRITE MODAL ============
-function openWriteModal(){document.getElementById('writeOverlay').classList.add('open');document.body.style.overflow='hidden';}
-function closeWriteModal(){document.getElementById('writeOverlay').classList.remove('open');document.body.style.overflow='';uploadedPhotoData=null;document.getElementById('photoPreview').style.display='none';}
-function closeWriteOutside(e){if(e.target===document.getElementById('writeOverlay'))closeWriteModal();}
-
-function toggleTag(el,tag){
-  el.classList.toggle('selected');
-  if(el.classList.contains('selected')) selectedTags.push(tag);
-  else selectedTags=selectedTags.filter(t=>t!==tag);
-}
-
+function filterBlog(city,el){document.querySelectorAll('#blogFilters .tag').forEach(function(t){t.classList.remove('active');});el.classList.add('active');renderBlog(city);}
+function previewPhoto(event){var file=event.target.files[0];if(!file)return;if(file.size>5*1024*1024){alert('Photo must be under 5MB');return;}var reader=new FileReader();reader.onload=function(e){uploadedPhoto=e.target.result;var p=document.getElementById('photoPreview');p.src=uploadedPhoto;p.style.display='block';};reader.readAsDataURL(file);}
+function openWrite(){document.getElementById('writeOverlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeWrite(){document.getElementById('writeOverlay').classList.remove('open');document.body.style.overflow='';uploadedPhoto=null;document.getElementById('photoPreview').style.display='none';}
+function closeWriteOutside(e){if(e.target===document.getElementById('writeOverlay'))closeWrite();}
+function toggleTag(el,tag){el.classList.toggle('selected');if(el.classList.contains('selected'))selectedTags.push(tag);else selectedTags=selectedTags.filter(function(t){return t!==tag;});}
 function submitPost(){
-  const title=document.getElementById('postTitle').value.trim();
-  const author=document.getElementById('postAuthor').value.trim();
-  const body=document.getElementById('postBody').value.trim();
-  const category=document.getElementById('postCategory').value;
+  var title=document.getElementById('postTitle').value.trim();
+  var author=document.getElementById('postAuthor').value.trim();
+  var body=document.getElementById('postBody').value.trim();
+  var category=document.getElementById('postCategory').value;
   if(!title||!author||!body){alert('Please fill in all fields.');return;}
-  if(containsProfanity(title)||containsProfanity(body)){alert('Please remove any inappropriate language before posting.');return;}
-  const city=selectedTags[0]||'Other';
-  const emojis={Eat:'🍽',Drink:'🍸',Explore:'🗺',Stay:'🏨'};
-  const initials=author.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-  const now=new Date();
-  const dateStr=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  blogPosts.unshift({id:Date.now(),title,author,authorInit:initials,city,category,date:dateStr,excerpt:body.slice(0,160)+(body.length>160?'...':''),emoji:emojis[category]||'✍️',photo:uploadedPhotoData||null});
-  closeWriteModal();
+  if(hasBad(title)||hasBad(body)){alert('Please remove any inappropriate language before posting.');return;}
+  var city=selectedTags[0]||'Other';
+  var emojis={Eat:'🍽',Drink:'🍸',Explore:'🗺',Stay:'🏨'};
+  var initials=author.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+  var now=new Date();
+  var dateStr=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  blogPosts.unshift({id:Date.now(),title:title,author:author,authorInit:initials,city:city,category:category,date:dateStr,excerpt:body.slice(0,160)+(body.length>160?'...':''),emoji:emojis[category]||'✍️',photo:uploadedPhoto||null});
+  closeWrite();
   document.getElementById('postTitle').value='';
   document.getElementById('postAuthor').value='';
   document.getElementById('postBody').value='';
   document.getElementById('profanityWarning').style.display='none';
   selectedTags=[];
-  document.querySelectorAll('.tag-pick').forEach(t=>t.classList.remove('selected'));
+  document.querySelectorAll('.tag-pick').forEach(function(t){t.classList.remove('selected');});
   renderBlog('all');
-  document.querySelectorAll('#blogFilters .tag').forEach((t,i)=>t.classList.toggle('active',i===0));
-  const filters=document.getElementById('blogFilters');
-  const exists=[...filters.querySelectorAll('.tag')].some(t=>t.textContent===city);
-  if(!exists&&city!=='Other'){
-    const newTag=document.createElement('span');
-    newTag.className='tag';newTag.textContent=city;
-    newTag.onclick=function(){filterBlog(city,this);};
-    filters.appendChild(newTag);
-  }
+  document.querySelectorAll('#blogFilters .tag').forEach(function(t,i){t.classList.toggle('active',i===0);});
+  var filters=document.getElementById('blogFilters');
+  var exists=[...filters.querySelectorAll('.tag')].some(function(t){return t.textContent===city;});
+  if(!exists&&city!=='Other'){var nt=document.createElement('span');nt.className='tag';nt.textContent=city;nt.onclick=function(){filterBlog(city,this);};filters.appendChild(nt);}
 }
-
-document.getElementById('cityInput').addEventListener('keydown',e=>{if(e.key==='Enter')searchCity();});
+document.getElementById('cityInput').addEventListener('keydown',function(e){if(e.key==='Enter')searchCity();});
 </script>
 </body>
 </html>
