@@ -375,8 +375,8 @@ async function searchCity(){
   visible={eat:PS,drink:PS,explore:PS,stay:PS};
   try{
     const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:8000,
-      messages:[{role:'user',content:'You are a travel expert. Return ONLY a JSON object with exactly 30 items in each of these 4 arrays: eat, drink, explore, stay. No markdown, no explanation, just the raw JSON.\n\nCity: '+city+'\n\nEach item must have: name, desc (under 15 words), price ($/$$/$$$$), vibe, rating (3.8-4.9), reviewCount, review (under 18 words), reviewSources, featured (bool, max 3 true total), photoQuery (specific unsplash query), hours (array of 7 objects with day and time fields), menu (array of 3 objects with name, desc, price fields).'}]
+      model:'claude-sonnet-4-20250514',max_tokens:16000,
+      messages:[{role:'user',content:'You are a travel expert. Return ONLY a valid JSON object with exactly 10 items in each of these 4 arrays: eat, drink, explore, stay. No markdown, no backticks, no explanation, just raw JSON starting with {.\n\nCity: '+city+'\n\nEach item: {"name":"real place name","desc":"under 15 words","price":"$$","vibe":"e.g. Fine Dining","rating":4.5,"reviewCount":1200,"review":"under 18 words","reviewSources":"Google, TripAdvisor","featured":false,"photoQuery":"specific unsplash query","hours":[{"day":"Monday","time":"11am-10pm"},{"day":"Tuesday","time":"11am-10pm"},{"day":"Wednesday","time":"11am-10pm"},{"day":"Thursday","time":"11am-10pm"},{"day":"Friday","time":"11am-11pm"},{"day":"Saturday","time":"10am-11pm"},{"day":"Sunday","time":"Closed"}],"menu":[{"name":"Item","desc":"brief","price":"$12"},{"name":"Item","desc":"brief","price":"$8"},{"name":"Item","desc":"brief","price":"$15"}]}\n\nMark exactly 2 items per category featured:true. All names must be real places in '+city+'. IMPORTANT: Return complete valid JSON only.'}]
     })});
     const data=await res.json();
     if(data.error){throw new Error(data.error);}
