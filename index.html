@@ -28,23 +28,32 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--t
 @keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
 @keyframes spin{to{transform:rotate(360deg);}}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.75);}}
-@keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
 .wrapper{position:relative;z-index:1;}
 
 /* NAV */
-nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 2.5rem;position:fixed;top:0;left:0;right:0;z-index:300;background:rgba(9,9,15,0.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+nav{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 2.5rem;position:fixed;top:0;left:0;right:0;z-index:300;background:rgba(9,9,15,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
 .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-0.02em;color:var(--text);display:flex;align-items:center;gap:0.5rem;cursor:pointer;}
 .logo-dot{width:8px;height:8px;background:var(--itin);border-radius:50%;box-shadow:0 0 12px var(--itin);animation:pulse 2s ease-in-out infinite;flex-shrink:0;}
-.nav-links{display:flex;gap:0.3rem;}
-.nav-link{padding:0.5rem 1rem;font-size:0.82rem;color:var(--muted);background:none;border:none;cursor:pointer;transition:all 0.2s;font-family:'Instrument Sans',sans-serif;border-radius:8px;}
+.nav-links{display:flex;gap:0.2rem;align-items:center;}
+.nav-link{padding:0.48rem 0.9rem;font-size:0.8rem;color:var(--muted);background:none;border:none;cursor:pointer;transition:all 0.2s;font-family:'Instrument Sans',sans-serif;border-radius:8px;white-space:nowrap;}
 .nav-link:hover{color:var(--text);background:rgba(255,255,255,0.05);}
 .nav-link.active{color:var(--itin);background:rgba(232,121,249,0.06);}
+.nav-user-btn{padding:0.45rem 1rem;background:rgba(232,121,249,0.1);border:1px solid rgba(232,121,249,0.25);border-radius:8px;color:var(--itin);font-size:0.78rem;font-weight:600;font-family:'Instrument Sans',sans-serif;cursor:pointer;transition:all 0.2s;}
+.nav-user-btn:hover{background:rgba(232,121,249,0.18);}
+.nav-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--itin),var(--accent3));display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;color:#09090f;cursor:pointer;border:2px solid rgba(232,121,249,0.3);flex-shrink:0;}
 
 /* PAGES */
 .page{display:none;}
 .page.active{display:block;}
 
-/* ========== HERO ========== */
+/* TOAST */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:0.8rem 1.4rem;font-size:0.85rem;font-weight:500;z-index:999;transition:transform 0.3s ease;white-space:nowrap;box-shadow:0 8px 30px rgba(0,0,0,0.4);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.success{border-color:rgba(110,231,183,0.35);color:var(--accent);}
+.toast.error{border-color:rgba(248,113,113,0.35);color:var(--warn);}
+.toast.info{border-color:rgba(232,121,249,0.35);color:var(--itin);}
+
+/* HERO */
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:8rem 2rem 4rem;text-align:center;}
 .hero-badge{display:inline-flex;align-items:center;gap:0.5rem;padding:0.4rem 1rem;border:1px solid var(--border);border-radius:100px;background:rgba(255,255,255,0.03);font-size:0.72rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2.5rem;animation:fadeDown 0.7s ease both;}
 .hero-badge-dot{width:6px;height:6px;background:var(--itin);border-radius:50%;box-shadow:0 0 8px var(--itin);}
@@ -57,200 +66,267 @@ h1{font-family:'Syne',sans-serif;font-size:clamp(3rem,9vw,7rem);font-weight:800;
 .cta-secondary{padding:0.9rem 2rem;background:rgba(255,255,255,0.04);color:var(--text);font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:600;border:1px solid var(--border2);border-radius:12px;cursor:pointer;transition:all 0.2s;}
 .cta-secondary:hover{background:rgba(255,255,255,0.08);}
 
-/* ========== PLANNER PAGE ========== */
+/* PLANNER */
 #planner-page{padding:6rem 2rem 5rem;}
 .planner-inner{max-width:960px;margin:0 auto;}
 .page-eyebrow{font-size:0.72rem;color:var(--itin);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.8rem;}
 .page-title{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,2.8rem);font-weight:800;letter-spacing:-0.03em;line-height:1.05;margin-bottom:0.6rem;}
-.page-sub{font-size:0.92rem;color:var(--muted);max-width:500px;line-height:1.7;font-weight:300;margin-bottom:2.5rem;}
-
-/* STEP CARDS */
-.steps-grid{display:grid;gap:1.2rem;}
-.step-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.6rem;transition:border-color 0.2s;}
-.step-card:focus-within{border-color:rgba(232,121,249,0.25);}
-.step-hdr{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;}
-.step-num{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:rgba(237,237,242,0.07);line-height:1;flex-shrink:0;min-width:2.5rem;}
-.step-info .step-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;letter-spacing:-0.01em;}
-.step-info .step-sub{font-size:0.78rem;color:var(--muted);margin-top:0.15rem;}
-
-/* INPUTS */
-.city-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1.1rem;font-family:'Instrument Sans',sans-serif;font-size:0.92rem;color:var(--text);outline:none;transition:border-color 0.2s;}
+.page-sub{font-size:0.9rem;color:var(--muted);max-width:500px;line-height:1.7;font-weight:300;margin-bottom:2.5rem;}
+.steps-grid{display:grid;gap:1.1rem;}
+.step-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.5rem;transition:border-color 0.2s;}
+.step-card:focus-within{border-color:rgba(232,121,249,0.22);}
+.step-hdr{display:flex;align-items:center;gap:0.9rem;margin-bottom:1.1rem;}
+.step-num{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:rgba(237,237,242,0.07);line-height:1;flex-shrink:0;min-width:2.2rem;}
+.step-title{font-family:'Syne',sans-serif;font-size:0.97rem;font-weight:700;letter-spacing:-0.01em;}
+.step-sub{font-size:0.75rem;color:var(--muted);margin-top:0.12rem;}
+.city-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.78rem 1.1rem;font-family:'Instrument Sans',sans-serif;font-size:0.9rem;color:var(--text);outline:none;transition:border-color 0.2s;}
 .city-input:focus{border-color:rgba(232,121,249,0.4);}
 .city-input::placeholder{color:var(--muted2);}
-
-/* OPTION GRID */
-.opt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:0.55rem;}
-.opt{padding:0.65rem 0.9rem;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;font-family:'Instrument Sans',sans-serif;font-size:0.8rem;color:var(--muted);cursor:pointer;transition:all 0.2s;text-align:center;line-height:1.3;}
+.opt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.5rem;}
+.opt{padding:0.62rem 0.85rem;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;font-family:'Instrument Sans',sans-serif;font-size:0.78rem;color:var(--muted);cursor:pointer;transition:all 0.2s;text-align:center;line-height:1.3;}
 .opt:hover{background:rgba(255,255,255,0.07);color:var(--text);}
 .opt.sel{background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.4);color:var(--itin);}
-
-/* DAYS SELECTOR */
 .days-row{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
 .days-counter{display:flex;align-items:center;gap:0.8rem;}
 .day-btn{width:36px;height:36px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:1.1rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
 .day-btn:hover{border-color:rgba(232,121,249,0.4);color:var(--itin);}
-.days-num{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;min-width:2rem;text-align:center;}
-.days-label{font-size:0.82rem;color:var(--muted);}
+.days-num{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;min-width:1.8rem;text-align:center;}
+.days-label{font-size:0.8rem;color:var(--muted);}
 
-/* TAGS INPUT */
-.tags-wrap{display:flex;flex-wrap:wrap;gap:0.4rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;cursor:text;min-height:48px;align-items:center;transition:border-color 0.2s;}
+/* BUDGET SLIDER */
+.slider-wrap{padding:0.3rem 0;}
+.slider-labels{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;}
+.slider-val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--itin);}
+.slider-desc{font-size:0.75rem;color:var(--muted);}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:100px;background:var(--surface3);outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--itin),var(--accent3));cursor:pointer;border:2px solid rgba(232,121,249,0.3);box-shadow:0 0 10px rgba(232,121,249,0.3);}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--itin),var(--accent3));cursor:pointer;border:2px solid rgba(232,121,249,0.3);}
+.slider-track-labels{display:flex;justify-content:space-between;margin-top:0.5rem;font-size:0.7rem;color:var(--muted2);}
+
+/* TAGS */
+.tags-wrap{display:flex;flex-wrap:wrap;gap:0.4rem;padding:0.55rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;cursor:text;min-height:46px;align-items:center;transition:border-color 0.2s;}
 .tags-wrap:focus-within{border-color:rgba(232,121,249,0.4);}
-.tag-chip{display:inline-flex;align-items:center;gap:0.3rem;padding:0.22rem 0.6rem;background:rgba(232,121,249,0.12);border:1px solid rgba(232,121,249,0.3);border-radius:100px;font-size:0.75rem;color:var(--itin);}
-.tag-chip-x{cursor:pointer;opacity:0.6;transition:opacity 0.15s;font-size:0.8rem;}
+.tag-chip{display:inline-flex;align-items:center;gap:0.28rem;padding:0.2rem 0.58rem;background:rgba(232,121,249,0.12);border:1px solid rgba(232,121,249,0.28);border-radius:100px;font-size:0.73rem;color:var(--itin);}
+.tag-chip-x{cursor:pointer;opacity:0.6;font-size:0.78rem;}
 .tag-chip-x:hover{opacity:1;}
-.tags-input{border:none;outline:none;background:none;font-family:'Instrument Sans',sans-serif;font-size:0.85rem;color:var(--text);flex:1;min-width:120px;}
+.tags-input{border:none;outline:none;background:none;font-family:'Instrument Sans',sans-serif;font-size:0.84rem;color:var(--text);flex:1;min-width:120px;}
 .tags-input::placeholder{color:var(--muted2);}
-.tag-suggestions{display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.6rem;}
-.tag-sug{padding:0.25rem 0.65rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:100px;font-size:0.72rem;color:var(--muted);cursor:pointer;transition:all 0.2s;}
+.tag-suggestions{display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.55rem;}
+.tag-sug{padding:0.24rem 0.62rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:100px;font-size:0.71rem;color:var(--muted);cursor:pointer;transition:all 0.2s;}
 .tag-sug:hover{background:rgba(232,121,249,0.08);color:var(--itin);border-color:rgba(232,121,249,0.25);}
 
-/* SECTION DIVIDER */
-.section-divider{display:flex;align-items:center;gap:0.8rem;margin:0.4rem 0;}
-.section-divider span{font-size:0.68rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap;}
-.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border);}
-
-/* RANDOMIZE TOGGLE */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;}
-.toggle-label{font-size:0.85rem;font-weight:500;}
-.toggle-sub{font-size:0.75rem;color:var(--muted);margin-top:0.1rem;}
-.toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0;}
+/* TOGGLE */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;}
+.toggle-label{font-size:0.83rem;font-weight:500;}
+.toggle-sub{font-size:0.72rem;color:var(--muted);margin-top:0.1rem;}
+.toggle-switch{position:relative;width:42px;height:23px;flex-shrink:0;}
 .toggle-switch input{opacity:0;width:0;height:0;}
 .toggle-slider{position:absolute;inset:0;background:var(--surface3);border-radius:100px;cursor:pointer;transition:0.3s;border:1px solid var(--border);}
-.toggle-slider::before{content:'';position:absolute;width:18px;height:18px;left:2px;top:2px;background:var(--muted);border-radius:50%;transition:0.3s;}
+.toggle-slider::before{content:'';position:absolute;width:17px;height:17px;left:2px;top:2px;background:var(--muted);border-radius:50%;transition:0.3s;}
 .toggle-switch input:checked+.toggle-slider{background:rgba(232,121,249,0.2);border-color:rgba(232,121,249,0.4);}
-.toggle-switch input:checked+.toggle-slider::before{transform:translateX(20px);background:var(--itin);}
+.toggle-switch input:checked+.toggle-slider::before{transform:translateX(19px);background:var(--itin);}
 
-/* GENERATE BTN */
-.gen-btn-wrap{margin-top:1.5rem;}
-.gen-btn{width:100%;padding:1.1rem;background:linear-gradient(135deg,var(--itin),var(--accent3));color:white;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;border:none;border-radius:14px;cursor:pointer;transition:all 0.2s;letter-spacing:-0.01em;}
+/* GEN BTN */
+.gen-btn{width:100%;padding:1.05rem;background:linear-gradient(135deg,var(--itin),var(--accent3));color:white;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;border:none;border-radius:14px;cursor:pointer;transition:all 0.2s;letter-spacing:-0.01em;margin-top:1.4rem;}
 .gen-btn:hover{opacity:0.88;transform:translateY(-2px);box-shadow:0 12px 40px rgba(232,121,249,0.25);}
 .gen-btn:disabled{opacity:0.35;cursor:wait;transform:none;box-shadow:none;}
 
-/* ========== RESULTS ========== */
+/* RESULTS */
 #itinResult{display:none;margin-top:2.5rem;}
-.itin-result-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
-.itin-result-title{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;letter-spacing:-0.03em;line-height:1.1;}
-.itin-result-sub{font-size:0.82rem;color:var(--muted);margin-top:0.3rem;}
-.result-actions{display:flex;gap:0.5rem;flex-wrap:wrap;}
-.action-btn{padding:0.6rem 1.1rem;background:var(--surface);border:1px solid var(--border2);border-radius:10px;font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;color:var(--text);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.itin-result-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
+.itin-result-title{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;letter-spacing:-0.03em;line-height:1.1;}
+.itin-result-sub{font-size:0.8rem;color:var(--muted);margin-top:0.3rem;}
+.result-actions{display:flex;gap:0.45rem;flex-wrap:wrap;}
+.action-btn{padding:0.55rem 1rem;background:var(--surface);border:1px solid var(--border2);border-radius:9px;font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;color:var(--text);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .action-btn:hover{border-color:rgba(232,121,249,0.35);color:var(--itin);}
 .action-btn.regen{background:rgba(232,121,249,0.08);border-color:rgba(232,121,249,0.25);color:var(--itin);}
 .action-btn.regen:hover{background:rgba(232,121,249,0.15);}
+.action-btn.save-btn{background:rgba(110,231,183,0.08);border-color:rgba(110,231,183,0.25);color:var(--accent);}
+.action-btn.save-btn:hover{background:rgba(110,231,183,0.15);}
 
 /* DAY TABS */
-.day-tabs{display:flex;gap:0.4rem;margin-bottom:1.5rem;flex-wrap:wrap;}
-.day-tab{padding:0.5rem 1.1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-family:'Instrument Sans',sans-serif;font-size:0.8rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.2s;}
+.day-tabs{display:flex;gap:0.4rem;margin-bottom:1.3rem;flex-wrap:wrap;}
+.day-tab{padding:0.48rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:9px;font-family:'Instrument Sans',sans-serif;font-size:0.78rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.2s;}
 .day-tab.active{background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.35);color:var(--itin);}
 .day-tab:hover{color:var(--text);}
-
-/* DAY PANELS */
 .day-panel{display:none;animation:fadeUp 0.35s ease both;}
 .day-panel.active{display:block;}
+
+/* MAP VIEW */
+.map-toggle-row{display:flex;gap:0.4rem;margin-bottom:1rem;}
+.view-toggle{padding:0.4rem 0.9rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:0.75rem;font-weight:600;color:var(--muted);cursor:pointer;font-family:'Instrument Sans',sans-serif;transition:all 0.2s;}
+.view-toggle.active{background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.3);color:var(--itin);}
+.map-container{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.2rem;display:none;}
+.map-container.visible{display:block;}
+.map-iframe{width:100%;height:420px;border:none;display:block;}
+.map-pins{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.5rem;padding:1rem;}
+.map-pin-item{display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.7rem;background:var(--surface2);border-radius:8px;font-size:0.78rem;}
+.pin-num{width:22px;height:22px;background:linear-gradient(135deg,var(--itin),var(--accent3));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:white;flex-shrink:0;}
+.pin-name{color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
 /* LOADING */
 .itin-loading{text-align:center;padding:3rem 2rem;}
 .itin-loader{width:40px;height:40px;border:2px solid var(--border);border-top-color:var(--itin);border-radius:50%;animation:spin 0.85s linear infinite;margin:0 auto 1rem;}
-.loading-txt{font-size:0.82rem;color:var(--muted);letter-spacing:0.06em;}
+.loading-txt{font-size:0.82rem;color:var(--muted);}
 
 /* TIME BLOCKS */
-.day-blocks{display:grid;gap:0.9rem;}
-.time-block{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color 0.2s,box-shadow 0.2s;}
-.time-block:hover{border-color:var(--border2);box-shadow:0 8px 30px rgba(0,0,0,0.3);}
-.tb-header{display:flex;align-items:center;gap:0.8rem;padding:1rem 1.2rem 0.7rem;border-bottom:1px solid var(--border);flex-wrap:wrap;}
-.tb-time{font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--itin);white-space:nowrap;background:rgba(232,121,249,0.08);padding:0.22rem 0.6rem;border-radius:6px;border:1px solid rgba(232,121,249,0.2);}
-.tb-place{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:-0.02em;flex:1;}
-.tb-type{font-size:0.68rem;color:var(--muted);background:rgba(255,255,255,0.04);padding:0.2rem 0.55rem;border-radius:6px;white-space:nowrap;}
-.tb-body{padding:1rem 1.2rem;}
-.tb-desc{font-size:0.85rem;color:var(--muted);line-height:1.65;margin-bottom:0.8rem;}
-.tb-tip{font-size:0.78rem;color:var(--accent);background:rgba(110,231,183,0.06);border:1px solid rgba(110,231,183,0.15);padding:0.4rem 0.75rem;border-radius:7px;margin-bottom:0.9rem;display:inline-block;}
-.tb-footer{display:flex;gap:0.5rem;flex-wrap:wrap;}
+.day-blocks{display:grid;gap:0.85rem;}
+.time-block{background:var(--surface);border:1px solid var(--border);border-radius:15px;overflow:hidden;transition:border-color 0.2s,box-shadow 0.2s;}
+.time-block:hover{border-color:var(--border2);box-shadow:0 6px 24px rgba(0,0,0,0.3);}
+.tb-header{display:flex;align-items:center;gap:0.7rem;padding:0.9rem 1.1rem 0.7rem;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.tb-time{font-family:'Syne',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--itin);white-space:nowrap;background:rgba(232,121,249,0.08);padding:0.2rem 0.55rem;border-radius:6px;border:1px solid rgba(232,121,249,0.18);}
+.tb-place{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;letter-spacing:-0.02em;flex:1;}
+.tb-type{font-size:0.67rem;color:var(--muted);background:rgba(255,255,255,0.04);padding:0.18rem 0.5rem;border-radius:5px;white-space:nowrap;}
+.tb-num{width:22px;height:22px;background:linear-gradient(135deg,var(--itin),var(--accent3));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:white;flex-shrink:0;}
+.tb-body{padding:0.9rem 1.1rem;}
+.tb-desc{font-size:0.83rem;color:var(--muted);line-height:1.65;margin-bottom:0.75rem;}
+.tb-tip{font-size:0.76rem;color:var(--accent);background:rgba(110,231,183,0.06);border:1px solid rgba(110,231,183,0.14);padding:0.38rem 0.7rem;border-radius:7px;margin-bottom:0.85rem;display:inline-block;}
 
-/* RESERVATION LINKS */
-.res-btn{display:inline-flex;align-items:center;gap:0.35rem;padding:0.45rem 0.9rem;border-radius:8px;font-size:0.74rem;font-weight:600;font-family:'Instrument Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-decoration:none;border:1px solid;}
+/* RATING */
+.rating-row{display:flex;align-items:center;gap:0.7rem;margin-bottom:0.85rem;flex-wrap:wrap;}
+.star-rating{display:flex;gap:2px;}
+.star-btn{font-size:1.1rem;cursor:pointer;color:var(--muted2);transition:color 0.15s;background:none;border:none;padding:0;}
+.star-btn:hover,.star-btn.filled{color:var(--gold);}
+.rating-label{font-size:0.72rem;color:var(--muted);}
+.avg-rating{font-size:0.72rem;color:var(--gold);font-weight:600;}
+
+/* FOOTER LINKS */
+.tb-footer{display:flex;gap:0.45rem;flex-wrap:wrap;align-items:center;}
+.res-btn{display:inline-flex;align-items:center;gap:0.3rem;padding:0.4rem 0.82rem;border-radius:8px;font-size:0.72rem;font-weight:600;font-family:'Instrument Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-decoration:none;border:1px solid;}
 .res-btn-maps{color:var(--accent3);background:rgba(96,165,250,0.08);border-color:rgba(96,165,250,0.2);}
 .res-btn-maps:hover{background:rgba(96,165,250,0.15);}
-.res-btn-opentable{color:#da3743;background:rgba(218,55,67,0.08);border-color:rgba(218,55,67,0.25);}
-.res-btn-opentable:hover{background:rgba(218,55,67,0.15);}
+.res-btn-opentable{color:#ff6b6b;background:rgba(255,107,107,0.08);border-color:rgba(255,107,107,0.25);}
+.res-btn-opentable:hover{background:rgba(255,107,107,0.15);}
 .res-btn-viator{color:#ff9500;background:rgba(255,149,0,0.08);border-color:rgba(255,149,0,0.25);}
 .res-btn-viator:hover{background:rgba(255,149,0,0.15);}
-.res-btn-booking{color:#003580;background:rgba(0,53,128,0.15);border-color:rgba(0,53,128,0.3);}
-.res-btn-booking:hover{background:rgba(0,53,128,0.25);}
-.res-btn-yelp{color:#d32323;background:rgba(211,35,35,0.08);border-color:rgba(211,35,35,0.2);}
-.res-btn-yelp:hover{background:rgba(211,35,35,0.15);}
-
-/* REGENERATE BLOCK */
-.regen-block-btn{display:flex;align-items:center;gap:0.4rem;padding:0.38rem 0.8rem;background:rgba(232,121,249,0.06);border:1px solid rgba(232,121,249,0.18);border-radius:8px;font-size:0.72rem;font-weight:600;font-family:'Instrument Sans',sans-serif;color:var(--itin);cursor:pointer;transition:all 0.2s;margin-left:auto;}
+.res-btn-booking{color:#7eb3ff;background:rgba(126,179,255,0.08);border-color:rgba(126,179,255,0.2);}
+.res-btn-booking:hover{background:rgba(126,179,255,0.15);}
+.res-btn-yelp{color:#ff6b6b;background:rgba(255,107,107,0.08);border-color:rgba(255,107,107,0.2);}
+.res-btn-yelp:hover{background:rgba(255,107,107,0.14);}
+.regen-block-btn{display:inline-flex;align-items:center;gap:0.3rem;padding:0.38rem 0.75rem;background:rgba(232,121,249,0.06);border:1px solid rgba(232,121,249,0.18);border-radius:8px;font-size:0.7rem;font-weight:600;font-family:'Instrument Sans',sans-serif;color:var(--itin);cursor:pointer;transition:all 0.2s;margin-left:auto;}
 .regen-block-btn:hover{background:rgba(232,121,249,0.13);}
 .regen-block-btn:disabled{opacity:0.4;cursor:wait;}
 
-/* ========== BLOG PAGE ========== */
+/* SHARE MODAL */
+.share-modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:1.5rem;}
+.share-modal-wrap.open{display:flex;animation:fadeIn 0.2s ease;}
+.share-modal{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:2rem;width:100%;max-width:480px;animation:slideUp 0.3s ease;}
+.share-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:0.4rem;}
+.share-sub{font-size:0.83rem;color:var(--muted);margin-bottom:1.5rem;}
+.share-link-box{display:flex;gap:0.5rem;margin-bottom:1.2rem;}
+.share-link-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:0.65rem 0.9rem;font-family:'Instrument Sans',sans-serif;font-size:0.8rem;color:var(--muted);outline:none;}
+.copy-btn{padding:0.65rem 1rem;background:rgba(110,231,183,0.1);border:1px solid rgba(110,231,183,0.25);border-radius:9px;font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;color:var(--accent);cursor:pointer;white-space:nowrap;transition:all 0.2s;}
+.copy-btn:hover{background:rgba(110,231,183,0.18);}
+.share-platforms{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
+.share-platform-btn{padding:0.7rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-family:'Instrument Sans',sans-serif;font-size:0.8rem;font-weight:600;color:var(--text);cursor:pointer;transition:all 0.2s;text-align:center;}
+.share-platform-btn:hover{background:var(--surface3);border-color:var(--border2);}
+
+/* EMAIL MODAL */
+.email-modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:1.5rem;}
+.email-modal-wrap.open{display:flex;animation:fadeIn 0.2s ease;}
+.email-modal{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:2rem;width:100%;max-width:440px;animation:slideUp 0.3s ease;}
+
+/* SAVED TRIPS PAGE */
+#saved-page{padding:6rem 2rem 5rem;}
+.saved-inner{max-width:960px;margin:0 auto;}
+.saved-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.1rem;margin-top:1.5rem;}
+.saved-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.3rem;transition:all 0.2s;cursor:pointer;}
+.saved-card:hover{border-color:rgba(232,121,249,0.3);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.3);}
+.saved-card-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.3rem;letter-spacing:-0.01em;}
+.saved-card-meta{font-size:0.75rem;color:var(--muted);display:flex;gap:0.7rem;flex-wrap:wrap;margin-bottom:0.8rem;}
+.saved-card-actions{display:flex;gap:0.4rem;}
+.sc-btn{padding:0.32rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:600;font-family:'Instrument Sans',sans-serif;cursor:pointer;transition:all 0.2s;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--muted);}
+.sc-btn:hover{color:var(--text);}
+.sc-btn.del{color:var(--warn);border-color:rgba(248,113,113,0.2);}
+.sc-btn.del:hover{background:rgba(248,113,113,0.1);}
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--muted);}
+.empty-state-icon{font-size:3rem;margin-bottom:1rem;}
+.empty-state-title{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:0.4rem;}
+
+/* AUTH MODAL */
+.auth-modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:600;backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:1.5rem;}
+.auth-modal-wrap.open{display:flex;animation:fadeIn 0.2s ease;}
+.auth-modal{background:var(--surface);border:1px solid var(--border2);border-radius:22px;padding:2.2rem;width:100%;max-width:420px;animation:slideUp 0.3s ease;}
+.auth-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.3rem;}
+.auth-sub{font-size:0.83rem;color:var(--muted);margin-bottom:1.6rem;}
+.auth-tabs{display:flex;gap:0;margin-bottom:1.5rem;border-bottom:1px solid var(--border);}
+.auth-tab{padding:0.5rem 1rem;font-family:'Instrument Sans',sans-serif;font-size:0.82rem;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
+.auth-tab.active{color:var(--itin);border-bottom-color:var(--itin);}
+.auth-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.75rem 1rem;font-family:'Instrument Sans',sans-serif;font-size:0.88rem;color:var(--text);outline:none;transition:border-color 0.2s;margin-bottom:0.8rem;}
+.auth-input:focus{border-color:rgba(232,121,249,0.4);}
+.auth-btn{width:100%;padding:0.85rem;background:linear-gradient(135deg,var(--itin),var(--accent3));color:white;font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;border:none;border-radius:12px;cursor:pointer;transition:all 0.2s;margin-top:0.3rem;}
+.auth-btn:hover{opacity:0.88;}
+.auth-close{position:absolute;top:1.2rem;right:1.2rem;}
+.auth-modal{position:relative;}
+
+/* BLOG */
 #blog-page{padding:6rem 2rem 5rem;}
 .blog-inner{max-width:1100px;margin:0 auto;}
-.blog-toolbar{display:flex;gap:0.6rem;margin-bottom:2.5rem;flex-wrap:wrap;align-items:center;justify-content:space-between;}
-.blog-filters{display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;}
-.btag{display:inline-block;padding:0.3rem 0.75rem;border-radius:100px;font-size:0.72rem;font-weight:500;cursor:pointer;transition:all 0.2s;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--muted);}
+.blog-toolbar{display:flex;gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap;align-items:center;justify-content:space-between;}
+.blog-filters{display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center;}
+.btag{display:inline-block;padding:0.28rem 0.7rem;border-radius:100px;font-size:0.7rem;font-weight:500;cursor:pointer;transition:all 0.2s;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--muted);}
 .btag:hover,.btag.active{background:rgba(110,231,183,0.1);border-color:rgba(110,231,183,0.3);color:var(--accent);}
-.write-btn{padding:0.65rem 1.3rem;background:var(--accent);color:#09090f;font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;border:none;border-radius:10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.write-btn{padding:0.6rem 1.2rem;background:var(--accent);color:#09090f;font-family:'Syne',sans-serif;font-size:0.76rem;font-weight:700;border:none;border-radius:9px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .write-btn:hover{background:#a7f3d0;}
-.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.3rem;}
-.blog-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:transform 0.25s,border-color 0.25s,box-shadow 0.25s;}
-.blog-card:hover{transform:translateY(-4px);border-color:var(--border2);box-shadow:0 20px 60px rgba(0,0,0,0.4);}
-.bc-img-ph{width:100%;height:170px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;background:linear-gradient(135deg,var(--surface2),var(--surface3));}
-.bc-img{width:100%;height:170px;object-fit:cover;display:block;}
-.bc-body{padding:1.2rem;}
-.bc-tags{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.7rem;}
-.bc-city{font-size:0.62rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:0.2rem 0.55rem;border-radius:6px;background:rgba(96,165,250,0.1);color:var(--accent3);border:1px solid rgba(96,165,250,0.2);}
-.bc-cat{font-size:0.62rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:0.2rem 0.55rem;border-radius:6px;background:rgba(167,139,250,0.1);color:#a78bfa;border:1px solid rgba(167,139,250,0.2);}
-.bc-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.4rem;line-height:1.25;}
-.bc-excerpt{font-size:0.81rem;color:var(--muted);line-height:1.6;font-weight:300;margin-bottom:1rem;}
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1.2rem;}
+.blog-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform 0.25s,border-color 0.25s,box-shadow 0.25s;}
+.blog-card:hover{transform:translateY(-4px);border-color:var(--border2);box-shadow:0 18px 50px rgba(0,0,0,0.4);}
+.bc-img-ph{width:100%;height:160px;display:flex;align-items:center;justify-content:center;font-size:2.6rem;background:linear-gradient(135deg,var(--surface2),var(--surface3));}
+.bc-img{width:100%;height:160px;object-fit:cover;display:block;}
+.bc-body{padding:1.15rem;}
+.bc-tags{display:flex;gap:0.35rem;flex-wrap:wrap;margin-bottom:0.65rem;}
+.bc-city{font-size:0.6rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:0.18rem 0.5rem;border-radius:5px;background:rgba(96,165,250,0.1);color:var(--accent3);border:1px solid rgba(96,165,250,0.2);}
+.bc-cat{font-size:0.6rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:0.18rem 0.5rem;border-radius:5px;background:rgba(167,139,250,0.1);color:#a78bfa;border:1px solid rgba(167,139,250,0.2);}
+.bc-title{font-family:'Syne',sans-serif;font-size:0.97rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.4rem;line-height:1.25;}
+.bc-excerpt{font-size:0.79rem;color:var(--muted);line-height:1.6;font-weight:300;margin-bottom:0.9rem;}
 .bc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:0.8rem;border-top:1px solid var(--border);}
-.bc-author{display:flex;align-items:center;gap:0.45rem;}
+.bc-author{display:flex;align-items:center;gap:0.42rem;}
 .avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--itin),var(--accent3));display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:#09090f;flex-shrink:0;}
 .author-name{font-size:0.72rem;color:var(--muted);}
-.bc-date{font-size:0.68rem;color:var(--muted2);}
+.bc-date{font-size:0.67rem;color:var(--muted2);}
 
 /* WRITE MODAL */
 .woverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:1.5rem;}
 .woverlay.open{display:flex;animation:fadeIn 0.2s ease;}
-.write-modal{background:var(--surface);border:1px solid var(--border2);border-radius:22px;padding:2.2rem;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;animation:slideUp 0.3s ease;}
-.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.8rem;}
-.modal-ttl{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;letter-spacing:-0.02em;}
-.close-btn{background:rgba(255,255,255,0.06);border:1px solid var(--border);width:34px;height:34px;border-radius:8px;cursor:pointer;color:var(--muted);font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.write-modal{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:2rem;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;animation:slideUp 0.3s ease;}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.6rem;}
+.modal-ttl{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;letter-spacing:-0.02em;}
+.close-btn{background:rgba(255,255,255,0.06);border:1px solid var(--border);width:32px;height:32px;border-radius:8px;cursor:pointer;color:var(--muted);font-size:0.95rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
 .close-btn:hover{color:var(--text);}
-.fg{margin-bottom:1.2rem;}
+.fg{margin-bottom:1.1rem;}
 .fl2{display:block;font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;}
-.fi,.fta,.fsel{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.7rem 1rem;font-family:'Instrument Sans',sans-serif;font-size:0.87rem;color:var(--text);outline:none;transition:border-color 0.2s;}
+.fi,.fta,.fsel{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:0.7rem 0.95rem;font-family:'Instrument Sans',sans-serif;font-size:0.86rem;color:var(--text);outline:none;transition:border-color 0.2s;}
 .fi:focus,.fta:focus,.fsel:focus{border-color:rgba(110,231,183,0.35);}
-.fta{resize:vertical;min-height:100px;line-height:1.6;}
+.fta{resize:vertical;min-height:95px;line-height:1.6;}
 .fsel{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(237,237,242,0.4)' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;}
-.frow{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-.tpick-wrap{display:flex;flex-wrap:wrap;gap:0.4rem;}
-.tpick{padding:0.28rem 0.72rem;border:1px solid var(--border);border-radius:100px;font-size:0.73rem;cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.03);color:var(--muted);font-family:'Instrument Sans',sans-serif;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;}
+.tpick-wrap{display:flex;flex-wrap:wrap;gap:0.38rem;}
+.tpick{padding:0.26rem 0.68rem;border:1px solid var(--border);border-radius:100px;font-size:0.71rem;cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.03);color:var(--muted);font-family:'Instrument Sans',sans-serif;}
 .tpick.sel{background:rgba(110,231,183,0.1);border-color:rgba(110,231,183,0.3);color:var(--accent);}
-.upload-area{border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
+.upload-area{border:2px dashed var(--border);border-radius:11px;padding:1.2rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
 .upload-area:hover{border-color:rgba(110,231,183,0.3);}
 .upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.upload-txt{font-size:0.8rem;color:var(--muted);}
-.upload-hint{font-size:0.66rem;color:var(--muted2);margin-top:0.25rem;}
-.img-preview{width:100%;height:150px;object-fit:cover;border-radius:10px;margin-top:0.7rem;display:none;}
-.prof-warn{display:none;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:8px;padding:0.55rem 0.9rem;font-size:0.78rem;color:#fca5a5;margin-top:0.4rem;}
-.sub-btn{width:100%;padding:0.85rem;background:var(--accent);color:#09090f;font-family:'Syne',sans-serif;font-size:0.87rem;font-weight:700;border:none;border-radius:12px;cursor:pointer;transition:all 0.2s;margin-top:0.5rem;}
+.upload-txt{font-size:0.79rem;color:var(--muted);}
+.upload-hint{font-size:0.65rem;color:var(--muted2);margin-top:0.22rem;}
+.img-preview{width:100%;height:140px;object-fit:cover;border-radius:9px;margin-top:0.65rem;display:none;}
+.prof-warn{display:none;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:8px;padding:0.5rem 0.85rem;font-size:0.76rem;color:#fca5a5;margin-top:0.38rem;}
+.sub-btn{width:100%;padding:0.82rem;background:var(--accent);color:#09090f;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;border:none;border-radius:11px;cursor:pointer;transition:all 0.2s;margin-top:0.4rem;}
 .sub-btn:hover{background:#a7f3d0;}
-.err-msg{text-align:center;padding:3rem 2rem;color:var(--muted);font-size:0.87rem;}
-.err-msg strong{color:var(--text);display:block;margin-bottom:0.4rem;font-family:'Syne',sans-serif;font-size:1rem;}
+.err-msg{text-align:center;padding:3rem 2rem;color:var(--muted);font-size:0.85rem;}
+.err-msg strong{color:var(--text);display:block;margin-bottom:0.4rem;font-family:'Syne',sans-serif;}
 
 footer{border-top:1px solid var(--border);padding:1.8rem;text-align:center;font-size:0.73rem;color:var(--muted2);}
 
 @media(max-width:700px){
-  nav{padding:1rem 1.3rem;}
-  .nav-link{padding:0.4rem 0.65rem;font-size:0.74rem;}
-  .hero{padding:7rem 1.3rem 4rem;}
+  nav{padding:1rem 1.2rem;}
+  .nav-link{padding:0.38rem 0.6rem;font-size:0.72rem;}
   h1{font-size:2.6rem;}
-  #planner-page,#blog-page{padding-left:1.3rem;padding-right:1.3rem;}
-  .opt-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}
+  #planner-page,#blog-page,#saved-page{padding-left:1.2rem;padding-right:1.2rem;}
+  .opt-grid{grid-template-columns:repeat(auto-fill,minmax(115px,1fr));}
   .frow{grid-template-columns:1fr;}
-  .blog-grid{grid-template-columns:1fr;}
-  .tb-header{gap:0.5rem;}
+  .blog-grid,.saved-grid{grid-template-columns:1fr;}
+  .result-actions{gap:0.35rem;}
+  .action-btn{font-size:0.7rem;padding:0.45rem 0.8rem;}
 }
 </style>
 </head>
@@ -263,12 +339,16 @@ footer{border-top:1px solid var(--border);padding:1.8rem;text-align:center;font-
   <div class="nav-links">
     <button class="nav-link active" id="nav-home" onclick="showPage('home')">Home</button>
     <button class="nav-link" id="nav-planner" onclick="showPage('planner')">Planner</button>
+    <button class="nav-link" id="nav-saved" onclick="showPage('saved')">Saved Trips</button>
     <button class="nav-link" id="nav-blog" onclick="showPage('blog')">Blog</button>
     <button class="nav-link">For Business</button>
+    <div id="navUserArea">
+      <button class="nav-user-btn" onclick="openAuth('login')">Sign In</button>
+    </div>
   </div>
 </nav>
 
-<!-- ===== HOME PAGE ===== -->
+<!-- HOME -->
 <div class="page active" id="home-page">
   <div class="hero">
     <div class="hero-badge"><span class="hero-badge-dot"></span>AI Trip Planner</div>
@@ -281,7 +361,7 @@ footer{border-top:1px solid var(--border);padding:1.8rem;text-align:center;font-
   </div>
 </div>
 
-<!-- ===== PLANNER PAGE ===== -->
+<!-- PLANNER -->
 <div class="page" id="planner-page">
   <div class="planner-inner">
     <div class="page-eyebrow">✦ Trip Planner</div>
@@ -290,15 +370,13 @@ footer{border-top:1px solid var(--border);padding:1.8rem;text-align:center;font-
 
     <div class="steps-grid">
 
-      <!-- Step 1: Destination -->
       <div class="step-card">
-        <div class="step-hdr"><div class="step-num">01</div><div class="step-info"><div class="step-title">Where are you going?</div><div class="step-sub">City, state, country, or zip code</div></div></div>
-        <input class="city-input" id="itinCity" placeholder="e.g. Tokyo, Japan · Austin, TX · 90210 · Tuscany, Italy"/>
+        <div class="step-hdr"><div class="step-num">01</div><div><div class="step-title">Where are you going?</div><div class="step-sub">City, state, country, or zip code</div></div></div>
+        <input class="city-input" id="itinCity" placeholder="e.g. Tokyo, Japan · Austin, TX · 90210"/>
       </div>
 
-      <!-- Step 2: Number of days -->
       <div class="step-card">
-        <div class="step-hdr"><div class="step-num">02</div><div class="step-info"><div class="step-title">How many days?</div><div class="step-sub">We'll plan each day separately</div></div></div>
+        <div class="step-hdr"><div class="step-num">02</div><div><div class="step-title">How many days?</div><div class="step-sub">Up to 10 days, planned separately</div></div></div>
         <div class="days-row">
           <div class="days-counter">
             <button class="day-btn" onclick="changeDays(-1)">−</button>
@@ -309,9 +387,8 @@ footer{border-top:1px solid var(--border);padding:1.8rem;text-align:center;font-
         </div>
       </div>
 
-      <!-- Step 3: Daily duration -->
       <div class="step-card">
-        <div class="step-hdr"><div class="step-num">03</div><div class="step-info"><div class="step-title">How long is each day?</div><div class="step-sub">Start to finish</div></div></div>
+        <div class="step-hdr"><div class="step-num">03</div><div><div class="step-title">How long is each day?</div><div class="step-sub">Start to finish</div></div></div>
         <div class="opt-grid">
           <div class="opt" onclick="selectOpt(this,'duration','Half day (4hrs)')">Half Day</div>
           <div class="opt sel" onclick="selectOpt(this,'duration','Full day (8hrs)')">Full Day</div>
@@ -319,9 +396,8 @@ footer{border-top:1px solid var(--border);padding:1.8rem;text-align:center;font-
         </div>
       </div>
 
-      <!-- Step 4: Vibes -->
       <div class="step-card">
-        <div class="step-hdr"><div class="step-num">04</div><div class="step-info"><div class="step-title">What's your vibe?</div><div class="step-sub">Pick all that apply</div></div></div>
+        <div class="step-hdr"><div class="step-num">04</div><div><div class="step-title">What's your vibe?</div><div class="step-sub">Pick all that apply</div></div></div>
         <div class="opt-grid">
           <div class="opt" onclick="toggleOpt(this,'vibe','Culture & History')">🏛 Culture</div>
           <div class="opt" onclick="toggleOpt(this,'vibe','Food & Drink')">🍽 Food & Drink</div>
@@ -330,17 +406,16 @@ footer{border-top:1px solid var(--border);padding:1.8rem;text-align:center;font-
           <div class="opt" onclick="toggleOpt(this,'vibe','Nightlife')">🌙 Nightlife</div>
           <div class="opt" onclick="toggleOpt(this,'vibe','Art & Design')">🎨 Art</div>
           <div class="opt" onclick="toggleOpt(this,'vibe','Relaxation & Wellness')">🧘 Wellness</div>
-          <div class="opt" onclick="toggleOpt(this,'vibe','Hidden Gems & Local Spots')">💎 Hidden Gems</div>
+          <div class="opt" onclick="toggleOpt(this,'vibe','Hidden Gems')">💎 Hidden Gems</div>
           <div class="opt" onclick="toggleOpt(this,'vibe','Adventure & Sports')">🏄 Adventure</div>
           <div class="opt" onclick="toggleOpt(this,'vibe','Photography Spots')">📸 Photography</div>
         </div>
       </div>
 
-      <!-- Step 5: Tailored preferences -->
       <div class="step-card">
-        <div class="step-hdr"><div class="step-num">05</div><div class="step-info"><div class="step-title">Tailor your experience</div><div class="step-sub">Add dietary needs, food types, accessibility, or anything specific</div></div></div>
+        <div class="step-hdr"><div class="step-num">05</div><div><div class="step-title">Tailor your experience</div><div class="step-sub">Dietary needs, food type, accessibility, or anything specific</div></div></div>
         <div class="tags-wrap" id="tagsWrap" onclick="document.getElementById('tagsInput').focus()">
-          <input class="tags-input" id="tagsInput" placeholder="Type and press Enter e.g. vegan, gluten free, wheelchair accessible..." onkeydown="handleTagInput(event)"/>
+          <input class="tags-input" id="tagsInput" placeholder="Type and press Enter — e.g. vegan, gluten free, coffee, rooftop..." onkeydown="handleTagInput(event)"/>
         </div>
         <div class="tag-suggestions">
           <span class="tag-sug" onclick="addTag('Vegan')">Vegan</span>
@@ -356,14 +431,13 @@ footer{border-top:1px solid var(--border);padding:1.8rem;text-align:center;font-
           <span class="tag-sug" onclick="addTag('Pet Friendly')">Pet Friendly</span>
           <span class="tag-sug" onclick="addTag('Wheelchair Accessible')">Wheelchair Accessible</span>
           <span class="tag-sug" onclick="addTag('Kid Friendly')">Kid Friendly</span>
-          <span class="tag-sug" onclick="addTag('Budget Friendly')">Budget Friendly</span>
           <span class="tag-sug" onclick="addTag('Outdoor Seating')">Outdoor Seating</span>
+          <span class="tag-sug" onclick="addTag('Late Night')">Late Night</span>
         </div>
       </div>
 
-      <!-- Step 6: Travel style -->
       <div class="step-card">
-        <div class="step-hdr"><div class="step-num">06</div><div class="step-info"><div class="step-title">How are you getting around?</div><div class="step-sub">This affects how far apart recommendations will be</div></div></div>
+        <div class="step-hdr"><div class="step-num">06</div><div><div class="step-title">How are you getting around?</div><div class="step-sub">Affects how far apart places will be</div></div></div>
         <div class="opt-grid">
           <div class="opt sel" onclick="selectOpt(this,'style','Walking')">🚶 Walking</div>
           <div class="opt" onclick="selectOpt(this,'style','Public Transport')">🚇 Transit</div>
@@ -372,19 +446,24 @@ footer{border-top:1px solid var(--border);padding:1.8rem;text-align:center;font-
         </div>
       </div>
 
-      <!-- Step 7: Budget -->
+      <!-- BUDGET SLIDER -->
       <div class="step-card">
-        <div class="step-hdr"><div class="step-num">07</div><div class="step-info"><div class="step-title">What's your budget?</div><div class="step-sub">Per person, per day</div></div></div>
-        <div class="opt-grid">
-          <div class="opt" onclick="selectOpt(this,'budget','Budget ($0–$50/day)')">$ Budget</div>
-          <div class="opt sel" onclick="selectOpt(this,'budget','Mid-range ($50–$150/day)')">$$ Mid-range</div>
-          <div class="opt" onclick="selectOpt(this,'budget','Splurge ($150+/day)')">$$$ Splurge</div>
+        <div class="step-hdr"><div class="step-num">07</div><div><div class="step-title">Daily budget per person</div><div class="step-sub">Drag to set your spending range</div></div></div>
+        <div class="slider-wrap">
+          <div class="slider-labels">
+            <div>
+              <div class="slider-val" id="budgetVal">$150</div>
+              <div class="slider-desc" id="budgetDesc">Mid-range</div>
+            </div>
+            <div style="text-align:right;font-size:0.75rem;color:var(--muted);">per person · per day</div>
+          </div>
+          <input type="range" id="budgetSlider" min="0" max="999" value="150" step="1" oninput="updateBudget(this.value)"/>
+          <div class="slider-track-labels"><span>$0 Budget</span><span>$250 Mid</span><span>$500 Premium</span><span>$999 Luxury</span></div>
         </div>
       </div>
 
-      <!-- Step 8: Group -->
       <div class="step-card">
-        <div class="step-hdr"><div class="step-num">08</div><div class="step-info"><div class="step-title">Who's coming?</div><div class="step-sub">So we can tailor recommendations</div></div></div>
+        <div class="step-hdr"><div class="step-num">08</div><div><div class="step-title">Who's coming?</div><div class="step-sub">So we can tailor recommendations</div></div></div>
         <div class="opt-grid">
           <div class="opt sel" onclick="selectOpt(this,'group','Solo')">🙋 Solo</div>
           <div class="opt" onclick="selectOpt(this,'group','Couple')">👫 Couple</div>
@@ -393,38 +472,27 @@ footer{border-top:1px solid var(--border);padding:1.8rem;text-align:center;font-
         </div>
       </div>
 
-      <!-- Step 9: Randomize -->
       <div class="step-card">
-        <div class="step-hdr"><div class="step-num">09</div><div class="step-info"><div class="step-title">Options</div><div class="step-sub">Extra settings</div></div></div>
-        <div style="display:grid;gap:0.7rem;">
+        <div class="step-hdr"><div class="step-num">09</div><div><div class="step-title">Options</div><div class="step-sub">Extra settings</div></div></div>
+        <div style="display:grid;gap:0.6rem;">
           <div class="toggle-row">
-            <div>
-              <div class="toggle-label">🎲 Randomize each day</div>
-              <div class="toggle-sub">Each day gets completely different places — no repeats</div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="randomizeToggle" checked/>
-              <span class="toggle-slider"></span>
-            </label>
+            <div><div class="toggle-label">🎲 Randomize each day</div><div class="toggle-sub">Every day gets completely different places — no repeats</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="randomizeToggle" checked/><span class="toggle-slider"></span></label>
           </div>
           <div class="toggle-row">
-            <div>
-              <div class="toggle-label">🔗 Include reservation links</div>
-              <div class="toggle-sub">Add booking links for restaurants, tours, and hotels</div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="resvToggle" checked/>
-              <span class="toggle-slider"></span>
-            </label>
+            <div><div class="toggle-label">🔗 Include reservation links</div><div class="toggle-sub">OpenTable, Viator, Booking.com, Yelp, and Maps</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="resvToggle" checked/><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">🗺 Show map view</div><div class="toggle-sub">See all stops on an interactive map</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="mapToggle" checked/><span class="toggle-slider"></span></label>
           </div>
         </div>
       </div>
 
-    </div><!-- end steps -->
-
-    <div class="gen-btn-wrap">
-      <button class="gen-btn" id="genBtn" onclick="generateItinerary(false)">✨ Build My Itinerary</button>
     </div>
+
+    <button class="gen-btn" id="genBtn" onclick="generateItinerary(false)">✨ Build My Itinerary</button>
 
     <!-- RESULTS -->
     <div id="itinResult">
@@ -435,23 +503,35 @@ footer{border-top:1px solid var(--border);padding:1.8rem;text-align:center;font-
         </div>
         <div class="result-actions">
           <button class="action-btn regen" onclick="generateItinerary(true)">🎲 Regenerate</button>
-          <button class="action-btn" onclick="window.print()">🖨 Print / PDF</button>
+          <button class="action-btn save-btn" onclick="saveTrip()">💾 Save Trip</button>
+          <button class="action-btn" onclick="openShare()">🔗 Share</button>
+          <button class="action-btn" onclick="openEmail()">📧 Email to Me</button>
+          <button class="action-btn" onclick="window.print()">🖨 Print</button>
         </div>
       </div>
       <div class="day-tabs" id="dayTabs"></div>
       <div id="dayPanels"></div>
     </div>
-
   </div>
 </div>
 
-<!-- ===== BLOG PAGE ===== -->
+<!-- SAVED TRIPS PAGE -->
+<div class="page" id="saved-page">
+  <div class="saved-inner">
+    <div class="page-eyebrow">✦ My Trips</div>
+    <h2 class="page-title" style="font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.5rem;">Saved <span class="grad">Itineraries</span></h2>
+    <p class="page-sub" style="font-size:0.88rem;color:var(--muted);margin-bottom:0;">Your saved trip plans, ready to revisit anytime.</p>
+    <div class="saved-grid" id="savedGrid"></div>
+  </div>
+</div>
+
+<!-- BLOG -->
 <div class="page" id="blog-page">
-  <div class="blog-inner" style="max-width:1100px;margin:0 auto;">
+  <div class="blog-inner">
     <div style="margin-bottom:2rem;">
       <div class="page-eyebrow">✦ Community</div>
-      <h2 class="page-title">Travel stories,<br><span style="background:linear-gradient(135deg,#f472b6,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">from real people.</span></h2>
-      <p class="page-sub">Share the spots you love. Real experiences, honest takes, hidden gems.</p>
+      <h2 class="page-title" style="font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.5rem;">Travel stories,<br><span style="background:linear-gradient(135deg,#f472b6,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">from real people.</span></h2>
+      <p class="page-sub" style="font-size:0.88rem;color:var(--muted);">Share the spots you love. Real experiences and hidden gems.</p>
     </div>
     <div class="blog-toolbar">
       <div class="blog-filters" id="blogFilters">
@@ -473,6 +553,58 @@ footer{border-top:1px solid var(--border);padding:1.8rem;text-align:center;font-
 <footer>© 2026 What's Around? · Plan every destination</footer>
 </div>
 
+<!-- SHARE MODAL -->
+<div class="share-modal-wrap" id="shareModal" onclick="closeShareOut(event)">
+  <div class="share-modal">
+    <div class="modal-hdr"><div class="modal-ttl">Share Your Itinerary</div><button class="close-btn" onclick="closeShare()">✕</button></div>
+    <div class="share-sub">Copy the link or share directly to your favourite platform.</div>
+    <div class="share-link-box">
+      <input class="share-link-input" id="shareLinkInput" readonly/>
+      <button class="copy-btn" onclick="copyShareLink()">Copy Link</button>
+    </div>
+    <div class="share-platforms">
+      <button class="share-platform-btn" onclick="shareToWhatsApp()">💬 WhatsApp</button>
+      <button class="share-platform-btn" onclick="shareToTwitter()">𝕏 Twitter / X</button>
+      <button class="share-platform-btn" onclick="shareToFacebook()">👥 Facebook</button>
+      <button class="share-platform-btn" onclick="shareToInstagram()">📸 Instagram (Copy)</button>
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL MODAL -->
+<div class="email-modal-wrap" id="emailModal" onclick="closeEmailOut(event)">
+  <div class="email-modal">
+    <div class="modal-hdr"><div class="modal-ttl">📧 Email Your Itinerary</div><button class="close-btn" onclick="closeEmail()">✕</button></div>
+    <p style="font-size:0.83rem;color:var(--muted);margin-bottom:1.2rem;">Enter your email and we'll open your mail app with the full itinerary ready to send.</p>
+    <input class="auth-input" id="emailInput" type="email" placeholder="your@email.com"/>
+    <button class="auth-btn" onclick="sendEmail()">Send Itinerary →</button>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="auth-modal-wrap" id="authModal" onclick="closeAuthOut(event)">
+  <div class="auth-modal">
+    <button class="close-btn auth-close" onclick="closeAuth()">✕</button>
+    <div class="auth-title">Welcome back 👋</div>
+    <div class="auth-sub">Sign in to save and access your itineraries from anywhere.</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="atab-login" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab" id="atab-signup" onclick="switchAuthTab('signup')">Create Account</button>
+    </div>
+    <div id="auth-login-form">
+      <input class="auth-input" id="authEmail" type="email" placeholder="Email address"/>
+      <input class="auth-input" id="authPass" type="password" placeholder="Password"/>
+      <button class="auth-btn" onclick="doAuth('login')">Sign In →</button>
+    </div>
+    <div id="auth-signup-form" style="display:none;">
+      <input class="auth-input" id="authNameNew" type="text" placeholder="Your name"/>
+      <input class="auth-input" id="authEmailNew" type="email" placeholder="Email address"/>
+      <input class="auth-input" id="authPassNew" type="password" placeholder="Password (min 6 chars)"/>
+      <button class="auth-btn" onclick="doAuth('signup')">Create Account →</button>
+    </div>
+  </div>
+</div>
+
 <!-- WRITE MODAL -->
 <div class="woverlay" id="writeOverlay" onclick="closeWriteOut(event)">
   <div class="write-modal">
@@ -482,7 +614,7 @@ footer{border-top:1px solid var(--border);padding:1.8rem;text-align:center;font-
       <div class="fg"><label class="fl2">Your Name</label><input class="fi" id="postAuthor" placeholder="e.g. Maria S."/></div>
       <div class="fg"><label class="fl2">Category</label><select class="fsel" id="postCat"><option value="Eat">🍽 Eat</option><option value="Drink">🍸 Drink</option><option value="Explore">🗺 Explore</option><option value="Stay">🏨 Stay</option></select></div>
     </div>
-    <div class="fg"><label class="fl2">Your Experience</label><textarea class="fta" id="postBody" placeholder="Tell us about your experience..." oninput="checkProf(this)"></textarea><div class="prof-warn" id="profWarn">⚠️ Please keep it friendly — remove inappropriate language before posting.</div></div>
+    <div class="fg"><label class="fl2">Your Experience</label><textarea class="fta" id="postBody" placeholder="Tell us about your experience..." oninput="checkProf(this)"></textarea><div class="prof-warn" id="profWarn">⚠️ Please keep it friendly.</div></div>
     <div class="fg">
       <label class="fl2">Add a Photo</label>
       <div class="upload-area"><input type="file" accept="image/*" id="photoInput" onchange="previewImg(event)"/><div class="upload-txt">📷 Tap to upload a photo</div><div class="upload-hint">JPG, PNG or WEBP · Max 5MB</div></div>
@@ -493,29 +625,60 @@ footer{border-top:1px solid var(--border);padding:1.8rem;text-align:center;font-
   </div>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
 // ============ STATE ============
 let numDays=1;
-let itinSel={duration:'Full day (8hrs)',style:'Walking',budget:'Mid-range ($50–$150/day)',group:'Solo',vibe:[]};
+let itinSel={duration:'Full day (8hrs)',style:'Walking',group:'Solo',vibe:[]};
+let budgetVal=150;
 let prefTags=[];
 let generatedDays=[];
 let currentCity='';
+let currentItinTitle='';
 let selTags=[],photoData=null;
+let currentUser=null;
+let ratings={};
 
 const BAD=['fuck','shit','bitch','bastard','cunt','dick','piss','cock','crap','asshole','bullshit','motherfucker','faggot','whore','slut'];
 function hasBad(t){const l=t.toLowerCase().replace(/[^a-z\s]/g,'');return BAD.some(w=>l.split(/\s+/).includes(w));}
 function checkProf(el){document.getElementById('profWarn').style.display=hasBad(el.value)?'block':'none';}
+
+// ============ TOAST ============
+function showToast(msg,type='info'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className=`toast ${type}`;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
 
 // ============ NAV ============
 function showPage(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));
   document.getElementById(p+'-page').classList.add('active');
-  document.getElementById('nav-'+p).classList.add('active');
+  document.getElementById('nav-'+p)?.classList.add('active');
   if(p==='blog') renderBlog('all');
+  if(p==='saved') renderSaved();
 }
 
-// ============ DAYS COUNTER ============
+// ============ BUDGET SLIDER ============
+function updateBudget(v){
+  budgetVal=parseInt(v);
+  document.getElementById('budgetVal').textContent='$'+budgetVal;
+  let desc='Budget friendly';
+  if(budgetVal>50) desc='Mid-range';
+  if(budgetVal>200) desc='Premium';
+  if(budgetVal>400) desc='Luxury';
+  if(budgetVal>700) desc='Ultra luxury';
+  document.getElementById('budgetDesc').textContent=desc;
+  // Update slider gradient
+  const pct=(budgetVal/999)*100;
+  document.getElementById('budgetSlider').style.background=`linear-gradient(to right, #e879f9 0%, #60a5fa ${pct}%, #1f1f28 ${pct}%)`;
+}
+updateBudget(150);
+
+// ============ DAYS ============
 function changeDays(d){
   numDays=Math.max(1,Math.min(10,numDays+d));
   document.getElementById('daysNum').textContent=numDays;
@@ -525,8 +688,7 @@ function changeDays(d){
 // ============ OPTIONS ============
 function selectOpt(el,key,val){
   el.closest('.opt-grid').querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
-  el.classList.add('sel');
-  itinSel[key]=val;
+  el.classList.add('sel');itinSel[key]=val;
 }
 function toggleOpt(el,key,val){
   el.classList.toggle('sel');
@@ -534,7 +696,7 @@ function toggleOpt(el,key,val){
   else itinSel.vibe=itinSel.vibe.filter(v=>v!==val);
 }
 
-// ============ TAGS INPUT ============
+// ============ TAGS ============
 function handleTagInput(e){
   if(e.key==='Enter'||e.key===','){
     e.preventDefault();
@@ -548,12 +710,10 @@ function handleTagInput(e){
 function addTag(tag){
   const t=tag.trim();
   if(!t||prefTags.includes(t)) return;
-  prefTags.push(t);
-  renderTags();
+  prefTags.push(t);renderTags();
 }
 function removeTag(tag){
-  prefTags=prefTags.filter(t=>t!==tag);
-  renderTags();
+  prefTags=prefTags.filter(t=>t!==tag);renderTags();
 }
 function renderTags(){
   const wrap=document.getElementById('tagsWrap');
@@ -568,28 +728,25 @@ function renderTags(){
   wrap.appendChild(input);
 }
 
-// ============ GENERATE ITINERARY ============
+// ============ GENERATE ============
 async function generateItinerary(isRegen=false){
   const city=document.getElementById('itinCity').value.trim();
-  if(!city){alert('Please enter a destination first!');return;}
+  if(!city){showToast('Please enter a destination first!','error');return;}
   currentCity=city;
   const randomize=document.getElementById('randomizeToggle').checked;
   const includeResv=document.getElementById('resvToggle').checked;
+  const showMap=document.getElementById('mapToggle').checked;
   const vibes=itinSel.vibe.length>0?itinSel.vibe.join(', '):'General sightseeing';
-  const prefs=prefTags.length>0?prefTags.join(', '):'None';
+  const prefs=prefTags.length>0?prefTags.join(', '):'None specified';
   const btn=document.getElementById('genBtn');
-  btn.disabled=true;
-  btn.textContent=isRegen?'Regenerating...':'Building your itinerary...';
-
+  btn.disabled=true;btn.textContent=isRegen?'Regenerating...':'Building your itinerary...';
   const result=document.getElementById('itinResult');
   const panels=document.getElementById('dayPanels');
   const tabs=document.getElementById('dayTabs');
   result.style.display='block';
-  panels.innerHTML=`<div class="itin-loading"><div class="itin-loader"></div><div class="loading-txt">Crafting ${numDays} day${numDays>1?'s':''} in ${city}...</div></div>`;
+  panels.innerHTML=`<div class="itin-loading"><div class="itin-loader"></div><div class="loading-txt">Crafting ${numDays} perfect day${numDays>1?'s':''} in ${city}...</div></div>`;
   tabs.innerHTML='';
   result.scrollIntoView({behavior:'smooth',block:'start'});
-
-  // Build already-used places list to avoid repeats
   const usedPlaces=isRegen?[]:generatedDays.flatMap(d=>(d.blocks||[]).map(b=>b.place));
 
   try{
@@ -599,85 +756,78 @@ async function generateItinerary(isRegen=false){
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:8000,
-        messages:[{role:'user',content:`Create a ${numDays}-day itinerary for "${city}".
+        messages:[{role:'user',content:`Create a detailed ${numDays}-day travel itinerary for "${city}".
 
-Preferences:
+Trip details:
 - Duration per day: ${itinSel.duration}
-- Interests: ${vibes}
-- Dietary/specific preferences: ${prefs}
+- Interests/vibes: ${vibes}
+- Specific preferences & dietary needs: ${prefs}
 - Transport: ${itinSel.style}
-- Budget: ${itinSel.budget}
-- Group: ${itinSel.group}
-- Randomize (no repeat places): ${randomize?'YES — every day must have completely different places, no repeats':'NO'}
-${usedPlaces.length?`- Do NOT use any of these already-seen places: ${usedPlaces.join(', ')}`:''}
+- Daily budget per person: $${budgetVal} (${document.getElementById('budgetDesc').textContent})
+- Group type: ${itinSel.group}
+- Randomize (no repeat places across days): ${randomize?'YES — every place must be unique':'NO'}
+${usedPlaces.length?`- NEVER use any of these already-used places: ${usedPlaces.join(', ')}`:''}
 
-Return ONLY raw valid JSON no markdown no backticks:
+Return ONLY raw valid JSON, no markdown, no backticks:
 {
   "title": "e.g. 3 Days in Tokyo",
   "days": [
     {
       "dayNum": 1,
-      "theme": "e.g. Old Tokyo & Street Food",
+      "theme": "e.g. Old City & Street Food",
       "blocks": [
         {
           "time": "9:00 AM",
           "place": "Real place name",
           "type": "Breakfast",
-          "desc": "2 sentences on what to do/eat here.",
+          "desc": "2 vivid sentences on what to do or eat here.",
           "tip": "One practical insider tip",
-          "openTableSlug": "place-name-city (if it's a restaurant, otherwise empty string)",
+          "cost": "e.g. ~$15 per person",
+          "openTableSlug": "restaurant-slug (from opentable.com URL) or empty string",
           "googleMapsQuery": "Place Name City Country",
-          "viatorQuery": "activity name city (if it's a tour/attraction, otherwise empty string)",
-          "bookingQuery": "hotel name city (if it's accommodation, otherwise empty string)"
+          "viatorQuery": "tour name city or empty string",
+          "bookingQuery": "hotel name city or empty string"
         }
       ]
     }
   ]
 }
 
-Rules:
-- Each day must have 5-8 blocks depending on duration
-- ${randomize?'Every place must be different across ALL days — absolutely no repeats':'Places can vary per day'}
-- All places must be real and exist in ${city}
-- Match dietary/specific preferences: ${prefs}
+Important rules:
+- 5-8 blocks per day depending on duration
+- ${randomize?'ALL places must be unique across every day — no repeats whatsoever':'Vary places day to day where possible'}
+- All places must be REAL and exist in ${city}
+- Respect budget of $${budgetVal}/day: ${budgetVal<80?'Choose affordable local spots, street food, free attractions':budgetVal<250?'Mix of mid-range restaurants and paid attractions':budgetVal<500?'Quality restaurants, premium experiences':'Luxury restaurants, exclusive experiences, high-end hotels'}
+- Respect preferences: ${prefs}
 - Logical geographic flow within each day
-- Include a mix of food, drink, and ${vibes} based on interests
-- For openTableSlug: use the restaurant slug format used in OpenTable URLs (e.g. "nobu-new-york")
-- For viatorQuery: only fill if it's a ticketed attraction or tour
-- For bookingQuery: only fill if it's overnight accommodation`}]
+- Include the vibes they selected: ${vibes}`}]
       })
     });
     const data=await res.json();
     const text=data.content?.find(b=>b.type==='text')?.text||'';
     const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
     generatedDays=parsed.days||[];
-
-    document.getElementById('itinTitle').textContent=parsed.title||`Your ${numDays}-Day Itinerary`;
-    document.getElementById('itinSub').textContent=`${numDays} day${numDays>1?'s':''} · ${city} · ${itinSel.group}`;
-
-    // Build day tabs
-    tabs.innerHTML='';
-    panels.innerHTML='';
+    currentItinTitle=parsed.title||`${numDays}-Day Itinerary`;
+    document.getElementById('itinTitle').textContent=currentItinTitle;
+    document.getElementById('itinSub').textContent=`${numDays} day${numDays>1?'s':''} · ${city} · $${budgetVal}/day · ${itinSel.group}`;
+    tabs.innerHTML='';panels.innerHTML='';
     generatedDays.forEach((day,i)=>{
       const tab=document.createElement('button');
       tab.className='day-tab'+(i===0?' active':'');
-      tab.textContent=`Day ${day.dayNum}${day.theme?' — '+day.theme:''}`;
+      tab.textContent=`Day ${day.dayNum}${day.theme?' · '+day.theme:''}`;
       tab.onclick=()=>switchDayTab(i);
       tabs.appendChild(tab);
-
       const panel=document.createElement('div');
       panel.className='day-panel'+(i===0?' active':'');
       panel.id='day-panel-'+i;
-      panel.innerHTML=renderDayBlocks(day.blocks||[],includeResv,i);
+      panel.innerHTML=buildDayHTML(day,i,includeResv,showMap);
       panels.appendChild(panel);
     });
-
   }catch(err){
-    panels.innerHTML=`<div class="err-msg"><strong>Could not build itinerary</strong>${err.message}<br><br>Make sure ANTHROPIC_API_KEY is set in Vercel.</div>`;
+    panels.innerHTML=`<div class="err-msg"><strong>Could not build itinerary</strong>${err.message}<br><br>Check ANTHROPIC_API_KEY in Vercel environment variables.</div>`;
     console.error(err);
   }
-  btn.disabled=false;
-  btn.textContent='✨ Build My Itinerary';
+  btn.disabled=false;btn.textContent='✨ Build My Itinerary';
 }
 
 function switchDayTab(idx){
@@ -685,30 +835,79 @@ function switchDayTab(idx){
   document.querySelectorAll('.day-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
 }
 
-function renderDayBlocks(blocks,includeResv,dayIdx){
-  return `<div class="day-blocks">${blocks.map((b,bi)=>`
+function buildDayHTML(day,dayIdx,includeResv,showMap){
+  const blocks=day.blocks||[];
+  let mapHTML='';
+  if(showMap&&blocks.length){
+    const query=blocks.map(b=>encodeURIComponent(b.place)).join('|');
+    const firstQuery=encodeURIComponent(blocks[0].googleMapsQuery||blocks[0].place);
+    mapHTML=`
+      <div class="map-toggle-row">
+        <button class="view-toggle active" onclick="setView('list','${dayIdx}',this)">📋 List</button>
+        <button class="view-toggle" onclick="setView('map','${dayIdx}',this)">🗺 Map</button>
+      </div>
+      <div class="map-container" id="map-${dayIdx}">
+        <iframe class="map-iframe" loading="lazy"
+          src="https://maps.google.com/maps?q=${firstQuery}&output=embed"
+          allowfullscreen></iframe>
+        <div class="map-pins">
+          ${blocks.map((b,i)=>`<div class="map-pin-item"><div class="pin-num">${i+1}</div><div class="pin-name">${b.place}</div></div>`).join('')}
+        </div>
+      </div>`;
+  }
+  const blocksHTML=blocks.map((b,bi)=>`
     <div class="time-block" id="block-${dayIdx}-${bi}">
       <div class="tb-header">
+        <div class="tb-num">${bi+1}</div>
         <div class="tb-time">${b.time}</div>
         <div class="tb-place">${b.place}</div>
         <div class="tb-type">${b.type}</div>
-        <button class="regen-block-btn" onclick="regenBlock(${dayIdx},${bi})" title="Get a different suggestion">🎲 Swap</button>
+        <button class="regen-block-btn" onclick="regenBlock(${dayIdx},${bi})">🎲 Swap</button>
       </div>
       <div class="tb-body">
         <div class="tb-desc">${b.desc}</div>
         ${b.tip?`<div class="tb-tip">💡 ${b.tip}</div>`:''}
+        ${b.cost?`<div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.7rem;">💰 ${b.cost}</div>`:''}
+        <div class="rating-row">
+          <div class="star-rating" id="stars-${dayIdx}-${bi}">
+            ${[1,2,3,4,5].map(s=>`<button class="star-btn" onclick="rateBlock('${dayIdx}-${bi}',${s})" data-val="${s}">★</button>`).join('')}
+          </div>
+          <span class="rating-label" id="rlabel-${dayIdx}-${bi}">Rate this stop</span>
+        </div>
         ${includeResv?`<div class="tb-footer">
           <a class="res-btn res-btn-maps" href="https://www.google.com/maps/search/${encodeURIComponent(b.googleMapsQuery||b.place)}" target="_blank" rel="noopener">📍 Maps</a>
           ${b.openTableSlug?`<a class="res-btn res-btn-opentable" href="https://www.opentable.com/r/${b.openTableSlug}" target="_blank" rel="noopener">🍽 OpenTable</a>`:''}
-          ${b.viatorQuery?`<a class="res-btn res-btn-viator" href="https://www.viator.com/search/${encodeURIComponent(b.viatorQuery)}" target="_blank" rel="noopener">🎟 Book Tour</a>`:''}
-          ${b.bookingQuery?`<a class="res-btn res-btn-booking" href="https://www.booking.com/search.html?ss=${encodeURIComponent(b.bookingQuery)}" target="_blank" rel="noopener">🏨 Booking.com</a>`:''}
+          ${b.viatorQuery?`<a class="res-btn res-btn-viator" href="https://www.viator.com/search/${encodeURIComponent(b.viatorQuery)}" target="_blank" rel="noopener">🎟 Viator</a>`:''}
+          ${b.bookingQuery?`<a class="res-btn res-btn-booking" href="https://www.booking.com/search.html?ss=${encodeURIComponent(b.bookingQuery)}" target="_blank" rel="noopener">🏨 Booking</a>`:''}
           <a class="res-btn res-btn-yelp" href="https://www.yelp.com/search?find_desc=${encodeURIComponent(b.place)}&find_loc=${encodeURIComponent(currentCity)}" target="_blank" rel="noopener">⭐ Yelp</a>
         </div>`:''}
       </div>
-    </div>`).join('')}</div>`;
+    </div>`).join('');
+  return `${mapHTML}<div class="day-blocks">${blocksHTML}</div>`;
 }
 
-// REGENERATE A SINGLE BLOCK
+function setView(view,dayIdx,btn){
+  btn.closest('.map-toggle-row').querySelectorAll('.view-toggle').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const map=document.getElementById('map-'+dayIdx);
+  const panel=document.getElementById('day-panel-'+dayIdx);
+  if(map) map.classList.toggle('visible',view==='map');
+  panel.querySelector('.day-blocks').style.display=view==='map'?'none':'grid';
+}
+
+// ============ RATING ============
+function rateBlock(key,val){
+  ratings[key]=val;
+  const [dayIdx,bi]=key.split('-');
+  const stars=document.querySelectorAll(`#stars-${dayIdx}-${bi} .star-btn`);
+  stars.forEach((s,i)=>s.classList.toggle('filled',i<val));
+  const label=document.getElementById(`rlabel-${dayIdx}-${bi}`);
+  const labels=['','⭐ Poor','⭐⭐ Fair','⭐⭐⭐ Good','⭐⭐⭐⭐ Great','⭐⭐⭐⭐⭐ Amazing'];
+  if(label) label.textContent=labels[val]||'';
+  showToast('Rating saved!','success');
+}
+
+// ============ SWAP BLOCK ============
 async function regenBlock(dayIdx,blockIdx){
   const city=currentCity||document.getElementById('itinCity').value.trim();
   const block=generatedDays[dayIdx]?.blocks[blockIdx];
@@ -718,36 +917,222 @@ async function regenBlock(dayIdx,blockIdx){
   const usedPlaces=generatedDays.flatMap(d=>(d.blocks||[]).map(b=>b.place));
   const includeResv=document.getElementById('resvToggle').checked;
   const prefs=prefTags.length>0?prefTags.join(', '):'None';
-
   try{
     const res=await fetch('/api/chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
-        max_tokens:800,
-        messages:[{role:'user',content:`Suggest ONE alternative place in "${city}" for a ${block.type} slot at ${block.time}.
-Preferences: ${prefs}. Do NOT suggest any of: ${usedPlaces.join(', ')}.
-Return ONLY raw valid JSON:
-{"place":"Real name","type":"${block.type}","desc":"2 sentences","tip":"insider tip","openTableSlug":"slug or empty","googleMapsQuery":"place city","viatorQuery":"query or empty","bookingQuery":"query or empty"}`}]
+        max_tokens:600,
+        messages:[{role:'user',content:`Suggest ONE alternative for a ${block.type} slot at ${block.time} in "${city}". Budget: $${budgetVal}/day. Preferences: ${prefs}. Do NOT suggest: ${usedPlaces.join(', ')}.
+Return ONLY raw JSON: {"place":"Real name","type":"${block.type}","desc":"2 sentences","tip":"insider tip","cost":"~$X per person","openTableSlug":"slug or empty","googleMapsQuery":"place city","viatorQuery":"or empty","bookingQuery":"or empty"}`}]
       })
     });
     const data=await res.json();
     const text=data.content?.find(b=>b.type==='text')?.text||'';
-    const newBlock=JSON.parse(text.replace(/```json|```/g,'').trim());
-    newBlock.time=block.time;
-    generatedDays[dayIdx].blocks[blockIdx]=newBlock;
-    // Re-render just this block
+    const nb=JSON.parse(text.replace(/```json|```/g,'').trim());
+    nb.time=block.time;
+    generatedDays[dayIdx].blocks[blockIdx]=nb;
     const blockEl=document.getElementById(`block-${dayIdx}-${blockIdx}`);
-    const wrapper=blockEl.parentElement;
-    const temp=document.createElement('div');
-    temp.innerHTML=renderDayBlocks(generatedDays[dayIdx].blocks,includeResv,dayIdx);
-    wrapper.innerHTML=temp.querySelector('.day-blocks').innerHTML;
+    const showMap=document.getElementById('mapToggle').checked;
+    const tempWrap=document.createElement('div');
+    tempWrap.innerHTML=buildDayHTML(generatedDays[dayIdx],dayIdx,includeResv,false);
+    const newBlocks=tempWrap.querySelector('.day-blocks');
+    const oldBlocks=blockEl.closest('.day-blocks');
+    if(oldBlocks&&newBlocks) oldBlocks.innerHTML=newBlocks.innerHTML;
+    showToast('Got a new suggestion!','success');
   }catch(err){
     if(btn){btn.disabled=false;btn.textContent='🎲 Swap';}
+    showToast('Could not swap — try again','error');
     console.error(err);
   }
 }
+
+// ============ SAVE TRIP ============
+function saveTrip(){
+  if(!currentItinTitle||!generatedDays.length){showToast('Generate an itinerary first!','error');return;}
+  const saved=JSON.parse(localStorage.getItem('wa_saved')||'[]');
+  const trip={
+    id:Date.now(),
+    title:currentItinTitle,
+    city:currentCity,
+    days:numDays,
+    budget:budgetVal,
+    group:itinSel.group,
+    date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),
+    data:generatedDays
+  };
+  saved.unshift(trip);
+  localStorage.setItem('wa_saved',JSON.stringify(saved.slice(0,20)));
+  showToast('Trip saved! ✓','success');
+}
+
+function renderSaved(){
+  const grid=document.getElementById('savedGrid');
+  const saved=JSON.parse(localStorage.getItem('wa_saved')||'[]');
+  if(!saved.length){
+    grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">🗺</div><div class="empty-state-title">No saved trips yet</div><div style="font-size:0.83rem;color:var(--muted);margin-top:0.3rem;">Build an itinerary and hit Save Trip!</div><button class="cta-primary" style="margin-top:1.2rem;" onclick="showPage('planner')">Start Planning</button></div>`;
+    return;
+  }
+  grid.innerHTML='';
+  saved.forEach(trip=>{
+    const card=document.createElement('div');
+    card.className='saved-card';
+    card.innerHTML=`
+      <div class="saved-card-title">${trip.title}</div>
+      <div class="saved-card-meta">
+        <span>📍 ${trip.city}</span>
+        <span>📅 ${trip.days} day${trip.days>1?'s':''}</span>
+        <span>💰 $${trip.budget}/day</span>
+        <span>👥 ${trip.group}</span>
+        <span>🗓 ${trip.date}</span>
+      </div>
+      <div class="saved-card-actions">
+        <button class="sc-btn" onclick="loadTrip(${trip.id})">📂 Load</button>
+        <button class="sc-btn" onclick="shareTrip('${encodeURIComponent(trip.title)}','${encodeURIComponent(trip.city)}')">🔗 Share</button>
+        <button class="sc-btn del" onclick="deleteTrip(${trip.id})">🗑 Delete</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function loadTrip(id){
+  const saved=JSON.parse(localStorage.getItem('wa_saved')||'[]');
+  const trip=saved.find(t=>t.id===id);
+  if(!trip) return;
+  generatedDays=trip.data;
+  currentCity=trip.city;
+  currentItinTitle=trip.title;
+  document.getElementById('itinCity').value=trip.city;
+  document.getElementById('itinTitle').textContent=trip.title;
+  document.getElementById('itinSub').textContent=`${trip.days} day${trip.days>1?'s':''} · ${trip.city}`;
+  const tabs=document.getElementById('dayTabs');
+  const panels=document.getElementById('dayPanels');
+  tabs.innerHTML='';panels.innerHTML='';
+  const includeResv=true,showMap=true;
+  generatedDays.forEach((day,i)=>{
+    const tab=document.createElement('button');
+    tab.className='day-tab'+(i===0?' active':'');
+    tab.textContent=`Day ${day.dayNum}${day.theme?' · '+day.theme:''}`;
+    tab.onclick=()=>switchDayTab(i);
+    tabs.appendChild(tab);
+    const panel=document.createElement('div');
+    panel.className='day-panel'+(i===0?' active':'');
+    panel.id='day-panel-'+i;
+    panel.innerHTML=buildDayHTML(day,i,includeResv,showMap);
+    panels.appendChild(panel);
+  });
+  document.getElementById('itinResult').style.display='block';
+  showPage('planner');
+  document.getElementById('itinResult').scrollIntoView({behavior:'smooth',block:'start'});
+  showToast('Trip loaded!','success');
+}
+
+function deleteTrip(id){
+  let saved=JSON.parse(localStorage.getItem('wa_saved')||'[]');
+  saved=saved.filter(t=>t.id!==id);
+  localStorage.setItem('wa_saved',JSON.stringify(saved));
+  renderSaved();
+  showToast('Trip deleted','info');
+}
+
+// ============ SHARE ============
+function openShare(){
+  const title=encodeURIComponent(currentItinTitle||'My Itinerary');
+  const url=`${window.location.origin}?trip=${title}&city=${encodeURIComponent(currentCity)}`;
+  document.getElementById('shareLinkInput').value=url;
+  document.getElementById('shareModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeShare(){document.getElementById('shareModal').classList.remove('open');document.body.style.overflow='';}
+function closeShareOut(e){if(e.target===document.getElementById('shareModal'))closeShare();}
+function copyShareLink(){
+  navigator.clipboard.writeText(document.getElementById('shareLinkInput').value);
+  showToast('Link copied!','success');
+}
+function shareTrip(title,city){
+  document.getElementById('shareLinkInput').value=`${window.location.origin}?trip=${title}&city=${city}`;
+  document.getElementById('shareModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function shareToWhatsApp(){const url=document.getElementById('shareLinkInput').value;window.open(`https://wa.me/?text=${encodeURIComponent('Check out my trip plan! '+url)}`);}
+function shareToTwitter(){const url=document.getElementById('shareLinkInput').value;window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent('Just planned my trip with What\'s Around? '+url)}`);}
+function shareToFacebook(){const url=document.getElementById('shareLinkInput').value;window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`);}
+function shareToInstagram(){copyShareLink();showToast('Link copied — paste it in your Instagram bio or story!','info');}
+
+// ============ EMAIL ============
+function openEmail(){document.getElementById('emailModal').classList.add('open');document.body.style.overflow='hidden';}
+function closeEmail(){document.getElementById('emailModal').classList.remove('open');document.body.style.overflow='';}
+function closeEmailOut(e){if(e.target===document.getElementById('emailModal'))closeEmail();}
+function sendEmail(){
+  const email=document.getElementById('emailInput').value.trim();
+  if(!email){showToast('Please enter your email','error');return;}
+  let body=`${currentItinTitle}\n\n`;
+  generatedDays.forEach(day=>{
+    body+=`--- Day ${day.dayNum}${day.theme?' — '+day.theme:''} ---\n`;
+    (day.blocks||[]).forEach(b=>{
+      body+=`\n${b.time} · ${b.place} (${b.type})\n${b.desc}\n`;
+      if(b.tip) body+=`Tip: ${b.tip}\n`;
+      if(b.cost) body+=`Cost: ${b.cost}\n`;
+    });
+    body+='\n';
+  });
+  const subject=encodeURIComponent(currentItinTitle||'My Itinerary');
+  const bodyEnc=encodeURIComponent(body);
+  window.location.href=`mailto:${email}?subject=${subject}&body=${bodyEnc}`;
+  closeEmail();
+  showToast('Opening your mail app...','success');
+}
+
+// ============ AUTH ============
+function openAuth(tab='login'){
+  switchAuthTab(tab);
+  document.getElementById('authModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeAuth(){document.getElementById('authModal').classList.remove('open');document.body.style.overflow='';}
+function closeAuthOut(e){if(e.target===document.getElementById('authModal'))closeAuth();}
+function switchAuthTab(tab){
+  document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('atab-'+tab).classList.add('active');
+  document.getElementById('auth-login-form').style.display=tab==='login'?'block':'none';
+  document.getElementById('auth-signup-form').style.display=tab==='signup'?'block':'none';
+}
+function doAuth(type){
+  if(type==='login'){
+    const email=document.getElementById('authEmail').value.trim();
+    const pass=document.getElementById('authPass').value;
+    if(!email||!pass){showToast('Please fill in all fields','error');return;}
+    const users=JSON.parse(localStorage.getItem('wa_users')||'{}');
+    if(!users[email]||users[email].pass!==pass){showToast('Email or password incorrect','error');return;}
+    currentUser={email,name:users[email].name};
+    updateNavUser();closeAuth();
+    showToast(`Welcome back, ${currentUser.name}! 👋`,'success');
+  } else {
+    const name=document.getElementById('authNameNew').value.trim();
+    const email=document.getElementById('authEmailNew').value.trim();
+    const pass=document.getElementById('authPassNew').value;
+    if(!name||!email||!pass){showToast('Please fill in all fields','error');return;}
+    if(pass.length<6){showToast('Password must be at least 6 characters','error');return;}
+    const users=JSON.parse(localStorage.getItem('wa_users')||'{}');
+    if(users[email]){showToast('An account with this email already exists','error');return;}
+    users[email]={name,pass};
+    localStorage.setItem('wa_users',JSON.stringify(users));
+    currentUser={email,name};
+    updateNavUser();closeAuth();
+    showToast(`Account created! Welcome, ${name}! 🎉`,'success');
+  }
+}
+function updateNavUser(){
+  const area=document.getElementById('navUserArea');
+  if(currentUser){
+    const init=currentUser.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    area.innerHTML=`<div class="nav-avatar" onclick="signOut()" title="Sign out (${currentUser.email})">${init}</div>`;
+  } else {
+    area.innerHTML=`<button class="nav-user-btn" onclick="openAuth('login')">Sign In</button>`;
+  }
+}
+function signOut(){currentUser=null;updateNavUser();showToast('Signed out','info');}
 
 // ============ BLOG ============
 let blogPosts=[
@@ -759,13 +1144,11 @@ let blogPosts=[
   {id:6,title:"New York's best coffee shops for remote work",author:"Marcus L.",init:"ML",city:"New York",cat:"Drink",date:"Feb 14 2026",excerpt:"As someone who worked remotely from NYC for a month, I tested 22 coffee shops. Here are the 5 worth your laptop and your latte.",emoji:"☕",photo:null}
 ];
 function renderBlog(city){
-  const grid=document.getElementById('blogGrid');
-  grid.innerHTML='';
+  const grid=document.getElementById('blogGrid');grid.innerHTML='';
   const list=city==='all'?blogPosts:blogPosts.filter(p=>p.city===city);
   if(!list.length){grid.innerHTML='<div class="err-msg"><strong>No posts yet</strong>Be the first!</div>';return;}
   list.forEach(p=>{
-    const card=document.createElement('div');
-    card.className='blog-card';
+    const card=document.createElement('div');card.className='blog-card';
     const imgH=p.photo?`<img class="bc-img" src="${p.photo}" alt="${p.title}"/>`:`<div class="bc-img-ph">${p.emoji}</div>`;
     card.innerHTML=`${imgH}<div class="bc-body"><div class="bc-tags"><span class="bc-city">${p.city}</span><span class="bc-cat">${p.cat}</span></div><div class="bc-title">${p.title}</div><div class="bc-excerpt">${p.excerpt}</div><div class="bc-footer"><div class="bc-author"><div class="avatar">${p.init}</div><span class="author-name">${p.author}</span></div><span class="bc-date">${p.date}</span></div></div>`;
     grid.appendChild(card);
@@ -777,7 +1160,7 @@ function filterBlog(city,el){
 }
 function previewImg(e){
   const f=e.target.files[0];if(!f) return;
-  if(f.size>5*1024*1024){alert('Photo must be under 5MB');return;}
+  if(f.size>5*1024*1024){showToast('Photo must be under 5MB','error');return;}
   const r=new FileReader();
   r.onload=ev=>{photoData=ev.target.result;const p=document.getElementById('photoPreview');p.src=photoData;p.style.display='block';};
   r.readAsDataURL(f);
@@ -791,8 +1174,8 @@ function submitPost(){
   const author=document.getElementById('postAuthor').value.trim();
   const body=document.getElementById('postBody').value.trim();
   const cat=document.getElementById('postCat').value;
-  if(!title||!author||!body){alert('Please fill in all fields.');return;}
-  if(hasBad(title)||hasBad(body)){alert('Please remove inappropriate language before posting.');return;}
+  if(!title||!author||!body){showToast('Please fill in all fields','error');return;}
+  if(hasBad(title)||hasBad(body)){showToast('Please remove inappropriate language','error');return;}
   const city=selTags[0]||'Other';
   const emojis={Eat:'🍽',Drink:'🍸',Explore:'🗺',Stay:'🏨'};
   const init=author.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
@@ -808,7 +1191,9 @@ function submitPost(){
   if(!exists&&city!=='Other'){const nt=document.createElement('span');nt.className='btag';nt.textContent=city;nt.onclick=function(){filterBlog(city,this);};filters.appendChild(nt);}
   renderBlog('all');
   document.querySelectorAll('#blogFilters .btag').forEach((t,i)=>t.classList.toggle('active',i===0));
+  showToast('Post published! 🎉','success');
 }
+
 document.getElementById('itinCity').addEventListener('keydown',e=>{if(e.key==='Enter')generateItinerary(false);});
 </script>
 </body>
