@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>What's Around?</title>
+<title>What's Around? — Plan Your Trip</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -11,17 +11,16 @@
   --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
   --text:#ededf2;--muted:rgba(237,237,242,0.42);--muted2:rgba(237,237,242,0.22);
   --accent:#6ee7b7;--accent2:#f472b6;--accent3:#60a5fa;
-  --eat:#fb923c;--drink:#a78bfa;--explore:#34d399;--stay:#60a5fa;--gold:#fbbf24;
-  --itin:#e879f9;
+  --gold:#fbbf24;--itin:#e879f9;--warn:#f87171;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
 .orb{position:absolute;border-radius:50%;filter:blur(130px);opacity:0.09;animation:drift 22s ease-in-out infinite;}
-.orb1{width:700px;height:700px;background:#6ee7b7;top:-250px;left:-150px;}
-.orb2{width:600px;height:600px;background:#f472b6;bottom:-250px;right:-150px;animation-delay:-8s;}
-.orb3{width:450px;height:450px;background:#60a5fa;top:45%;left:45%;animation-delay:-15s;}
+.orb1{width:700px;height:700px;background:#e879f9;top:-250px;left:-150px;}
+.orb2{width:600px;height:600px;background:#60a5fa;bottom:-250px;right:-150px;animation-delay:-8s;}
+.orb3{width:450px;height:450px;background:#6ee7b7;top:45%;left:45%;animation-delay:-15s;}
 @keyframes drift{0%,100%{transform:translate(0,0)scale(1);}33%{transform:translate(50px,-40px)scale(1.06);}66%{transform:translate(-35px,50px)scale(0.94);}}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
@@ -35,269 +34,223 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--t
 /* NAV */
 nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 2.5rem;position:fixed;top:0;left:0;right:0;z-index:300;background:rgba(9,9,15,0.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
 .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-0.02em;color:var(--text);display:flex;align-items:center;gap:0.5rem;cursor:pointer;}
-.logo-dot{width:8px;height:8px;background:var(--accent);border-radius:50%;box-shadow:0 0 12px var(--accent);animation:pulse 2s ease-in-out infinite;flex-shrink:0;}
+.logo-dot{width:8px;height:8px;background:var(--itin);border-radius:50%;box-shadow:0 0 12px var(--itin);animation:pulse 2s ease-in-out infinite;flex-shrink:0;}
 .nav-links{display:flex;gap:0.3rem;}
-.nav-link{padding:0.5rem 1rem;font-size:0.82rem;color:var(--muted);background:none;border:none;cursor:pointer;transition:color 0.2s;font-family:'Instrument Sans',sans-serif;border-radius:8px;}
+.nav-link{padding:0.5rem 1rem;font-size:0.82rem;color:var(--muted);background:none;border:none;cursor:pointer;transition:all 0.2s;font-family:'Instrument Sans',sans-serif;border-radius:8px;}
 .nav-link:hover{color:var(--text);background:rgba(255,255,255,0.05);}
-.nav-link.active{color:var(--accent);background:rgba(110,231,183,0.06);}
+.nav-link.active{color:var(--itin);background:rgba(232,121,249,0.06);}
 
 /* PAGES */
 .page{display:none;}
 .page.active{display:block;}
 
-/* HERO */
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:8rem 2rem 5rem;text-align:center;}
+/* ========== HERO ========== */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:8rem 2rem 4rem;text-align:center;}
 .hero-badge{display:inline-flex;align-items:center;gap:0.5rem;padding:0.4rem 1rem;border:1px solid var(--border);border-radius:100px;background:rgba(255,255,255,0.03);font-size:0.72rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2.5rem;animation:fadeDown 0.7s ease both;}
-.hero-badge-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 8px var(--accent);}
-h1{font-family:'Syne',sans-serif;font-size:clamp(3rem,9vw,7rem);font-weight:800;line-height:0.95;letter-spacing:-0.04em;margin-bottom:1.8rem;animation:fadeDown 0.7s 0.1s ease both;}
-.grad{background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.grad-itin{background:linear-gradient(135deg,var(--itin),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hero-sub{font-size:1rem;color:var(--muted);max-width:420px;line-height:1.7;font-weight:300;margin-bottom:3rem;animation:fadeDown 0.7s 0.2s ease both;}
-.search-wrap{width:100%;max-width:620px;animation:fadeDown 0.7s 0.3s ease both;}
-.search-box{display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:0.5rem 0.5rem 0.5rem 1.2rem;transition:border-color 0.3s,box-shadow 0.3s;}
-.search-box:focus-within{border-color:rgba(110,231,183,0.35);box-shadow:0 0 0 4px rgba(110,231,183,0.07),0 24px 60px rgba(0,0,0,0.5);}
-.search-icon{color:var(--muted);font-size:1.1rem;margin-right:0.6rem;flex-shrink:0;}
-#cityInput{flex:1;background:none;border:none;outline:none;font-family:'Instrument Sans',sans-serif;font-size:0.95rem;color:var(--text);}
-#cityInput::placeholder{color:var(--muted2);}
-#searchBtn{padding:0.8rem 1.5rem;background:var(--accent);color:#09090f;font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;border:none;border-radius:11px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
-#searchBtn:hover{background:#a7f3d0;transform:scale(1.02);}
-#searchBtn:disabled{background:rgba(110,231,183,0.3);cursor:wait;transform:none;}
-.search-hint{font-size:0.72rem;color:var(--muted2);margin-top:0.6rem;text-align:center;}
-.quick-row{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-top:1.2rem;}
-.city-chip{padding:0.42rem 1rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:100px;font-size:0.78rem;color:var(--muted);cursor:pointer;transition:all 0.2s;font-family:'Instrument Sans',sans-serif;}
-.city-chip:hover{background:rgba(255,255,255,0.09);color:var(--text);transform:translateY(-1px);}
+.hero-badge-dot{width:6px;height:6px;background:var(--itin);border-radius:50%;box-shadow:0 0 8px var(--itin);}
+h1{font-family:'Syne',sans-serif;font-size:clamp(3rem,9vw,7rem);font-weight:800;line-height:0.95;letter-spacing:-0.04em;margin-bottom:1.5rem;animation:fadeDown 0.7s 0.1s ease both;}
+.grad{background:linear-gradient(135deg,var(--itin),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:1rem;color:var(--muted);max-width:440px;line-height:1.7;font-weight:300;margin-bottom:2.5rem;animation:fadeDown 0.7s 0.2s ease both;}
+.hero-cta{display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center;animation:fadeDown 0.7s 0.3s ease both;}
+.cta-primary{padding:0.9rem 2rem;background:linear-gradient(135deg,var(--itin),var(--accent3));color:white;font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;border:none;border-radius:12px;cursor:pointer;transition:all 0.2s;}
+.cta-primary:hover{opacity:0.88;transform:translateY(-2px);}
+.cta-secondary{padding:0.9rem 2rem;background:rgba(255,255,255,0.04);color:var(--text);font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:600;border:1px solid var(--border2);border-radius:12px;cursor:pointer;transition:all 0.2s;}
+.cta-secondary:hover{background:rgba(255,255,255,0.08);}
 
-/* SKELETON */
-.skeleton-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.4rem;}
-.skeleton-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;}
-.skeleton-img{height:190px;background:linear-gradient(90deg,var(--surface2) 25%,var(--surface3) 50%,var(--surface2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;}
-.skeleton-body{padding:1.25rem;}
-.skeleton-line{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--surface2) 25%,var(--surface3) 50%,var(--surface2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;margin-bottom:0.8rem;}
-.skeleton-line.w60{width:60%;}.skeleton-line.w80{width:80%;}.skeleton-line.w40{width:40%;}
+/* ========== PLANNER PAGE ========== */
+#planner-page{padding:6rem 2rem 5rem;}
+.planner-inner{max-width:960px;margin:0 auto;}
+.page-eyebrow{font-size:0.72rem;color:var(--itin);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.8rem;}
+.page-title{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,2.8rem);font-weight:800;letter-spacing:-0.03em;line-height:1.05;margin-bottom:0.6rem;}
+.page-sub{font-size:0.92rem;color:var(--muted);max-width:500px;line-height:1.7;font-weight:300;margin-bottom:2.5rem;}
 
-/* RESULTS */
-#results{display:none;max-width:1200px;margin:0 auto;padding:0 2rem 6rem;}
-.results-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);}
-.results-city-name{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;letter-spacing:-0.03em;}
-.results-count{font-size:0.75rem;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:0.35rem 0.85rem;border-radius:100px;}
+/* STEP CARDS */
+.steps-grid{display:grid;gap:1.2rem;}
+.step-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.6rem;transition:border-color 0.2s;}
+.step-card:focus-within{border-color:rgba(232,121,249,0.25);}
+.step-hdr{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;}
+.step-num{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:rgba(237,237,242,0.07);line-height:1;flex-shrink:0;min-width:2.5rem;}
+.step-info .step-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;letter-spacing:-0.01em;}
+.step-info .step-sub{font-size:0.78rem;color:var(--muted);margin-top:0.15rem;}
 
-/* TABS */
-.tabs{display:flex;gap:0.4rem;margin-bottom:1rem;flex-wrap:wrap;}
-.tab{display:flex;align-items:center;gap:0.45rem;padding:0.55rem 1.1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-family:'Instrument Sans',sans-serif;font-size:0.8rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.2s;}
-.tab:hover{color:var(--text);}
-.tab.act-eat{background:rgba(251,146,60,0.1);border-color:rgba(251,146,60,0.3);color:var(--eat);}
-.tab.act-drink{background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.3);color:var(--drink);}
-.tab.act-explore{background:rgba(52,211,153,0.1);border-color:rgba(52,211,153,0.3);color:var(--explore);}
-.tab.act-stay{background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.3);color:var(--stay);}
-.tdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.tdot-eat{background:var(--eat);}.tdot-drink{background:var(--drink);}.tdot-explore{background:var(--explore);}.tdot-stay{background:var(--stay);}
+/* INPUTS */
+.city-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1.1rem;font-family:'Instrument Sans',sans-serif;font-size:0.92rem;color:var(--text);outline:none;transition:border-color 0.2s;}
+.city-input:focus{border-color:rgba(232,121,249,0.4);}
+.city-input::placeholder{color:var(--muted2);}
 
-/* TAILORED SEARCH BAR */
-.tailored-search{margin-bottom:1.5rem;}
-.tsearch-box{display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0.4rem 0.4rem 0.4rem 1rem;max-width:500px;transition:border-color 0.3s,box-shadow 0.3s;}
-.tsearch-box:focus-within{border-color:rgba(110,231,183,0.3);box-shadow:0 0 0 3px rgba(110,231,183,0.06);}
-.tsearch-icon{color:var(--muted);font-size:0.95rem;margin-right:0.5rem;flex-shrink:0;}
-.tsearch-input{flex:1;background:none;border:none;outline:none;font-family:'Instrument Sans',sans-serif;font-size:0.85rem;color:var(--text);}
-.tsearch-input::placeholder{color:var(--muted2);}
-.tsearch-btn{padding:0.5rem 1rem;background:rgba(110,231,183,0.1);border:1px solid rgba(110,231,183,0.2);border-radius:8px;font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;color:var(--accent);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
-.tsearch-btn:hover{background:rgba(110,231,183,0.2);}
-.tsearch-btn:disabled{opacity:0.4;cursor:wait;}
-.tsearch-pills{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.6rem;}
-.tsearch-pill{padding:0.28rem 0.7rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:100px;font-size:0.72rem;color:var(--muted);cursor:pointer;transition:all 0.2s;}
-.tsearch-pill:hover{background:rgba(255,255,255,0.08);color:var(--text);}
+/* OPTION GRID */
+.opt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:0.55rem;}
+.opt{padding:0.65rem 0.9rem;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;font-family:'Instrument Sans',sans-serif;font-size:0.8rem;color:var(--muted);cursor:pointer;transition:all 0.2s;text-align:center;line-height:1.3;}
+.opt:hover{background:rgba(255,255,255,0.07);color:var(--text);}
+.opt.sel{background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.4);color:var(--itin);}
 
-/* FILTERS */
-.filters-bar{display:flex;gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap;align-items:center;}
-.fl{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
-.fb{padding:0.32rem 0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:0.74rem;color:var(--muted);cursor:pointer;font-family:'Instrument Sans',sans-serif;transition:all 0.2s;}
-.fb:hover,.fb.active{background:rgba(110,231,183,0.1);border-color:rgba(110,231,183,0.3);color:var(--accent);}
-.fsep{width:1px;height:18px;background:var(--border);}
+/* DAYS SELECTOR */
+.days-row{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.days-counter{display:flex;align-items:center;gap:0.8rem;}
+.day-btn{width:36px;height:36px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:1.1rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
+.day-btn:hover{border-color:rgba(232,121,249,0.4);color:var(--itin);}
+.days-num{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;min-width:2rem;text-align:center;}
+.days-label{font-size:0.82rem;color:var(--muted);}
 
-/* PANELS */
-.tab-panel{display:none;}
-.tab-panel.active{display:block;animation:fadeUp 0.4s ease both;}
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.4rem;}
-.load-more-wrap{text-align:center;margin-top:2.5rem;}
-.lm-btn{padding:0.8rem 2.5rem;background:var(--surface);border:1px solid var(--border2);border-radius:12px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:var(--text);cursor:pointer;transition:all 0.2s;}
-.lm-btn:hover{background:var(--surface2);border-color:rgba(110,231,183,0.3);color:var(--accent);}
+/* TAGS INPUT */
+.tags-wrap{display:flex;flex-wrap:wrap;gap:0.4rem;padding:0.6rem 0.8rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;cursor:text;min-height:48px;align-items:center;transition:border-color 0.2s;}
+.tags-wrap:focus-within{border-color:rgba(232,121,249,0.4);}
+.tag-chip{display:inline-flex;align-items:center;gap:0.3rem;padding:0.22rem 0.6rem;background:rgba(232,121,249,0.12);border:1px solid rgba(232,121,249,0.3);border-radius:100px;font-size:0.75rem;color:var(--itin);}
+.tag-chip-x{cursor:pointer;opacity:0.6;transition:opacity 0.15s;font-size:0.8rem;}
+.tag-chip-x:hover{opacity:1;}
+.tags-input{border:none;outline:none;background:none;font-family:'Instrument Sans',sans-serif;font-size:0.85rem;color:var(--text);flex:1;min-width:120px;}
+.tags-input::placeholder{color:var(--muted2);}
+.tag-suggestions{display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.6rem;}
+.tag-sug{padding:0.25rem 0.65rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:100px;font-size:0.72rem;color:var(--muted);cursor:pointer;transition:all 0.2s;}
+.tag-sug:hover{background:rgba(232,121,249,0.08);color:var(--itin);border-color:rgba(232,121,249,0.25);}
 
-/* CARD */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:transform 0.25s,border-color 0.25s,box-shadow 0.25s;cursor:pointer;}
-.card:hover{transform:translateY(-5px);border-color:var(--border2);box-shadow:0 24px 70px rgba(0,0,0,0.5);}
-.card-img-wrap{position:relative;width:100%;height:190px;overflow:hidden;background:var(--surface2);}
-.card-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
-.card:hover .card-img{transform:scale(1.05);}
-.card-img-ph{width:100%;height:100%;display:none;align-items:center;justify-content:center;font-size:2.5rem;background:linear-gradient(135deg,var(--surface2),var(--surface3));}
-.feat-badge{position:absolute;top:0.75rem;right:0.75rem;background:rgba(9,9,15,0.85);backdrop-filter:blur(8px);padding:0.22rem 0.6rem;border-radius:6px;font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(251,191,36,0.3);}
-.card-body{padding:1.25rem;}
-.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.7rem;}
-.type-badge{font-size:0.64rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:0.26rem 0.62rem;border-radius:6px;}
-.tb-eat{background:rgba(251,146,60,0.12);color:var(--eat);}
-.tb-drink{background:rgba(167,139,250,0.12);color:var(--drink);}
-.tb-explore{background:rgba(52,211,153,0.12);color:var(--explore);}
-.tb-stay{background:rgba(96,165,250,0.12);color:var(--stay);}
-.card-name{font-family:'Syne',sans-serif;font-size:1.08rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.35rem;line-height:1.2;}
-.card-desc{font-size:0.82rem;color:var(--muted);line-height:1.6;font-weight:300;margin-bottom:0.9rem;}
-.rating-row{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.8rem;}
-.stars{display:flex;gap:1px;}
-.star{font-size:0.72rem;color:var(--muted2);}
-.star.on{color:var(--gold);}
-.rnum{font-size:0.8rem;font-weight:600;}
-.rcnt{font-size:0.7rem;color:var(--muted);}
-.pdots{display:flex;gap:1px;margin-left:auto;}
-.pd{font-size:0.78rem;font-weight:700;}
-.pd.on{color:var(--accent);}
-.pd.off{color:var(--muted2);}
-.review-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.7rem;margin-bottom:0.9rem;}
-.review-text{font-size:0.77rem;color:var(--muted);line-height:1.55;font-style:italic;}
-.review-meta{display:flex;justify-content:space-between;margin-top:0.45rem;font-size:0.63rem;color:var(--muted2);}
-.card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:0.85rem;border-top:1px solid var(--border);}
-.mpills{display:flex;gap:0.4rem;flex-wrap:wrap;}
-.mpill{background:rgba(255,255,255,0.04);padding:0.18rem 0.52rem;border-radius:6px;font-size:0.68rem;color:var(--muted);}
-.view-btn{font-size:0.7rem;font-weight:600;font-family:'Instrument Sans',sans-serif;color:var(--accent);background:rgba(110,231,183,0.08);border:1px solid rgba(110,231,183,0.15);padding:0.36rem 0.82rem;border-radius:8px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
-.view-btn:hover{background:rgba(110,231,183,0.15);}
+/* SECTION DIVIDER */
+.section-divider{display:flex;align-items:center;gap:0.8rem;margin:0.4rem 0;}
+.section-divider span{font-size:0.68rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap;}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border);}
 
-/* DETAIL MODAL */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:1.5rem;}
-.overlay.open{display:flex;animation:fadeIn 0.2s ease;}
-.detail-modal{background:var(--surface);border:1px solid var(--border2);border-radius:22px;width:100%;max-width:680px;max-height:88vh;overflow-y:auto;animation:slideUp 0.3s ease;}
-.dm-img{width:100%;height:260px;object-fit:cover;border-radius:18px 18px 0 0;display:block;}
-.dm-img-ph{width:100%;height:260px;display:none;align-items:center;justify-content:center;font-size:4rem;background:linear-gradient(135deg,var(--surface2),var(--surface3));border-radius:18px 18px 0 0;}
-.dm-body{padding:2rem;}
-.dm-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.2rem;}
-.dm-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;line-height:1.1;}
-.close-btn{background:rgba(255,255,255,0.06);border:1px solid var(--border);width:36px;height:36px;border-radius:9px;cursor:pointer;color:var(--muted);font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;margin-left:1rem;}
-.close-btn:hover{color:var(--text);background:rgba(255,255,255,0.1);}
-.dm-desc{font-size:0.92rem;color:var(--muted);line-height:1.7;font-weight:300;margin-bottom:1.5rem;}
-.dm-section{margin-bottom:1.5rem;}
-.dm-section-title{font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:0.8rem;}
-.hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;}
-.hour-row{display:flex;justify-content:space-between;font-size:0.82rem;padding:0.4rem 0.7rem;background:var(--surface2);border-radius:7px;}
-.hour-day{color:var(--muted);}
-.hour-time{color:var(--text);font-weight:500;}
+/* RANDOMIZE TOGGLE */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;}
+.toggle-label{font-size:0.85rem;font-weight:500;}
+.toggle-sub{font-size:0.75rem;color:var(--muted);margin-top:0.1rem;}
+.toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:var(--surface3);border-radius:100px;cursor:pointer;transition:0.3s;border:1px solid var(--border);}
+.toggle-slider::before{content:'';position:absolute;width:18px;height:18px;left:2px;top:2px;background:var(--muted);border-radius:50%;transition:0.3s;}
+.toggle-switch input:checked+.toggle-slider{background:rgba(232,121,249,0.2);border-color:rgba(232,121,249,0.4);}
+.toggle-switch input:checked+.toggle-slider::before{transform:translateX(20px);background:var(--itin);}
 
-/* COLLAPSIBLE MENU */
-.menu-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:0.65rem 0.9rem;cursor:pointer;transition:all 0.2s;margin-bottom:0.5rem;}
-.menu-toggle:hover{background:rgba(255,255,255,0.06);border-color:rgba(110,231,183,0.2);}
-.menu-toggle-label{font-size:0.78rem;font-weight:600;color:var(--text);font-family:'Instrument Sans',sans-serif;}
-.menu-toggle-count{font-size:0.7rem;color:var(--muted);display:flex;align-items:center;gap:0.4rem;}
-.menu-toggle-arrow{font-size:0.7rem;transition:transform 0.25s;color:var(--accent);}
-.menu-toggle-arrow.open{transform:rotate(180deg);}
-.menu-list{display:none;grid-template-columns:1fr;gap:0.4rem;margin-top:0.4rem;}
-.menu-list.open{display:grid;animation:fadeUp 0.2s ease both;}
-.menu-item{display:flex;justify-content:space-between;align-items:flex-start;padding:0.65rem 0.85rem;background:var(--surface2);border-radius:8px;border:1px solid var(--border);}
-.menu-item-left{flex:1;}
-.menu-name{font-size:0.85rem;font-weight:500;}
-.menu-desc-text{font-size:0.75rem;color:var(--muted);margin-top:0.15rem;line-height:1.4;}
-.menu-price{font-size:0.82rem;font-weight:600;color:var(--accent);white-space:nowrap;margin-left:1rem;padding-top:0.1rem;}
+/* GENERATE BTN */
+.gen-btn-wrap{margin-top:1.5rem;}
+.gen-btn{width:100%;padding:1.1rem;background:linear-gradient(135deg,var(--itin),var(--accent3));color:white;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;border:none;border-radius:14px;cursor:pointer;transition:all 0.2s;letter-spacing:-0.01em;}
+.gen-btn:hover{opacity:0.88;transform:translateY(-2px);box-shadow:0 12px 40px rgba(232,121,249,0.25);}
+.gen-btn:disabled{opacity:0.35;cursor:wait;transform:none;box-shadow:none;}
 
-.dm-review{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem;font-size:0.85rem;color:var(--muted);line-height:1.6;font-style:italic;}
-.dm-review-meta{margin-top:0.6rem;font-size:0.72rem;color:var(--muted2);font-style:normal;}
-.dir-btn{display:flex;align-items:center;justify-content:center;gap:0.5rem;width:100%;padding:0.85rem;background:rgba(110,231,183,0.08);border:1px solid rgba(110,231,183,0.2);border-radius:12px;color:var(--accent);font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:1rem;}
-.dir-btn:hover{background:rgba(110,231,183,0.15);}
+/* ========== RESULTS ========== */
+#itinResult{display:none;margin-top:2.5rem;}
+.itin-result-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
+.itin-result-title{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;letter-spacing:-0.03em;line-height:1.1;}
+.itin-result-sub{font-size:0.82rem;color:var(--muted);margin-top:0.3rem;}
+.result-actions{display:flex;gap:0.5rem;flex-wrap:wrap;}
+.action-btn{padding:0.6rem 1.1rem;background:var(--surface);border:1px solid var(--border2);border-radius:10px;font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;color:var(--text);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.action-btn:hover{border-color:rgba(232,121,249,0.35);color:var(--itin);}
+.action-btn.regen{background:rgba(232,121,249,0.08);border-color:rgba(232,121,249,0.25);color:var(--itin);}
+.action-btn.regen:hover{background:rgba(232,121,249,0.15);}
 
-/* ITINERARY PAGE */
-#itin-page{padding:7rem 2rem 5rem;}
-.itin-inner{max-width:900px;margin:0 auto;}
-.itin-steps{display:grid;gap:2rem;}
-.itin-step{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.8rem;}
-.itin-step-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.4rem;}
-.step-num{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:rgba(237,237,242,0.08);line-height:1;}
-.step-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:-0.02em;}
-.step-sub{font-size:0.8rem;color:var(--muted);margin-top:0.2rem;}
-.option-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.6rem;}
-.opt-btn{padding:0.7rem 1rem;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;font-family:'Instrument Sans',sans-serif;font-size:0.82rem;color:var(--muted);cursor:pointer;transition:all 0.2s;text-align:center;}
-.opt-btn:hover{background:rgba(255,255,255,0.07);color:var(--text);}
-.opt-btn.selected{background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.35);color:var(--itin);}
-.itin-city-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.75rem 1rem;font-family:'Instrument Sans',sans-serif;font-size:0.9rem;color:var(--text);outline:none;transition:border-color 0.2s;}
-.itin-city-input:focus{border-color:rgba(232,121,249,0.35);}
-.gen-itin-btn{width:100%;padding:1rem;background:linear-gradient(135deg,var(--itin),var(--accent3));color:white;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;border:none;border-radius:14px;cursor:pointer;transition:all 0.2s;margin-top:1.5rem;letter-spacing:-0.01em;}
-.gen-itin-btn:hover{opacity:0.9;transform:translateY(-2px);}
-.gen-itin-btn:disabled{opacity:0.4;cursor:wait;transform:none;}
-#itinResult{display:none;margin-top:2.5rem;animation:fadeUp 0.5s ease both;}
-.itin-result-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
-.itin-result-title{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;letter-spacing:-0.03em;}
-.itin-loading{text-align:center;padding:3rem;color:var(--muted);}
-.itin-loader{width:36px;height:36px;border:2px solid var(--border);border-top-color:var(--itin);border-radius:50%;animation:spin 0.85s linear infinite;margin:0 auto 1rem;}
-.time-block{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.4rem;margin-bottom:1rem;border-left:3px solid var(--itin);}
-.time-block-header{display:flex;align-items:center;gap:1rem;margin-bottom:0.7rem;flex-wrap:wrap;}
-.time-label{font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--itin);white-space:nowrap;}
-.time-place{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:-0.02em;}
-.time-type{font-size:0.7rem;color:var(--muted);background:rgba(255,255,255,0.04);padding:0.2rem 0.55rem;border-radius:6px;margin-left:auto;}
-.time-desc{font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:0.6rem;}
-.time-tip{font-size:0.78rem;color:var(--accent);background:rgba(110,231,183,0.06);border:1px solid rgba(110,231,183,0.15);padding:0.4rem 0.7rem;border-radius:7px;display:inline-block;}
-.print-btn{padding:0.65rem 1.4rem;background:var(--surface);border:1px solid var(--border2);border-radius:10px;font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text);cursor:pointer;transition:all 0.2s;}
-.print-btn:hover{border-color:rgba(232,121,249,0.3);color:var(--itin);}
+/* DAY TABS */
+.day-tabs{display:flex;gap:0.4rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.day-tab{padding:0.5rem 1.1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-family:'Instrument Sans',sans-serif;font-size:0.8rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.2s;}
+.day-tab.active{background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.35);color:var(--itin);}
+.day-tab:hover{color:var(--text);}
 
-/* BLOG PAGE */
-#blog-page{padding:7rem 2rem 5rem;}
+/* DAY PANELS */
+.day-panel{display:none;animation:fadeUp 0.35s ease both;}
+.day-panel.active{display:block;}
+
+/* LOADING */
+.itin-loading{text-align:center;padding:3rem 2rem;}
+.itin-loader{width:40px;height:40px;border:2px solid var(--border);border-top-color:var(--itin);border-radius:50%;animation:spin 0.85s linear infinite;margin:0 auto 1rem;}
+.loading-txt{font-size:0.82rem;color:var(--muted);letter-spacing:0.06em;}
+
+/* TIME BLOCKS */
+.day-blocks{display:grid;gap:0.9rem;}
+.time-block{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color 0.2s,box-shadow 0.2s;}
+.time-block:hover{border-color:var(--border2);box-shadow:0 8px 30px rgba(0,0,0,0.3);}
+.tb-header{display:flex;align-items:center;gap:0.8rem;padding:1rem 1.2rem 0.7rem;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.tb-time{font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--itin);white-space:nowrap;background:rgba(232,121,249,0.08);padding:0.22rem 0.6rem;border-radius:6px;border:1px solid rgba(232,121,249,0.2);}
+.tb-place{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:-0.02em;flex:1;}
+.tb-type{font-size:0.68rem;color:var(--muted);background:rgba(255,255,255,0.04);padding:0.2rem 0.55rem;border-radius:6px;white-space:nowrap;}
+.tb-body{padding:1rem 1.2rem;}
+.tb-desc{font-size:0.85rem;color:var(--muted);line-height:1.65;margin-bottom:0.8rem;}
+.tb-tip{font-size:0.78rem;color:var(--accent);background:rgba(110,231,183,0.06);border:1px solid rgba(110,231,183,0.15);padding:0.4rem 0.75rem;border-radius:7px;margin-bottom:0.9rem;display:inline-block;}
+.tb-footer{display:flex;gap:0.5rem;flex-wrap:wrap;}
+
+/* RESERVATION LINKS */
+.res-btn{display:inline-flex;align-items:center;gap:0.35rem;padding:0.45rem 0.9rem;border-radius:8px;font-size:0.74rem;font-weight:600;font-family:'Instrument Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-decoration:none;border:1px solid;}
+.res-btn-maps{color:var(--accent3);background:rgba(96,165,250,0.08);border-color:rgba(96,165,250,0.2);}
+.res-btn-maps:hover{background:rgba(96,165,250,0.15);}
+.res-btn-opentable{color:#da3743;background:rgba(218,55,67,0.08);border-color:rgba(218,55,67,0.25);}
+.res-btn-opentable:hover{background:rgba(218,55,67,0.15);}
+.res-btn-viator{color:#ff9500;background:rgba(255,149,0,0.08);border-color:rgba(255,149,0,0.25);}
+.res-btn-viator:hover{background:rgba(255,149,0,0.15);}
+.res-btn-booking{color:#003580;background:rgba(0,53,128,0.15);border-color:rgba(0,53,128,0.3);}
+.res-btn-booking:hover{background:rgba(0,53,128,0.25);}
+.res-btn-yelp{color:#d32323;background:rgba(211,35,35,0.08);border-color:rgba(211,35,35,0.2);}
+.res-btn-yelp:hover{background:rgba(211,35,35,0.15);}
+
+/* REGENERATE BLOCK */
+.regen-block-btn{display:flex;align-items:center;gap:0.4rem;padding:0.38rem 0.8rem;background:rgba(232,121,249,0.06);border:1px solid rgba(232,121,249,0.18);border-radius:8px;font-size:0.72rem;font-weight:600;font-family:'Instrument Sans',sans-serif;color:var(--itin);cursor:pointer;transition:all 0.2s;margin-left:auto;}
+.regen-block-btn:hover{background:rgba(232,121,249,0.13);}
+.regen-block-btn:disabled{opacity:0.4;cursor:wait;}
+
+/* ========== BLOG PAGE ========== */
+#blog-page{padding:6rem 2rem 5rem;}
 .blog-inner{max-width:1100px;margin:0 auto;}
-.page-eyebrow{font-size:0.72rem;color:var(--accent);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.8rem;}
-.page-title{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-0.03em;line-height:1.05;margin-bottom:0.8rem;}
-.page-sub{font-size:0.92rem;color:var(--muted);max-width:480px;line-height:1.7;font-weight:300;margin-bottom:2.5rem;}
 .blog-toolbar{display:flex;gap:0.6rem;margin-bottom:2.5rem;flex-wrap:wrap;align-items:center;justify-content:space-between;}
 .blog-filters{display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;}
 .btag{display:inline-block;padding:0.3rem 0.75rem;border-radius:100px;font-size:0.72rem;font-weight:500;cursor:pointer;transition:all 0.2s;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--muted);}
 .btag:hover,.btag.active{background:rgba(110,231,183,0.1);border-color:rgba(110,231,183,0.3);color:var(--accent);}
-.write-btn{padding:0.7rem 1.4rem;background:var(--accent);color:#09090f;font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;border:none;border-radius:10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
-.write-btn:hover{background:#a7f3d0;transform:translateY(-1px);}
-.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.4rem;}
+.write-btn{padding:0.65rem 1.3rem;background:var(--accent);color:#09090f;font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;border:none;border-radius:10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.write-btn:hover{background:#a7f3d0;}
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.3rem;}
 .blog-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:transform 0.25s,border-color 0.25s,box-shadow 0.25s;}
-.blog-card:hover{transform:translateY(-4px);border-color:var(--border2);box-shadow:0 20px 60px rgba(0,0,0,0.45);}
-.bc-img{width:100%;height:180px;object-fit:cover;display:block;}
-.bc-img-ph{width:100%;height:180px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;background:linear-gradient(135deg,var(--surface2),var(--surface3));}
-.bc-body{padding:1.3rem;}
-.bc-tags{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.8rem;}
-.bc-city{font-size:0.63rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:0.22rem 0.6rem;border-radius:6px;background:rgba(96,165,250,0.1);color:var(--accent3);border:1px solid rgba(96,165,250,0.2);}
-.bc-cat{font-size:0.63rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:0.22rem 0.6rem;border-radius:6px;background:rgba(167,139,250,0.1);color:var(--drink);border:1px solid rgba(167,139,250,0.2);}
-.bc-title{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.5rem;line-height:1.25;}
-.bc-excerpt{font-size:0.82rem;color:var(--muted);line-height:1.6;font-weight:300;margin-bottom:1rem;}
-.bc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:0.9rem;border-top:1px solid var(--border);}
-.bc-author{display:flex;align-items:center;gap:0.5rem;}
-.avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent3));display:flex;align-items:center;justify-content:center;font-size:0.62rem;font-weight:700;color:#09090f;flex-shrink:0;}
-.author-name{font-size:0.74rem;color:var(--muted);}
-.bc-date{font-size:0.7rem;color:var(--muted2);}
-.read-btn{font-size:0.7rem;font-weight:600;color:var(--accent3);background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.15);padding:0.33rem 0.78rem;border-radius:7px;cursor:pointer;font-family:'Instrument Sans',sans-serif;transition:all 0.2s;}
-.read-btn:hover{background:rgba(96,165,250,0.15);}
+.blog-card:hover{transform:translateY(-4px);border-color:var(--border2);box-shadow:0 20px 60px rgba(0,0,0,0.4);}
+.bc-img-ph{width:100%;height:170px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;background:linear-gradient(135deg,var(--surface2),var(--surface3));}
+.bc-img{width:100%;height:170px;object-fit:cover;display:block;}
+.bc-body{padding:1.2rem;}
+.bc-tags{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.7rem;}
+.bc-city{font-size:0.62rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:0.2rem 0.55rem;border-radius:6px;background:rgba(96,165,250,0.1);color:var(--accent3);border:1px solid rgba(96,165,250,0.2);}
+.bc-cat{font-size:0.62rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:0.2rem 0.55rem;border-radius:6px;background:rgba(167,139,250,0.1);color:#a78bfa;border:1px solid rgba(167,139,250,0.2);}
+.bc-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.4rem;line-height:1.25;}
+.bc-excerpt{font-size:0.81rem;color:var(--muted);line-height:1.6;font-weight:300;margin-bottom:1rem;}
+.bc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:0.8rem;border-top:1px solid var(--border);}
+.bc-author{display:flex;align-items:center;gap:0.45rem;}
+.avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--itin),var(--accent3));display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:#09090f;flex-shrink:0;}
+.author-name{font-size:0.72rem;color:var(--muted);}
+.bc-date{font-size:0.68rem;color:var(--muted2);}
 
 /* WRITE MODAL */
 .woverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:1.5rem;}
 .woverlay.open{display:flex;animation:fadeIn 0.2s ease;}
-.write-modal{background:var(--surface);border:1px solid var(--border2);border-radius:22px;padding:2.5rem;width:100%;max-width:620px;max-height:90vh;overflow-y:auto;animation:slideUp 0.3s ease;}
-.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;}
-.modal-ttl{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-0.02em;}
-.fg{margin-bottom:1.3rem;}
-.fl2{display:block;font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.45rem;}
-.fi,.fta,.fsel{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.72rem 1rem;font-family:'Instrument Sans',sans-serif;font-size:0.88rem;color:var(--text);outline:none;transition:border-color 0.2s;}
+.write-modal{background:var(--surface);border:1px solid var(--border2);border-radius:22px;padding:2.2rem;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;animation:slideUp 0.3s ease;}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.8rem;}
+.modal-ttl{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;letter-spacing:-0.02em;}
+.close-btn{background:rgba(255,255,255,0.06);border:1px solid var(--border);width:34px;height:34px;border-radius:8px;cursor:pointer;color:var(--muted);font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.close-btn:hover{color:var(--text);}
+.fg{margin-bottom:1.2rem;}
+.fl2{display:block;font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;}
+.fi,.fta,.fsel{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.7rem 1rem;font-family:'Instrument Sans',sans-serif;font-size:0.87rem;color:var(--text);outline:none;transition:border-color 0.2s;}
 .fi:focus,.fta:focus,.fsel:focus{border-color:rgba(110,231,183,0.35);}
-.fta{resize:vertical;min-height:110px;line-height:1.6;}
+.fta{resize:vertical;min-height:100px;line-height:1.6;}
 .fsel{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(237,237,242,0.4)' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-.tag-picker{display:flex;flex-wrap:wrap;gap:0.5rem;}
-.tpick{padding:0.32rem 0.78rem;border:1px solid var(--border);border-radius:100px;font-size:0.74rem;cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.03);color:var(--muted);font-family:'Instrument Sans',sans-serif;}
+.tpick-wrap{display:flex;flex-wrap:wrap;gap:0.4rem;}
+.tpick{padding:0.28rem 0.72rem;border:1px solid var(--border);border-radius:100px;font-size:0.73rem;cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.03);color:var(--muted);font-family:'Instrument Sans',sans-serif;}
 .tpick.sel{background:rgba(110,231,183,0.1);border-color:rgba(110,231,183,0.3);color:var(--accent);}
-.upload-area{border:2px dashed var(--border);border-radius:12px;padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
-.upload-area:hover{border-color:rgba(110,231,183,0.3);background:rgba(110,231,183,0.03);}
+.upload-area{border:2px dashed var(--border);border-radius:12px;padding:1.3rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
+.upload-area:hover{border-color:rgba(110,231,183,0.3);}
 .upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.upload-icon{font-size:1.8rem;margin-bottom:0.5rem;}
-.upload-txt{font-size:0.82rem;color:var(--muted);}
-.upload-hint{font-size:0.68rem;color:var(--muted2);margin-top:0.3rem;}
-.img-preview{width:100%;height:160px;object-fit:cover;border-radius:10px;margin-top:0.8rem;display:none;}
-.prof-warn{display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:0.6rem 1rem;font-size:0.8rem;color:#fca5a5;margin-top:0.5rem;}
-.sub-btn{width:100%;padding:0.88rem;background:var(--accent);color:#09090f;font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;border:none;border-radius:12px;cursor:pointer;transition:all 0.2s;margin-top:0.5rem;}
+.upload-txt{font-size:0.8rem;color:var(--muted);}
+.upload-hint{font-size:0.66rem;color:var(--muted2);margin-top:0.25rem;}
+.img-preview{width:100%;height:150px;object-fit:cover;border-radius:10px;margin-top:0.7rem;display:none;}
+.prof-warn{display:none;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:8px;padding:0.55rem 0.9rem;font-size:0.78rem;color:#fca5a5;margin-top:0.4rem;}
+.sub-btn{width:100%;padding:0.85rem;background:var(--accent);color:#09090f;font-family:'Syne',sans-serif;font-size:0.87rem;font-weight:700;border:none;border-radius:12px;cursor:pointer;transition:all 0.2s;margin-top:0.5rem;}
 .sub-btn:hover{background:#a7f3d0;}
-.err-msg{text-align:center;padding:4rem 2rem;color:var(--muted);font-size:0.88rem;}
-.err-msg strong{color:var(--text);display:block;margin-bottom:0.5rem;font-family:'Syne',sans-serif;font-size:1.1rem;}
-footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-size:0.75rem;color:var(--muted2);}
+.err-msg{text-align:center;padding:3rem 2rem;color:var(--muted);font-size:0.87rem;}
+.err-msg strong{color:var(--text);display:block;margin-bottom:0.4rem;font-family:'Syne',sans-serif;font-size:1rem;}
 
-@media(max-width:680px){
+footer{border-top:1px solid var(--border);padding:1.8rem;text-align:center;font-size:0.73rem;color:var(--muted2);}
+
+@media(max-width:700px){
   nav{padding:1rem 1.3rem;}
-  .nav-link{padding:0.4rem 0.6rem;font-size:0.72rem;}
+  .nav-link{padding:0.4rem 0.65rem;font-size:0.74rem;}
   .hero{padding:7rem 1.3rem 4rem;}
-  h1{font-size:2.8rem;}
-  #results,#blog-page,#itin-page{padding-left:1.3rem;padding-right:1.3rem;}
-  .cards-grid,.blog-grid{grid-template-columns:1fr;}
-  .frow,.hours-grid,.option-grid{grid-template-columns:1fr;}
+  h1{font-size:2.6rem;}
+  #planner-page,#blog-page{padding-left:1.3rem;padding-right:1.3rem;}
+  .opt-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}
+  .frow{grid-template-columns:1fr;}
+  .blog-grid{grid-template-columns:1fr;}
+  .tb-header{gap:0.5rem;}
 }
 </style>
 </head>
@@ -306,170 +259,200 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-si
 <div class="wrapper">
 
 <nav>
-  <div class="logo" onclick="showPage('explore')"><span class="logo-dot"></span>What's Around?</div>
+  <div class="logo" onclick="showPage('home')"><span class="logo-dot"></span>What's Around?</div>
   <div class="nav-links">
-    <button class="nav-link active" id="nav-explore" onclick="showPage('explore')">Explore</button>
-    <button class="nav-link" id="nav-itin" onclick="showPage('itin')">Itinerary</button>
+    <button class="nav-link active" id="nav-home" onclick="showPage('home')">Home</button>
+    <button class="nav-link" id="nav-planner" onclick="showPage('planner')">Planner</button>
     <button class="nav-link" id="nav-blog" onclick="showPage('blog')">Blog</button>
     <button class="nav-link">For Business</button>
   </div>
 </nav>
 
-<!-- EXPLORE PAGE -->
-<div class="page active" id="explore-page">
-  <section class="hero">
-    <div class="hero-badge"><span class="hero-badge-dot"></span>Discover Any Destination</div>
-    <h1>Find what's<br><span class="grad">around you.</span></h1>
-    <p class="hero-sub">Search any city, state, country, or zip code and instantly discover the best places to eat, drink, explore, and stay.</p>
-    <div class="search-wrap">
-      <div class="search-box">
-        <span class="search-icon">⌕</span>
-        <input type="text" id="cityInput" placeholder="City, state, country, or zip code..." autocomplete="off"/>
-        <button id="searchBtn" onclick="searchCity()">Explore</button>
-      </div>
-      <div class="search-hint">Try: "Austin, TX" · "90210" · "Tuscany, Italy" · "Tokyo, Japan"</div>
-      <div class="quick-row">
-        <button class="city-chip" onclick="quickCity('Tokyo, Japan')">Tokyo</button>
-        <button class="city-chip" onclick="quickCity('Paris, France')">Paris</button>
-        <button class="city-chip" onclick="quickCity('New York, USA')">New York</button>
-        <button class="city-chip" onclick="quickCity('Barcelona, Spain')">Barcelona</button>
-        <button class="city-chip" onclick="quickCity('Bangkok, Thailand')">Bangkok</button>
-        <button class="city-chip" onclick="quickCity('Sydney, Australia')">Sydney</button>
-        <button class="city-chip" onclick="quickCity('Lisbon, Portugal')">Lisbon</button>
-        <button class="city-chip" onclick="quickCity('Dubai, UAE')">Dubai</button>
-      </div>
+<!-- ===== HOME PAGE ===== -->
+<div class="page active" id="home-page">
+  <div class="hero">
+    <div class="hero-badge"><span class="hero-badge-dot"></span>AI Trip Planner</div>
+    <h1>Plan your<br><span class="grad">perfect trip.</span></h1>
+    <p class="hero-sub">Tell us where you're going, what you love, and any preferences — we'll build a personalised multi-day itinerary with real places and reservation links.</p>
+    <div class="hero-cta">
+      <button class="cta-primary" onclick="showPage('planner')">✨ Start Planning</button>
+      <button class="cta-secondary" onclick="showPage('blog')">Read Travel Stories</button>
     </div>
-  </section>
-
-  <!-- SKELETON -->
-  <div id="skeleton" style="display:none;max-width:1200px;margin:0 auto;padding:0 2rem 4rem;">
-    <div style="height:2rem;width:220px;background:linear-gradient(90deg,var(--surface2) 25%,var(--surface3) 50%,var(--surface2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;margin-bottom:2rem;"></div>
-    <div class="skeleton-grid">
-      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w60"></div><div class="skeleton-line w80"></div><div class="skeleton-line w40"></div></div></div>
-      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>
-      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w40"></div><div class="skeleton-line w80"></div><div class="skeleton-line w60"></div></div></div>
-    </div>
-  </div>
-
-  <div id="results">
-    <div class="results-bar">
-      <div class="results-city-name" id="resultsTitle">— <em class="grad">Guide</em></div>
-      <div class="results-count" id="resultsCount">— spots</div>
-    </div>
-    <div class="tabs">
-      <button class="tab act-eat" id="tbtn-eat" onclick="switchTab('eat',this)"><span class="tdot tdot-eat"></span>Eat</button>
-      <button class="tab" id="tbtn-drink" onclick="switchTab('drink',this)"><span class="tdot tdot-drink"></span>Drink</button>
-      <button class="tab" id="tbtn-explore" onclick="switchTab('explore',this)"><span class="tdot tdot-explore"></span>Explore</button>
-      <button class="tab" id="tbtn-stay" onclick="switchTab('stay',this)"><span class="tdot tdot-stay"></span>Stay</button>
-    </div>
-
-    <!-- TAILORED SEARCH -->
-    <div class="tailored-search">
-      <div class="tsearch-box">
-        <span class="tsearch-icon">⌕</span>
-        <input class="tsearch-input" id="tailoredInput" placeholder="Refine results e.g. coffee, rooftop, vegan..." autocomplete="off"/>
-        <button class="tsearch-btn" id="tailoredBtn" onclick="tailoredSearch()">Search</button>
-      </div>
-      <div class="tsearch-pills" id="tailoredPills"></div>
-    </div>
-
-    <div class="filters-bar">
-      <span class="fl">Sort:</span>
-      <button class="fb active" onclick="applyFilter('all',this)">All</button>
-      <button class="fb" onclick="applyFilter('rating',this)">Top Rated</button>
-      <button class="fb" onclick="applyFilter('price-low',this)">$ Low</button>
-      <button class="fb" onclick="applyFilter('price-high',this)">$$$ High</button>
-      <button class="fb" onclick="applyFilter('featured',this)">Featured</button>
-      <div class="fsep"></div>
-      <span class="fl">Price:</span>
-      <button class="fb" onclick="applyPriceFilter(1,this)">$</button>
-      <button class="fb" onclick="applyPriceFilter(2,this)">$$</button>
-      <button class="fb" onclick="applyPriceFilter(3,this)">$$$</button>
-    </div>
-
-    <div id="panel-eat" class="tab-panel active"><div class="cards-grid" id="grid-eat"></div><div class="load-more-wrap" id="lm-eat" style="display:none;"><button class="lm-btn" onclick="loadMore('eat')">Load more ↓</button></div></div>
-    <div id="panel-drink" class="tab-panel"><div class="cards-grid" id="grid-drink"></div><div class="load-more-wrap" id="lm-drink" style="display:none;"><button class="lm-btn" onclick="loadMore('drink')">Load more ↓</button></div></div>
-    <div id="panel-explore" class="tab-panel"><div class="cards-grid" id="grid-explore"></div><div class="load-more-wrap" id="lm-explore" style="display:none;"><button class="lm-btn" onclick="loadMore('explore')">Load more ↓</button></div></div>
-    <div id="panel-stay" class="tab-panel"><div class="cards-grid" id="grid-stay"></div><div class="load-more-wrap" id="lm-stay" style="display:none;"><button class="lm-btn" onclick="loadMore('stay')">Load more ↓</button></div></div>
   </div>
 </div>
 
-<!-- ITINERARY PAGE -->
-<div class="page" id="itin-page">
-  <div class="itin-inner">
-    <div class="page-eyebrow">✦ Plan Your Day</div>
-    <h2 class="page-title" style="font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-0.03em;margin-bottom:0.8rem;">Your perfect day,<br><span class="grad-itin">planned in seconds.</span></h2>
-    <p class="page-sub" style="font-size:0.92rem;color:var(--muted);max-width:480px;line-height:1.7;font-weight:300;margin-bottom:2.5rem;">Tell us your preferences and we'll build a personalised itinerary for any destination.</p>
-    <div class="itin-steps">
-      <div class="itin-step">
-        <div class="itin-step-header"><div class="step-num">01</div><div><div class="step-title">Where are you going?</div><div class="step-sub">City, state, country, or zip code</div></div></div>
-        <input class="itin-city-input" id="itinCity" placeholder="e.g. Tokyo, Japan · Austin, TX · 90210"/>
+<!-- ===== PLANNER PAGE ===== -->
+<div class="page" id="planner-page">
+  <div class="planner-inner">
+    <div class="page-eyebrow">✦ Trip Planner</div>
+    <h2 class="page-title">Build your<br><span class="grad">itinerary.</span></h2>
+    <p class="page-sub">Fill in your details and we'll craft a custom day-by-day plan tailored exactly to you.</p>
+
+    <div class="steps-grid">
+
+      <!-- Step 1: Destination -->
+      <div class="step-card">
+        <div class="step-hdr"><div class="step-num">01</div><div class="step-info"><div class="step-title">Where are you going?</div><div class="step-sub">City, state, country, or zip code</div></div></div>
+        <input class="city-input" id="itinCity" placeholder="e.g. Tokyo, Japan · Austin, TX · 90210 · Tuscany, Italy"/>
       </div>
-      <div class="itin-step">
-        <div class="itin-step-header"><div class="step-num">02</div><div><div class="step-title">How long is your day?</div><div class="step-sub">Select a timeframe</div></div></div>
-        <div class="option-grid">
-          <div class="opt-btn" onclick="selectOpt(this,'duration','Half day (4hrs)')">Half Day (4hrs)</div>
-          <div class="opt-btn selected" onclick="selectOpt(this,'duration','Full day (8hrs)')">Full Day (8hrs)</div>
-          <div class="opt-btn" onclick="selectOpt(this,'duration','Day + Evening (12hrs)')">Day + Evening</div>
+
+      <!-- Step 2: Number of days -->
+      <div class="step-card">
+        <div class="step-hdr"><div class="step-num">02</div><div class="step-info"><div class="step-title">How many days?</div><div class="step-sub">We'll plan each day separately</div></div></div>
+        <div class="days-row">
+          <div class="days-counter">
+            <button class="day-btn" onclick="changeDays(-1)">−</button>
+            <div class="days-num" id="daysNum">1</div>
+            <button class="day-btn" onclick="changeDays(1)">+</button>
+          </div>
+          <div class="days-label" id="daysLabel">1 day</div>
         </div>
       </div>
-      <div class="itin-step">
-        <div class="itin-step-header"><div class="step-num">03</div><div><div class="step-title">What's your vibe?</div><div class="step-sub">Pick all that apply</div></div></div>
-        <div class="option-grid">
-          <div class="opt-btn" onclick="toggleOpt(this,'vibe','Culture & History')">🏛 Culture & History</div>
-          <div class="opt-btn" onclick="toggleOpt(this,'vibe','Food & Drink')">🍽 Food & Drink</div>
-          <div class="opt-btn" onclick="toggleOpt(this,'vibe','Nature & Outdoors')">🌿 Nature & Outdoors</div>
-          <div class="opt-btn" onclick="toggleOpt(this,'vibe','Shopping')">🛍 Shopping</div>
-          <div class="opt-btn" onclick="toggleOpt(this,'vibe','Nightlife')">🌙 Nightlife</div>
-          <div class="opt-btn" onclick="toggleOpt(this,'vibe','Art & Design')">🎨 Art & Design</div>
-          <div class="opt-btn" onclick="toggleOpt(this,'vibe','Relaxation & Wellness')">🧘 Relaxation</div>
-          <div class="opt-btn" onclick="toggleOpt(this,'vibe','Hidden Gems')">💎 Hidden Gems</div>
+
+      <!-- Step 3: Daily duration -->
+      <div class="step-card">
+        <div class="step-hdr"><div class="step-num">03</div><div class="step-info"><div class="step-title">How long is each day?</div><div class="step-sub">Start to finish</div></div></div>
+        <div class="opt-grid">
+          <div class="opt" onclick="selectOpt(this,'duration','Half day (4hrs)')">Half Day</div>
+          <div class="opt sel" onclick="selectOpt(this,'duration','Full day (8hrs)')">Full Day</div>
+          <div class="opt" onclick="selectOpt(this,'duration','Day + Evening (12hrs)')">Day + Evening</div>
         </div>
       </div>
-      <div class="itin-step">
-        <div class="itin-step-header"><div class="step-num">04</div><div><div class="step-title">Travel style</div><div class="step-sub">How do you like to move around?</div></div></div>
-        <div class="option-grid">
-          <div class="opt-btn selected" onclick="selectOpt(this,'style','Walking')">🚶 Walking</div>
-          <div class="opt-btn" onclick="selectOpt(this,'style','Public Transport')">🚇 Public Transport</div>
-          <div class="opt-btn" onclick="selectOpt(this,'style','Taxi / Rideshare')">🚕 Taxi / Rideshare</div>
-          <div class="opt-btn" onclick="selectOpt(this,'style','Driving')">🚗 Driving</div>
+
+      <!-- Step 4: Vibes -->
+      <div class="step-card">
+        <div class="step-hdr"><div class="step-num">04</div><div class="step-info"><div class="step-title">What's your vibe?</div><div class="step-sub">Pick all that apply</div></div></div>
+        <div class="opt-grid">
+          <div class="opt" onclick="toggleOpt(this,'vibe','Culture & History')">🏛 Culture</div>
+          <div class="opt" onclick="toggleOpt(this,'vibe','Food & Drink')">🍽 Food & Drink</div>
+          <div class="opt" onclick="toggleOpt(this,'vibe','Nature & Outdoors')">🌿 Nature</div>
+          <div class="opt" onclick="toggleOpt(this,'vibe','Shopping')">🛍 Shopping</div>
+          <div class="opt" onclick="toggleOpt(this,'vibe','Nightlife')">🌙 Nightlife</div>
+          <div class="opt" onclick="toggleOpt(this,'vibe','Art & Design')">🎨 Art</div>
+          <div class="opt" onclick="toggleOpt(this,'vibe','Relaxation & Wellness')">🧘 Wellness</div>
+          <div class="opt" onclick="toggleOpt(this,'vibe','Hidden Gems & Local Spots')">💎 Hidden Gems</div>
+          <div class="opt" onclick="toggleOpt(this,'vibe','Adventure & Sports')">🏄 Adventure</div>
+          <div class="opt" onclick="toggleOpt(this,'vibe','Photography Spots')">📸 Photography</div>
         </div>
       </div>
-      <div class="itin-step">
-        <div class="itin-step-header"><div class="step-num">05</div><div><div class="step-title">What's your budget?</div><div class="step-sub">Per person for the day</div></div></div>
-        <div class="option-grid">
-          <div class="opt-btn" onclick="selectOpt(this,'budget','Budget ($0-$50)')">$ Budget</div>
-          <div class="opt-btn selected" onclick="selectOpt(this,'budget','Mid-range ($50-$150)')">$$ Mid-range</div>
-          <div class="opt-btn" onclick="selectOpt(this,'budget','Splurge ($150+)')">$$$ Splurge</div>
+
+      <!-- Step 5: Tailored preferences -->
+      <div class="step-card">
+        <div class="step-hdr"><div class="step-num">05</div><div class="step-info"><div class="step-title">Tailor your experience</div><div class="step-sub">Add dietary needs, food types, accessibility, or anything specific</div></div></div>
+        <div class="tags-wrap" id="tagsWrap" onclick="document.getElementById('tagsInput').focus()">
+          <input class="tags-input" id="tagsInput" placeholder="Type and press Enter e.g. vegan, gluten free, wheelchair accessible..." onkeydown="handleTagInput(event)"/>
+        </div>
+        <div class="tag-suggestions">
+          <span class="tag-sug" onclick="addTag('Vegan')">Vegan</span>
+          <span class="tag-sug" onclick="addTag('Vegetarian')">Vegetarian</span>
+          <span class="tag-sug" onclick="addTag('Gluten Free')">Gluten Free</span>
+          <span class="tag-sug" onclick="addTag('Halal')">Halal</span>
+          <span class="tag-sug" onclick="addTag('Kosher')">Kosher</span>
+          <span class="tag-sug" onclick="addTag('No Spicy Food')">No Spicy Food</span>
+          <span class="tag-sug" onclick="addTag('Seafood')">Seafood</span>
+          <span class="tag-sug" onclick="addTag('Ramen')">Ramen</span>
+          <span class="tag-sug" onclick="addTag('Coffee')">Coffee</span>
+          <span class="tag-sug" onclick="addTag('Rooftop Bars')">Rooftop Bars</span>
+          <span class="tag-sug" onclick="addTag('Pet Friendly')">Pet Friendly</span>
+          <span class="tag-sug" onclick="addTag('Wheelchair Accessible')">Wheelchair Accessible</span>
+          <span class="tag-sug" onclick="addTag('Kid Friendly')">Kid Friendly</span>
+          <span class="tag-sug" onclick="addTag('Budget Friendly')">Budget Friendly</span>
+          <span class="tag-sug" onclick="addTag('Outdoor Seating')">Outdoor Seating</span>
         </div>
       </div>
-      <div class="itin-step">
-        <div class="itin-step-header"><div class="step-num">06</div><div><div class="step-title">Who's joining you?</div><div class="step-sub">So we can tailor the recommendations</div></div></div>
-        <div class="option-grid">
-          <div class="opt-btn selected" onclick="selectOpt(this,'group','Solo')">🙋 Solo</div>
-          <div class="opt-btn" onclick="selectOpt(this,'group','Couple')">👫 Couple</div>
-          <div class="opt-btn" onclick="selectOpt(this,'group','Friends')">👯 Friends</div>
-          <div class="opt-btn" onclick="selectOpt(this,'group','Family with kids')">👨‍👩‍👧 Family</div>
+
+      <!-- Step 6: Travel style -->
+      <div class="step-card">
+        <div class="step-hdr"><div class="step-num">06</div><div class="step-info"><div class="step-title">How are you getting around?</div><div class="step-sub">This affects how far apart recommendations will be</div></div></div>
+        <div class="opt-grid">
+          <div class="opt sel" onclick="selectOpt(this,'style','Walking')">🚶 Walking</div>
+          <div class="opt" onclick="selectOpt(this,'style','Public Transport')">🚇 Transit</div>
+          <div class="opt" onclick="selectOpt(this,'style','Taxi / Rideshare')">🚕 Rideshare</div>
+          <div class="opt" onclick="selectOpt(this,'style','Driving')">🚗 Driving</div>
         </div>
       </div>
+
+      <!-- Step 7: Budget -->
+      <div class="step-card">
+        <div class="step-hdr"><div class="step-num">07</div><div class="step-info"><div class="step-title">What's your budget?</div><div class="step-sub">Per person, per day</div></div></div>
+        <div class="opt-grid">
+          <div class="opt" onclick="selectOpt(this,'budget','Budget ($0–$50/day)')">$ Budget</div>
+          <div class="opt sel" onclick="selectOpt(this,'budget','Mid-range ($50–$150/day)')">$$ Mid-range</div>
+          <div class="opt" onclick="selectOpt(this,'budget','Splurge ($150+/day)')">$$$ Splurge</div>
+        </div>
+      </div>
+
+      <!-- Step 8: Group -->
+      <div class="step-card">
+        <div class="step-hdr"><div class="step-num">08</div><div class="step-info"><div class="step-title">Who's coming?</div><div class="step-sub">So we can tailor recommendations</div></div></div>
+        <div class="opt-grid">
+          <div class="opt sel" onclick="selectOpt(this,'group','Solo')">🙋 Solo</div>
+          <div class="opt" onclick="selectOpt(this,'group','Couple')">👫 Couple</div>
+          <div class="opt" onclick="selectOpt(this,'group','Friends group')">👯 Friends</div>
+          <div class="opt" onclick="selectOpt(this,'group','Family with kids')">👨‍👩‍👧 Family</div>
+        </div>
+      </div>
+
+      <!-- Step 9: Randomize -->
+      <div class="step-card">
+        <div class="step-hdr"><div class="step-num">09</div><div class="step-info"><div class="step-title">Options</div><div class="step-sub">Extra settings</div></div></div>
+        <div style="display:grid;gap:0.7rem;">
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">🎲 Randomize each day</div>
+              <div class="toggle-sub">Each day gets completely different places — no repeats</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="randomizeToggle" checked/>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">🔗 Include reservation links</div>
+              <div class="toggle-sub">Add booking links for restaurants, tours, and hotels</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="resvToggle" checked/>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end steps -->
+
+    <div class="gen-btn-wrap">
+      <button class="gen-btn" id="genBtn" onclick="generateItinerary(false)">✨ Build My Itinerary</button>
     </div>
-    <button class="gen-itin-btn" id="genItinBtn" onclick="generateItinerary()">✨ Build My Itinerary</button>
+
+    <!-- RESULTS -->
     <div id="itinResult">
-      <div class="itin-result-header">
-        <div class="itin-result-title" id="itinResultTitle">Your Itinerary</div>
-        <button class="print-btn" onclick="window.print()">🖨 Print / Save PDF</button>
+      <div class="itin-result-hdr">
+        <div>
+          <div class="itin-result-title" id="itinTitle">Your Itinerary</div>
+          <div class="itin-result-sub" id="itinSub"></div>
+        </div>
+        <div class="result-actions">
+          <button class="action-btn regen" onclick="generateItinerary(true)">🎲 Regenerate</button>
+          <button class="action-btn" onclick="window.print()">🖨 Print / PDF</button>
+        </div>
       </div>
-      <div id="itinBlocks"></div>
+      <div class="day-tabs" id="dayTabs"></div>
+      <div id="dayPanels"></div>
     </div>
+
   </div>
 </div>
 
-<!-- BLOG PAGE -->
+<!-- ===== BLOG PAGE ===== -->
 <div class="page" id="blog-page">
-  <div class="blog-inner">
-    <div class="page-eyebrow">✦ Community</div>
-    <h2 class="page-title">Travel stories,<br><span style="background:linear-gradient(135deg,var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">from real people.</span></h2>
-    <p class="page-sub">Share the spots you love. Real experiences, honest takes, and hidden gems from travelers around the world.</p>
+  <div class="blog-inner" style="max-width:1100px;margin:0 auto;">
+    <div style="margin-bottom:2rem;">
+      <div class="page-eyebrow">✦ Community</div>
+      <h2 class="page-title">Travel stories,<br><span style="background:linear-gradient(135deg,#f472b6,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">from real people.</span></h2>
+      <p class="page-sub">Share the spots you love. Real experiences, honest takes, hidden gems.</p>
+    </div>
     <div class="blog-toolbar">
       <div class="blog-filters" id="blogFilters">
         <span class="btag active" onclick="filterBlog('all',this)">All</span>
@@ -487,12 +470,7 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-si
   </div>
 </div>
 
-<footer>© 2026 What's Around? · Discover every destination</footer>
-</div>
-
-<!-- DETAIL MODAL -->
-<div class="overlay" id="detailOverlay" onclick="closeDetailOut(event)">
-  <div class="detail-modal" id="detailModal"></div>
+<footer>© 2026 What's Around? · Plan every destination</footer>
 </div>
 
 <!-- WRITE MODAL -->
@@ -507,24 +485,22 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-si
     <div class="fg"><label class="fl2">Your Experience</label><textarea class="fta" id="postBody" placeholder="Tell us about your experience..." oninput="checkProf(this)"></textarea><div class="prof-warn" id="profWarn">⚠️ Please keep it friendly — remove inappropriate language before posting.</div></div>
     <div class="fg">
       <label class="fl2">Add a Photo</label>
-      <div class="upload-area"><input type="file" accept="image/*" id="photoInput" onchange="previewImg(event)"/><div class="upload-icon">📷</div><div class="upload-txt">Tap to upload a photo</div><div class="upload-hint">JPG, PNG or WEBP · Max 5MB</div></div>
+      <div class="upload-area"><input type="file" accept="image/*" id="photoInput" onchange="previewImg(event)"/><div class="upload-txt">📷 Tap to upload a photo</div><div class="upload-hint">JPG, PNG or WEBP · Max 5MB</div></div>
       <img class="img-preview" id="photoPreview" alt="Preview"/>
     </div>
-    <div class="fg"><label class="fl2">City Tags</label><div class="tag-picker" id="tagPicker"><span class="tpick" onclick="toggleTag(this,'Tokyo')">Tokyo</span><span class="tpick" onclick="toggleTag(this,'Paris')">Paris</span><span class="tpick" onclick="toggleTag(this,'New York')">New York</span><span class="tpick" onclick="toggleTag(this,'Barcelona')">Barcelona</span><span class="tpick" onclick="toggleTag(this,'Bangkok')">Bangkok</span><span class="tpick" onclick="toggleTag(this,'Lisbon')">Lisbon</span><span class="tpick" onclick="toggleTag(this,'Sydney')">Sydney</span><span class="tpick" onclick="toggleTag(this,'Other')">Other</span></div></div>
+    <div class="fg"><label class="fl2">City Tags</label><div class="tpick-wrap" id="tagPicker"><span class="tpick" onclick="toggleTag(this,'Tokyo')">Tokyo</span><span class="tpick" onclick="toggleTag(this,'Paris')">Paris</span><span class="tpick" onclick="toggleTag(this,'New York')">New York</span><span class="tpick" onclick="toggleTag(this,'Barcelona')">Barcelona</span><span class="tpick" onclick="toggleTag(this,'Bangkok')">Bangkok</span><span class="tpick" onclick="toggleTag(this,'Lisbon')">Lisbon</span><span class="tpick" onclick="toggleTag(this,'Sydney')">Sydney</span><span class="tpick" onclick="toggleTag(this,'Other')">Other</span></div></div>
     <button class="sub-btn" onclick="submitPost()">Publish Post →</button>
   </div>
 </div>
 
 <script>
 // ============ STATE ============
-const PS=6;
-let allCards={eat:[],drink:[],explore:[],stay:[]};
-let visible={eat:PS,drink:PS,explore:PS,stay:PS};
-let activeFilter='all',activePriceFilter=null;
-let tailoredKeyword='';
+let numDays=1;
+let itinSel={duration:'Full day (8hrs)',style:'Walking',budget:'Mid-range ($50–$150/day)',group:'Solo',vibe:[]};
+let prefTags=[];
+let generatedDays=[];
 let currentCity='';
 let selTags=[],photoData=null;
-let itinSelections={duration:'Full day (8hrs)',style:'Walking',budget:'Mid-range ($50-$150)',group:'Solo',vibe:[]};
 
 const BAD=['fuck','shit','bitch','bastard','cunt','dick','piss','cock','crap','asshole','bullshit','motherfucker','faggot','whore','slut'];
 function hasBad(t){const l=t.toLowerCase().replace(/[^a-z\s]/g,'');return BAD.some(w=>l.split(/\s+/).includes(w));}
@@ -539,340 +515,238 @@ function showPage(p){
   if(p==='blog') renderBlog('all');
 }
 
-// ============ EXPLORE ============
-function quickCity(c){document.getElementById('cityInput').value=c;searchCity();window.scrollTo({top:0,behavior:'smooth'});}
-
-function switchTab(t,btn){
-  document.querySelectorAll('.tab').forEach(x=>x.className='tab');
-  document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('active'));
-  btn.classList.add('act-'+t);
-  document.getElementById('panel-'+t).classList.add('active');
-  updateTailoredPlaceholder(t);
+// ============ DAYS COUNTER ============
+function changeDays(d){
+  numDays=Math.max(1,Math.min(10,numDays+d));
+  document.getElementById('daysNum').textContent=numDays;
+  document.getElementById('daysLabel').textContent=numDays===1?'1 day':numDays+' days';
 }
 
-function updateTailoredPlaceholder(t){
-  const placeholders={
-    eat:'Refine results e.g. sushi, vegan, brunch, pizza...',
-    drink:'Refine results e.g. coffee, rooftop bar, craft beer, cocktails...',
-    explore:'Refine results e.g. museum, park, shopping, street art...',
-    stay:'Refine results e.g. boutique hotel, hostel, beachfront, luxury...'
-  };
-  document.getElementById('tailoredInput').placeholder=placeholders[t]||'Refine results...';
-}
-
-function applyFilter(type,btn){
-  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  activeFilter=type;activePriceFilter=null;
-  visible={eat:PS,drink:PS,explore:PS,stay:PS};
-  renderAll();
-}
-function applyPriceFilter(lvl,btn){
-  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  activePriceFilter=lvl;activeFilter='all';
-  visible={eat:PS,drink:PS,explore:PS,stay:PS};
-  renderAll();
-}
-
-// ============ TAILORED SEARCH ============
-const QUICK_SEARCHES={
-  eat:['Coffee & Breakfast','Vegan Friendly','Seafood','Rooftop Dining','Late Night'],
-  drink:['Coffee Shops','Rooftop Bars','Craft Beer','Cocktail Bars','Wine Bars'],
-  explore:['Museums','Parks & Nature','Street Markets','Historical Sites','Art Galleries'],
-  stay:['Boutique Hotels','Budget Friendly','Luxury','Beachfront','City Center']
-};
-
-function buildQuickPills(tab){
-  const pills=document.getElementById('tailoredPills');
-  pills.innerHTML='';
-  (QUICK_SEARCHES[tab]||[]).forEach(q=>{
-    const p=document.createElement('span');
-    p.className='tsearch-pill';
-    p.textContent=q;
-    p.onclick=()=>{document.getElementById('tailoredInput').value=q;tailoredSearch();};
-    pills.appendChild(p);
-  });
-}
-
-async function tailoredSearch(){
-  const keyword=document.getElementById('tailoredInput').value.trim();
-  if(!keyword||!currentCity) return;
-  const btn=document.getElementById('tailoredBtn');
-  btn.disabled=true;btn.textContent='...';
-  tailoredKeyword=keyword;
-
-  // Get current active tab
-  const activeTab=document.querySelector('.tab[class*="act-"]');
-  const tabId=activeTab?activeTab.id.replace('tbtn-',''):'eat';
-
-  try{
-    const res=await fetch('/api/chat',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:4000,
-        messages:[{role:'user',content:`Find the best "${keyword}" places in "${currentCity}". Return ONLY raw valid JSON:
-{"results":[
-  {"name":"real place name","desc":"under 15 words","price":"$$","vibe":"${keyword}","rating":4.5,"reviewCount":800,"review":"under 18 words","reviewSources":"Google, TripAdvisor","featured":false,"photoId":${Math.floor(Math.random()*900)+100},"hours":[{"day":"Monday","time":"8am-6pm"},{"day":"Tuesday","time":"8am-6pm"},{"day":"Wednesday","time":"8am-6pm"},{"day":"Thursday","time":"8am-6pm"},{"day":"Friday","time":"8am-8pm"},{"day":"Saturday","time":"9am-8pm"},{"day":"Sunday","time":"9am-5pm"}],"menu":[{"name":"Item","desc":"brief","price":"$8"},{"name":"Item","desc":"brief","price":"$12"},{"name":"Item","desc":"brief","price":"$6"},{"name":"Item","desc":"brief","price":"$10"},{"name":"Item","desc":"brief","price":"$9"}]}
-]}
-Give 8 results. All must be real places in "${currentCity}" matching "${keyword}".`}]
-      })
-    });
-    const data=await res.json();
-    const text=data.content?.find(b=>b.type==='text')?.text||'';
-    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
-    allCards[tabId]=parsed.results||[];
-    visible[tabId]=PS;
-    renderTab(tabId,allCards[tabId]);
-    document.getElementById('resultsCount').textContent=`Results for "${keyword}"`;
-  }catch(err){
-    console.error(err);
-  }
-  btn.disabled=false;btn.textContent='Search';
-}
-
-function getFiltered(t){
-  let c=[...allCards[t]];
-  if(activePriceFilter) c=c.filter(x=>(x.price||'$').length===activePriceFilter);
-  if(activeFilter==='rating') c.sort((a,b)=>(b.rating||4)-(a.rating||4));
-  if(activeFilter==='price-low') c.sort((a,b)=>(a.price||'$').length-(b.price||'$').length);
-  if(activeFilter==='price-high') c.sort((a,b)=>(b.price||'$').length-(a.price||'$').length);
-  if(activeFilter==='featured') c=c.filter(x=>x.featured);
-  return c;
-}
-function loadMore(t){visible[t]+=PS;renderTab(t,getFiltered(t));}
-function renderAll(){['eat','drink','explore','stay'].forEach(t=>renderTab(t,getFiltered(t)));}
-
-// ============ PHOTOS — using Picsum with stable seed ============
-function getPhotoUrl(item, w=600, h=400){
-  // Use a stable seed based on name so same place always gets same photo
-  const seed=Math.abs(item.name.split('').reduce((a,c)=>a+c.charCodeAt(0),0))%1000;
-  return `https://picsum.photos/seed/${seed}/${w}/${h}`;
-}
-
-async function searchCity(){
-  const city=document.getElementById('cityInput').value.trim();
-  if(!city) return;
-  currentCity=city;
-  tailoredKeyword='';
-  document.getElementById('tailoredInput').value='';
-  const btn=document.getElementById('searchBtn');
-  btn.disabled=true;btn.textContent='...';
-  document.getElementById('results').style.display='none';
-  document.getElementById('skeleton').style.display='block';
-  document.getElementById('resultsTitle').innerHTML=city+' <em class="grad">Guide</em>';
-  visible={eat:PS,drink:PS,explore:PS,stay:PS};
-  document.getElementById('skeleton').scrollIntoView({behavior:'smooth',block:'start'});
-
-  try{
-    const res=await fetch('/api/chat',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:16000,
-        messages:[{role:'user',content:`Travel curator for "${city}". Return ONLY raw valid JSON starting with {, no markdown, no backticks.
-
-Give exactly 8 items in each of these 4 arrays: eat, drink, explore, stay.
-
-Each item schema:
-{"name":"real place name","desc":"under 15 words","price":"$$","vibe":"category label","rating":4.5,"reviewCount":1200,"review":"under 18 words","reviewSources":"Google, TripAdvisor","featured":false,"hours":[{"day":"Monday","time":"11am-10pm"},{"day":"Tuesday","time":"11am-10pm"},{"day":"Wednesday","time":"11am-10pm"},{"day":"Thursday","time":"11am-10pm"},{"day":"Friday","time":"11am-11pm"},{"day":"Saturday","time":"10am-11pm"},{"day":"Sunday","time":"Closed"}],"menu":[{"name":"Item name","desc":"brief description","price":"$12"},{"name":"Item name","desc":"brief description","price":"$8"},{"name":"Item name","desc":"brief description","price":"$15"},{"name":"Item name","desc":"brief description","price":"$10"},{"name":"Item name","desc":"brief description","price":"$6"}]}
-
-Mark exactly 2 items per category as featured:true. All names must be real places in "${city}". Ratings between 3.8-4.9. Return complete valid JSON only.`}]
-      })
-    });
-    const data=await res.json();
-    const text=data.content?.find(b=>b.type==='text')?.text||'';
-    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
-    allCards={eat:parsed.eat||[],drink:parsed.drink||[],explore:parsed.explore||[],stay:parsed.stay||[]};
-    activeFilter='all';activePriceFilter=null;
-    document.querySelectorAll('.fb').forEach((b,i)=>b.classList.toggle('active',i===0));
-    renderAll();
-    buildQuickPills('eat');
-    const total=Object.values(allCards).reduce((s,a)=>s+a.length,0);
-    document.getElementById('resultsCount').textContent=total+' spots';
-    document.querySelectorAll('.tab').forEach(t=>t.className='tab');
-    document.querySelectorAll('.tab-panel').forEach(t=>t.classList.remove('active'));
-    document.getElementById('tbtn-eat').classList.add('act-eat');
-    document.getElementById('panel-eat').classList.add('active');
-    updateTailoredPlaceholder('eat');
-    document.getElementById('skeleton').style.display='none';
-    document.getElementById('results').style.display='block';
-    document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
-  }catch(err){
-    document.getElementById('skeleton').style.display='none';
-    document.getElementById('results').style.display='block';
-    document.getElementById('grid-eat').innerHTML=`<div class="err-msg"><strong>Could not load results</strong>${err.message}<br><br>Check ANTHROPIC_API_KEY is set in Vercel environment variables.</div>`;
-    document.getElementById('panel-eat').classList.add('active');
-    console.error(err);
-  }
-  btn.disabled=false;btn.textContent='Explore';
-}
-
-// ============ RENDER ============
-function stars(r){
-  const f=Math.floor(r),h=r%1>=0.5;
-  let s='';
-  for(let i=1;i<=5;i++){
-    if(i<=f) s+=`<span class="star on">★</span>`;
-    else if(i===f+1&&h) s+=`<span class="star on" style="opacity:0.5">★</span>`;
-    else s+=`<span class="star">★</span>`;
-  }
-  return s;
-}
-function priceDots(p){const l=(p||'$').length;return[1,2,3].map(i=>`<span class="pd ${i<=l?'on':'off'}">$</span>`).join('');}
-
-function renderTab(t,items){
-  const grid=document.getElementById('grid-'+t);
-  const lm=document.getElementById('lm-'+t);
-  grid.innerHTML='';
-  if(!items||!items.length){grid.innerHTML='<div class="err-msg"><strong>No results</strong>Try adjusting filters or search terms.</div>';lm.style.display='none';return;}
-  const emap={eat:'🍽',drink:'🍸',explore:'🗺',stay:'🏨'};
-  items.slice(0,visible[t]).forEach(item=>{
-    const card=document.createElement('div');
-    card.className='card';
-    const lbl=t==='eat'?(item.vibe||'Restaurant'):t==='drink'?(item.vibe||'Bar'):t==='explore'?(item.type||'Attraction'):'Hotel';
-    let pills='';
-    if(t==='eat'||t==='drink') pills=`<span class="mpill">${item.vibe||''}</span>`;
-    if(t==='explore') pills=`<span class="mpill">${item.type||''}</span>`;
-    if(t==='stay') pills=`<span class="mpill">${'★'.repeat(item.stars||3)}</span>`;
-    const idx=allCards[t].indexOf(item);
-    const photoUrl=getPhotoUrl(item);
-    card.innerHTML=`
-      <div class="card-img-wrap">
-        <img class="card-img" src="${photoUrl}" alt="${item.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"/>
-        <div class="card-img-ph">${emap[t]}</div>
-        ${item.featured?'<div class="feat-badge">✦ Featured</div>':''}
-      </div>
-      <div class="card-body">
-        <div class="card-top"><span class="type-badge tb-${t}">${lbl}</span></div>
-        <div class="card-name">${item.name}</div>
-        <div class="card-desc">${item.desc}</div>
-        <div class="rating-row"><div class="stars">${stars(item.rating||4.3)}</div><span class="rnum">${(item.rating||4.3).toFixed(1)}</span><span class="rcnt">(${(item.reviewCount||800).toLocaleString()})</span><div class="pdots">${priceDots(item.price)}</div></div>
-        <div class="review-box"><div class="review-text">"${item.review||'Highly recommended by visitors.'}"</div><div class="review-meta"><span>Consolidated reviews</span><span>${item.reviewSources||'Google, TripAdvisor'}</span></div></div>
-        <div class="card-footer"><div class="mpills">${pills}</div><button class="view-btn" onclick="openDetail(event,'${t}',${idx})">View details →</button></div>
-      </div>`;
-    grid.appendChild(card);
-  });
-  lm.style.display=items.length>visible[t]?'block':'none';
-}
-
-// ============ DETAIL MODAL ============
-function toggleMenu(btn){
-  const list=btn.nextElementSibling;
-  const arrow=btn.querySelector('.menu-toggle-arrow');
-  const isOpen=list.classList.contains('open');
-  list.classList.toggle('open',!isOpen);
-  arrow.classList.toggle('open',!isOpen);
-}
-
-function openDetail(e,t,idx){
-  e.stopPropagation();
-  const item=allCards[t][idx];
-  if(!item) return;
-  const emap={eat:'🍽',drink:'🍸',explore:'🗺',stay:'🏨'};
-  const menuTitle=t==='eat'?'Menu':t==='drink'?'Drinks Menu':t==='explore'?'Highlights':'What\'s Included';
-  const photoUrl=getPhotoUrl(item,680,280);
-
-  const hoursHTML=item.hours?.length?`
-    <div class="dm-section">
-      <div class="dm-section-title">Opening Hours</div>
-      <div class="hours-grid">${item.hours.map(h=>`<div class="hour-row"><span class="hour-day">${h.day}</span><span class="hour-time">${h.time}</span></div>`).join('')}</div>
-    </div>`:'';
-
-  const menuHTML=item.menu?.length?`
-    <div class="dm-section">
-      <div class="dm-section-title">${menuTitle}</div>
-      <button class="menu-toggle" onclick="toggleMenu(this)">
-        <span class="menu-toggle-label">View all ${item.menu.length} items</span>
-        <span class="menu-toggle-count">${item.menu.length} items <span class="menu-toggle-arrow">▼</span></span>
-      </button>
-      <div class="menu-list">
-        ${item.menu.map(m=>`
-          <div class="menu-item">
-            <div class="menu-item-left">
-              <div class="menu-name">${m.name}</div>
-              ${m.desc?`<div class="menu-desc-text">${m.desc}</div>`:''}
-            </div>
-            ${m.price?`<div class="menu-price">${m.price}</div>`:''}
-          </div>`).join('')}
-      </div>
-    </div>`:'';
-
-  document.getElementById('detailModal').innerHTML=`
-    <div style="position:relative;">
-      <img class="dm-img" src="${photoUrl}" alt="${item.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"/>
-      <div class="dm-img-ph">${emap[t]}</div>
-    </div>
-    <div class="dm-body">
-      <div class="dm-header"><div class="dm-title">${item.name}</div><button class="close-btn" onclick="closeDetail()">✕</button></div>
-      <div class="rating-row" style="margin-bottom:1.2rem;"><div class="stars">${stars(item.rating||4.3)}</div><span class="rnum">${(item.rating||4.3).toFixed(1)}</span><span class="rcnt">(${(item.reviewCount||800).toLocaleString()} reviews)</span><div class="pdots" style="margin-left:auto;">${priceDots(item.price)}</div></div>
-      <div class="dm-desc">${item.desc}</div>
-      ${hoursHTML}
-      ${menuHTML}
-      <div class="dm-section"><div class="dm-section-title">What People Say</div><div class="dm-review">"${item.review||'Highly recommended.'}"<div class="dm-review-meta">From ${item.reviewSources||'Google, TripAdvisor'}</div></div></div>
-      <button class="dir-btn" onclick="window.open('https://www.google.com/maps/search/${encodeURIComponent((item.name||'')+(currentCity?' '+currentCity:''))}','_blank')">🗺 Get Directions on Google Maps</button>
-    </div>`;
-  document.getElementById('detailOverlay').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeDetail(){document.getElementById('detailOverlay').classList.remove('open');document.body.style.overflow='';}
-function closeDetailOut(e){if(e.target===document.getElementById('detailOverlay'))closeDetail();}
-
-// ============ ITINERARY ============
+// ============ OPTIONS ============
 function selectOpt(el,key,val){
-  el.closest('.itin-step').querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
-  el.classList.add('selected');
-  itinSelections[key]=val;
+  el.closest('.opt-grid').querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  itinSel[key]=val;
 }
 function toggleOpt(el,key,val){
-  el.classList.toggle('selected');
-  if(el.classList.contains('selected')) itinSelections.vibe.push(val);
-  else itinSelections.vibe=itinSelections.vibe.filter(v=>v!==val);
+  el.classList.toggle('sel');
+  if(el.classList.contains('sel')) itinSel.vibe.push(val);
+  else itinSel.vibe=itinSel.vibe.filter(v=>v!==val);
 }
-async function generateItinerary(){
+
+// ============ TAGS INPUT ============
+function handleTagInput(e){
+  if(e.key==='Enter'||e.key===','){
+    e.preventDefault();
+    const v=e.target.value.trim().replace(/,$/,'');
+    if(v) addTag(v);
+    e.target.value='';
+  } else if(e.key==='Backspace'&&!e.target.value&&prefTags.length){
+    removeTag(prefTags[prefTags.length-1]);
+  }
+}
+function addTag(tag){
+  const t=tag.trim();
+  if(!t||prefTags.includes(t)) return;
+  prefTags.push(t);
+  renderTags();
+}
+function removeTag(tag){
+  prefTags=prefTags.filter(t=>t!==tag);
+  renderTags();
+}
+function renderTags(){
+  const wrap=document.getElementById('tagsWrap');
+  const input=document.getElementById('tagsInput');
+  wrap.innerHTML='';
+  prefTags.forEach(t=>{
+    const chip=document.createElement('span');
+    chip.className='tag-chip';
+    chip.innerHTML=`${t}<span class="tag-chip-x" onclick="removeTag('${t}')">✕</span>`;
+    wrap.appendChild(chip);
+  });
+  wrap.appendChild(input);
+}
+
+// ============ GENERATE ITINERARY ============
+async function generateItinerary(isRegen=false){
   const city=document.getElementById('itinCity').value.trim();
   if(!city){alert('Please enter a destination first!');return;}
-  const btn=document.getElementById('genItinBtn');
-  btn.disabled=true;btn.textContent='Building your itinerary...';
+  currentCity=city;
+  const randomize=document.getElementById('randomizeToggle').checked;
+  const includeResv=document.getElementById('resvToggle').checked;
+  const vibes=itinSel.vibe.length>0?itinSel.vibe.join(', '):'General sightseeing';
+  const prefs=prefTags.length>0?prefTags.join(', '):'None';
+  const btn=document.getElementById('genBtn');
+  btn.disabled=true;
+  btn.textContent=isRegen?'Regenerating...':'Building your itinerary...';
+
   const result=document.getElementById('itinResult');
-  const blocks=document.getElementById('itinBlocks');
+  const panels=document.getElementById('dayPanels');
+  const tabs=document.getElementById('dayTabs');
   result.style.display='block';
-  blocks.innerHTML=`<div class="itin-loading"><div class="itin-loader"></div><div>Crafting your perfect day...</div></div>`;
+  panels.innerHTML=`<div class="itin-loading"><div class="itin-loader"></div><div class="loading-txt">Crafting ${numDays} day${numDays>1?'s':''} in ${city}...</div></div>`;
+  tabs.innerHTML='';
   result.scrollIntoView({behavior:'smooth',block:'start'});
-  const vibes=itinSelections.vibe.length>0?itinSelections.vibe.join(', '):'General sightseeing';
+
+  // Build already-used places list to avoid repeats
+  const usedPlaces=isRegen?[]:generatedDays.flatMap(d=>(d.blocks||[]).map(b=>b.place));
+
   try{
     const res=await fetch('/api/chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
-        max_tokens:4000,
-        messages:[{role:'user',content:`Create a day itinerary for "${city}". Duration: ${itinSelections.duration}. Interests: ${vibes}. Travel: ${itinSelections.style}. Budget: ${itinSelections.budget}. Group: ${itinSelections.group}.
+        max_tokens:8000,
+        messages:[{role:'user',content:`Create a ${numDays}-day itinerary for "${city}".
 
-Return ONLY raw valid JSON:
-{"title":"e.g. A Perfect Day in Tokyo","blocks":[{"time":"9:00 AM","place":"Real place name","type":"Breakfast","desc":"2 sentences on what to do/eat.","tip":"One practical insider tip"}]}
+Preferences:
+- Duration per day: ${itinSel.duration}
+- Interests: ${vibes}
+- Dietary/specific preferences: ${prefs}
+- Transport: ${itinSel.style}
+- Budget: ${itinSel.budget}
+- Group: ${itinSel.group}
+- Randomize (no repeat places): ${randomize?'YES — every day must have completely different places, no repeats':'NO'}
+${usedPlaces.length?`- Do NOT use any of these already-seen places: ${usedPlaces.join(', ')}`:''}
 
-Include 6-10 blocks. Use real places. Make it flow with logical geography.`}]
+Return ONLY raw valid JSON no markdown no backticks:
+{
+  "title": "e.g. 3 Days in Tokyo",
+  "days": [
+    {
+      "dayNum": 1,
+      "theme": "e.g. Old Tokyo & Street Food",
+      "blocks": [
+        {
+          "time": "9:00 AM",
+          "place": "Real place name",
+          "type": "Breakfast",
+          "desc": "2 sentences on what to do/eat here.",
+          "tip": "One practical insider tip",
+          "openTableSlug": "place-name-city (if it's a restaurant, otherwise empty string)",
+          "googleMapsQuery": "Place Name City Country",
+          "viatorQuery": "activity name city (if it's a tour/attraction, otherwise empty string)",
+          "bookingQuery": "hotel name city (if it's accommodation, otherwise empty string)"
+        }
+      ]
+    }
+  ]
+}
+
+Rules:
+- Each day must have 5-8 blocks depending on duration
+- ${randomize?'Every place must be different across ALL days — absolutely no repeats':'Places can vary per day'}
+- All places must be real and exist in ${city}
+- Match dietary/specific preferences: ${prefs}
+- Logical geographic flow within each day
+- Include a mix of food, drink, and ${vibes} based on interests
+- For openTableSlug: use the restaurant slug format used in OpenTable URLs (e.g. "nobu-new-york")
+- For viatorQuery: only fill if it's a ticketed attraction or tour
+- For bookingQuery: only fill if it's overnight accommodation`}]
       })
     });
     const data=await res.json();
     const text=data.content?.find(b=>b.type==='text')?.text||'';
     const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
-    document.getElementById('itinResultTitle').textContent=parsed.title||'Your Itinerary';
-    blocks.innerHTML='';
-    (parsed.blocks||[]).forEach(block=>{
-      const div=document.createElement('div');
-      div.className='time-block';
-      div.innerHTML=`<div class="time-block-header"><div class="time-label">${block.time}</div><div class="time-place">${block.place}</div><div class="time-type">${block.type}</div></div><div class="time-desc">${block.desc}</div>${block.tip?`<div class="time-tip">💡 ${block.tip}</div>`:''}`;
-      blocks.appendChild(div);
+    generatedDays=parsed.days||[];
+
+    document.getElementById('itinTitle').textContent=parsed.title||`Your ${numDays}-Day Itinerary`;
+    document.getElementById('itinSub').textContent=`${numDays} day${numDays>1?'s':''} · ${city} · ${itinSel.group}`;
+
+    // Build day tabs
+    tabs.innerHTML='';
+    panels.innerHTML='';
+    generatedDays.forEach((day,i)=>{
+      const tab=document.createElement('button');
+      tab.className='day-tab'+(i===0?' active':'');
+      tab.textContent=`Day ${day.dayNum}${day.theme?' — '+day.theme:''}`;
+      tab.onclick=()=>switchDayTab(i);
+      tabs.appendChild(tab);
+
+      const panel=document.createElement('div');
+      panel.className='day-panel'+(i===0?' active':'');
+      panel.id='day-panel-'+i;
+      panel.innerHTML=renderDayBlocks(day.blocks||[],includeResv,i);
+      panels.appendChild(panel);
     });
+
   }catch(err){
-    blocks.innerHTML=`<div class="err-msg"><strong>Could not build itinerary</strong>${err.message}</div>`;
+    panels.innerHTML=`<div class="err-msg"><strong>Could not build itinerary</strong>${err.message}<br><br>Make sure ANTHROPIC_API_KEY is set in Vercel.</div>`;
+    console.error(err);
   }
-  btn.disabled=false;btn.textContent='✨ Build My Itinerary';
+  btn.disabled=false;
+  btn.textContent='✨ Build My Itinerary';
+}
+
+function switchDayTab(idx){
+  document.querySelectorAll('.day-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.day-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+}
+
+function renderDayBlocks(blocks,includeResv,dayIdx){
+  return `<div class="day-blocks">${blocks.map((b,bi)=>`
+    <div class="time-block" id="block-${dayIdx}-${bi}">
+      <div class="tb-header">
+        <div class="tb-time">${b.time}</div>
+        <div class="tb-place">${b.place}</div>
+        <div class="tb-type">${b.type}</div>
+        <button class="regen-block-btn" onclick="regenBlock(${dayIdx},${bi})" title="Get a different suggestion">🎲 Swap</button>
+      </div>
+      <div class="tb-body">
+        <div class="tb-desc">${b.desc}</div>
+        ${b.tip?`<div class="tb-tip">💡 ${b.tip}</div>`:''}
+        ${includeResv?`<div class="tb-footer">
+          <a class="res-btn res-btn-maps" href="https://www.google.com/maps/search/${encodeURIComponent(b.googleMapsQuery||b.place)}" target="_blank" rel="noopener">📍 Maps</a>
+          ${b.openTableSlug?`<a class="res-btn res-btn-opentable" href="https://www.opentable.com/r/${b.openTableSlug}" target="_blank" rel="noopener">🍽 OpenTable</a>`:''}
+          ${b.viatorQuery?`<a class="res-btn res-btn-viator" href="https://www.viator.com/search/${encodeURIComponent(b.viatorQuery)}" target="_blank" rel="noopener">🎟 Book Tour</a>`:''}
+          ${b.bookingQuery?`<a class="res-btn res-btn-booking" href="https://www.booking.com/search.html?ss=${encodeURIComponent(b.bookingQuery)}" target="_blank" rel="noopener">🏨 Booking.com</a>`:''}
+          <a class="res-btn res-btn-yelp" href="https://www.yelp.com/search?find_desc=${encodeURIComponent(b.place)}&find_loc=${encodeURIComponent(currentCity)}" target="_blank" rel="noopener">⭐ Yelp</a>
+        </div>`:''}
+      </div>
+    </div>`).join('')}</div>`;
+}
+
+// REGENERATE A SINGLE BLOCK
+async function regenBlock(dayIdx,blockIdx){
+  const city=currentCity||document.getElementById('itinCity').value.trim();
+  const block=generatedDays[dayIdx]?.blocks[blockIdx];
+  if(!block) return;
+  const btn=document.querySelector(`#block-${dayIdx}-${blockIdx} .regen-block-btn`);
+  if(btn){btn.disabled=true;btn.textContent='...';}
+  const usedPlaces=generatedDays.flatMap(d=>(d.blocks||[]).map(b=>b.place));
+  const includeResv=document.getElementById('resvToggle').checked;
+  const prefs=prefTags.length>0?prefTags.join(', '):'None';
+
+  try{
+    const res=await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:800,
+        messages:[{role:'user',content:`Suggest ONE alternative place in "${city}" for a ${block.type} slot at ${block.time}.
+Preferences: ${prefs}. Do NOT suggest any of: ${usedPlaces.join(', ')}.
+Return ONLY raw valid JSON:
+{"place":"Real name","type":"${block.type}","desc":"2 sentences","tip":"insider tip","openTableSlug":"slug or empty","googleMapsQuery":"place city","viatorQuery":"query or empty","bookingQuery":"query or empty"}`}]
+      })
+    });
+    const data=await res.json();
+    const text=data.content?.find(b=>b.type==='text')?.text||'';
+    const newBlock=JSON.parse(text.replace(/```json|```/g,'').trim());
+    newBlock.time=block.time;
+    generatedDays[dayIdx].blocks[blockIdx]=newBlock;
+    // Re-render just this block
+    const blockEl=document.getElementById(`block-${dayIdx}-${blockIdx}`);
+    const wrapper=blockEl.parentElement;
+    const temp=document.createElement('div');
+    temp.innerHTML=renderDayBlocks(generatedDays[dayIdx].blocks,includeResv,dayIdx);
+    wrapper.innerHTML=temp.querySelector('.day-blocks').innerHTML;
+  }catch(err){
+    if(btn){btn.disabled=false;btn.textContent='🎲 Swap';}
+    console.error(err);
+  }
 }
 
 // ============ BLOG ============
@@ -888,12 +762,12 @@ function renderBlog(city){
   const grid=document.getElementById('blogGrid');
   grid.innerHTML='';
   const list=city==='all'?blogPosts:blogPosts.filter(p=>p.city===city);
-  if(!list.length){grid.innerHTML='<div class="err-msg"><strong>No posts yet</strong>Be the first to write about this city!</div>';return;}
+  if(!list.length){grid.innerHTML='<div class="err-msg"><strong>No posts yet</strong>Be the first!</div>';return;}
   list.forEach(p=>{
     const card=document.createElement('div');
     card.className='blog-card';
     const imgH=p.photo?`<img class="bc-img" src="${p.photo}" alt="${p.title}"/>`:`<div class="bc-img-ph">${p.emoji}</div>`;
-    card.innerHTML=`${imgH}<div class="bc-body"><div class="bc-tags"><span class="bc-city">${p.city}</span><span class="bc-cat">${p.cat}</span></div><div class="bc-title">${p.title}</div><div class="bc-excerpt">${p.excerpt}</div><div class="bc-footer"><div class="bc-author"><div class="avatar">${p.init}</div><span class="author-name">${p.author}</span></div><div style="display:flex;align-items:center;gap:0.6rem;"><span class="bc-date">${p.date}</span><button class="read-btn">Read →</button></div></div></div>`;
+    card.innerHTML=`${imgH}<div class="bc-body"><div class="bc-tags"><span class="bc-city">${p.city}</span><span class="bc-cat">${p.cat}</span></div><div class="bc-title">${p.title}</div><div class="bc-excerpt">${p.excerpt}</div><div class="bc-footer"><div class="bc-author"><div class="avatar">${p.init}</div><span class="author-name">${p.author}</span></div><span class="bc-date">${p.date}</span></div></div>`;
     grid.appendChild(card);
   });
 }
@@ -935,9 +809,7 @@ function submitPost(){
   renderBlog('all');
   document.querySelectorAll('#blogFilters .btag').forEach((t,i)=>t.classList.toggle('active',i===0));
 }
-document.getElementById('cityInput').addEventListener('keydown',e=>{if(e.key==='Enter')searchCity();});
-document.getElementById('tailoredInput').addEventListener('keydown',e=>{if(e.key==='Enter')tailoredSearch();});
-document.getElementById('itinCity').addEventListener('keydown',e=>{if(e.key==='Enter')generateItinerary();});
+document.getElementById('itinCity').addEventListener('keydown',e=>{if(e.key==='Enter')generateItinerary(false);});
 </script>
 </body>
 </html>
