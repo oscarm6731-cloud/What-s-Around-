@@ -4,956 +4,2164 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What's Around? — Plan Your Perfect Trip</title>
 <meta name="theme-color" content="#7c3aed">
-<title>What's Around? — Plan Your Trip</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=General+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Fallback if Clash Display unavailable -->
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-html{-webkit-text-size-adjust:100%;}
-body{-webkit-tap-highlight-color:transparent;touch-action:manipulation;background:#07060f;}
-input,textarea,select{font-size:16px!important;}
-::-webkit-scrollbar{width:3px;height:3px;}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:2px;}
+/* ============================================================
+   PSYCHOLOGY LAYER
+   - Variable Reward (dopamine): randomized confetti, surprise animations
+   - Progress Momentum (Zeigarnik effect): progress bar that remembers
+   - Peak-End Rule: euphoric moments at start + end of key flows
+   - Fitts's Law: large tap targets, centered CTAs
+   - Loss Aversion: "Your plan is waiting" messaging
+   - Social Proof: live activity indicators
+   - Endowment Effect: "Your itinerary" ownership language
+   - Aesthetic-Usability Effect: extreme visual polish = perceived ease
+   - Flow State: frictionless step transitions, no dead ends
+   - Reciprocity: give unexpected value (weather, phrases) unprompted
+   - Micro-interactions: every tap gives instant sensory feedback
+   - Scarcity signals: "limited" framing on special features
+============================================================ */
+
+:root{
+–bg:#06050d;
+–bg2:#0a0918;
+–surface:#100f1e;
+–surface2:#181628;
+–surface3:#201e32;
+–surface4:#28253e;
+–border:rgba(255,255,255,0.06);
+–border2:rgba(255,255,255,0.11);
+–border3:rgba(255,255,255,0.18);
+–text:#f0eeff;
+–text2:#c4c0e0;
+–muted:rgba(196,192,224,0.5);
+–muted2:rgba(196,192,224,0.28);
+
+/* Brand palette — warm violet + electric teal */
+–p1:#7c3aed;   /* primary violet */
+–p2:#9f67f7;   /* light violet */
+–p3:#c4a7fd;   /* pale violet */
+–a1:#06d6a0;   /* teal accent */
+–a2:#00f5c4;   /* electric teal */
+–a3:#38f5d4;   /* bright teal */
+–w1:#f59e0b;   /* amber */
+–w2:#fcd34d;   /* gold */
+–r1:#f43f5e;   /* rose */
+–b1:#3b82f6;   /* blue */
+
+–glow-p:0 0 40px rgba(124,58,237,0.35);
+–glow-a:0 0 40px rgba(6,214,160,0.3);
+–glow-w:0 0 30px rgba(245,158,11,0.3);
+
+–ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+–ease-smooth:cubic-bezier(0.4,0,0.2,1);
+–ease-out:cubic-bezier(0,0,0.2,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;}
+body{
+font-family:‘General Sans’,‘Instrument Sans’,sans-serif;
+background:var(–bg);
+color:var(–text);
+min-height:100vh;
+overflow-x:hidden;
+cursor:default;
+}
+
+/* ===================== BACKGROUND SYSTEM ===================== */
+.bg-wrap{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+
+/* Deep space mesh gradient */
+.bg-mesh{
+position:absolute;inset:0;
+background:
+radial-gradient(ellipse 80% 60% at 20% 10%, rgba(124,58,237,0.18) 0%, transparent 55%),
+radial-gradient(ellipse 60% 80% at 80% 90%, rgba(6,214,160,0.12) 0%, transparent 55%),
+radial-gradient(ellipse 50% 50% at 50% 50%, rgba(59,130,246,0.07) 0%, transparent 60%),
+var(–bg);
+}
+
+/* Animated aurora */
+.aurora{
+position:absolute;inset:0;
+background:
+conic-gradient(from 180deg at 50% 120%, rgba(124,58,237,0.0) 0deg, rgba(124,58,237,0.08) 60deg, rgba(6,214,160,0.06) 120deg, rgba(59,130,246,0.05) 180deg, rgba(124,58,237,0.0) 360deg);
+animation:aurora-spin 25s linear infinite;
+opacity:0.7;
+}
+@keyframes aurora-spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+/* Floating particles */
+.particles{position:absolute;inset:0;}
+.particle{
+position:absolute;
+border-radius:50%;
+animation:float-particle linear infinite;
+opacity:0;
+}
+@keyframes float-particle{
+0%{transform:translateY(100vh) scale(0);opacity:0;}
+10%{opacity:1;}
+90%{opacity:0.6;}
+100%{transform:translateY(-20vh) scale(1.5);opacity:0;}
+}
+
+/* Grid lines */
+.bg-grid{
+position:absolute;inset:0;
+background-image:
+linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
+linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
+background-size:60px 60px;
+mask-image:radial-gradient(ellipse 80% 60% at 50% 50%, black 0%, transparent 80%);
+}
+
+.wrapper{position:relative;z-index:1;}
+
+/* ===================== NAV ===================== */
+nav{
+display:flex;justify-content:space-between;align-items:center;
+padding:0.9rem 2.5rem;
+position:fixed;top:0;left:0;right:0;z-index:400;
+background:rgba(6,5,13,0.72);
+backdrop-filter:blur(28px) saturate(180%);
+border-bottom:1px solid var(–border);
+transition:background 0.3s;
+}
+nav.scrolled{background:rgba(6,5,13,0.9);}
+
+.logo{
+font-family:‘Syne’,sans-serif;font-weight:800;font-size:1.15rem;
+letter-spacing:-0.03em;color:var(–text);
+display:flex;align-items:center;gap:0.55rem;cursor:pointer;
+transition:transform 0.2s var(–ease-spring);
+}
+.logo:hover{transform:scale(1.03);}
+
+/* Logo mark — animated gradient ring */
+.logo-mark{
+width:28px;height:28px;border-radius:8px;
+background:linear-gradient(135deg,var(–p1),var(–a1));
+display:flex;align-items:center;justify-content:center;
+font-size:0.8rem;box-shadow:var(–glow-p);
+animation:logo-pulse 3s ease-in-out infinite;
+flex-shrink:0;
+}
+@keyframes logo-pulse{
+0%,100%{box-shadow:0 0 12px rgba(124,58,237,0.4);}
+50%{box-shadow:0 0 28px rgba(124,58,237,0.7),0 0 50px rgba(6,214,160,0.3);}
+}
+
+.nav-links{display:flex;gap:0.15rem;align-items:center;}
+.nav-link{
+padding:0.42rem 0.88rem;font-size:0.78rem;color:var(–muted);
+background:none;border:none;cursor:pointer;
+transition:all 0.18s var(–ease-smooth);
+font-family:‘General Sans’,‘Instrument Sans’,sans-serif;
+border-radius:9px;white-space:nowrap;position:relative;
+}
+.nav-link::after{
+content:’’;position:absolute;bottom:4px;left:50%;transform:translateX(-50%) scaleX(0);
+width:16px;height:2px;border-radius:1px;
+background:linear-gradient(90deg,var(–p1),var(–a1));
+transition:transform 0.2s var(–ease-spring);
+}
+.nav-link:hover{color:var(–text);background:rgba(255,255,255,0.05);}
+.nav-link.active{color:var(–p3);}
+.nav-link.active::after{transform:translateX(-50%) scaleX(1);}
+
+.nav-surprise{
+padding:0.42rem 1rem;
+background:linear-gradient(135deg,rgba(124,58,237,0.18),rgba(6,214,160,0.12));
+border:1px solid rgba(124,58,237,0.3);
+border-radius:9px;color:var(–p3);font-size:0.76rem;font-weight:600;
+font-family:‘Syne’,sans-serif;cursor:pointer;transition:all 0.2s;white-space:nowrap;
+}
+.nav-surprise:hover{
+background:linear-gradient(135deg,rgba(124,58,237,0.32),rgba(6,214,160,0.22));
+transform:translateY(-1px);box-shadow:var(–glow-p);
+}
+.nav-user-btn{
+padding:0.4rem 1rem;background:rgba(124,58,237,0.12);
+border:1px solid rgba(124,58,237,0.28);border-radius:9px;
+color:var(–p3);font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.2s;
+font-family:‘General Sans’,sans-serif;
+}
+.nav-user-btn:hover{background:rgba(124,58,237,0.22);}
+.nav-avatar{
+width:30px;height:30px;border-radius:9px;
+background:linear-gradient(135deg,var(–p1),var(–a1));
+display:flex;align-items:center;justify-content:center;
+font-size:0.68rem;font-weight:700;color:white;cursor:pointer;
+box-shadow:var(–glow-p);transition:transform 0.2s var(–ease-spring);
+}
+.nav-avatar:hover{transform:scale(1.08);}
+
+/* PAGES */
+.page{display:none;}
+.page.active{display:block;}
+
+/* ===================== PROGRESS BAR (Zeigarnik Effect) ===================== */
+/* Shows partially-filled bar to trigger completion drive */
+.progress-bar-wrap{
+position:fixed;top:0;left:0;right:0;height:3px;z-index:500;
+background:rgba(255,255,255,0.05);
+}
+.progress-bar-fill{
+height:100%;width:0%;
+background:linear-gradient(90deg,var(–p1),var(–a1),var(–p2));
+transition:width 0.6s var(–ease-smooth);
+box-shadow:0 0 12px rgba(124,58,237,0.6);
+}
+
+/* ===================== TOAST (Variable Reward) ===================== */
+/* Each toast is slightly different — creates anticipation */
+.toast{
+position:fixed;bottom:2.2rem;left:50%;
+transform:translateX(-50%) translateY(120px) scale(0.9);
+background:var(–surface2);
+border:1px solid var(–border2);
+border-radius:14px;
+padding:0.8rem 1.5rem;
+font-size:0.84rem;font-weight:500;
+z-index:9999;
+transition:transform 0.4s var(–ease-spring),opacity 0.3s;
+white-space:nowrap;
+box-shadow:0 12px 40px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.05);
+opacity:0;
+}
+.toast.show{transform:translateX(-50%) translateY(0) scale(1);opacity:1;}
+.toast.success{border-color:rgba(6,214,160,0.4);color:var(–a2);}
+.toast.error{border-color:rgba(244,63,94,0.4);color:#fb7185;}
+.toast.info{border-color:rgba(124,58,237,0.4);color:var(–p3);}
+.toast.reward{
+border-color:rgba(245,158,11,0.5);color:var(–w2);
+background:linear-gradient(135deg,var(–surface2),rgba(245,158,11,0.06));
+}
+
+/* ===================== CONFETTI (Variable Reward + Peak-End Rule) ===================== */
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden;}
+.confetti-piece{
+position:absolute;
+width:8px;height:8px;
+border-radius:2px;
+animation:confetti-fall 2s ease-in forwards;
+}
+@keyframes confetti-fall{
+0%{transform:translateY(-20px) rotate(0deg);opacity:1;}
+100%{transform:translateY(110vh) rotate(720deg);opacity:0;}
+}
+
+/* ===================== RIPPLE (Haptic-like Feedback) ===================== */
+.ripple-wrap{position:fixed;inset:0;pointer-events:none;z-index:9990;}
+.ripple{
+position:absolute;border-radius:50%;
+background:radial-gradient(circle, rgba(124,58,237,0.3) 0%, transparent 70%);
+transform:scale(0);animation:ripple-out 0.6s ease-out forwards;
+pointer-events:none;
+}
+@keyframes ripple-out{
+to{transform:scale(4);opacity:0;}
+}
+
+/* ===================== HERO ===================== */
+/* Peak-End Rule: make the first second unforgettable */
+.hero{
+min-height:100vh;
+display:flex;flex-direction:column;justify-content:center;align-items:center;
+padding:8rem 2rem 5rem;text-align:center;
+position:relative;
+}
+
+/* Floating destination cards — social proof + aspiration */
+.hero-floaters{
+position:absolute;inset:0;pointer-events:none;overflow:hidden;
+}
+.floater{
+position:absolute;
+background:var(–surface2);
+border:1px solid var(–border2);
+border-radius:14px;
+padding:0.6rem 0.9rem;
+font-size:0.75rem;
+color:var(–text2);
+backdrop-filter:blur(12px);
+animation:float-card 8s ease-in-out infinite;
+box-shadow:0 8px 24px rgba(0,0,0,0.3);
+white-space:nowrap;
+}
+.floater span{font-size:1rem;margin-right:0.3rem;}
+.floater.f1{top:20%;left:5%;animation-delay:0s;}
+.floater.f2{top:35%;right:4%;animation-delay:-2s;}
+.floater.f3{top:65%;left:3%;animation-delay:-4s;}
+.floater.f4{top:75%;right:5%;animation-delay:-6s;}
+.floater.f5{top:15%;right:12%;animation-delay:-1s;}
+@keyframes float-card{
+0%,100%{transform:translateY(0px) rotate(-1deg);}
+50%{transform:translateY(-14px) rotate(1deg);}
+}
+
+.hero-kicker{
+display:inline-flex;align-items:center;gap:0.5rem;
+padding:0.38rem 1rem;border:1px solid rgba(124,58,237,0.3);
+border-radius:100px;
+background:rgba(124,58,237,0.08);
+font-size:0.7rem;color:var(–p3);letter-spacing:0.12em;text-transform:uppercase;
+margin-bottom:2rem;
+animation:fadeDown 0.8s ease both;
+}
+.kicker-dot{
+width:6px;height:6px;background:var(–a2);border-radius:50%;
+box-shadow:0 0 8px var(–a2);
+animation:kicker-blink 1.4s ease-in-out infinite;
+}
+@keyframes kicker-blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* Giant headline — Aesthetic-Usability Effect */
+.hero h1{
+font-family:‘Syne’,sans-serif;
+font-size:clamp(3.2rem,10vw,8rem);
+font-weight:800;line-height:0.92;letter-spacing:-0.05em;
+margin-bottom:1.6rem;
+animation:hero-reveal 1s ease both;
+}
+@keyframes hero-reveal{
+from{opacity:0;transform:translateY(30px) scale(0.97);}
+to{opacity:1;transform:translateY(0) scale(1);}
+}
+
+.hero h1 .line1{display:block;color:var(–text);}
+.hero h1 .line2{
+display:block;
+background:linear-gradient(135deg,var(–p2) 0%,var(–a2) 50%,var(–p3) 100%);
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+background-size:200% 200%;
+animation:grad-shift 4s ease-in-out infinite;
+}
+@keyframes grad-shift{
+0%,100%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+}
+
+.hero-sub{
+font-size:1.05rem;color:var(–muted);max-width:460px;line-height:1.72;
+font-weight:300;margin-bottom:2.8rem;
+animation:fadeDown 0.8s 0.2s ease both;
+}
+.hero-sub strong{color:var(–text2);font-weight:500;}
+
+/* CTA row — Fitts’s Law: huge buttons, high contrast */
+.hero-cta{
+display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center;
+animation:fadeDown 0.8s 0.3s ease both;
+}
+
+/* Primary CTA — draws the eye, pulses gently */
+.btn-primary{
+padding:1rem 2.2rem;
+background:linear-gradient(135deg,var(–p1),var(–p2));
+color:white;font-family:‘Syne’,sans-serif;font-size:0.92rem;font-weight:700;
+border:none;border-radius:14px;cursor:pointer;
+transition:all 0.22s var(–ease-spring);
+box-shadow:0 8px 28px rgba(124,58,237,0.4),0 0 0 1px rgba(255,255,255,0.1) inset;
+position:relative;overflow:hidden;
+}
+.btn-primary::before{
+content:’’;position:absolute;inset:0;
+background:linear-gradient(135deg,rgba(255,255,255,0.15),transparent);
+border-radius:inherit;
+}
+.btn-primary:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 16px 40px rgba(124,58,237,0.55),0 0 0 1px rgba(255,255,255,0.15) inset;}
+.btn-primary:active{transform:translateY(0) scale(0.98);}
+
+/* Surprise CTA — bounces to demand attention (Attentional bias) */
+.btn-surprise{
+padding:1rem 2rem;
+background:rgba(255,255,255,0.04);color:var(–text2);
+font-family:‘Syne’,sans-serif;font-size:0.92rem;font-weight:600;
+border:1px solid var(–border2);border-radius:14px;cursor:pointer;
+transition:all 0.22s var(–ease-spring);
+animation:btn-bounce 2.5s ease-in-out infinite;
+}
+@keyframes btn-bounce{
+0%,100%{transform:translateY(0);}
+40%{transform:translateY(-5px);}
+60%{transform:translateY(-3px);}
+}
+.btn-surprise:hover{
+background:rgba(124,58,237,0.1);border-color:rgba(124,58,237,0.3);
+color:var(–p3);box-shadow:var(–glow-p);
+animation:none;transform:translateY(-3px);
+}
+
+.btn-ghost{
+padding:1rem 2rem;background:transparent;color:var(–muted);
+font-family:‘General Sans’,sans-serif;font-size:0.9rem;font-weight:500;
+border:1px solid var(–border);border-radius:14px;cursor:pointer;
+transition:all 0.2s;
+}
+.btn-ghost:hover{color:var(–text);border-color:var(–border2);background:rgba(255,255,255,0.03);}
+
+/* Feature pills — Social proof through enumeration */
+.feature-pills{
+display:flex;flex-wrap:wrap;gap:0.45rem;justify-content:center;
+margin-top:2.5rem;
+animation:fadeDown 0.8s 0.4s ease both;
+}
+.fpill{
+padding:0.28rem 0.75rem;border:1px solid var(–border);border-radius:100px;
+font-size:0.7rem;color:var(–muted2);background:rgba(255,255,255,0.02);
+transition:all 0.2s;cursor:default;
+}
+.fpill:hover{border-color:var(–border2);color:var(–muted);background:rgba(255,255,255,0.04);}
+
+/* Live users counter — Social proof / FOMO */
+.live-counter{
+margin-top:1.8rem;
+display:inline-flex;align-items:center;gap:0.5rem;
+font-size:0.75rem;color:var(–muted);
+animation:fadeDown 0.8s 0.5s ease both;
+}
+.live-dot{width:6px;height:6px;background:var(–a2);border-radius:50%;box-shadow:0 0 8px var(–a2);animation:kicker-blink 1s ease-in-out infinite;}
+.live-count{font-weight:600;color:var(–text2);}
+
+/* Scroll hint */
+.scroll-hint{
+position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
+display:flex;flex-direction:column;align-items:center;gap:0.4rem;
+color:var(–muted2);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;
+animation:fadeDown 1s 1s ease both;
+}
+.scroll-arrow{animation:scroll-bounce 1.8s ease-in-out infinite;}
+@keyframes scroll-bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(5px);}}
+
+/* ===================== PLANNER PAGE ===================== */
+#planner-page{padding:5.5rem 2rem 5rem;}
+.planner-inner{max-width:820px;margin:0 auto;}
+
+/* Sticky progress indicator — Zeigarnik / Completion Drive */
+.planner-progress{
+position:sticky;top:70px;z-index:100;
+background:rgba(6,5,13,0.88);backdrop-filter:blur(20px);
+padding:0.9rem 1.2rem;border-radius:16px;border:1px solid var(–border);
+margin-bottom:1.8rem;
+display:flex;align-items:center;gap:1rem;
+box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+.planner-prog-steps{display:flex;gap:0.3rem;flex:1;}
+.prog-step{
+height:4px;border-radius:2px;background:var(–surface3);flex:1;
+transition:background 0.4s ease,box-shadow 0.4s;
+position:relative;overflow:hidden;
+}
+.prog-step.done{background:linear-gradient(90deg,var(–p1),var(–a1));box-shadow:0 0 8px rgba(124,58,237,0.4);}
+.prog-step.active{background:rgba(124,58,237,0.4);animation:prog-pulse 1.5s ease-in-out infinite;}
+@keyframes prog-pulse{0%,100%{opacity:0.6;}50%{opacity:1;}}
+.prog-label{font-size:0.72rem;color:var(–muted);white-space:nowrap;}
+.prog-label span{color:var(–p3);font-weight:600;}
+
+.page-eyebrow{font-size:0.68rem;color:var(–p3);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.6rem;}
+.page-title{
+font-family:‘Syne’,sans-serif;font-size:clamp(1.8rem,4vw,2.6rem);
+font-weight:800;letter-spacing:-0.03em;line-height:1.05;margin-bottom:0.45rem;
+}
+.page-sub{font-size:0.88rem;color:var(–muted);max-width:480px;line-height:1.7;font-weight:300;margin-bottom:2rem;}
+
+/* STEP CARDS — tactile, depth, clear affordance */
+.steps-grid{display:grid;gap:0.9rem;}
+.step-card{
+background:var(–surface);
+border:1px solid var(–border);
+border-radius:18px;padding:1.4rem;
+transition:all 0.25s var(–ease-smooth);
+position:relative;overflow:hidden;
+}
+.step-card::before{
+content:’’;position:absolute;inset:0;border-radius:inherit;
+background:linear-gradient(135deg,rgba(124,58,237,0.04),transparent 60%);
+opacity:0;transition:opacity 0.3s;pointer-events:none;
+}
+.step-card:focus-within{
+border-color:rgba(124,58,237,0.3);
+box-shadow:0 0 0 4px rgba(124,58,237,0.06),0 8px 30px rgba(0,0,0,0.3);
+}
+.step-card:focus-within::before{opacity:1;}
+/* Completed step gets a subtle success glow */
+.step-card.completed{border-color:rgba(6,214,160,0.2);}
+.step-card.completed::before{background:linear-gradient(135deg,rgba(6,214,160,0.03),transparent);opacity:1;}
+
+.step-hdr{display:flex;align-items:center;gap:0.85rem;margin-bottom:1rem;}
+.step-num{
+width:28px;height:28px;border-radius:8px;
+background:var(–surface3);border:1px solid var(–border2);
+display:flex;align-items:center;justify-content:center;
+font-family:‘Syne’,sans-serif;font-size:0.72rem;font-weight:700;
+color:var(–muted);flex-shrink:0;transition:all 0.3s;
+}
+.step-card.completed .step-num{background:rgba(6,214,160,0.12);border-color:rgba(6,214,160,0.3);color:var(–a2);}
+.step-title{font-family:‘Syne’,sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:-0.01em;}
+.step-sub{font-size:0.72rem;color:var(–muted);margin-top:0.1rem;}
+
+/* Inputs — generous padding = perceived ease (Fitts’s Law) */
+.city-input,.nbhd-input,.itin-input{
+width:100%;
+background:var(–surface2);border:1px solid var(–border2);
+border-radius:12px;padding:0.85rem 1.1rem;
+font-family:‘General Sans’,‘Instrument Sans’,sans-serif;font-size:0.92rem;
+color:var(–text);outline:none;transition:all 0.22s;
+}
+.city-input:focus,.nbhd-input:focus,.itin-input:focus{
+border-color:rgba(124,58,237,0.5);
+box-shadow:0 0 0 4px rgba(124,58,237,0.08);
+background:var(–surface3);
+}
+.city-input::placeholder,.nbhd-input::placeholder,.itin-input::placeholder{color:var(–muted2);}
+
+/* Date inputs */
+.date-row{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;}
+.date-field label{display:block;font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(–muted);margin-bottom:0.35rem;}
+.date-input{
+width:100%;background:var(–surface2);border:1px solid var(–border2);
+border-radius:12px;padding:0.8rem 1rem;font-size:0.87rem;
+color:var(–text);outline:none;transition:all 0.22s;cursor:pointer;
+font-family:‘General Sans’,sans-serif;
+}
+.date-input:focus{border-color:rgba(124,58,237,0.5);box-shadow:0 0 0 4px rgba(124,58,237,0.08);}
+.date-input::-webkit-calendar-picker-indicator{filter:invert(0.4) sepia(1) hue-rotate(240deg);}
+
+/* OPTION BUTTONS — large, obvious, satisfying click */
+.opt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.45rem;}
+.opt{
+padding:0.65rem 0.85rem;
+background:var(–surface2);border:1px solid var(–border);
+border-radius:12px;font-size:0.79rem;color:var(–muted);
+cursor:pointer;transition:all 0.18s var(–ease-spring);
+text-align:center;line-height:1.3;
+font-family:‘General Sans’,sans-serif;
+position:relative;overflow:hidden;
+}
+.opt:hover{background:var(–surface3);color:var(–text);border-color:var(–border2);transform:translateY(-1px);}
+.opt:active{transform:scale(0.96);}
+.opt.sel{
+background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(6,214,160,0.08));
+border-color:rgba(124,58,237,0.45);color:var(–p3);
+box-shadow:0 0 0 3px rgba(124,58,237,0.1),0 4px 12px rgba(124,58,237,0.15);
+}
+/* Checkmark appears on selection */
+.opt.sel::after{
+content:‘✓’;position:absolute;top:4px;right:6px;
+font-size:0.6rem;color:var(–a2);font-weight:700;
+}
+
+/* DAYS COUNTER — satisfying number change */
+.days-row{display:flex;align-items:center;gap:1rem;}
+.days-counter{display:flex;align-items:center;gap:0.7rem;}
+.day-btn{
+width:36px;height:36px;border-radius:10px;
+border:1px solid var(–border2);background:var(–surface2);color:var(–text);
+font-size:1.1rem;cursor:pointer;
+transition:all 0.18s var(–ease-spring);
+display:flex;align-items:center;justify-content:center;
+}
+.day-btn:hover{border-color:rgba(124,58,237,0.4);color:var(–p3);transform:scale(1.08);}
+.day-btn:active{transform:scale(0.92);}
+.days-num{
+font-family:‘Syne’,sans-serif;font-size:2rem;font-weight:800;
+min-width:2.2rem;text-align:center;
+transition:transform 0.2s var(–ease-spring);
+}
+.days-num.bump{animation:num-bump 0.3s var(–ease-spring);}
+@keyframes num-bump{0%{transform:scale(1);}50%{transform:scale(1.3);}100%{transform:scale(1);}}
+.days-label{font-size:0.8rem;color:var(–muted);}
+
+/* BUDGET SLIDER — beautiful gradient fill */
+.slider-wrap{padding:0.25rem 0;}
+.slider-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1rem;}
+.slider-val{font-family:‘Syne’,sans-serif;font-size:2rem;font-weight:800;color:var(–p3);transition:color 0.3s;}
+.slider-desc{font-size:0.75rem;color:var(–muted);padding-bottom:0.25rem;}
+.slider-right{text-align:right;font-size:0.7rem;color:var(–muted2);}
+input[type=range]{
+-webkit-appearance:none;appearance:none;
+width:100%;height:6px;border-radius:100px;
+background:var(–surface3);outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+-webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+background:linear-gradient(135deg,var(–p2),var(–a2));cursor:pointer;
+border:3px solid var(–bg);
+box-shadow:0 0 14px rgba(124,58,237,0.5),0 2px 8px rgba(0,0,0,0.4);
+transition:transform 0.15s var(–ease-spring);
+}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2);}
+.slider-marks{display:flex;justify-content:space-between;margin-top:0.5rem;font-size:0.65rem;color:var(–muted2);}
+
+/* TAGS */
+.tags-wrap{
+display:flex;flex-wrap:wrap;gap:0.38rem;padding:0.6rem 0.85rem;
+background:var(–surface2);border:1px solid var(–border2);
+border-radius:12px;cursor:text;min-height:46px;align-items:center;
+transition:all 0.22s;
+}
+.tags-wrap:focus-within{border-color:rgba(124,58,237,0.4);box-shadow:0 0 0 4px rgba(124,58,237,0.07);}
+.tag-chip{
+display:inline-flex;align-items:center;gap:0.25rem;
+padding:0.2rem 0.58rem;
+background:rgba(124,58,237,0.14);border:1px solid rgba(124,58,237,0.3);
+border-radius:100px;font-size:0.72rem;color:var(–p3);
+animation:chip-pop 0.25s var(–ease-spring) both;
+}
+@keyframes chip-pop{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+.tag-chip-x{cursor:pointer;opacity:0.5;font-size:0.78rem;transition:opacity 0.15s;}
+.tag-chip-x:hover{opacity:1;}
+.tags-input{border:none;outline:none;background:none;font-family:‘General Sans’,sans-serif;font-size:0.84rem;color:var(–text);flex:1;min-width:100px;}
+.tags-input::placeholder{color:var(–muted2);}
+.tag-suggestions{display:flex;flex-wrap:wrap;gap:0.32rem;margin-top:0.5rem;}
+.tag-sug{
+padding:0.22rem 0.6rem;background:var(–surface2);border:1px solid var(–border);
+border-radius:100px;font-size:0.7rem;color:var(–muted);cursor:pointer;
+transition:all 0.18s;font-family:‘General Sans’,sans-serif;
+}
+.tag-sug:hover{background:rgba(124,58,237,0.1);color:var(–p3);border-color:rgba(124,58,237,0.3);transform:translateY(-1px);}
+
+/* TOGGLES */
+.toggle-row{
+display:flex;align-items:center;justify-content:space-between;
+padding:0.75rem 0.95rem;
+background:var(–surface2);border:1px solid var(–border);border-radius:12px;
+transition:border-color 0.2s;
+}
+.toggle-row:hover{border-color:var(–border2);}
+.toggle-label{font-size:0.82rem;font-weight:500;}
+.toggle-sub{font-size:0.7rem;color:var(–muted);margin-top:0.08rem;}
+.toggle-switch{position:relative;width:42px;height:24px;flex-shrink:0;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{
+position:absolute;inset:0;
+background:var(–surface3);border:1px solid var(–border2);
+border-radius:100px;cursor:pointer;transition:all 0.3s var(–ease-smooth);
+}
+.toggle-slider::before{
+content:’’;position:absolute;width:18px;height:18px;
+left:2px;top:2px;background:var(–muted);border-radius:50%;
+transition:all 0.3s var(–ease-spring);box-shadow:0 1px 4px rgba(0,0,0,0.3);
+}
+.toggle-switch input:checked+.toggle-slider{background:rgba(124,58,237,0.2);border-color:rgba(124,58,237,0.4);}
+.toggle-switch input:checked+.toggle-slider::before{transform:translateX(18px);background:var(–p2);box-shadow:0 0 8px rgba(124,58,237,0.5);}
+
+/* WEATHER BANNER */
+.weather-banner{
+background:linear-gradient(135deg,var(–surface2),rgba(6,214,160,0.04));
+border:1px solid rgba(6,214,160,0.15);border-radius:14px;
+padding:1rem 1.3rem;margin-bottom:1rem;
+display:none;animation:fadeUp 0.4s ease both;
+}
+.weather-banner.visible{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.weather-icon{font-size:2.2rem;}
+.weather-city{font-family:‘Syne’,sans-serif;font-size:0.95rem;font-weight:700;}
+.weather-desc{font-size:0.78rem;color:var(–muted);}
+.weather-temps{display:flex;gap:0.6rem;margin-top:0.35rem;flex-wrap:wrap;}
+.weather-temp{font-size:0.75rem;background:rgba(255,255,255,0.05);padding:0.18rem 0.55rem;border-radius:6px;}
+.weather-alert{font-size:0.72rem;color:var(–w2);background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);padding:0.28rem 0.65rem;border-radius:7px;margin-left:auto;}
+
+/* GENERATE BUTTON — the most important tap = must feel magical */
+.gen-btn-wrap{margin-top:1.4rem;}
+.gen-btn{
+width:100%;padding:1.1rem;
+background:linear-gradient(135deg,var(–p1) 0%,var(–p2) 50%,var(–a1) 100%);
+color:white;font-family:‘Syne’,sans-serif;font-size:1rem;font-weight:800;
+border:none;border-radius:16px;cursor:pointer;
+transition:all 0.25s var(–ease-spring);
+box-shadow:0 12px 36px rgba(124,58,237,0.4),0 0 0 1px rgba(255,255,255,0.1) inset;
+position:relative;overflow:hidden;letter-spacing:-0.01em;
+}
+.gen-btn::before{
+content:’’;position:absolute;inset:0;
+background:linear-gradient(135deg,rgba(255,255,255,0.12),transparent);
+}
+.gen-btn::after{
+content:’’;position:absolute;
+width:200%;height:200%;top:-50%;left:-200%;
+background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);
+transition:left 0.5s;
+}
+.gen-btn:hover{
+transform:translateY(-3px) scale(1.01);
+box-shadow:0 20px 50px rgba(124,58,237,0.55),0 0 0 1px rgba(255,255,255,0.15) inset;
+}
+.gen-btn:hover::after{left:200%;}
+.gen-btn:active{transform:translateY(0) scale(0.99);}
+.gen-btn:disabled{
+background:var(–surface3);color:var(–muted);cursor:wait;
+transform:none;box-shadow:none;
+}
+.gen-btn-loading{display:inline-flex;align-items:center;gap:0.5rem;}
+.gen-dots{display:inline-flex;gap:3px;}
+.gen-dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:gen-dot-bounce 1s ease-in-out infinite;}
+.gen-dot:nth-child(2){animation-delay:0.15s;}
+.gen-dot:nth-child(3){animation-delay:0.3s;}
+@keyframes gen-dot-bounce{0%,80%,100%{transform:scale(0.5);opacity:0.5;}40%{transform:scale(1);opacity:1;}}
+
+/* ===================== RESULTS ===================== */
+#itinResult{display:none;margin-top:2.5rem;}
+
+/* Success moment — Peak-End Rule */
+.itin-celebrate{
+text-align:center;padding:1.5rem;
+background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(6,214,160,0.06));
+border:1px solid rgba(124,58,237,0.2);border-radius:18px;
+margin-bottom:1.5rem;animation:celebrate-in 0.6s var(–ease-spring) both;
+}
+@keyframes celebrate-in{from{transform:scale(0.9);opacity:0;}to{transform:scale(1);opacity:1;}}
+.celebrate-emoji{font-size:2rem;margin-bottom:0.4rem;}
+.celebrate-title{font-family:‘Syne’,sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.2rem;}
+.celebrate-sub{font-size:0.8rem;color:var(–muted);}
+
+.itin-result-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:0.8rem;}
+.itin-result-title{font-family:‘Syne’,sans-serif;font-size:1.7rem;font-weight:800;letter-spacing:-0.03em;line-height:1.1;}
+.itin-result-sub{font-size:0.77rem;color:var(–muted);margin-top:0.22rem;}
+.result-actions{display:flex;gap:0.38rem;flex-wrap:wrap;}
+.action-btn{
+padding:0.5rem 0.9rem;background:var(–surface);border:1px solid var(–border2);
+border-radius:10px;font-family:‘Syne’,sans-serif;font-size:0.72rem;font-weight:700;
+color:var(–text2);cursor:pointer;transition:all 0.18s var(–ease-spring);white-space:nowrap;
+}
+.action-btn:hover{border-color:rgba(124,58,237,0.35);color:var(–p3);transform:translateY(-1px);}
+.action-btn:active{transform:scale(0.97);}
+.action-btn.regen{background:rgba(124,58,237,0.08);border-color:rgba(124,58,237,0.25);color:var(–p3);}
+.action-btn.save-btn{background:rgba(6,214,160,0.07);border-color:rgba(6,214,160,0.22);color:var(–a2);}
+
+/* TRIP SUMMARY — visual reward for completing setup */
+.trip-summary-bar{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.55rem;margin-bottom:1.4rem;}
+.tsb-item{
+background:var(–surface);border:1px solid var(–border);border-radius:14px;
+padding:0.9rem 1rem;transition:all 0.2s;
+}
+.tsb-item:hover{border-color:var(–border2);transform:translateY(-1px);}
+.tsb-label{font-size:0.65rem;color:var(–muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.22rem;}
+.tsb-val{font-family:‘Syne’,sans-serif;font-size:1.15rem;font-weight:800;}
+.tsb-val.v-p{color:var(–p3);}
+.tsb-val.v-a{color:var(–a2);}
+.tsb-val.v-w{color:var(–w2);}
+
+/* DAY TABS — satisfying active state */
+.day-tabs{display:flex;gap:0.35rem;margin-bottom:1.1rem;flex-wrap:wrap;}
+.day-tab{
+padding:0.48rem 1rem;background:var(–surface);border:1px solid var(–border);
+border-radius:10px;font-size:0.77rem;font-weight:500;color:var(–muted);
+cursor:pointer;transition:all 0.18s var(–ease-spring);
+font-family:‘General Sans’,sans-serif;
+}
+.day-tab:hover{color:var(–text);border-color:var(–border2);}
+.day-tab.active{
+background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(6,214,160,0.08));
+border-color:rgba(124,58,237,0.35);color:var(–p3);
+box-shadow:0 0 0 3px rgba(124,58,237,0.08);
+}
+.day-panel{display:none;animation:fadeUp 0.32s ease both;}
+.day-panel.active{display:block;}
+
+/* DAY COST BAR */
+.day-cost-bar{
+background:linear-gradient(135deg,var(–surface),rgba(245,158,11,0.04));
+border:1px solid rgba(245,158,11,0.15);border-radius:12px;
+padding:0.85rem 1.1rem;margin-bottom:0.9rem;
+display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;
+}
+.dcb-label{font-size:0.7rem;color:var(–muted);}
+.dcb-total{font-family:‘Syne’,sans-serif;font-size:1rem;font-weight:800;color:var(–w2);}
+.dcb-breakdown{display:flex;gap:0.4rem;flex-wrap:wrap;}
+.dcb-item{font-size:0.68rem;color:var(–muted);background:rgba(255,255,255,0.04);padding:0.16rem 0.48rem;border-radius:5px;}
+
+/* MAP */
+.map-toggle-row{display:flex;gap:0.35rem;margin-bottom:0.9rem;}
+.view-toggle{
+padding:0.38rem 0.85rem;background:var(–surface);border:1px solid var(–border);
+border-radius:8px;font-size:0.73rem;font-weight:600;color:var(–muted);
+cursor:pointer;font-family:‘General Sans’,sans-serif;transition:all 0.18s;
+}
+.view-toggle.active{background:rgba(124,58,237,0.1);border-color:rgba(124,58,237,0.3);color:var(–p3);}
+.view-toggle:hover{color:var(–text);}
+.map-container{
+background:var(–surface);border:1px solid var(–border);
+border-radius:14px;overflow:hidden;margin-bottom:0.9rem;display:none;
+}
+.map-container.visible{display:block;}
+.map-iframe{width:100%;height:360px;border:none;display:block;}
+.map-pins{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:0.4rem;padding:0.85rem;}
+.map-pin-item{display:flex;align-items:center;gap:0.42rem;padding:0.42rem 0.6rem;background:var(–surface2);border-radius:8px;font-size:0.75rem;}
+.pin-num{width:20px;height:20px;background:linear-gradient(135deg,var(–p1),var(–a1));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:700;color:white;flex-shrink:0;}
+.pin-name{color:var(–text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* LOADING STATE — anticipation, not frustration */
+.itin-loading{text-align:center;padding:3.5rem 2rem;}
+.itin-loader-wrap{
+width:60px;height:60px;margin:0 auto 1.5rem;position:relative;
+}
+.itin-loader-ring{
+width:100%;height:100%;border-radius:50%;
+border:3px solid var(–surface3);
+border-top-color:var(–p2);
+border-right-color:var(–a2);
+animation:spin 1s linear infinite;
+}
+.itin-loader-dot{
+position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+width:12px;height:12px;background:linear-gradient(135deg,var(–p1),var(–a1));
+border-radius:50%;box-shadow:var(–glow-p);
+animation:loader-pulse 1s ease-in-out infinite;
+}
+@keyframes loader-pulse{0%,100%{transform:translate(-50%,-50%) scale(0.8);}50%{transform:translate(-50%,-50%) scale(1.2);}}
+.loading-txt{font-size:0.82rem;color:var(–muted);}
+.loading-subtitle{font-size:0.72rem;color:var(–muted2);margin-top:0.3rem;}
+
+/* TIME BLOCKS — the core repeat interaction, must feel great */
+.day-blocks{display:grid;gap:0.75rem;}
+.time-block{
+background:var(–surface);border:1px solid var(–border);border-radius:16px;
+overflow:hidden;transition:all 0.22s var(–ease-smooth);
+position:relative;
+}
+.time-block::before{
+content:’’;position:absolute;left:0;top:0;bottom:0;width:3px;
+background:linear-gradient(180deg,var(–p1),var(–a1));
+opacity:0;transition:opacity 0.2s;border-radius:0 0 0 0;
+}
+.time-block:hover{border-color:var(–border2);box-shadow:0 8px 28px rgba(0,0,0,0.35);transform:translateY(-2px);}
+.time-block:hover::before{opacity:1;}
+.time-block.visited{opacity:0.42;border-style:dashed;}
+.time-block.visited::before{background:linear-gradient(180deg,var(–a1),var(–a2));}
+
+.tb-header{
+display:flex;align-items:center;gap:0.6rem;
+padding:0.85rem 1.1rem 0.65rem;
+border-bottom:1px solid var(–border);flex-wrap:wrap;
+}
+.tb-num{
+width:22px;height:22px;border-radius:7px;
+background:linear-gradient(135deg,var(–p1),var(–a1));
+display:flex;align-items:center;justify-content:center;
+font-size:0.6rem;font-weight:700;color:white;flex-shrink:0;
+box-shadow:0 2px 8px rgba(124,58,237,0.35);
+}
+.tb-time{
+font-family:‘Syne’,sans-serif;font-size:0.68rem;font-weight:700;
+letter-spacing:0.1em;text-transform:uppercase;color:var(–p3);
+background:rgba(124,58,237,0.08);padding:0.18rem 0.55rem;
+border-radius:6px;border:1px solid rgba(124,58,237,0.18);white-space:nowrap;
+}
+.tb-place{font-family:‘Syne’,sans-serif;font-size:0.97rem;font-weight:700;letter-spacing:-0.02em;flex:1;}
+.tb-type{font-size:0.65rem;color:var(–muted);background:rgba(255,255,255,0.04);padding:0.16rem 0.5rem;border-radius:5px;white-space:nowrap;}
+.tb-cost{font-size:0.7rem;color:var(–w2);font-weight:600;white-space:nowrap;}
+.tb-actions{display:flex;gap:0.28rem;margin-left:auto;}
+.tb-icon-btn{
+width:28px;height:28px;border-radius:8px;
+border:1px solid var(–border);background:rgba(255,255,255,0.03);
+color:var(–muted);font-size:0.72rem;cursor:pointer;
+transition:all 0.18s var(–ease-spring);
+display:flex;align-items:center;justify-content:center;
+}
+.tb-icon-btn:hover{background:rgba(255,255,255,0.08);color:var(–text);transform:scale(1.1);}
+.tb-icon-btn:active{transform:scale(0.9);}
+.tb-icon-btn.active{background:rgba(6,214,160,0.12);border-color:rgba(6,214,160,0.3);color:var(–a2);}
+
+.tb-body{padding:0.85rem 1.1rem;}
+.tb-desc{font-size:0.83rem;color:var(–text2);line-height:1.65;margin-bottom:0.7rem;font-weight:300;}
+.tb-tip{
+font-size:0.75rem;color:var(–a2);
+background:rgba(6,214,160,0.06);border:1px solid rgba(6,214,160,0.15);
+padding:0.35rem 0.68rem;border-radius:7px;
+margin-bottom:0.75rem;display:inline-block;
+}
+
+/* NOTES */
+.notes-section{margin-bottom:0.8rem;}
+.notes-toggle{
+display:flex;align-items:center;gap:0.38rem;font-size:0.71rem;
+color:var(–muted);cursor:pointer;margin-bottom:0.28rem;
+background:none;border:none;font-family:‘General Sans’,sans-serif;
+transition:color 0.15s;
+}
+.notes-toggle:hover{color:var(–text2);}
+.notes-textarea{
+display:none;width:100%;
+background:var(–surface2);border:1px solid var(–border);border-radius:10px;
+padding:0.6rem 0.8rem;font-family:‘General Sans’,sans-serif;font-size:0.8rem;
+color:var(–text);outline:none;resize:vertical;min-height:65px;line-height:1.55;
+transition:all 0.22s;
+}
+.notes-textarea.open{display:block;animation:fadeUp 0.2s ease both;}
+.notes-textarea:focus{border-color:rgba(124,58,237,0.35);box-shadow:0 0 0 3px rgba(124,58,237,0.07);}
+.notes-textarea::placeholder{color:var(–muted2);}
+
+/* STAR RATING — satisfying visual response */
+.rating-row{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.78rem;flex-wrap:wrap;}
+.star-rating{display:flex;gap:2px;}
+.star-btn{
+font-size:1.1rem;cursor:pointer;color:var(–surface4);
+transition:all 0.12s var(–ease-spring);background:none;border:none;padding:0;
+}
+.star-btn:hover{transform:scale(1.3);}
+.star-btn.filled{color:var(–w1);}
+.star-btn.filled.just-rated{animation:star-pop 0.4s var(–ease-spring);}
+@keyframes star-pop{0%{transform:scale(1);}50%{transform:scale(1.5);}100%{transform:scale(1);}}
+.rating-label{font-size:0.7rem;color:var(–muted);}
+
+/* RESERVATION LINKS */
+.tb-footer{display:flex;gap:0.38rem;flex-wrap:wrap;align-items:center;}
+.res-btn{
+display:inline-flex;align-items:center;gap:0.28rem;
+padding:0.38rem 0.72rem;border-radius:8px;
+font-size:0.7rem;font-weight:600;cursor:pointer;
+transition:all 0.18s var(–ease-spring);
+text-decoration:none;border:1px solid;
+font-family:‘General Sans’,sans-serif;
+}
+.res-btn:hover{transform:translateY(-1px);}
+.res-btn:active{transform:scale(0.96);}
+.res-btn-maps{color:var(–b1);background:rgba(59,130,246,0.07);border-color:rgba(59,130,246,0.2);}
+.res-btn-maps:hover{background:rgba(59,130,246,0.14);}
+.res-btn-opentable{color:#ff6b81;background:rgba(255,107,129,0.07);border-color:rgba(255,107,129,0.22);}
+.res-btn-opentable:hover{background:rgba(255,107,129,0.14);}
+.res-btn-viator{color:var(–w1);background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.22);}
+.res-btn-viator:hover{background:rgba(245,158,11,0.14);}
+.res-btn-booking{color:var(–p3);background:rgba(124,58,237,0.07);border-color:rgba(124,58,237,0.2);}
+.res-btn-booking:hover{background:rgba(124,58,237,0.14);}
+.res-btn-yelp{color:#ff6b81;background:rgba(255,107,129,0.07);border-color:rgba(255,107,129,0.18);}
+.res-btn-yelp:hover{background:rgba(255,107,129,0.14);}
+.regen-block-btn{
+display:inline-flex;align-items:center;gap:0.28rem;
+padding:0.35rem 0.7rem;background:rgba(124,58,237,0.07);
+border:1px solid rgba(124,58,237,0.18);border-radius:8px;
+font-size:0.68rem;font-weight:600;color:var(–p3);cursor:pointer;
+transition:all 0.18s;margin-left:auto;font-family:‘General Sans’,sans-serif;
+}
+.regen-block-btn:hover{background:rgba(124,58,237,0.14);}
+.regen-block-btn:disabled{opacity:0.35;cursor:wait;}
+
+/* ===================== SIDE MODALS ===================== */
+.side-modal-wrap{
+display:none;position:fixed;inset:0;
+background:rgba(0,0,0,0.75);z-index:500;backdrop-filter:blur(12px);
+align-items:center;justify-content:center;padding:1.5rem;
+}
+.side-modal-wrap.open{display:flex;animation:fadeIn 0.2s ease;}
+.side-modal{
+background:var(–surface);border:1px solid var(–border2);
+border-radius:22px;padding:2rem;width:100%;max-width:540px;
+max-height:88vh;overflow-y:auto;animation:slideUp 0.32s var(–ease-spring);
+}
+.sm-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.3rem;}
+.sm-title{font-family:‘Syne’,sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:-0.02em;}
+.close-btn{
+background:rgba(255,255,255,0.05);border:1px solid var(–border);
+width:30px;height:30px;border-radius:8px;cursor:pointer;color:var(–muted);
+font-size:0.88rem;display:flex;align-items:center;justify-content:center;
+transition:all 0.18s var(–ease-spring);
+}
+.close-btn:hover{color:var(–text);background:rgba(255,255,255,0.1);transform:scale(1.08);}
+.close-btn:active{transform:scale(0.92);}
+
+/* PACKING LIST */
+.pack-section{margin-bottom:1.2rem;}
+.pack-section-title{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(–p3);margin-bottom:0.55rem;}
+.pack-items{display:flex;flex-wrap:wrap;gap:0.38rem;}
+.pack-item{
+display:flex;align-items:center;gap:0.38rem;
+padding:0.32rem 0.7rem;background:var(–surface2);
+border:1px solid var(–border);border-radius:8px;
+font-size:0.78rem;cursor:pointer;transition:all 0.18s;
+font-family:‘General Sans’,sans-serif;
+}
+.pack-item:hover{border-color:var(–border2);transform:translateY(-1px);}
+.pack-item.checked{background:rgba(6,214,160,0.07);border-color:rgba(6,214,160,0.25);color:var(–a2);text-decoration:line-through;opacity:0.65;}
+.pack-check{font-size:0.75rem;transition:transform 0.2s var(–ease-spring);}
+.pack-item.checked .pack-check{animation:check-bounce 0.3s var(–ease-spring);}
+@keyframes check-bounce{0%{transform:scale(1);}50%{transform:scale(1.5);}100%{transform:scale(1);}}
+
+/* LANGUAGE CARDS */
+.phrase-grid{display:grid;gap:0.5rem;}
+.phrase-card{
+background:var(–surface2);border:1px solid var(–border);border-radius:12px;padding:0.85rem;
+transition:all 0.18s;cursor:pointer;
+}
+.phrase-card:hover{border-color:var(–border2);transform:translateY(-1px);}
+.phrase-local{font-family:‘Syne’,sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.15rem;}
+.phrase-roman{font-size:0.74rem;color:var(–p3);font-style:italic;margin-bottom:0.12rem;}
+.phrase-meaning{font-size:0.77rem;color:var(–muted);}
+.phrase-context{font-size:0.68rem;color:var(–muted2);margin-top:0.1rem;}
+
+/* CARBON */
+.carbon-breakdown{display:grid;gap:0.45rem;}
+.carbon-item{display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.9rem;background:var(–surface2);border:1px solid var(–border);border-radius:10px;}
+.carbon-label{font-size:0.82rem;}
+.carbon-val{font-family:‘Syne’,sans-serif;font-size:0.88rem;font-weight:700;color:var(–a2);}
+.carbon-offset-link{display:flex;align-items:center;justify-content:center;gap:0.4rem;width:100%;padding:0.78rem;background:rgba(6,214,160,0.08);border:1px solid rgba(6,214,160,0.22);border-radius:11px;font-family:‘Syne’,sans-serif;font-size:0.82rem;font-weight:700;color:var(–a2);cursor:pointer;margin-top:1rem;text-decoration:none;transition:all 0.2s;}
+.carbon-offset-link:hover{background:rgba(6,214,160,0.16);}
+
+/* SHARE / EMAIL modals */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:1.5rem;}
+.modal-overlay.open{display:flex;animation:fadeIn 0.2s ease;}
+.modal-box{background:var(–surface);border:1px solid var(–border2);border-radius:22px;padding:2rem;width:100%;max-width:460px;animation:slideUp 0.32s var(–ease-spring);}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.4rem;}
+.modal-ttl{font-family:‘Syne’,sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:-0.02em;}
+.share-link-box{display:flex;gap:0.42rem;margin-bottom:1.1rem;}
+.share-link-input{flex:1;background:var(–surface2);border:1px solid var(–border2);border-radius:10px;padding:0.65rem 0.9rem;font-size:0.78rem;color:var(–muted);outline:none;font-family:‘General Sans’,sans-serif;}
+.copy-btn{padding:0.65rem 0.9rem;background:rgba(6,214,160,0.1);border:1px solid rgba(6,214,160,0.25);border-radius:10px;font-family:‘Syne’,sans-serif;font-size:0.75rem;font-weight:700;color:var(–a2);cursor:pointer;white-space:nowrap;transition:all 0.18s;}
+.copy-btn:hover{background:rgba(6,214,160,0.18);}
+.share-platforms{display:grid;grid-template-columns:1fr 1fr;gap:0.42rem;}
+.share-platform-btn{padding:0.65rem;background:var(–surface2);border:1px solid var(–border);border-radius:10px;font-size:0.78rem;font-weight:600;color:var(–text2);cursor:pointer;transition:all 0.18s var(–ease-spring);text-align:center;font-family:‘General Sans’,sans-serif;}
+.share-platform-btn:hover{background:var(–surface3);border-color:var(–border2);transform:translateY(-1px);}
+
+/* AUTH MODAL */
+.auth-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:600;backdrop-filter:blur(16px);align-items:center;justify-content:center;padding:1.5rem;}
+.auth-overlay.open{display:flex;animation:fadeIn 0.2s ease;}
+.auth-box{background:var(–surface);border:1px solid var(–border2);border-radius:22px;padding:2rem;width:100%;max-width:400px;animation:slideUp 0.32s var(–ease-spring);position:relative;}
+.auth-title{font-family:‘Syne’,sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.22rem;}
+.auth-sub{font-size:0.8rem;color:var(–muted);margin-bottom:1.4rem;}
+.auth-tabs{display:flex;gap:0;margin-bottom:1.3rem;border-bottom:1px solid var(–border);}
+.auth-tab{padding:0.45rem 0.9rem;font-size:0.8rem;font-weight:600;color:var(–muted);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;font-family:‘General Sans’,sans-serif;}
+.auth-tab.active{color:var(–p3);border-bottom-color:var(–p2);}
+.auth-input{width:100%;background:var(–surface2);border:1px solid var(–border2);border-radius:10px;padding:0.75rem 1rem;font-family:‘General Sans’,sans-serif;font-size:0.87rem;color:var(–text);outline:none;transition:all 0.2s;margin-bottom:0.7rem;}
+.auth-input:focus{border-color:rgba(124,58,237,0.45);box-shadow:0 0 0 4px rgba(124,58,237,0.07);}
+.auth-btn{width:100%;padding:0.85rem;background:linear-gradient(135deg,var(–p1),var(–p2));color:white;font-family:‘Syne’,sans-serif;font-size:0.87rem;font-weight:700;border:none;border-radius:12px;cursor:pointer;transition:all 0.22s var(–ease-spring);box-shadow:0 6px 20px rgba(124,58,237,0.35);}
+.auth-btn:hover{opacity:0.88;transform:translateY(-1px);}
+
+/* SAVED PAGE */
+#saved-page{padding:5.5rem 2rem 5rem;}
+.saved-inner{max-width:820px;margin:0 auto;}
+.saved-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;margin-top:1.4rem;}
+.saved-card{background:var(–surface);border:1px solid var(–border);border-radius:16px;padding:1.2rem;transition:all 0.22s var(–ease-spring);cursor:pointer;position:relative;overflow:hidden;}
+.saved-card::before{content:’’;position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,58,237,0.04),transparent);opacity:0;transition:opacity 0.2s;}
+.saved-card:hover{border-color:rgba(124,58,237,0.3);transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,0.4);}
+.saved-card:hover::before{opacity:1;}
+.saved-card-title{font-family:‘Syne’,sans-serif;font-size:0.97rem;font-weight:700;margin-bottom:0.26rem;letter-spacing:-0.01em;}
+.saved-card-meta{font-size:0.72rem;color:var(–muted);display:flex;gap:0.55rem;flex-wrap:wrap;margin-bottom:0.7rem;}
+.saved-card-actions{display:flex;gap:0.32rem;}
+.sc-btn{padding:0.28rem 0.65rem;border-radius:7px;font-size:0.7rem;font-weight:600;cursor:pointer;transition:all 0.18s;border:1px solid var(–border);background:rgba(255,255,255,0.03);color:var(–muted);font-family:‘General Sans’,sans-serif;}
+.sc-btn:hover{color:var(–text);border-color:var(–border2);}
+.sc-btn.del{color:#fb7185;border-color:rgba(244,63,94,0.18);}
+.sc-btn.del:hover{background:rgba(244,63,94,0.08);}
+.empty-state{text-align:center;padding:3.5rem 2rem;color:var(–muted);grid-column:1/-1;}
+.empty-icon{font-size:3rem;margin-bottom:0.9rem;}
+.empty-title{font-family:‘Syne’,sans-serif;font-size:1.1rem;font-weight:700;color:var(–text);margin-bottom:0.32rem;}
+
+/* BLOG PAGE */
+#blog-page{padding:5.5rem 2rem 5rem;}
+.blog-inner{max-width:1100px;margin:0 auto;}
+.blog-toolbar{display:flex;gap:0.5rem;margin-bottom:1.8rem;flex-wrap:wrap;align-items:center;justify-content:space-between;}
+.blog-filters{display:flex;gap:0.38rem;flex-wrap:wrap;align-items:center;}
+.btag{display:inline-block;padding:0.27rem 0.7rem;border-radius:100px;font-size:0.7rem;font-weight:500;cursor:pointer;transition:all 0.18s;border:1px solid var(–border);background:rgba(255,255,255,0.02);color:var(–muted);font-family:‘General Sans’,sans-serif;}
+.btag:hover,.btag.active{background:rgba(6,214,160,0.08);border-color:rgba(6,214,160,0.28);color:var(–a2);}
+.write-btn{padding:0.55rem 1.1rem;background:linear-gradient(135deg,var(–p1),var(–p2));color:white;font-family:‘Syne’,sans-serif;font-size:0.75rem;font-weight:700;border:none;border-radius:9px;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 14px rgba(124,58,237,0.3);}
+.write-btn:hover{opacity:0.88;transform:translateY(-1px);}
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.1rem;}
+.blog-card{background:var(–surface);border:1px solid var(–border);border-radius:16px;overflow:hidden;transition:all 0.22s var(–ease-spring);}
+.blog-card:hover{transform:translateY(-4px);border-color:var(–border2);box-shadow:0 16px 44px rgba(0,0,0,0.4);}
+.bc-img-ph{width:100%;height:155px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:linear-gradient(135deg,var(–surface2),var(–surface3));}
+.bc-img{width:100%;height:155px;object-fit:cover;display:block;}
+.bc-body{padding:1.1rem;}
+.bc-tags{display:flex;gap:0.35rem;flex-wrap:wrap;margin-bottom:0.62rem;}
+.bc-city{font-size:0.6rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;padding:0.17rem 0.5rem;border-radius:5px;background:rgba(59,130,246,0.1);color:var(–b1);border:1px solid rgba(59,130,246,0.2);}
+.bc-cat{font-size:0.6rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;padding:0.17rem 0.5rem;border-radius:5px;background:rgba(124,58,237,0.1);color:var(–p3);border:1px solid rgba(124,58,237,0.2);}
+.bc-title{font-family:‘Syne’,sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.36rem;line-height:1.22;}
+.bc-excerpt{font-size:0.78rem;color:var(–muted);line-height:1.6;font-weight:300;margin-bottom:0.85rem;}
+.bc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:0.75rem;border-top:1px solid var(–border);}
+.bc-author{display:flex;align-items:center;gap:0.4rem;}
+.avatar{width:22px;height:22px;border-radius:7px;background:linear-gradient(135deg,var(–p1),var(–a1));display:flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:700;color:white;flex-shrink:0;}
+.author-name{font-size:0.7rem;color:var(–muted);}
+.bc-date{font-size:0.65rem;color:var(–muted2);}
+
+/* WRITE MODAL */
+.woverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:1.5rem;}
+.woverlay.open{display:flex;animation:fadeIn 0.2s ease;}
+.write-modal{background:var(–surface);border:1px solid var(–border2);border-radius:20px;padding:1.8rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;animation:slideUp 0.32s var(–ease-spring);}
+.fg{margin-bottom:1.1rem;}
+.fl2{display:block;font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(–muted);margin-bottom:0.38rem;}
+.fi,.fta,.fsel{width:100%;background:var(–surface2);border:1px solid var(–border2);border-radius:10px;padding:0.7rem 0.95rem;font-family:‘General Sans’,sans-serif;font-size:0.85rem;color:var(–text);outline:none;transition:all 0.2s;}
+.fi:focus,.fta:focus,.fsel:focus{border-color:rgba(6,214,160,0.35);box-shadow:0 0 0 3px rgba(6,214,160,0.07);}
+.fta{resize:vertical;min-height:90px;line-height:1.6;}
+.fsel{cursor:pointer;appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’%3E%3Cpath d=‘M1 1l5 5 5-5’ stroke=‘rgba(196,192,224,0.4)’ stroke-width=‘1.5’ fill=‘none’/%3E%3C/svg%3E”);background-repeat:no-repeat;background-position:right 1rem center;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;}
+.tpick-wrap{display:flex;flex-wrap:wrap;gap:0.35rem;}
+.tpick{padding:0.25rem 0.65rem;border:1px solid var(–border);border-radius:100px;font-size:0.7rem;cursor:pointer;transition:all 0.18s;background:rgba(255,255,255,0.03);color:var(–muted);font-family:‘General Sans’,sans-serif;}
+.tpick.sel{background:rgba(6,214,160,0.1);border-color:rgba(6,214,160,0.3);color:var(–a2);}
+.upload-area{border:2px dashed var(–border);border-radius:12px;padding:1.1rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
+.upload-area:hover{border-color:rgba(6,214,160,0.3);background:rgba(6,214,160,0.02);}
+.upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-txt{font-size:0.78rem;color:var(–muted);}
+.upload-hint{font-size:0.64rem;color:var(–muted2);margin-top:0.2rem;}
+.img-preview{width:100%;height:130px;object-fit:cover;border-radius:8px;margin-top:0.6rem;display:none;}
+.prof-warn{display:none;background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.28);border-radius:8px;padding:0.48rem 0.82rem;font-size:0.75rem;color:#fb7185;margin-top:0.35rem;}
+.sub-btn{width:100%;padding:0.82rem;background:linear-gradient(135deg,var(–p1),var(–p2));color:white;font-family:‘Syne’,sans-serif;font-size:0.84rem;font-weight:700;border:none;border-radius:11px;cursor:pointer;transition:all 0.22s;box-shadow:0 6px 20px rgba(124,58,237,0.3);margin-top:0.38rem;}
+.sub-btn:hover{opacity:0.88;transform:translateY(-1px);}
+
+.err-msg{text-align:center;padding:2.5rem 2rem;color:var(–muted);font-size:0.84rem;}
+.err-msg strong{color:var(–text);display:block;margin-bottom:0.38rem;font-family:‘Syne’,sans-serif;}
+
+footer{border-top:1px solid var(–border);padding:1.6rem;text-align:center;font-size:0.7rem;color:var(–muted2);}
+
+/* SHARED ANIMATIONS */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideUp{from{opacity:0;transform:translateY(32px);}to{opacity:1;transform:translateY(0);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+@media(max-width:700px){
+nav{padding:0.85rem 1.2rem;}
+.nav-link{padding:0.38rem 0.6rem;font-size:0.72rem;}
+h1{font-size:2.8rem;}
+.hero-floaters{display:none;}
+#planner-page,#blog-page,#saved-page{padding-left:1.2rem;padding-right:1.2rem;}
+.opt-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));}
+.frow,.date-row{grid-template-columns:1fr;}
+.blog-grid,.saved-grid{grid-template-columns:1fr;}
+.result-actions{gap:0.3rem;}
+.action-btn{font-size:0.68rem;padding:0.42rem 0.75rem;}
+.trip-summary-bar{grid-template-columns:1fr 1fr;}
+.planner-progress{top:58px;}
+}
 </style>
+
 </head>
 <body>
-<div id="root"></div>
-<script type="text/babel" data-presets="react">
-const { useState, useEffect, useRef } = React;
 
-// ── palette ──────────────────────────────────────────────────────
-const D = {
-bg: “#07060f”, surf: “#111020”, surf2: “#1a1830”, surf3: “#232140”,
-bdr: “rgba(255,255,255,0.08)”, bdr2: “rgba(255,255,255,0.14)”,
-txt: “#f0eeff”, txt2: “#c0bae0”, muted: “rgba(192,186,224,0.5)”, muted2: “rgba(192,186,224,0.28)”,
-p1: “#7c3aed”, p2: “#9f67f7”, p3: “#c4a7fd”,
-a1: “#06d6a0”, a2: “#00f5c4”,
-w1: “#f59e0b”, w2: “#fcd34d”, r1: “#f43f5e”, b1: “#3b82f6”,
-};
-const L = {
-bg: “#f4f2ff”, surf: “#ffffff”, surf2: “#ede9ff”, surf3: “#e2dcff”,
-bdr: “rgba(100,70,200,0.12)”, bdr2: “rgba(100,70,200,0.2)”,
-txt: “#1a0f35”, txt2: “#3d2f6e”, muted: “rgba(60,40,100,0.55)”, muted2: “rgba(60,40,100,0.32)”,
-p1: “#7c3aed”, p2: “#9f67f7”, p3: “#7c3aed”,
-a1: “#06d6a0”, a2: “#059669”,
-w1: “#d97706”, w2: “#b45309”, r1: “#e11d48”, b1: “#2563eb”,
-};
+<!-- Background -->
 
-const SURPRISE_CITIES = [
-“Kyoto, Japan”,“Porto, Portugal”,“Marrakech, Morocco”,“Seoul, South Korea”,
-“Copenhagen, Denmark”,“Hanoi, Vietnam”,“Medellín, Colombia”,“Cape Town, South Africa”,
-“Reykjavik, Iceland”,“Tbilisi, Georgia”,“Oaxaca, Mexico”,“Chiang Mai, Thailand”,
-];
-
-const VIBE_OPTIONS = [
-{emoji:“🏛”,label:“Culture”},
-{emoji:“🍽”,label:“Food & Drink”},
-{emoji:“🌿”,label:“Nature”},
-{emoji:“🛍”,label:“Shopping”},
-{emoji:“🌙”,label:“Nightlife”},
-{emoji:“🎨”,label:“Art”},
-{emoji:“🧘”,label:“Wellness”},
-{emoji:“💎”,label:“Hidden Gems”},
-{emoji:“🏄”,label:“Adventure”},
-{emoji:“📸”,label:“Photography”},
-];
-
-const TAG_SUGGESTIONS = [“Vegan”,“Vegetarian”,“Halal”,“Gluten Free”,“No Spicy”,“Ramen”,“Coffee”,“Rooftop Bars”,“Kid Friendly”,“Wheelchair”,“Late Night”,“Pet Friendly”];
-
-const BLOG_POSTS = [
-{id:1,city:“Tokyo”,cat:“Eat”,emoji:“🍢”,title:“The yakitori alley that changed my life”,author:“James T.”,init:“JT”,date:“Mar 18 2026”,excerpt:“Tucked behind Shinjuku station, Omoide Yokocho is everything you want late-night Tokyo to be — smoke, skewers, and strangers.”},
-{id:2,city:“Paris”,cat:“Drink”,emoji:“🍷”,title:“Paris wine bars vs tourist traps”,author:“Céline M.”,init:“CM”,date:“Mar 12 2026”,excerpt:“After three visits I finally figured out how to find the real caves à vin. Avoid anything with an English menu.”},
-{id:3,city:“Barcelona”,cat:“Explore”,emoji:“🏛”,title:“48 hours in El Born”,author:“Ravi K.”,init:“RK”,date:“Mar 5 2026”,excerpt:“El Born is walkable, beautiful, and genuinely underrated next to the Gothic Quarter.”},
-{id:4,city:“Bangkok”,cat:“Eat”,emoji:“🌶”,title:“Bangkok street food: a beginner’s guide”,author:“Priya N.”,init:“PN”,date:“Feb 28 2026”,excerpt:“By day three I was eating pad kra pao for breakfast and have zero regrets.”},
-{id:5,city:“Lisbon”,cat:“Explore”,emoji:“🌇”,title:“Viewpoints nobody talks about”,author:“Sofia A.”,init:“SA”,date:“Feb 20 2026”,excerpt:“Here are three I found by just walking uphill without opening Google Maps.”},
-{id:6,city:“New York”,cat:“Drink”,emoji:“☕”,title:“NYC coffee shops for remote work”,author:“Marcus L.”,init:“ML”,date:“Feb 14 2026”,excerpt:“I tested 22 coffee shops working remotely. Here are the 5 worth your laptop.”},
-];
-
-// ── helpers ───────────────────────────────────────────────────────
-function useTheme() {
-const [dark, setDark] = useState(true);
-const toggle = () => setDark(d => !d);
-const c = dark ? D : L;
-return { dark, toggle, c };
-}
-
-function Btn({ onClick, children, style = {}, disabled = false, variant = “primary” }) {
-const base = {
-display: “inline-flex”, alignItems: “center”, justifyContent: “center”,
-gap: “0.3rem”, border: “none”, cursor: disabled ? “wait” : “pointer”,
-fontFamily: “‘DM Sans’, sans-serif”, fontWeight: 700, borderRadius: 12,
-transition: “all 0.15s”, userSelect: “none”, WebkitTapHighlightColor: “transparent”,
-touchAction: “manipulation”, padding: “0.85rem 1.6rem”, fontSize: “0.9rem”,
-opacity: disabled ? 0.4 : 1,
-};
-return (
-<button onClick={disabled ? undefined : onClick} style={{ …base, …style }}>
-{children}
-</button>
-);
-}
-
-function Toast({ msg, type }) {
-if (!msg) return null;
-const colors = { success: D.a2, error: D.r1, info: D.p3 };
-return (
-<div style={{
-position: “fixed”, bottom: “1.5rem”, left: “50%”, transform: “translateX(-50%)”,
-background: “#1a1830”, border: `1px solid ${colors[type] || D.p3}`,
-color: colors[type] || D.p3, borderRadius: 12, padding: “0.7rem 1.4rem”,
-fontSize: “0.83rem”, fontWeight: 600, zIndex: 9999, pointerEvents: “none”,
-whiteSpace: “nowrap”, boxShadow: “0 8px 30px rgba(0,0,0,0.5)”,
-}}>{msg}</div>
-);
-}
-
-function Modal({ open, onClose, title, children, c }) {
-if (!open) return null;
-return (
-<div
-onClick={e => e.target === e.currentTarget && onClose()}
-style={{
-position: “fixed”, inset: 0, background: “rgba(0,0,0,0.75)”,
-zIndex: 500, display: “flex”, alignItems: “flex-end”,
-justifyContent: “center”, backdropFilter: “blur(8px)”,
-WebkitBackdropFilter: “blur(8px)”,
-}}
->
-<div style={{
-background: c.surf, border: `1px solid ${c.bdr2}`,
-borderRadius: “20px 20px 0 0”, padding: “1.8rem”,
-width: “100%”, maxWidth: 540, maxHeight: “90vh”, overflowY: “auto”,
-}}>
-<div style={{ display: “flex”, justifyContent: “space-between”, alignItems: “center”, marginBottom: “1.3rem” }}>
-<div style={{ fontFamily: “‘DM Sans’,sans-serif”, fontSize: “1.15rem”, fontWeight: 800, color: c.txt }}>{title}</div>
-<button onClick={onClose} style={{
-width: 30, height: 30, borderRadius: 8, border: `1px solid ${c.bdr2}`,
-background: “rgba(255,255,255,0.05)”, color: c.muted, cursor: “pointer”,
-fontSize: “0.85rem”, display: “flex”, alignItems: “center”, justifyContent: “center”,
-WebkitTapHighlightColor: “transparent”,
-}}>✕</button>
+<div class="bg-wrap">
+  <div class="bg-mesh"></div>
+  <div class="aurora"></div>
+  <div class="bg-grid"></div>
+  <div class="particles" id="particles"></div>
 </div>
-{children}
-</div>
-</div>
-);
-}
 
-function Tag({ label, onRemove, c }) {
-return (
-<span style={{
-display: “inline-flex”, alignItems: “center”, gap: “0.25rem”,
-padding: “0.2rem 0.6rem”, background: `rgba(124,58,237,0.14)`,
-border: `1px solid rgba(124,58,237,0.3)`, borderRadius: 100,
-fontSize: “0.72rem”, color: c.p3,
-}}>
-{label}
-<span onClick={onRemove} style={{ cursor: “pointer”, opacity: 0.6, fontSize: “0.75rem” }}>✕</span>
-</span>
-);
-}
+<!-- Top progress bar -->
 
-function Inp({ value, onChange, placeholder, onKeyDown, style = {}, c }) {
-return (
-<input
-value={value} onChange={onChange} placeholder={placeholder}
-onKeyDown={onKeyDown}
-style={{
-width: “100%”, background: c.surf2, border: `1px solid ${c.bdr2}`,
-borderRadius: 10, padding: “0.8rem 1rem”,
-fontFamily: “‘DM Sans’,sans-serif”, fontSize: “1rem”,
-color: c.txt, outline: “none”, WebkitAppearance: “none”, …style,
-}}
-/>
-);
-}
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="topProgress"></div></div>
 
-function ToggleSwitch({ checked, onChange, c }) {
-return (
-<div
-onClick={() => onChange(!checked)}
-style={{
-width: 42, height: 24, borderRadius: 100, position: “relative”,
-background: checked ? `rgba(124,58,237,0.25)` : c.surf3,
-border: `1px solid ${checked ? D.p2 : c.bdr2}`,
-cursor: “pointer”, transition: “all 0.25s”, flexShrink: 0,
-WebkitTapHighlightColor: “transparent”,
-}}
->
-<div style={{
-position: “absolute”, width: 18, height: 18, borderRadius: “50%”,
-background: checked ? D.p2 : c.muted,
-top: 2, left: checked ? 20 : 2,
-transition: “all 0.25s cubic-bezier(0.34,1.56,0.64,1)”,
-boxShadow: checked ? `0 0 8px ${D.p2}` : “none”,
-}} />
-</div>
-);
-}
+<!-- Confetti container -->
 
-// ── PLANNER ───────────────────────────────────────────────────────
-function PlannerPage({ c, showToast }) {
-const [city, setCity] = useState(””);
-const [days, setDays] = useState(1);
-const [budget, setBudget] = useState(150);
-const [vibes, setVibes] = useState([]);
-const [group, setGroup] = useState(“Solo”);
-const [style, setStyle] = useState(“Walking”);
-const [tags, setTags] = useState([]);
-const [tagInput, setTagInput] = useState(””);
-const [nbhd, setNbhd] = useState(””);
-const [randomize, setRandomize] = useState(true);
-const [showResv, setShowResv] = useState(true);
-const [compareMode, setCompareMode] = useState(false);
-const [lblA, setLblA] = useState(“Budget Version”);
-const [lblB, setLblB] = useState(“Luxury Version”);
-const [loading, setLoading] = useState(false);
-const [result, setResult] = useState(null);
-const [compareResult, setCompareResult] = useState(null);
-const [activeDay, setActiveDay] = useState(0);
-const [weather, setWeather] = useState(null);
-const [notes, setNotes] = useState({});
-const [ratings, setRatings] = useState({});
-const [visited, setVisited] = useState(new Set());
-const wxRef = useRef(null);
+<div class="confetti-wrap" id="confettiWrap"></div>
+<div class="ripple-wrap" id="rippleWrap"></div>
 
-const budgetLabel = budget < 60 ? “Free” : budget < 120 ? “Budget” : budget < 250 ? “Mid-range” : budget < 450 ? “Premium” : budget < 700 ? “Luxury” : “Ultra Luxury”;
+<div class="wrapper">
+<nav id="mainNav">
+  <div class="logo" onclick="showPage('home');ripple(event)">
+    <div class="logo-mark">✦</div>
+    What's Around?
+  </div>
+  <div class="nav-links">
+    <button class="nav-link active" id="nav-home" onclick="showPage('home');ripple(event)">Home</button>
+    <button class="nav-link" id="nav-planner" onclick="showPage('planner');ripple(event)">Planner</button>
+    <button class="nav-link" id="nav-saved" onclick="showPage('saved');ripple(event)">Saved</button>
+    <button class="nav-link" id="nav-blog" onclick="showPage('blog');ripple(event)">Blog</button>
+    <button class="nav-surprise" onclick="surpriseMe();ripple(event)">🎲 Surprise Me</button>
+    <div id="navUserArea"><button class="nav-user-btn" onclick="openAuth('login')">Sign In</button></div>
+  </div>
+</nav>
 
-// weather fetch
-useEffect(() => {
-if (!city || city.length < 3) return;
-clearTimeout(wxRef.current);
-wxRef.current = setTimeout(async () => {
-try {
-const g = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`);
-const gd = await g.json();
-if (!gd.results?.length) return;
-const { latitude: lat, longitude: lon, name, country } = gd.results[0];
-const w = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode&timezone=auto&forecast_days=7`);
-const wd = await w.json();
-const code = wd.daily.weathercode?.[0] || 0;
-const maxT = wd.daily.temperature_2m_max || [];
-const minT = wd.daily.temperature_2m_min || [];
-const rain = (wd.daily.precipitation_sum || []).slice(0, 3).reduce((a, b) => a + b, 0).toFixed(1);
-const emoji = code < 3 ? “☀️” : code < 50 ? “⛅” : code < 70 ? “🌧” : code < 80 ? “⛈” : “🌨”;
-const desc = code < 3 ? “Clear” : code < 50 ? “Partly cloudy” : code < 70 ? “Rainy” : “Stormy”;
-const hi = Math.round(maxT.slice(0, 3).reduce((a, b) => a + b, 0) / 3);
-const lo = Math.round(minT.slice(0, 3).reduce((a, b) => a + b, 0) / 3);
-setWeather({ name, country, emoji, desc, hi, lo, rain });
-} catch (e) {}
-}, 900);
-}, [city]);
+<!-- HOME PAGE -->
 
-const toggleVibe = v => setVibes(prev => prev.includes(v) ? prev.filter(x => x !== v) : […prev, v]);
-const addTag = t => { const tag = t.trim(); if (tag && !tags.includes(tag)) { setTags(p => […p, tag]); setTagInput(””); } };
-const tagKeyDown = e => { if (e.key === “Enter” || e.key === “,”) { e.preventDefault(); addTag(tagInput); } };
-
-const buildPrompt = (label = “”, budgetOverride = null, styleOverride = null) => {
-const b = budgetOverride || budget;
-const s = styleOverride || style;
-return `Create a ${days}-day travel itinerary for "${city}".${label ? ` Style/Theme: “${label}”.`: ""} ${nbhd ?`Focus near: ${nbhd}`: ""} Interests: ${vibes.length ? vibes.join(", ") : "General sightseeing"} Preferences: ${tags.length ? tags.join(", ") : "None"} Transport: ${s} Budget: $${b}/day (${budgetLabel}) Group: ${group} Randomize: ${randomize ? "YES" : "NO"} ${weather ?`Weather: ${weather.desc}, ${weather.lo}–${weather.hi}°C` : “”}
-
-Return ONLY raw valid JSON (no markdown, no explanation):
-{“title”:“3 Days in Tokyo”,“totalEstCost”:”$450”,“days”:[{“dayNum”:1,“theme”:“Street Food & Temples”,“estDayCost”:”$120”,“blocks”:[{“time”:“9:00 AM”,“place”:“Real place name”,“type”:“Breakfast”,“desc”:“Two vivid sentences about this place.”,“tip”:“One insider tip.”,“cost”:”~$12”,“googleMapsQuery”:“Tsukiji Outer Market Tokyo Japan”}]}]}
-
-Rules: 5-7 blocks per day. Real places only. Logical geographic flow.`;
-};
-
-async function callAPI(prompt) {
-const res = await fetch(”/api/chat”, {
-method: “POST”, headers: { “Content-Type”: “application/json” },
-body: JSON.stringify({ model: “claude-sonnet-4-20250514”, max_tokens: 8000, messages: [{ role: “user”, content: prompt }] }),
-});
-const data = await res.json();
-const text = data.content?.find(b => b.type === “text”)?.text || “”;
-return JSON.parse(text.replace(/`json|`/g, “”).trim());
-}
-
-async function generate() {
-if (!city.trim()) { showToast(“Please enter a destination!”, “error”); return; }
-setLoading(true); setResult(null); setCompareResult(null); setActiveDay(0);
-try {
-if (compareMode) {
-const [pA, pB] = await Promise.all([
-callAPI(buildPrompt(lblA, Math.round(budget * 0.55), “Walking”)),
-callAPI(buildPrompt(lblB, Math.round(budget * 1.45), style)),
-]);
-setCompareResult({ pA, pB });
-showToast(“Both versions ready! ✨”, “success”);
-} else {
-const parsed = await callAPI(buildPrompt());
-setResult(parsed); setActiveDay(0);
-showToast(“Itinerary ready! 🎉”, “success”);
-}
-} catch (err) {
-showToast(“Error — check your API key in Vercel”, “error”);
-console.error(err);
-}
-setLoading(false);
-}
-
-const saveTrip = () => {
-if (!result) { showToast(“Generate an itinerary first!”, “error”); return; }
-const saved = JSON.parse(localStorage.getItem(“wa_saved”) || “[]”);
-saved.unshift({ id: Date.now(), title: result.title, city, days, budget, group, date: new Date().toLocaleDateString(), data: result.days });
-localStorage.setItem(“wa_saved”, JSON.stringify(saved.slice(0, 20)));
-showToast(“Trip saved! 💾”, “success”);
-};
-
-const pickCompare = (plan) => { setResult(plan); setCompareResult(null); setActiveDay(0); showToast(“Version selected! 🎉”, “success”); };
-
-const inputStyle = { width: “100%”, background: c.surf2, border: `1px solid ${c.bdr2}`, borderRadius: 10, padding: “0.8rem 1rem”, fontFamily: “‘DM Sans’,sans-serif”, fontSize: “1rem”, color: c.txt, outline: “none”, WebkitAppearance: “none” };
-
-const card = { background: c.surf, border: `1px solid ${c.bdr}`, borderRadius: 16, padding: “1.3rem”, marginBottom: “0.85rem” };
-const cardTitle = { fontFamily: “‘DM Sans’,sans-serif”, fontWeight: 800, fontSize: “0.92rem”, marginBottom: “0.4rem”, color: c.txt };
-const cardSub = { fontSize: “0.7rem”, color: c.muted, marginBottom: “0.85rem” };
-
-return (
-<div style={{ maxWidth: 760, margin: “0 auto”, padding: “0 1rem 4rem” }}>
-<div style={{ marginBottom: “1.6rem” }}>
-<div style={{ fontSize: “0.68rem”, color: D.p3, letterSpacing: “0.14em”, textTransform: “uppercase”, marginBottom: “0.5rem” }}>✦ Trip Planner</div>
-<h2 style={{ fontFamily: “‘DM Sans’,sans-serif”, fontWeight: 900, fontSize: “clamp(1.8rem,5vw,2.5rem)”, letterSpacing: “-0.03em”, color: c.txt, marginBottom: “0.4rem” }}>
-Build your <span style={{ background: `linear-gradient(135deg,${D.p2},${D.a2})`, WebkitBackgroundClip: “text”, WebkitTextFillColor: “transparent” }}>itinerary.</span>
-</h2>
-<p style={{ fontSize: “0.86rem”, color: c.muted, lineHeight: 1.65 }}>Fill in the details — the more you add, the better your plan.</p>
-</div>
+<div class="page active" id="home-page">
+  <div class="hero">
+    <!-- Floating destination cards — creates aspiration and social proof -->
+    <div class="hero-floaters">
+      <div class="floater f1"><span>🗼</span>Tokyo · 3 days planned</div>
+      <div class="floater f2"><span>🌊</span>Bali · Just explored</div>
+      <div class="floater f3"><span>🏔</span>Swiss Alps · 2 days</div>
+      <div class="floater f4"><span>🌆</span>NYC · Weekend getaway</div>
+      <div class="floater f5"><span>🍷</span>Paris · 5 days</div>
+    </div>
 
 ```
-  {/* Step 1 - Destination */}
-  <div style={card}>
-    <div style={cardTitle}>01 · Where are you going?</div>
-    <div style={cardSub}>City, state, country, or zip code</div>
-    {weather && (
-      <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", background: `rgba(6,214,160,0.06)`, border: `1px solid rgba(6,214,160,0.15)`, borderRadius: 10, padding: "0.8rem 1rem", marginBottom: "0.8rem", flexWrap: "wrap" }}>
-        <span style={{ fontSize: "1.8rem" }}>{weather.emoji}</span>
-        <div>
-          <div style={{ fontWeight: 700, fontSize: "0.88rem", color: c.txt }}>{weather.name}, {weather.country}</div>
-          <div style={{ fontSize: "0.72rem", color: c.muted }}>{weather.desc} · {weather.lo}–{weather.hi}°C · {weather.rain}mm rain</div>
-        </div>
+<div class="hero-kicker"><span class="kicker-dot"></span>Plan Any Destination · Instantly</div>
+
+<h1>
+  <span class="line1">Plan your</span>
+  <span class="line2">perfect trip.</span>
+</h1>
+
+<p class="hero-sub">
+  Tell us where you're going and what you love.<br>
+  We'll build a <strong>full day-by-day itinerary</strong> with real places,<br>
+  weather, costs, reservation links, and more.
+</p>
+
+<div class="hero-cta">
+  <button class="btn-primary" onclick="showPage('planner');ripple(event);updateProgress(1)">✨ Start Planning Free</button>
+  <button class="btn-surprise" onclick="surpriseMe();ripple(event)">🎲 Surprise Me!</button>
+  <button class="btn-ghost" onclick="showPage('blog');ripple(event)">Read Stories</button>
+</div>
+
+<div class="feature-pills">
+  <span class="fpill">🌤 Live Weather</span>
+  <span class="fpill">💰 Cost Estimator</span>
+  <span class="fpill">🎒 Packing List</span>
+  <span class="fpill">🗣 Local Phrases</span>
+  <span class="fpill">🌱 Carbon Footprint</span>
+  <span class="fpill">🗺 Map View</span>
+  <span class="fpill">⭐ Ratings</span>
+  <span class="fpill">📝 Notes</span>
+  <span class="fpill">💾 Save Trips</span>
+  <span class="fpill">🔗 Share</span>
+</div>
+
+
+
+<div class="scroll-hint">
+  <span>Scroll to plan</span>
+  <span class="scroll-arrow">↓</span>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- PLANNER PAGE -->
+
+<div class="page" id="planner-page">
+  <div class="planner-inner">
+
+```
+<!-- Sticky progress — Zeigarnik Effect drives completion -->
+<div class="planner-progress" id="plannerProgress">
+  <div class="planner-prog-steps" id="progSteps"></div>
+  <div class="prog-label">Step <span id="progCurrent">1</span> of <span id="progTotal">11</span></div>
+</div>
+
+<div class="page-eyebrow">✦ Your Trip Planner</div>
+<h2 class="page-title">Build your<br><span style="background:linear-gradient(135deg,var(--p2),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">itinerary.</span></h2>
+<p class="page-sub">Fill in the details below. The more you tell us, the more personalised your itinerary will be.</p>
+
+<div class="steps-grid" id="stepsGrid">
+
+  <div class="step-card" id="sc-0">
+    <div class="step-hdr"><div class="step-num" id="sn-0">01</div><div><div class="step-title">Where are you going?</div><div class="step-sub">City, state, country, or zip code</div></div></div>
+    <input class="city-input" id="itinCity" placeholder="e.g. Tokyo, Japan · Austin, TX · Paris, France" oninput="debouncedWeather();markStep(0)"/>
+  </div>
+
+  <div class="step-card" id="sc-1">
+    <div class="step-hdr"><div class="step-num" id="sn-1">02</div><div><div class="step-title">When are you going?</div><div class="step-sub">We'll factor in seasonal weather and events</div></div></div>
+    <div id="weatherBanner" class="weather-banner"></div>
+    <div class="date-row">
+      <div class="date-field"><label>Start Date</label><input class="date-input" type="date" id="startDate" onchange="syncDaysFromDates();markStep(1)"/></div>
+      <div class="date-field"><label>End Date</label><input class="date-input" type="date" id="endDate" onchange="syncDaysFromDates();markStep(1)"/></div>
+    </div>
+  </div>
+
+  <div class="step-card" id="sc-2">
+    <div class="step-hdr"><div class="step-num" id="sn-2">03</div><div><div class="step-title">How many days?</div><div class="step-sub">Auto-syncs from your dates, or adjust manually</div></div></div>
+    <div class="days-row">
+      <div class="days-counter">
+        <button class="day-btn" onclick="changeDays(-1);ripple(event)">−</button>
+        <div class="days-num" id="daysNum">1</div>
+        <button class="day-btn" onclick="changeDays(1);ripple(event)">+</button>
       </div>
-    )}
-    <input value={city} onChange={e => setCity(e.target.value)} placeholder="e.g. Tokyo, Japan · Paris · Austin TX" style={inputStyle} />
-  </div>
-
-  {/* Step 2 - Days */}
-  <div style={card}>
-    <div style={cardTitle}>02 · How many days?</div>
-    <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-      {[-1, 1].map(d => (
-        <button key={d} onClick={() => setDays(x => Math.max(1, Math.min(10, x + d)))} style={{ width: 40, height: 40, borderRadius: 10, border: `1px solid ${c.bdr2}`, background: c.surf2, color: c.txt, fontSize: "1.1rem", cursor: "pointer", WebkitTapHighlightColor: "transparent" }}>{d === -1 ? "−" : "+"}</button>
-      ))}
-      <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 900, fontSize: "2rem", color: c.txt }}>{days}</span>
-      <span style={{ fontSize: "0.8rem", color: c.muted }}>{days === 1 ? "day" : "days"}</span>
+      <div class="days-label" id="daysLabel">1 day</div>
     </div>
   </div>
 
-  {/* Step 3 - Vibes */}
-  <div style={card}>
-    <div style={cardTitle}>03 · What's your vibe?</div>
-    <div style={cardSub}>Pick all that apply</div>
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(130px,1fr))", gap: "0.42rem" }}>
-      {VIBE_OPTIONS.map(({ emoji, label }) => (
-        <div key={label} onClick={() => toggleVibe(label)} style={{
-          padding: "0.62rem 0.75rem", background: vibes.includes(label) ? "rgba(124,58,237,0.14)" : c.surf2,
-          border: `1px solid ${vibes.includes(label) ? "rgba(124,58,237,0.4)" : c.bdr}`,
-          borderRadius: 10, textAlign: "center", fontSize: "0.78rem", fontWeight: 500,
-          color: vibes.includes(label) ? D.p3 : c.muted, cursor: "pointer",
-          WebkitTapHighlightColor: "transparent", userSelect: "none",
-        }}>
-          {emoji} {label} {vibes.includes(label) ? "✓" : ""}
-        </div>
-      ))}
+  <div class="step-card" id="sc-3">
+    <div class="step-hdr"><div class="step-num" id="sn-3">04</div><div><div class="step-title">Daily duration</div><div class="step-sub">How long each day runs</div></div></div>
+    <div class="opt-grid">
+      <div class="opt" onclick="selectOpt(this,'duration','Half day (4hrs)');markStep(3);ripple(event)">Half Day</div>
+      <div class="opt sel" onclick="selectOpt(this,'duration','Full day (8hrs)');markStep(3);ripple(event)">Full Day</div>
+      <div class="opt" onclick="selectOpt(this,'duration','Day + Evening (12hrs)');markStep(3);ripple(event)">Day + Evening</div>
     </div>
   </div>
 
-  {/* Step 4 - Preferences */}
-  <div style={card}>
-    <div style={cardTitle}>04 · Tailor your experience</div>
-    <div style={cardSub}>Dietary needs, food types, accessibility</div>
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", background: c.surf2, border: `1px solid ${c.bdr2}`, borderRadius: 10, padding: "0.6rem 0.8rem", minHeight: 44, alignItems: "center", cursor: "text" }} onClick={() => document.getElementById("tagInput")?.focus()}>
-      {tags.map(t => <Tag key={t} label={t} onRemove={() => setTags(p => p.filter(x => x !== t))} c={c} />)}
-      <input id="tagInput" value={tagInput} onChange={e => setTagInput(e.target.value)} onKeyDown={tagKeyDown} placeholder={tags.length ? "" : "Type and press Enter — e.g. vegan, rooftop..."} style={{ border: "none", outline: "none", background: "none", fontFamily: "'DM Sans',sans-serif", fontSize: "1rem", color: c.txt, flex: 1, minWidth: 80 }} />
-    </div>
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", marginTop: "0.5rem" }}>
-      {TAG_SUGGESTIONS.map(t => (
-        <span key={t} onClick={() => addTag(t)} style={{ padding: "0.22rem 0.6rem", background: c.surf2, border: `1px solid ${c.bdr}`, borderRadius: 100, fontSize: "0.68rem", color: c.muted, cursor: "pointer", WebkitTapHighlightColor: "transparent" }}>{t}</span>
-      ))}
+  <div class="step-card" id="sc-4">
+    <div class="step-hdr"><div class="step-num" id="sn-4">05</div><div><div class="step-title">What's your vibe?</div><div class="step-sub">Pick all that apply — we'll weave them all in</div></div></div>
+    <div class="opt-grid">
+      <div class="opt" onclick="toggleOpt(this,'vibe','Culture & History');markStep(4);ripple(event)">🏛 Culture</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Food & Drink');markStep(4);ripple(event)">🍽 Food</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Nature & Outdoors');markStep(4);ripple(event)">🌿 Nature</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Shopping');markStep(4);ripple(event)">🛍 Shopping</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Nightlife');markStep(4);ripple(event)">🌙 Nightlife</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Art & Design');markStep(4);ripple(event)">🎨 Art</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Relaxation');markStep(4);ripple(event)">🧘 Wellness</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Hidden Gems');markStep(4);ripple(event)">💎 Hidden Gems</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Adventure');markStep(4);ripple(event)">🏄 Adventure</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Photography');markStep(4);ripple(event)">📸 Photography</div>
     </div>
   </div>
 
-  {/* Step 5 - Budget */}
-  <div style={card}>
-    <div style={cardTitle}>05 · Daily budget per person</div>
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "0.8rem" }}>
-      <div>
-        <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 900, fontSize: "1.8rem", color: D.p3 }}>${budget}</div>
-        <div style={{ fontSize: "0.72rem", color: c.muted }}>{budgetLabel}</div>
+  <div class="step-card" id="sc-5">
+    <div class="step-hdr"><div class="step-num" id="sn-5">06</div><div><div class="step-title">Stay in a specific area?</div><div class="step-sub">Optional — keeps stops geographically close</div></div></div>
+    <input class="nbhd-input itin-input" id="neighborhoodInput" placeholder="e.g. Shibuya · Near the Eiffel Tower · Beachfront" oninput="markStep(5)"/>
+    <div style="font-size:0.7rem;color:var(--muted2);margin-top:0.4rem;">Leave blank to cover the whole destination</div>
+  </div>
+
+  <div class="step-card" id="sc-6">
+    <div class="step-hdr"><div class="step-num" id="sn-6">07</div><div><div class="step-title">Tailor your experience</div><div class="step-sub">Dietary needs, food types, accessibility, anything</div></div></div>
+    <div class="tags-wrap" id="tagsWrap" onclick="document.getElementById('tagsInput').focus()">
+      <input class="tags-input" id="tagsInput" placeholder="Type and press Enter — e.g. vegan, coffee, rooftop, wheelchair..." onkeydown="handleTagInput(event)"/>
+    </div>
+    <div class="tag-suggestions">
+      <span class="tag-sug" onclick="addTag('Vegan');ripple(event)">Vegan</span>
+      <span class="tag-sug" onclick="addTag('Vegetarian');ripple(event)">Vegetarian</span>
+      <span class="tag-sug" onclick="addTag('Gluten Free');ripple(event)">Gluten Free</span>
+      <span class="tag-sug" onclick="addTag('Halal');ripple(event)">Halal</span>
+      <span class="tag-sug" onclick="addTag('No Spicy');ripple(event)">No Spicy</span>
+      <span class="tag-sug" onclick="addTag('Ramen');ripple(event)">Ramen</span>
+      <span class="tag-sug" onclick="addTag('Coffee');ripple(event)">Coffee</span>
+      <span class="tag-sug" onclick="addTag('Rooftop Bars');ripple(event)">Rooftop Bars</span>
+      <span class="tag-sug" onclick="addTag('Pet Friendly');ripple(event)">Pet Friendly</span>
+      <span class="tag-sug" onclick="addTag('Wheelchair Accessible');ripple(event)">Wheelchair</span>
+      <span class="tag-sug" onclick="addTag('Kid Friendly');ripple(event)">Kid Friendly</span>
+      <span class="tag-sug" onclick="addTag('Late Night');ripple(event)">Late Night</span>
+    </div>
+  </div>
+
+  <div class="step-card" id="sc-7">
+    <div class="step-hdr"><div class="step-num" id="sn-7">08</div><div><div class="step-title">How are you getting around?</div><div class="step-sub">Affects how spread-out recommendations will be</div></div></div>
+    <div class="opt-grid">
+      <div class="opt sel" onclick="selectOpt(this,'style','Walking');markStep(7);ripple(event)">🚶 Walking</div>
+      <div class="opt" onclick="selectOpt(this,'style','Public Transport');markStep(7);ripple(event)">🚇 Transit</div>
+      <div class="opt" onclick="selectOpt(this,'style','Taxi / Rideshare');markStep(7);ripple(event)">🚕 Rideshare</div>
+      <div class="opt" onclick="selectOpt(this,'style','Driving');markStep(7);ripple(event)">🚗 Driving</div>
+    </div>
+  </div>
+
+  <div class="step-card" id="sc-8">
+    <div class="step-hdr"><div class="step-num" id="sn-8">09</div><div><div class="step-title">Daily budget per person</div><div class="step-sub">Drag to set — we'll match places to your range</div></div></div>
+    <div class="slider-wrap">
+      <div class="slider-top">
+        <div><div class="slider-val" id="budgetVal">$150</div><div class="slider-desc" id="budgetDesc">Mid-range</div></div>
+        <div class="slider-right">per person · per day</div>
       </div>
-      <div style={{ fontSize: "0.68rem", color: c.muted2 }}>per person · per day</div>
-    </div>
-    <input type="range" min={0} max={999} value={budget} onChange={e => setBudget(Number(e.target.value))} style={{ width: "100%", accentColor: D.p2 }} />
-    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.62rem", color: c.muted2, marginTop: "0.4rem" }}>
-      <span>$0</span><span>$250</span><span>$500</span><span>$999</span>
+      <input type="range" id="budgetSlider" min="0" max="999" value="150" step="1" oninput="updateBudget(this.value);markStep(8)"/>
+      <div class="slider-marks"><span>$0 Free</span><span>$250</span><span>$500</span><span>$999 Luxury</span></div>
     </div>
   </div>
 
-  {/* Step 6 - Group & Transport */}
-  <div style={card}>
-    <div style={cardTitle}>06 · Who's coming?</div>
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(130px,1fr))", gap: "0.42rem", marginBottom: "1rem" }}>
-      {["🙋 Solo","👫 Couple","👯 Friends","👨‍👩‍👧 Family"].map(g => {
-        const val = g.split(" ").slice(1).join(" ");
-        return (
-          <div key={val} onClick={() => setGroup(val)} style={{ padding: "0.62rem 0.75rem", background: group === val ? "rgba(124,58,237,0.14)" : c.surf2, border: `1px solid ${group === val ? "rgba(124,58,237,0.4)" : c.bdr}`, borderRadius: 10, textAlign: "center", fontSize: "0.78rem", color: group === val ? D.p3 : c.muted, cursor: "pointer", WebkitTapHighlightColor: "transparent" }}>
-            {g} {group === val ? "✓" : ""}
-          </div>
-        );
-      })}
-    </div>
-    <div style={cardTitle}>Transport</div>
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(130px,1fr))", gap: "0.42rem" }}>
-      {["🚶 Walking","🚇 Transit","🚕 Rideshare","🚗 Driving"].map(s => {
-        const val = s.split(" ").slice(1).join(" ");
-        return (
-          <div key={val} onClick={() => setStyle(val)} style={{ padding: "0.62rem 0.75rem", background: style === val ? "rgba(124,58,237,0.14)" : c.surf2, border: `1px solid ${style === val ? "rgba(124,58,237,0.4)" : c.bdr}`, borderRadius: 10, textAlign: "center", fontSize: "0.78rem", color: style === val ? D.p3 : c.muted, cursor: "pointer", WebkitTapHighlightColor: "transparent" }}>
-            {s} {style === val ? "✓" : ""}
-          </div>
-        );
-      })}
+  <div class="step-card" id="sc-9">
+    <div class="step-hdr"><div class="step-num" id="sn-9">10</div><div><div class="step-title">Who's coming?</div><div class="step-sub">Personalises activity and dining suggestions</div></div></div>
+    <div class="opt-grid">
+      <div class="opt sel" onclick="selectOpt(this,'group','Solo');markStep(9);ripple(event)">🙋 Solo</div>
+      <div class="opt" onclick="selectOpt(this,'group','Couple');markStep(9);ripple(event)">👫 Couple</div>
+      <div class="opt" onclick="selectOpt(this,'group','Friends');markStep(9);ripple(event)">👯 Friends</div>
+      <div class="opt" onclick="selectOpt(this,'group','Family with kids');markStep(9);ripple(event)">👨‍👩‍👧 Family</div>
     </div>
   </div>
 
-  {/* Step 7 - Area + Settings */}
-  <div style={card}>
-    <div style={cardTitle}>07 · Settings</div>
-    <input value={nbhd} onChange={e => setNbhd(e.target.value)} placeholder="Specific area? e.g. Shibuya · Near Eiffel Tower" style={{ ...inputStyle, marginBottom: "0.9rem" }} />
-    {[["🎲 Randomize days", "No repeated places across any day", randomize, setRandomize],
-      ["🔗 Reservation links", "Maps, OpenTable, Viator, Booking.com", showResv, setShowResv]].map(([title, sub, val, setter]) => (
-      <div key={title} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.7rem 0.9rem", background: c.surf2, border: `1px solid ${c.bdr}`, borderRadius: 10, marginBottom: "0.5rem" }}>
-        <div>
-          <div style={{ fontSize: "0.8rem", fontWeight: 600, color: c.txt }}>{title}</div>
-          <div style={{ fontSize: "0.68rem", color: c.muted }}>{sub}</div>
-        </div>
-        <ToggleSwitch checked={val} onChange={setter} c={c} />
-      </div>
-    ))}
-  </div>
-
-  {/* Step 8 - Compare Mode */}
-  <div style={card}>
-    <div style={cardTitle}>08 · Compare Mode</div>
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.7rem 0.9rem", background: `linear-gradient(135deg,rgba(245,158,11,0.05),rgba(124,58,237,0.04))`, border: `1px solid rgba(245,158,11,0.18)`, borderRadius: 10, marginBottom: compareMode ? "0.8rem" : 0 }}>
-      <div>
-        <span style={{ fontSize: "0.62rem", fontWeight: 700, padding: "0.15rem 0.5rem", borderRadius: 4, background: "rgba(245,158,11,0.1)", color: D.w1, border: `1px solid rgba(245,158,11,0.22)`, marginRight: "0.5rem" }}>NEW</span>
-        <span style={{ fontSize: "0.76rem", color: c.muted }}>Generate two versions side by side</span>
-      </div>
-      <ToggleSwitch checked={compareMode} onChange={setCompareMode} c={c} />
+  <div class="step-card" id="sc-10">
+    <div class="step-hdr"><div class="step-num" id="sn-10">11</div><div><div class="step-title">Final settings</div></div></div>
+    <div style="display:grid;gap:0.5rem;">
+      <div class="toggle-row"><div><div class="toggle-label">🎲 Randomize days</div><div class="toggle-sub">Every day gets completely different places — no repeats</div></div><label class="toggle-switch"><input type="checkbox" id="randomizeToggle" checked/><span class="toggle-slider"></span></label></div>
+      <div class="toggle-row"><div><div class="toggle-label">🔗 Reservation links</div><div class="toggle-sub">OpenTable, Viator, Booking.com, Yelp, Maps</div></div><label class="toggle-switch"><input type="checkbox" id="resvToggle" checked/><span class="toggle-slider"></span></label></div>
+      <div class="toggle-row"><div><div class="toggle-label">🗺 Map view</div><div class="toggle-sub">See all stops on an interactive map per day</div></div><label class="toggle-switch"><input type="checkbox" id="mapToggle" checked/><span class="toggle-slider"></span></label></div>
     </div>
-    {compareMode && (
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem" }}>
-        <div>
-          <div style={{ fontSize: "0.68rem", color: c.muted, marginBottom: "0.3rem" }}>VERSION A</div>
-          <input value={lblA} onChange={e => setLblA(e.target.value)} placeholder="e.g. Budget · Relaxed" style={inputStyle} />
-        </div>
-        <div>
-          <div style={{ fontSize: "0.68rem", color: c.muted, marginBottom: "0.3rem" }}>VERSION B</div>
-          <input value={lblB} onChange={e => setLblB(e.target.value)} placeholder="e.g. Luxury · Packed" style={inputStyle} />
-        </div>
-      </div>
-    )}
   </div>
 
-  {/* Generate Button */}
-  <button
-    onClick={loading ? undefined : generate}
-    style={{
-      width: "100%", padding: "1rem",
-      background: loading ? c.surf3 : `linear-gradient(135deg,${D.p1},${D.p2} 50%,${D.a1})`,
-      color: loading ? c.muted : "white",
-      fontFamily: "'DM Sans',sans-serif", fontSize: "0.97rem", fontWeight: 900,
-      border: "none", borderRadius: 14, cursor: loading ? "wait" : "pointer",
-      boxShadow: loading ? "none" : `0 10px 30px rgba(124,58,237,0.38)`,
-      letterSpacing: "-0.01em", marginBottom: "2rem",
-      WebkitTapHighlightColor: "transparent",
-      touchAction: "manipulation",
-    }}
-  >
-    {loading ? "Building your itinerary..." : compareMode ? "⚡ Build Both Versions" : "✨ Build My Itinerary"}
+</div><!-- end steps grid -->
+
+<div class="gen-btn-wrap">
+  <button class="gen-btn" id="genBtn" onclick="generateItinerary(false);ripple(event)">
+    ✨ Build My Itinerary
   </button>
+</div>
 
-  {/* COMPARE RESULT */}
-  {compareResult && (
+<!-- RESULTS -->
+<div id="itinResult">
+  <div class="itin-celebrate" id="celebrateBlock" style="display:none;">
+    <div class="celebrate-emoji">🎉</div>
+    <div class="celebrate-title" id="celebrateTitle">Your itinerary is ready!</div>
+    <div class="celebrate-sub" id="celebrateSub"></div>
+  </div>
+
+  <div class="itin-result-hdr">
     <div>
-      <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 800, fontSize: "1.3rem", color: c.txt, marginBottom: "1rem" }}>🏆 Compare & Choose</div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-        {[["A", compareResult.pA, D.a2], ["B", compareResult.pB, D.p3]].map(([col, plan, accent]) => (
-          <div key={col} style={{ background: c.surf, border: `1px solid ${c.bdr2}`, borderRadius: 14, padding: "1rem", overflow: "hidden" }}>
-            <div style={{ fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: accent, padding: "0.15rem 0.48rem", borderRadius: 4, background: `${accent}15`, border: `1px solid ${accent}30`, display: "inline-block", marginBottom: "0.4rem" }}>Option {col}</div>
-            <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 800, fontSize: "0.9rem", color: c.txt, marginBottom: "0.2rem" }}>{plan.title}</div>
-            <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 800, fontSize: "1rem", color: D.w2, marginBottom: "0.8rem" }}>{plan.totalEstCost}</div>
-            {(plan.days || []).map(day => (
-              <div key={day.dayNum} style={{ marginBottom: "0.6rem" }}>
-                <div style={{ fontSize: "0.62rem", fontWeight: 700, color: c.muted, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "0.3rem" }}>Day {day.dayNum}{day.theme ? ` · ${day.theme}` : ""}</div>
-                {(day.blocks || []).map((b, i) => (
-                  <div key={i} style={{ background: c.surf2, border: `1px solid ${c.bdr}`, borderRadius: 8, padding: "0.55rem 0.7rem", marginBottom: "0.35rem" }}>
-                    <div style={{ fontSize: "0.6rem", fontWeight: 700, color: accent, textTransform: "uppercase", letterSpacing: "0.08em" }}>{b.time}</div>
-                    <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 700, fontSize: "0.82rem", color: c.txt }}>{b.place}</div>
-                    <div style={{ fontSize: "0.68rem", color: c.muted, lineHeight: 1.45, marginTop: "0.08rem" }}>{b.desc}</div>
-                    {b.cost && <div style={{ fontSize: "0.65rem", color: D.w2, fontWeight: 600, marginTop: "0.1rem" }}>{b.cost}</div>}
-                  </div>
-                ))}
-              </div>
-            ))}
-            <button onClick={() => pickCompare(plan)} style={{ width: "100%", padding: "0.65rem", background: `linear-gradient(135deg,${D.p1},${D.a1})`, color: "white", fontFamily: "'DM Sans',sans-serif", fontWeight: 700, fontSize: "0.8rem", border: "none", borderRadius: 9, cursor: "pointer", marginTop: "0.5rem", WebkitTapHighlightColor: "transparent" }}>
-              ✓ Choose This Version
-            </button>
-          </div>
-        ))}
-      </div>
+      <div class="itin-result-title" id="itinTitle">Your Itinerary</div>
+      <div class="itin-result-sub" id="itinSub"></div>
     </div>
-  )}
-
-  {/* NORMAL RESULT */}
-  {result && !compareResult && (
-    <div>
-      {/* Header */}
-      <div style={{ background: `linear-gradient(135deg,rgba(124,58,237,0.07),rgba(6,214,160,0.05))`, border: `1px solid rgba(124,58,237,0.18)`, borderRadius: 16, padding: "1.2rem", textAlign: "center", marginBottom: "1.2rem" }}>
-        <div style={{ fontSize: "1.8rem", marginBottom: "0.3rem" }}>🎉</div>
-        <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 900, fontSize: "1.2rem", color: c.txt }}>{result.title}</div>
-        <div style={{ fontSize: "0.78rem", color: c.muted }}>{(result.days || []).reduce((s, d) => s + (d.blocks || []).length, 0)} stops · {days} day{days > 1 ? "s" : ""}</div>
-      </div>
-
-      {/* Summary bar */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(130px,1fr))", gap: "0.5rem", marginBottom: "1.1rem" }}>
-        {[["Est. Cost", result.totalEstCost, D.w2], ["Stops", (result.days || []).reduce((s, d) => s + (d.blocks || []).length, 0), D.p3], ["Days", days, c.txt], weather ? ["Weather", weather.emoji, c.txt] : null].filter(Boolean).map(([lbl, val, clr]) => (
-          <div key={lbl} style={{ background: c.surf, border: `1px solid ${c.bdr}`, borderRadius: 12, padding: "0.8rem 0.9rem" }}>
-            <div style={{ fontSize: "0.62rem", color: c.muted, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: "0.2rem" }}>{lbl}</div>
-            <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 900, fontSize: lbl === "Weather" ? "1.4rem" : "1.05rem", color: clr }}>{val}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Action buttons */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", marginBottom: "1.1rem" }}>
-        {[["💾 Save", saveTrip, "rgba(6,214,160,0.07)", "rgba(6,214,160,0.2)", D.a2],
-          ["🎲 Regen", () => generate(), "rgba(124,58,237,0.07)", "rgba(124,58,237,0.2)", D.p3]].map(([label, fn, bg, border, clr]) => (
-          <button key={label} onClick={fn} style={{ padding: "0.45rem 0.9rem", background: bg, border: `1px solid ${border}`, borderRadius: 9, fontSize: "0.72rem", fontWeight: 700, color: clr, cursor: "pointer", fontFamily: "'DM Sans',sans-serif", WebkitTapHighlightColor: "transparent" }}>{label}</button>
-        ))}
-      </div>
-
-      {/* Day tabs */}
-      <div style={{ display: "flex", gap: "0.32rem", marginBottom: "1rem", overflowX: "auto", paddingBottom: 2, scrollbarWidth: "none" }}>
-        {(result.days || []).map((day, i) => (
-          <button key={i} onClick={() => setActiveDay(i)} style={{ padding: "0.45rem 0.9rem", whiteSpace: "nowrap", flexShrink: 0, background: activeDay === i ? "rgba(124,58,237,0.1)" : c.surf, border: `1px solid ${activeDay === i ? "rgba(124,58,237,0.32)" : c.bdr}`, borderRadius: 9, fontSize: "0.74rem", fontWeight: 600, color: activeDay === i ? D.p3 : c.muted, cursor: "pointer", fontFamily: "'DM Sans',sans-serif", WebkitTapHighlightColor: "transparent" }}>
-            Day {day.dayNum}{day.theme ? ` · ${day.theme}` : ""}
-          </button>
-        ))}
-      </div>
-
-      {/* Day blocks */}
-      {result.days?.[activeDay] && (
-        <div>
-          {result.days[activeDay].estDayCost && (
-            <div style={{ background: `linear-gradient(135deg,${c.surf},rgba(245,158,11,0.04))`, border: `1px solid rgba(245,158,11,0.14)`, borderRadius: 12, padding: "0.8rem 1rem", marginBottom: "0.85rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.4rem" }}>
-              <div style={{ fontSize: "0.68rem", color: c.muted }}>Estimated day spend</div>
-              <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 900, fontSize: "1rem", color: D.w2 }}>{result.days[activeDay].estDayCost} per person</div>
-            </div>
-          )}
-          <div style={{ display: "grid", gap: "0.72rem" }}>
-            {(result.days[activeDay].blocks || []).map((b, bi) => {
-              const key = `${activeDay}-${bi}`;
-              const isVisited = visited.has(key);
-              const myRating = ratings[key] || 0;
-              const t = (b.type || "").toLowerCase();
-              const links = [];
-              const mq = encodeURIComponent(b.googleMapsQuery || b.place + " " + city);
-              links.push({ label: "📍 Maps", href: `https://www.google.com/maps/search/${mq}`, cls: D.b1 });
-              if (t.includes("breakfast") || t.includes("lunch") || t.includes("dinner") || t.includes("cafe") || t.includes("restaurant") || t.includes("food") || t.includes("brunch"))
-                links.push({ label: "🍽 Reserve", href: `https://www.opentable.com/r/${b.place.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-")}`, cls: "#ff6b81" });
-              if (t.includes("visit") || t.includes("museum") || t.includes("tour") || t.includes("attraction") || t.includes("explore"))
-                links.push({ label: "🎟 Viator", href: `https://www.viator.com/search/${encodeURIComponent(b.place + " " + city)}`, cls: D.w1 });
-              if (t.includes("hotel") || t.includes("stay") || t.includes("check") || b.bookingQuery)
-                links.push({ label: "🏨 Booking", href: `https://www.booking.com/search.html?ss=${encodeURIComponent(b.bookingQuery || b.place + " " + city)}`, cls: D.p3 });
-
-              return (
-                <div key={bi} style={{ background: c.surf, border: `1px solid ${c.bdr}`, borderRadius: 14, overflow: "hidden", opacity: isVisited ? 0.45 : 1, transition: "opacity 0.2s" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.55rem", padding: "0.8rem 1rem 0.65rem", borderBottom: `1px solid ${c.bdr}`, flexWrap: "wrap" }}>
-                    <div style={{ width: 20, height: 20, borderRadius: 6, background: `linear-gradient(135deg,${D.p1},${D.a1})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.58rem", fontWeight: 700, color: "white", flexShrink: 0 }}>{bi + 1}</div>
-                    <div style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: D.p3, background: "rgba(124,58,237,0.08)", padding: "0.15rem 0.48rem", borderRadius: 5, border: `1px solid rgba(124,58,237,0.16)`, whiteSpace: "nowrap" }}>{b.time}</div>
-                    <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 800, fontSize: "0.93rem", flex: 1, color: c.txt }}>{b.place}</div>
-                    <div style={{ fontSize: "0.62rem", color: c.muted, background: "rgba(255,255,255,0.04)", padding: "0.14rem 0.45rem", borderRadius: 4, whiteSpace: "nowrap" }}>{b.type}</div>
-                    {b.cost && <div style={{ fontSize: "0.68rem", color: D.w2, fontWeight: 700 }}>{b.cost}</div>}
-                    <button onClick={() => setVisited(prev => { const n = new Set(prev); n.has(key) ? n.delete(key) : n.add(key); return n; })} style={{ width: 28, height: 28, borderRadius: 7, border: `1px solid ${isVisited ? "rgba(6,214,160,0.3)" : c.bdr}`, background: isVisited ? "rgba(6,214,160,0.1)" : "rgba(255,255,255,0.03)", color: isVisited ? D.a2 : c.muted, fontSize: "0.7rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", WebkitTapHighlightColor: "transparent" }}>✓</button>
-                  </div>
-                  <div style={{ padding: "0.8rem 1rem" }}>
-                    <div style={{ fontSize: "0.8rem", color: c.txt2, lineHeight: 1.62, marginBottom: "0.65rem", fontWeight: 300 }}>{b.desc}</div>
-                    {b.tip && <div style={{ fontSize: "0.73rem", color: D.a2, background: "rgba(6,214,160,0.05)", border: `1px solid rgba(6,214,160,0.13)`, padding: "0.32rem 0.62rem", borderRadius: 6, marginBottom: "0.7rem", display: "inline-block" }}>💡 {b.tip}</div>}
-                    {/* Stars */}
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.7rem" }}>
-                      {[1,2,3,4,5].map(s => (
-                        <span key={s} onClick={() => setRatings(p => ({ ...p, [key]: s }))} style={{ fontSize: "1.1rem", color: myRating >= s ? D.w1 : c.surf3, cursor: "pointer", WebkitTapHighlightColor: "transparent" }}>★</span>
-                      ))}
-                      <span style={{ fontSize: "0.68rem", color: c.muted }}>{myRating ? ["","⭐ Poor","⭐⭐ Fair","⭐⭐⭐ Good","⭐⭐⭐⭐ Great","⭐⭐⭐⭐⭐ Amazing"][myRating] : "Rate this stop"}</span>
-                    </div>
-                    {/* Note */}
-                    <div style={{ marginBottom: "0.75rem" }}>
-                      <textarea value={notes[key] || ""} onChange={e => setNotes(p => ({ ...p, [key]: e.target.value }))} placeholder="📝 Add a note — confirmation numbers, tips..." rows={2} style={{ width: "100%", background: c.surf2, border: `1px solid ${c.bdr}`, borderRadius: 8, padding: "0.55rem 0.75rem", fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", color: c.txt, outline: "none", resize: "vertical", WebkitAppearance: "none" }} />
-                    </div>
-                    {/* Booking links */}
-                    {showResv && (
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.32rem" }}>
-                        {links.map(({ label, href, cls }) => (
-                          <a key={label} href={href} target="_blank" rel="noopener" style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem", padding: "0.28rem 0.65rem", borderRadius: 7, fontSize: "0.68rem", fontWeight: 700, textDecoration: "none", border: `1px solid ${cls}30`, background: `${cls}10`, color: cls, WebkitTapHighlightColor: "transparent" }}>{label}</a>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
+    <div class="result-actions">
+      <button class="action-btn regen" onclick="generateItinerary(true);ripple(event)">🎲 Regenerate</button>
+      <button class="action-btn save-btn" onclick="saveTrip();ripple(event)">💾 Save</button>
+      <button class="action-btn" onclick="openShare();ripple(event)">🔗 Share</button>
+      <button class="action-btn" onclick="openEmail();ripple(event)">📧 Email</button>
+      <button class="action-btn" onclick="openPacking();ripple(event)">🎒 Pack</button>
+      <button class="action-btn" onclick="openLanguage();ripple(event)">🗣 Phrases</button>
+      <button class="action-btn" onclick="openCarbon();ripple(event)">🌱 Carbon</button>
+      <button class="action-btn" onclick="window.print()">🖨 Print</button>
     </div>
-  )}
+  </div>
+
+  <div class="trip-summary-bar" id="tripSummaryBar"></div>
+  <div class="day-tabs" id="dayTabs"></div>
+  <div id="dayPanels"></div>
 </div>
 ```
 
-);
-}
-
-// ── BLOG PAGE ─────────────────────────────────────────────────────
-function BlogPage({ c, showToast }) {
-const [filter, setFilter] = useState(“all”);
-const [posts, setPosts] = useState(BLOG_POSTS);
-const [writeOpen, setWriteOpen] = useState(false);
-const [form, setForm] = useState({ title: “”, author: “”, body: “”, cat: “Eat” });
-const cities = [“all”, …new Set(posts.map(p => p.city))];
-const shown = filter === “all” ? posts : posts.filter(p => p.city === filter);
-
-const submit = () => {
-if (!form.title || !form.author || !form.body) { showToast(“Fill in all fields”, “error”); return; }
-const emojis = { Eat: “🍽”, Drink: “🍸”, Explore: “🗺”, Stay: “🏨” };
-const init = form.author.split(” “).map(w => w[0]).join(””).slice(0, 2).toUpperCase();
-setPosts(p => [{ id: Date.now(), city: “Other”, cat: form.cat, emoji: emojis[form.cat] || “✍️”, title: form.title, author: form.author, init, date: new Date().toLocaleDateString(“en-US”, { month: “short”, day: “numeric”, year: “numeric” }), excerpt: form.body.slice(0, 160) }, …p]);
-setForm({ title: “”, author: “”, body: “”, cat: “Eat” });
-setWriteOpen(false);
-showToast(“Post published! 🎉”, “success”);
-};
-
-const inpStyle = { width: “100%”, background: c.surf2, border: `1px solid ${c.bdr2}`, borderRadius: 10, padding: “0.75rem 0.95rem”, fontFamily: “‘DM Sans’,sans-serif”, fontSize: “1rem”, color: c.txt, outline: “none”, WebkitAppearance: “none”, marginBottom: “0.75rem” };
-
-return (
-<div style={{ maxWidth: 1000, margin: “0 auto”, padding: “0 1rem 4rem” }}>
-<div style={{ marginBottom: “1.5rem” }}>
-<div style={{ fontSize: “0.68rem”, color: D.p3, letterSpacing: “0.14em”, textTransform: “uppercase”, marginBottom: “0.5rem” }}>✦ Community</div>
-<h2 style={{ fontFamily: “‘DM Sans’,sans-serif”, fontWeight: 900, fontSize: “clamp(1.8rem,5vw,2.4rem)”, letterSpacing: “-0.03em”, color: c.txt }}>
-Travel stories, <span style={{ background: `linear-gradient(135deg,${D.p2},${D.b1})`, WebkitBackgroundClip: “text”, WebkitTextFillColor: “transparent” }}>real people.</span>
-</h2>
-</div>
-<div style={{ display: “flex”, justifyContent: “space-between”, alignItems: “center”, flexWrap: “wrap”, gap: “0.7rem”, marginBottom: “1.5rem” }}>
-<div style={{ display: “flex”, gap: “0.32rem”, overflowX: “auto”, scrollbarWidth: “none”, paddingBottom: 2 }}>
-{cities.map(city => (
-<button key={city} onClick={() => setFilter(city)} style={{ padding: “0.26rem 0.68rem”, borderRadius: 100, fontSize: “0.7rem”, fontWeight: 600, cursor: “pointer”, border: `1px solid ${filter === city ? "rgba(6,214,160,0.28)" : c.bdr}`, background: filter === city ? “rgba(6,214,160,0.08)” : “rgba(255,255,255,0.02)”, color: filter === city ? D.a2 : c.muted, whiteSpace: “nowrap”, WebkitTapHighlightColor: “transparent”, fontFamily: “‘DM Sans’,sans-serif” }}>{city === “all” ? “All” : city}</button>
-))}
-</div>
-<button onClick={() => setWriteOpen(true)} style={{ padding: “0.55rem 1.1rem”, background: `linear-gradient(135deg,${D.p1},${D.p2})`, color: “white”, fontFamily: “‘DM Sans’,sans-serif”, fontSize: “0.75rem”, fontWeight: 700, border: “none”, borderRadius: 9, cursor: “pointer”, boxShadow: `0 4px 14px rgba(124,58,237,0.3)`, WebkitTapHighlightColor: “transparent” }}>+ Write Post</button>
-</div>
-<div style={{ display: “grid”, gridTemplateColumns: “repeat(auto-fill,minmax(270px,1fr))”, gap: “1rem” }}>
-{shown.map(p => (
-<div key={p.id} style={{ background: c.surf, border: `1px solid ${c.bdr}`, borderRadius: 14, overflow: “hidden” }}>
-<div style={{ height: 150, display: “flex”, alignItems: “center”, justifyContent: “center”, fontSize: “2.4rem”, background: `linear-gradient(135deg,${c.surf2},${c.surf3})` }}>{p.emoji}</div>
-<div style={{ padding: “1rem” }}>
-<div style={{ display: “flex”, gap: “0.3rem”, marginBottom: “0.6rem” }}>
-<span style={{ fontSize: “0.58rem”, fontWeight: 700, letterSpacing: “0.07em”, textTransform: “uppercase”, padding: “0.15rem 0.48rem”, borderRadius: 4, background: “rgba(59,130,246,0.09)”, color: D.b1, border: `1px solid rgba(59,130,246,0.18)` }}>{p.city}</span>
-<span style={{ fontSize: “0.58rem”, fontWeight: 700, letterSpacing: “0.07em”, textTransform: “uppercase”, padding: “0.15rem 0.48rem”, borderRadius: 4, background: “rgba(124,58,237,0.09)”, color: D.p3, border: `1px solid rgba(124,58,237,0.18)` }}>{p.cat}</span>
-</div>
-<div style={{ fontFamily: “‘DM Sans’,sans-serif”, fontWeight: 800, fontSize: “0.92rem”, letterSpacing: “-0.01em”, marginBottom: “0.35rem”, lineHeight: 1.2, color: c.txt }}>{p.title}</div>
-<div style={{ fontSize: “0.76rem”, color: c.muted, lineHeight: 1.55, fontWeight: 300, marginBottom: “0.8rem” }}>{p.excerpt}</div>
-<div style={{ display: “flex”, alignItems: “center”, justifyContent: “space-between”, paddingTop: “0.7rem”, borderTop: `1px solid ${c.bdr}` }}>
-<div style={{ display: “flex”, alignItems: “center”, gap: “0.38rem” }}>
-<div style={{ width: 22, height: 22, borderRadius: 6, background: `linear-gradient(135deg,${D.p1},${D.a1})`, display: “flex”, alignItems: “center”, justifyContent: “center”, fontSize: “0.58rem”, fontWeight: 700, color: “white” }}>{p.init}</div>
-<span style={{ fontSize: “0.7rem”, color: c.muted }}>{p.author}</span>
-</div>
-<span style={{ fontSize: “0.64rem”, color: c.muted2 }}>{p.date}</span>
-</div>
-</div>
-</div>
-))}
+  </div>
 </div>
 
-```
-  <Modal open={writeOpen} onClose={() => setWriteOpen(false)} title="Share a Place" c={c}>
-    <input value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} placeholder="Post title..." style={inpStyle} />
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.8rem", marginBottom: "0.75rem" }}>
-      <input value={form.author} onChange={e => setForm(p => ({ ...p, author: e.target.value }))} placeholder="Your name" style={{ ...inpStyle, marginBottom: 0 }} />
-      <select value={form.cat} onChange={e => setForm(p => ({ ...p, cat: e.target.value }))} style={{ ...inpStyle, marginBottom: 0, cursor: "pointer" }}>
-        <option value="Eat">🍽 Eat</option><option value="Drink">🍸 Drink</option><option value="Explore">🗺 Explore</option><option value="Stay">🏨 Stay</option>
-      </select>
+<!-- SAVED PAGE -->
+
+<div class="page" id="saved-page">
+  <div class="saved-inner">
+    <div class="page-eyebrow">✦ My Trips</div>
+    <h2 class="page-title" style="font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.4rem;">Saved <span style="background:linear-gradient(135deg,var(--p2),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Itineraries</span></h2>
+    <p class="page-sub" style="font-size:0.85rem;color:var(--muted);">Your saved trip plans, ready whenever you are.</p>
+    <div class="saved-grid" id="savedGrid"></div>
+  </div>
+</div>
+
+<!-- BLOG PAGE -->
+
+<div class="page" id="blog-page">
+  <div class="blog-inner">
+    <div style="margin-bottom:1.8rem;">
+      <div class="page-eyebrow">✦ Community</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.4rem;">Travel stories,<br><span style="background:linear-gradient(135deg,var(--p2),var(--b1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">from real people.</span></h2>
+      <p style="font-size:0.85rem;color:var(--muted);">Share the spots you love. Real experiences and hidden gems.</p>
     </div>
-    <textarea value={form.body} onChange={e => setForm(p => ({ ...p, body: e.target.value }))} placeholder="Tell us about your experience..." rows={4} style={{ ...inpStyle, resize: "vertical", lineHeight: 1.6 }} />
-    <button onClick={submit} style={{ width: "100%", padding: "0.82rem", background: `linear-gradient(135deg,${D.p1},${D.p2})`, color: "white", fontFamily: "'DM Sans',sans-serif", fontSize: "0.86rem", fontWeight: 700, border: "none", borderRadius: 11, cursor: "pointer", WebkitTapHighlightColor: "transparent" }}>Publish Post →</button>
-  </Modal>
+    <div class="blog-toolbar">
+      <div class="blog-filters" id="blogFilters">
+        <span class="btag active" onclick="filterBlog('all',this)">All</span>
+        <span class="btag" onclick="filterBlog('Tokyo',this)">Tokyo</span>
+        <span class="btag" onclick="filterBlog('Paris',this)">Paris</span>
+        <span class="btag" onclick="filterBlog('New York',this)">New York</span>
+        <span class="btag" onclick="filterBlog('Barcelona',this)">Barcelona</span>
+        <span class="btag" onclick="filterBlog('Bangkok',this)">Bangkok</span>
+        <span class="btag" onclick="filterBlog('Lisbon',this)">Lisbon</span>
+        <span class="btag" onclick="filterBlog('Sydney',this)">Sydney</span>
+      </div>
+      <button class="write-btn" onclick="openWrite();ripple(event)">+ Write a Post</button>
+    </div>
+    <div class="blog-grid" id="blogGrid"></div>
+  </div>
 </div>
-```
 
-);
-}
-
-// ── SAVED PAGE ────────────────────────────────────────────────────
-function SavedPage({ c, showToast }) {
-const [saved, setSaved] = useState(() => JSON.parse(localStorage.getItem(“wa_saved”) || “[]”));
-const del = id => { const n = saved.filter(t => t.id !== id); setSaved(n); localStorage.setItem(“wa_saved”, JSON.stringify(n)); showToast(“Deleted”, “info”); };
-
-if (!saved.length) return (
-<div style={{ maxWidth: 780, margin: “0 auto”, padding: “0 1rem 4rem”, textAlign: “center”, paddingTop: “2rem” }}>
-<div style={{ fontSize: “3rem”, marginBottom: “0.8rem” }}>🗺</div>
-<div style={{ fontFamily: “‘DM Sans’,sans-serif”, fontWeight: 800, fontSize: “1.1rem”, color: c.txt, marginBottom: “0.35rem” }}>No saved trips yet</div>
-<div style={{ fontSize: “0.8rem”, color: c.muted }}>Build an itinerary and hit Save!</div>
+<footer>© 2026 What's Around? · Plan every destination · Made with obsession</footer>
 </div>
-);
 
-return (
-<div style={{ maxWidth: 780, margin: “0 auto”, padding: “0 1rem 4rem” }}>
-<div style={{ marginBottom: “1.5rem” }}>
-<div style={{ fontSize: “0.68rem”, color: D.p3, letterSpacing: “0.14em”, textTransform: “uppercase”, marginBottom: “0.5rem” }}>✦ My Trips</div>
-<h2 style={{ fontFamily: “‘DM Sans’,sans-serif”, fontWeight: 900, fontSize: “clamp(1.8rem,5vw,2.2rem)”, letterSpacing: “-0.03em”, color: c.txt }}>Saved <span style={{ background: `linear-gradient(135deg,${D.p2},${D.a2})`, WebkitBackgroundClip: “text”, WebkitTextFillColor: “transparent” }}>Itineraries</span></h2>
-</div>
-<div style={{ display: “grid”, gridTemplateColumns: “repeat(auto-fill,minmax(240px,1fr))”, gap: “0.9rem” }}>
-{saved.map(t => (
-<div key={t.id} style={{ background: c.surf, border: `1px solid ${c.bdr}`, borderRadius: 14, padding: “1.1rem” }}>
-<div style={{ fontFamily: “‘DM Sans’,sans-serif”, fontWeight: 800, fontSize: “0.93rem”, marginBottom: “0.25rem”, color: c.txt }}>{t.title}</div>
-<div style={{ fontSize: “0.7rem”, color: c.muted, display: “flex”, flexWrap: “wrap”, gap: “0.5rem”, marginBottom: “0.65rem” }}>
-<span>📍 {t.city}</span><span>📅 {t.days}d</span><span>💰 ${t.budget}/day</span><span>👥 {t.group}</span>
-</div>
-<div style={{ display: “flex”, gap: “0.3rem” }}>
-<button onClick={() => del(t.id)} style={{ padding: “0.26rem 0.62rem”, borderRadius: 6, fontSize: “0.68rem”, fontWeight: 600, cursor: “pointer”, border: `1px solid rgba(244,63,94,0.18)`, background: “rgba(244,63,94,0.04)”, color: D.r1, fontFamily: “‘DM Sans’,sans-serif”, WebkitTapHighlightColor: “transparent” }}>🗑 Delete</button>
-</div>
-</div>
-))}
-</div>
-</div>
-);
-}
+<!-- PACKING MODAL -->
 
-// ── CONCIERGE CHAT ────────────────────────────────────────────────
-function Concierge({ c, city, days, budget, group }) {
-const [open, setOpen] = useState(false);
-const [msgs, setMsgs] = useState([]);
-const [input, setInput] = useState(””);
-const [busy, setBusy] = useState(false);
-const [badge, setBadge] = useState(false);
-const msgsRef = useRef(null);
+<div class="side-modal-wrap" id="packingModal" onclick="closeSideOut('packingModal',event)"><div class="side-modal"><div class="sm-hdr"><div class="sm-title">🎒 Packing List</div><button class="close-btn" onclick="closeSideModal('packingModal')">✕</button></div><div id="packingContent"></div></div></div>
+<!-- LANGUAGE MODAL -->
+<div class="side-modal-wrap" id="languageModal" onclick="closeSideOut('languageModal',event)"><div class="side-modal"><div class="sm-hdr"><div class="sm-title">🗣 Local Phrases</div><button class="close-btn" onclick="closeSideModal('languageModal')">✕</button></div><div id="languageContent"></div></div></div>
+<!-- CARBON MODAL -->
+<div class="side-modal-wrap" id="carbonModal" onclick="closeSideOut('carbonModal',event)"><div class="side-modal"><div class="sm-hdr"><div class="sm-title">🌱 Carbon Footprint</div><button class="close-btn" onclick="closeSideModal('carbonModal')">✕</button></div><div id="carbonContent"></div></div></div>
+<!-- SHARE MODAL -->
+<div class="modal-overlay" id="shareModal" onclick="closeModalOut('shareModal',event)"><div class="modal-box"><div class="modal-hdr"><div class="modal-ttl">🔗 Share Your Trip</div><button class="close-btn" onclick="closeModal('shareModal')">✕</button></div><p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">Copy the link or share directly.</p><div class="share-link-box"><input class="share-link-input" id="shareLinkInput" readonly/><button class="copy-btn" onclick="copyShareLink()">Copy</button></div><div class="share-platforms"><button class="share-platform-btn" onclick="shareToWhatsApp()">💬 WhatsApp</button><button class="share-platform-btn" onclick="shareToTwitter()">𝕏 Twitter</button><button class="share-platform-btn" onclick="shareToFacebook()">👥 Facebook</button><button class="share-platform-btn" onclick="shareToInstagram()">📸 Instagram</button></div></div></div>
+<!-- EMAIL MODAL -->
+<div class="modal-overlay" id="emailModal" onclick="closeModalOut('emailModal',event)"><div class="modal-box"><div class="modal-hdr"><div class="modal-ttl">📧 Email Itinerary</div><button class="close-btn" onclick="closeModal('emailModal')">✕</button></div><p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">Opens your mail app with the full plan.</p><input class="auth-input" id="emailInput" type="email" placeholder="your@email.com"/><button class="auth-btn" onclick="sendEmail()">Send Itinerary →</button></div></div>
+<!-- AUTH MODAL -->
+<div class="auth-overlay" id="authModal" onclick="closeAuthOut(event)"><div class="auth-box"><button class="close-btn" style="position:absolute;top:1rem;right:1rem;" onclick="closeAuth()">✕</button><div class="auth-title">Welcome 👋</div><div class="auth-sub">Sign in to save and sync your itineraries.</div><div class="auth-tabs"><button class="auth-tab active" id="atab-login" onclick="switchAuthTab('login')">Sign In</button><button class="auth-tab" id="atab-signup" onclick="switchAuthTab('signup')">Sign Up</button></div><div id="auth-login-form"><input class="auth-input" id="authEmail" type="email" placeholder="Email"/><input class="auth-input" id="authPass" type="password" placeholder="Password"/><button class="auth-btn" onclick="doAuth('login')">Sign In →</button></div><div id="auth-signup-form" style="display:none;"><input class="auth-input" id="authNameNew" type="text" placeholder="Your name"/><input class="auth-input" id="authEmailNew" type="email" placeholder="Email"/><input class="auth-input" id="authPassNew" type="password" placeholder="Password (min 6 chars)"/><button class="auth-btn" onclick="doAuth('signup')">Create Account →</button></div></div></div>
+<!-- WRITE MODAL -->
+<div class="woverlay" id="writeOverlay" onclick="closeWriteOut(event)"><div class="write-modal"><div class="modal-hdr"><div class="modal-ttl">Share a Place</div><button class="close-btn" onclick="closeWrite()">✕</button></div><div class="fg"><label class="fl2">Post Title</label><input class="fi" id="postTitle" placeholder="e.g. The best hidden ramen in Tokyo..."/></div><div class="frow"><div class="fg"><label class="fl2">Your Name</label><input class="fi" id="postAuthor" placeholder="e.g. Maria S."/></div><div class="fg"><label class="fl2">Category</label><select class="fsel" id="postCat"><option value="Eat">🍽 Eat</option><option value="Drink">🍸 Drink</option><option value="Explore">🗺 Explore</option><option value="Stay">🏨 Stay</option></select></div></div><div class="fg"><label class="fl2">Your Experience</label><textarea class="fta" id="postBody" placeholder="Tell us about your experience..." oninput="checkProf(this)"></textarea><div class="prof-warn" id="profWarn">⚠️ Keep it friendly!</div></div><div class="fg"><label class="fl2">Add a Photo</label><div class="upload-area"><input type="file" accept="image/*" id="photoInput" onchange="previewImg(event)"/><div class="upload-txt">📷 Tap to upload</div><div class="upload-hint">JPG, PNG, WEBP · Max 5MB</div></div><img class="img-preview" id="photoPreview" alt=""/></div><div class="fg"><label class="fl2">City Tags</label><div class="tpick-wrap" id="tagPicker"><span class="tpick" onclick="toggleTag(this,'Tokyo')">Tokyo</span><span class="tpick" onclick="toggleTag(this,'Paris')">Paris</span><span class="tpick" onclick="toggleTag(this,'New York')">New York</span><span class="tpick" onclick="toggleTag(this,'Barcelona')">Barcelona</span><span class="tpick" onclick="toggleTag(this,'Bangkok')">Bangkok</span><span class="tpick" onclick="toggleTag(this,'Lisbon')">Lisbon</span><span class="tpick" onclick="toggleTag(this,'Sydney')">Sydney</span><span class="tpick" onclick="toggleTag(this,'Other')">Other</span></div></div><button class="sub-btn" onclick="submitPost()">Publish Post →</button></div></div>
 
-useEffect(() => { const t = setTimeout(() => { if (!open) setBadge(true); }, 4000); return () => clearTimeout(t); }, []);
-useEffect(() => { if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight; }, [msgs]);
+<div class="toast" id="toast"></div>
 
-const toggleOpen = () => {
-setOpen(o => !o);
-setBadge(false);
-if (!open && msgs.length === 0) {
-const greeting = city ? `Hey! 👋 Planning a trip to **${city}**? Ask me anything — safety, food, packing, culture, transport!` : “Hey! 👋 I’m your AI travel concierge. Ask me anything about any destination!”;
-setMsgs([{ role: “ai”, text: greeting }]);
-}
-};
+<script>
+// ============================================================
+// PSYCHOLOGY ENGINE
+// ============================================================
 
-const send = async () => {
-const msg = input.trim();
-if (!msg || busy) return;
-setInput(””);
-setMsgs(p => […p, { role: “user”, text: msg }]);
-setBusy(true);
-const tripCtx = city ? `\n\nTrip context: Planning ${days} days in ${city}, $${budget}/day, group: ${group}.` : “”;
-try {
-const res = await fetch(”/api/chat”, {
-method: “POST”, headers: { “Content-Type”: “application/json” },
-body: JSON.stringify({
-model: “claude-sonnet-4-20250514”, max_tokens: 400,
-system: “You are a friendly AI travel concierge. Keep answers concise (2-4 sentences), warm, practical. Use occasional travel emojis.” + tripCtx,
-messages: […msgs.filter(m => m.role !== “typing”), { role: “user”, content: msg }].map(m => ({ role: m.role === “ai” ? “assistant” : “user”, content: m.text })),
-}),
+// 1. PARTICLES — subtle ambient life (Flow State)
+(function initParticles(){
+  const wrap=document.getElementById('particles');
+  const colors=['#7c3aed','#06d6a0','#3b82f6','#f59e0b','#f472b6'];
+  for(let i=0;i<18;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    const size=Math.random()*4+1;
+    p.style.cssText=`
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${Math.random()*15+10}s;
+      animation-delay:-${Math.random()*20}s;
+      opacity:0;
+    `;
+    wrap.appendChild(p);
+  }
+})();
+
+
+
+// 3. SCROLL NAV EFFECT
+window.addEventListener('scroll',()=>{
+  document.getElementById('mainNav')?.classList.toggle('scrolled',window.scrollY>30);
 });
-const data = await res.json();
-const reply = data.content?.find(b => b.type === “text”)?.text || “Sorry, couldn’t connect!”;
-setMsgs(p => […p, { role: “ai”, text: reply }]);
-} catch {
-setMsgs(p => […p, { role: “ai”, text: “Hmm, trouble connecting. Try again! 🙏” }]);
+
+// 4. PROGRESS BAR (Zeigarnik Effect)
+const TOTAL_STEPS=11;
+let completedSteps=new Set([3,7,9]); // pre-complete obvious ones
+function updateProgress(n){
+  completedSteps.add(n);
+  renderProgress();
 }
-setBusy(false);
-};
+function markStep(idx){
+  completedSteps.add(idx);
+  renderProgress();
+}
+function renderProgress(){
+  const steps=document.getElementById('progSteps');
+  if(!steps) return;
+  steps.innerHTML='';
+  for(let i=0;i<TOTAL_STEPS;i++){
+    const s=document.createElement('div');
+    s.className='prog-step'+(completedSteps.has(i)?' done':'');
+    steps.appendChild(s);
+  }
+  document.getElementById('progCurrent').textContent=completedSteps.size;
+  document.getElementById('topProgress').style.width=(completedSteps.size/TOTAL_STEPS*100)+'%';
+}
+renderProgress();
 
-const formatMsg = text => {
-const parts = text.split(”**”);
-return parts.map((part, i) => i % 2 === 1 ? <strong key={i}>{part}</strong> : part);
-};
+// 5. RIPPLE EFFECT (Haptic-like feedback)
+function ripple(e){
+  const wrap=document.getElementById('rippleWrap');
+  const r=document.createElement('div');
+  r.className='ripple';
+  const size=80;
+  r.style.cssText=`width:${size}px;height:${size}px;left:${e.clientX-size/2}px;top:${e.clientY-size/2}px;`;
+  wrap.appendChild(r);
+  setTimeout(()=>r.remove(),700);
+}
 
-return (
-<>
-{/* FAB */}
-<button
-onClick={toggleOpen}
-style={{ position: “fixed”, bottom: “1.5rem”, right: “1.5rem”, zIndex: 300, width: 54, height: 54, borderRadius: 16, background: `linear-gradient(135deg,${D.p1},${D.a1})`, border: “none”, cursor: “pointer”, display: “flex”, alignItems: “center”, justifyContent: “center”, fontSize: “1.4rem”, boxShadow: `0 8px 24px rgba(124,58,237,0.45)`, WebkitTapHighlightColor: “transparent”, touchAction: “manipulation” }}
->
-🤖
-{badge && !open && <div style={{ position: “absolute”, top: -4, right: -4, width: 16, height: 16, background: D.r1, borderRadius: “50%”, border: `2px solid ${D.bg}`, display: “flex”, alignItems: “center”, justifyContent: “center”, fontSize: “0.55rem”, fontWeight: 700, color: “white” }}>1</div>}
-</button>
+// 6. CONFETTI (Variable Reward — only on big moments)
+function fireConfetti(){
+  const wrap=document.getElementById('confettiWrap');
+  const colors=['#7c3aed','#06d6a0','#f59e0b','#f472b6','#3b82f6','#ffffff'];
+  for(let i=0;i<60;i++){
+    const c=document.createElement('div');
+    c.className='confetti-piece';
+    c.style.cssText=`
+      left:${Math.random()*100}%;
+      top:-10px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      width:${Math.random()*8+4}px;
+      height:${Math.random()*8+4}px;
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+      animation-delay:${Math.random()*0.8}s;
+      animation-duration:${Math.random()*1+1.5}s;
+      transform:rotate(${Math.random()*360}deg);
+    `;
+    wrap.appendChild(c);
+  }
+  setTimeout(()=>{wrap.innerHTML='';},3000);
+}
+
+// 7. TOAST (Variable reward — slightly different each time)
+const toastEmojis={success:['✓','🎉','✨','👌','🙌'],error:['⚠️','❌'],info:['💡','✦','→']};
+function showToast(msg,type='info'){
+  const t=document.getElementById('toast');
+  const emojis=toastEmojis[type]||toastEmojis.info;
+  const emoji=emojis[Math.floor(Math.random()*emojis.length)];
+  t.textContent=`${emoji} ${msg}`;
+  t.className=`toast ${type}`;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3400);
+}
+
+// ============================================================
+// STATE
+// ============================================================
+let numDays=1,budgetAmt=150;
+let itinSel={duration:'Full day (8hrs)',style:'Walking',group:'Solo',vibe:[]};
+let prefTags=[],selTags=[],photoData=null;
+let generatedDays=[],currentCity='',currentItinTitle='';
+let currentUser=null,ratings={},notes={},visitedBlocks=new Set(),packChecked={};
+let weatherData=null,weatherDebounce=null;
+
+const BAD=['fuck','shit','bitch','bastard','cunt','dick','piss','cock','crap','asshole','bullshit','motherfucker','faggot','whore','slut'];
+function hasBad(t){const l=t.toLowerCase().replace(/[^a-z\s]/g,'');return BAD.some(w=>l.split(/\s+/).includes(w));}
+function checkProf(el){document.getElementById('profWarn').style.display=hasBad(el.value)?'block':'none';}
+
+// NAV
+function showPage(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));
+  document.getElementById(p+'-page').classList.add('active');
+  document.getElementById('nav-'+p)?.classList.add('active');
+  if(p==='blog') renderBlog('all');
+  if(p==='saved') renderSaved();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// SURPRISE ME
+const SURPRISE_CITIES=['Kyoto, Japan','Porto, Portugal','Marrakech, Morocco','Buenos Aires, Argentina','Copenhagen, Denmark','Seoul, South Korea','Cape Town, South Africa','Dubrovnik, Croatia','Medellín, Colombia','Hanoi, Vietnam','Reykjavik, Iceland','Havana, Cuba','Edinburgh, Scotland','Tbilisi, Georgia','Chiang Mai, Thailand','Oaxaca, Mexico'];
+async function surpriseMe(){
+  showPage('planner');
+  const city=SURPRISE_CITIES[Math.floor(Math.random()*SURPRISE_CITIES.length)];
+  const vibeOptions=[['Food & Drink','Culture & History'],['Art & Design','Hidden Gems'],['Nature & Outdoors','Photography'],['Nightlife','Food & Drink'],['Relaxation','Art & Design']];
+  const vibes=vibeOptions[Math.floor(Math.random()*vibeOptions.length)];
+  const days=Math.floor(Math.random()*3)+1;
+  const budget=Math.floor(Math.random()*350)+50;
+  document.getElementById('itinCity').value=city;
+  while(numDays<days) changeDays(1);
+  while(numDays>days) changeDays(-1);
+  updateBudget(budget);
+  document.getElementById('budgetSlider').value=budget;
+  itinSel.vibe=[];
+  document.querySelectorAll('.opt-grid .opt').forEach(o=>o.classList.remove('sel'));
+  showToast(`🎲 How about ${days} day${days>1?'s':''} in ${city}?`,'info');
+  setTimeout(()=>generateItinerary(false),600);
+}
+
+// WEATHER
+function debouncedWeather(){clearTimeout(weatherDebounce);weatherDebounce=setTimeout(fetchWeather,900);}
+async function fetchWeather(){
+  const city=document.getElementById('itinCity').value.trim();
+  if(!city||city.length<3) return;
+  const banner=document.getElementById('weatherBanner');
+  try{
+    const geoRes=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`);
+    const geoData=await geoRes.json();
+    if(!geoData.results?.length){banner.className='weather-banner';return;}
+    const {latitude,longitude,name,country}=geoData.results[0];
+    const wxRes=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode&timezone=auto&forecast_days=7`);
+    const wxData=await wxRes.json();
+    const codes=wxData.daily.weathercode||[];
+    const maxT=wxData.daily.temperature_2m_max||[];
+    const minT=wxData.daily.temperature_2m_min||[];
+    const rain=wxData.daily.precipitation_sum||[];
+    const code=codes[0]||0;
+    const emoji=code<3?'☀️':code<50?'⛅':code<70?'🌧':code<80?'⛈':'🌨';
+    const desc=code<3?'Clear skies':code<50?'Partly cloudy':code<70?'Rainy':code<80?'Thunderstorms':'Snow possible';
+    const avgMax=Math.round(maxT.slice(0,3).reduce((a,b)=>a+b,0)/3);
+    const avgMin=Math.round(minT.slice(0,3).reduce((a,b)=>a+b,0)/3);
+    const totalRain=rain.slice(0,3).reduce((a,b)=>a+b,0).toFixed(1);
+    weatherData={city:name,country,avgMax,avgMin,desc,emoji,totalRain};
+    banner.className='weather-banner visible';
+    banner.innerHTML=`
+      <div class="weather-icon">${emoji}</div>
+      <div class="weather-info">
+        <div class="weather-city">${name}, ${country}</div>
+        <div class="weather-desc">${desc} · Next 3 days</div>
+        <div class="weather-temps">
+          <span class="weather-temp">🌡 ${avgMin}°C – ${avgMax}°C</span>
+          <span class="weather-temp">💧 ${totalRain}mm rain</span>
+        </div>
+      </div>
+      ${totalRain>10?'<div class="weather-alert">☂ Pack an umbrella!</div>':avgMax>32?'<div class="weather-alert">🌞 Pack sun protection</div>':avgMin<5?'<div class="weather-alert">🧥 Bring warm layers</div>':''}`;
+  }catch(e){banner.className='weather-banner';}
+}
+
+function syncDaysFromDates(){
+  const s=document.getElementById('startDate').value;
+  const e=document.getElementById('endDate').value;
+  if(!s||!e) return;
+  const diff=Math.round((new Date(e)-new Date(s))/(864e5))+1;
+  if(diff>0&&diff<=10){numDays=diff;document.getElementById('daysNum').textContent=numDays;document.getElementById('daysLabel').textContent=numDays===1?'1 day':numDays+' days';}
+}
+
+function updateBudget(v){
+  budgetAmt=parseInt(v);
+  document.getElementById('budgetVal').textContent='$'+budgetAmt;
+  let d='Free & frugal';
+  if(budgetAmt>60) d='Budget friendly';
+  if(budgetAmt>120) d='Mid-range';
+  if(budgetAmt>250) d='Premium';
+  if(budgetAmt>450) d='Luxury';
+  if(budgetAmt>700) d='Ultra Luxury';
+  document.getElementById('budgetDesc').textContent=d;
+  const pct=(budgetAmt/999)*100;
+  document.getElementById('budgetSlider').style.background=`linear-gradient(to right,#9f67f7 0%,#06d6a0 ${pct}%,#28253e ${pct}%)`;
+}
+updateBudget(150);
+
+function changeDays(d){
+  numDays=Math.max(1,Math.min(10,numDays+d));
+  const el=document.getElementById('daysNum');
+  el.textContent=numDays;el.classList.add('bump');
+  setTimeout(()=>el.classList.remove('bump'),350);
+  document.getElementById('daysLabel').textContent=numDays===1?'1 day':numDays+' days';
+  markStep(2);
+}
+
+function selectOpt(el,key,val){
+  el.closest('.opt-grid').querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');itinSel[key]=val;
+}
+function toggleOpt(el,key,val){
+  el.classList.toggle('sel');
+  if(el.classList.contains('sel')) itinSel.vibe.push(val);
+  else itinSel.vibe=itinSel.vibe.filter(v=>v!==val);
+}
+
+function handleTagInput(e){
+  if(e.key==='Enter'||e.key===','){e.preventDefault();const v=e.target.value.trim().replace(/,$/,'');if(v)addTag(v);e.target.value='';}
+  else if(e.key==='Backspace'&&!e.target.value&&prefTags.length) removeTag(prefTags[prefTags.length-1]);
+}
+function addTag(tag){
+  const t=tag.trim();if(!t||prefTags.includes(t))return;
+  prefTags.push(t);renderTags();markStep(6);
+}
+function removeTag(tag){prefTags=prefTags.filter(t=>t!==tag);renderTags();}
+function renderTags(){
+  const wrap=document.getElementById('tagsWrap'),input=document.getElementById('tagsInput');
+  wrap.innerHTML='';
+  prefTags.forEach(t=>{const c=document.createElement('span');c.className='tag-chip';c.innerHTML=`${t}<span class="tag-chip-x" onclick="removeTag('${t}')">✕</span>`;wrap.appendChild(c);});
+  wrap.appendChild(input);
+}
+
+// GENERATE — the core loop, must end with celebration (Peak-End Rule)
+async function generateItinerary(isRegen=false){
+  const city=document.getElementById('itinCity').value.trim();
+  if(!city){showToast('Please enter a destination!','error');return;}
+  currentCity=city;
+  const randomize=document.getElementById('randomizeToggle').checked;
+  const includeResv=document.getElementById('resvToggle').checked;
+  const showMap=document.getElementById('mapToggle').checked;
+  const vibes=itinSel.vibe.length>0?itinSel.vibe.join(', '):'General sightseeing';
+  const prefs=prefTags.length>0?prefTags.join(', '):'None';
+  const nbhd=document.getElementById('neighborhoodInput').value.trim();
+  const btn=document.getElementById('genBtn');
+  btn.disabled=true;
+  btn.innerHTML=`<span class="gen-btn-loading">Building <span class="gen-dots"><span class="gen-dot"></span><span class="gen-dot"></span><span class="gen-dot"></span></span></span>`;
+  document.getElementById('itinResult').style.display='block';
+  document.getElementById('celebrateBlock').style.display='none';
+  document.getElementById('dayPanels').innerHTML=`<div class="itin-loading"><div class="itin-loader-wrap"><div class="itin-loader-ring"></div><div class="itin-loader-dot"></div></div><div class="loading-txt">Crafting ${numDays} perfect day${numDays>1?'s':''} in ${city}...</div><div class="loading-subtitle">Finding the best real places just for you</div></div>`;
+  document.getElementById('dayTabs').innerHTML='';
+  document.getElementById('tripSummaryBar').innerHTML='';
+  document.getElementById('itinResult').scrollIntoView({behavior:'smooth',block:'start'});
+  const usedPlaces=isRegen?[]:generatedDays.flatMap(d=>(d.blocks||[]).map(b=>b.place));
+  visitedBlocks=new Set();
+
+  try{
+    const res=await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:8000,
+        messages:[{role:'user',content:`Create a ${numDays}-day travel itinerary for "${city}".
+${nbhd?`Focus on/near: ${nbhd}`:''}
+Interests: ${vibes}
+Preferences: ${prefs}
+Transport: ${itinSel.style}
+Budget: $${budgetAmt}/day (${document.getElementById('budgetDesc').textContent})
+Group: ${itinSel.group}
+Duration: ${itinSel.duration}
+Randomize: ${randomize?'YES':'NO'}
+${usedPlaces.length?`Never use: ${usedPlaces.join(', ')}`:''}
+${weatherData?`Weather: ${weatherData.desc}, ${weatherData.avgMin}-${weatherData.avgMax}°C`:''}
+
+Return ONLY raw valid JSON:
+{"title":"e.g. 3 Days in Tokyo","totalEstCost":"e.g. $450","days":[{"dayNum":1,"theme":"e.g. Old City & Street Food","estDayCost":"e.g. $150","blocks":[{"time":"9:00 AM","place":"Real name","type":"Breakfast","desc":"2 vivid sentences","tip":"One insider tip","cost":"~$12","openTableSlug":"slug or empty","googleMapsQuery":"Place City Country","viatorQuery":"or empty","bookingQuery":"or empty"}]}]}
+
+Rules: 5-8 blocks/day. Real places. Logical geography.`}]
+      })
+    });
+    const data=await res.json();
+    const text=data.content?.find(b=>b.type==='text')?.text||'';
+    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+    generatedDays=parsed.days||[];
+    currentItinTitle=parsed.title||`${numDays}-Day Itinerary`;
+
+    // CELEBRATION MOMENT (Peak-End Rule — this is the "peak")
+    document.getElementById('celebrateBlock').style.display='block';
+    document.getElementById('celebrateTitle').textContent=`Your ${currentItinTitle} is ready! 🎉`;
+    document.getElementById('celebrateSub').textContent=`${generatedDays.reduce((s,d)=>s+(d.blocks||[]).length,0)} stops across ${numDays} day${numDays>1?'s':''} · Powered by AI`;
+    fireConfetti();
+
+    document.getElementById('itinTitle').textContent=currentItinTitle;
+    document.getElementById('itinSub').textContent=`${numDays} day${numDays>1?'s':''} · ${city} · $${budgetAmt}/day · ${itinSel.group}`;
+
+    // Summary bar
+    const totalBlocks=generatedDays.reduce((s,d)=>s+(d.blocks||[]).length,0);
+    const co2=calcCarbon(itinSel.style,numDays);
+    document.getElementById('tripSummaryBar').innerHTML=`
+      <div class="tsb-item"><div class="tsb-label">Est. Total Cost</div><div class="tsb-val v-w">${parsed.totalEstCost||'~$'+budgetAmt*numDays}</div></div>
+      <div class="tsb-item"><div class="tsb-label">Stops Planned</div><div class="tsb-val v-p">${totalBlocks}</div></div>
+      <div class="tsb-item"><div class="tsb-label">Carbon Est.</div><div class="tsb-val v-a">${co2}kg CO₂</div></div>
+      <div class="tsb-item"><div class="tsb-label">Days</div><div class="tsb-val">${numDays}</div></div>
+      ${weatherData?`<div class="tsb-item"><div class="tsb-label">Weather</div><div class="tsb-val" style="font-size:1.5rem;">${weatherData.emoji}</div></div>`:''}`;
+
+    const tabs=document.getElementById('dayTabs'),panels=document.getElementById('dayPanels');
+    tabs.innerHTML='';panels.innerHTML='';
+    generatedDays.forEach((day,i)=>{
+      const tab=document.createElement('button');
+      tab.className='day-tab'+(i===0?' active':'');
+      tab.textContent=`Day ${day.dayNum}${day.theme?' · '+day.theme:''}`;
+      tab.onclick=()=>switchDayTab(i);tabs.appendChild(tab);
+      const panel=document.createElement('div');
+      panel.className='day-panel'+(i===0?' active':'');
+      panel.id='day-panel-'+i;
+      panel.innerHTML=buildDayHTML(day,i,includeResv,showMap);
+      panels.appendChild(panel);
+    });
+
+    // Mark all steps complete at the end
+    for(let i=0;i<TOTAL_STEPS;i++) completedSteps.add(i);
+    renderProgress();
+    showToast('Your itinerary is ready!','success');
+
+  }catch(err){
+    document.getElementById('dayPanels').innerHTML=`<div class="err-msg"><strong>Could not build itinerary</strong>${err.message}<br>Check ANTHROPIC_API_KEY in Vercel environment variables.</div>`;
+    console.error(err);
+  }
+  btn.disabled=false;
+  btn.innerHTML='✨ Build My Itinerary';
+}
+
+function switchDayTab(idx){
+  document.querySelectorAll('.day-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.day-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+}
+
+function buildDayHTML(day,dayIdx,includeResv,showMap){
+  const blocks=day.blocks||[];
+  let mapHTML='';
+  if(showMap&&blocks.length){
+    const firstQ=encodeURIComponent(blocks[0].googleMapsQuery||blocks[0].place);
+    mapHTML=`
+      <div class="map-toggle-row">
+        <button class="view-toggle active" onclick="setView('list','${dayIdx}',this)">📋 List</button>
+        <button class="view-toggle" onclick="setView('map','${dayIdx}',this)">🗺 Map</button>
+      </div>
+      <div class="map-container" id="map-${dayIdx}">
+        <iframe class="map-iframe" loading="lazy" src="https://maps.google.com/maps?q=${firstQ}&output=embed" allowfullscreen></iframe>
+        <div class="map-pins">${blocks.map((b,i)=>`<div class="map-pin-item"><div class="pin-num">${i+1}</div><div class="pin-name">${b.place}</div></div>`).join('')}</div>
+      </div>`;
+  }
+  const dayCostBar=day.estDayCost?`<div class="day-cost-bar"><div><div class="dcb-label">Estimated day spend</div><div class="dcb-total">${day.estDayCost} per person</div></div><div class="dcb-breakdown">${blocks.filter(b=>b.cost).map(b=>`<span class="dcb-item">${b.place.split(' ')[0]}: ${b.cost}</span>`).join('')}</div></div>`:'';
+  const blocksHTML=blocks.map((b,bi)=>{
+    const key=`${dayIdx}-${bi}`;
+    const isV=visitedBlocks.has(key);
+    return `
+    <div class="time-block${isV?' visited':''}" id="block-${dayIdx}-${bi}">
+      <div class="tb-header">
+        <div class="tb-num">${bi+1}</div>
+        <div class="tb-time">${b.time}</div>
+        <div class="tb-place">${b.place}</div>
+        <div class="tb-type">${b.type}</div>
+        ${b.cost?`<div class="tb-cost">${b.cost}</div>`:''}
+        <div class="tb-actions">
+          <button class="tb-icon-btn${isV?' active':''}" onclick="toggleVisited('${key}',this)" title="Mark visited">✓</button>
+          <button class="tb-icon-btn regen-block-btn" style="width:auto;padding:0 0.5rem;font-size:0.67rem;" onclick="regenBlock(${dayIdx},${bi});ripple(event)">🎲</button>
+        </div>
+      </div>
+      <div class="tb-body">
+        <div class="tb-desc">${b.desc}</div>
+        ${b.tip?`<div class="tb-tip">💡 ${b.tip}</div>`:''}
+        <div class="notes-section">
+          <button class="notes-toggle" onclick="toggleNotes('${key}',this)">📝 ${notes[key]?'Edit note':'Add a note'}</button>
+          <textarea class="notes-textarea${notes[key]?' open':''}" id="note-${key}" placeholder="Confirmation numbers, tips, anything..." onblur="saveNote('${key}')">${notes[key]||''}</textarea>
 
 ```
-  {/* Chat window */}
-  {open && (
-    <div style={{ position: "fixed", bottom: "5rem", right: "1.5rem", zIndex: 300, width: 340, maxWidth: "calc(100vw - 2rem)", background: c.surf, border: `1px solid ${c.bdr2}`, borderRadius: 20, display: "flex", flexDirection: "column", maxHeight: 500, boxShadow: "0 20px 50px rgba(0,0,0,0.5)", overflow: "hidden" }}>
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: "0.65rem", padding: "0.9rem 1.1rem", borderBottom: `1px solid ${c.bdr}`, background: `linear-gradient(135deg,rgba(124,58,237,0.07),rgba(6,214,160,0.04))`, flexShrink: 0 }}>
-        <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg,${D.p1},${D.a1})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem", flexShrink: 0 }}>🤖</div>
-        <div>
-          <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 800, fontSize: "0.88rem", color: c.txt }}>Travel Concierge</div>
-          <div style={{ fontSize: "0.67rem", color: D.a2, display: "flex", alignItems: "center", gap: "0.25rem" }}>
-            <div style={{ width: 5, height: 5, background: D.a2, borderRadius: "50%", boxShadow: `0 0 5px ${D.a2}` }} />
-            Online · Ask me anything
-          </div>
-        </div>
-        <button onClick={toggleOpen} style={{ marginLeft: "auto", background: "rgba(255,255,255,0.05)", border: `1px solid ${c.bdr}`, width: 28, height: 28, borderRadius: 8, cursor: "pointer", color: c.muted, fontSize: "0.82rem", display: "flex", alignItems: "center", justifyContent: "center", WebkitTapHighlightColor: "transparent" }}>✕</button>
-      </div>
-
-      {/* Messages */}
-      <div ref={msgsRef} style={{ flex: 1, overflowY: "auto", padding: "0.9rem", display: "flex", flexDirection: "column", gap: "0.65rem" }}>
-        {msgs.map((m, i) => (
-          <div key={i} style={{ display: "flex", gap: "0.42rem", flexDirection: m.role === "user" ? "row-reverse" : "row" }}>
-            <div style={{ width: 26, height: 26, borderRadius: 8, background: m.role === "ai" ? `linear-gradient(135deg,${D.p1},${D.a1})` : c.surf3, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.72rem", flexShrink: 0, marginTop: 2 }}>{m.role === "ai" ? "🤖" : "👤"}</div>
-            <div style={{ padding: "0.6rem 0.85rem", borderRadius: m.role === "ai" ? "4px 12px 12px 12px" : "12px 4px 12px 12px", fontSize: "0.8rem", lineHeight: 1.52, maxWidth: "84%", background: m.role === "ai" ? c.surf2 : `linear-gradient(135deg,${D.p1},${D.p2})`, color: m.role === "ai" ? c.txt2 : "white", border: m.role === "ai" ? `1px solid ${c.bdr}` : "none" }}>
-              {formatMsg(m.text)}
-            </div>
-          </div>
-        ))}
-        {busy && (
-          <div style={{ display: "flex", gap: "0.42rem" }}>
-            <div style={{ width: 26, height: 26, borderRadius: 8, background: `linear-gradient(135deg,${D.p1},${D.a1})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.72rem" }}>🤖</div>
-            <div style={{ padding: "0.6rem 0.85rem", borderRadius: "4px 12px 12px 12px", background: c.surf2, border: `1px solid ${c.bdr}`, display: "flex", gap: 3, alignItems: "center" }}>
-              {[0,1,2].map(i => <div key={i} style={{ width: 5, height: 5, borderRadius: "50%", background: c.muted, animation: `bounce 1s ${i * 0.15}s ease-in-out infinite` }} />)}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Suggestions */}
-      {msgs.length <= 1 && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", padding: "0.55rem 0.9rem 0" }}>
-          {["Safety?","Packing?","Tipping?","Local food?","Transport?"].map(s => (
-            <button key={s} onClick={() => { setInput(s); }} style={{ padding: "0.26rem 0.65rem", background: "rgba(124,58,237,0.07)", border: `1px solid rgba(124,58,237,0.18)`, borderRadius: 100, fontSize: "0.67rem", color: D.p3, cursor: "pointer", WebkitTapHighlightColor: "transparent", fontFamily: "'DM Sans',sans-serif" }}>{s}</button>
-          ))}
-        </div>
-      )}
-
-      {/* Input */}
-      <div style={{ display: "flex", gap: "0.42rem", padding: "0.8rem 0.9rem", borderTop: `1px solid ${c.bdr}`, flexShrink: 0 }}>
-        <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()} placeholder="Ask anything about your trip..." style={{ flex: 1, background: c.surf2, border: `1px solid ${c.bdr2}`, borderRadius: 10, padding: "0.55rem 0.8rem", fontFamily: "'DM Sans',sans-serif", fontSize: "0.95rem", color: c.txt, outline: "none", WebkitAppearance: "none" }} />
-        <button onClick={send} disabled={busy} style={{ width: 36, height: 36, borderRadius: 10, flexShrink: 0, alignSelf: "flex-end", background: `linear-gradient(135deg,${D.p1},${D.p2})`, border: "none", cursor: busy ? "wait" : "pointer", color: "white", fontSize: "0.9rem", display: "flex", alignItems: "center", justifyContent: "center", opacity: busy ? 0.4 : 1, WebkitTapHighlightColor: "transparent" }}>➤</button>
-      </div>
     </div>
-  )}
-  <style>{`@keyframes bounce{0%,80%,100%{transform:scale(0.5);opacity:0.4}40%{transform:scale(1);opacity:1}}`}</style>
-</>
+    <div class="rating-row">
+      <div class="star-rating" id="stars-${key}">
+        ${[1,2,3,4,5].map(s=>`<button class="star-btn${(ratings[key]||0)>=s?' filled':''}" onclick="rateBlock('${key}',${s});ripple(event)">★</button>`).join('')}
+      </div>
+      <span class="rating-label" id="rlabel-${key}">${ratings[key]?['','⭐ Poor','⭐⭐ Fair','⭐⭐⭐ Good','⭐⭐⭐⭐ Great','⭐⭐⭐⭐⭐ Amazing'][ratings[key]]:'Rate this stop'}</span>
+    </div>
+    ${includeResv?`<div class="tb-footer">
+      <a class="res-btn res-btn-maps" href="https://www.google.com/maps/search/${encodeURIComponent(b.googleMapsQuery||b.place)}" target="_blank" rel="noopener">📍 Maps</a>
+      ${b.openTableSlug?`<a class="res-btn res-btn-opentable" href="https://www.opentable.com/r/${b.openTableSlug}" target="_blank" rel="noopener">🍽 OpenTable</a>`:''}
+      ${b.viatorQuery?`<a class="res-btn res-btn-viator" href="https://www.viator.com/search/${encodeURIComponent(b.viatorQuery)}" target="_blank" rel="noopener">🎟 Viator</a>`:''}
+      ${b.bookingQuery?`<a class="res-btn res-btn-booking" href="https://www.booking.com/search.html?ss=${encodeURIComponent(b.bookingQuery)}" target="_blank" rel="noopener">🏨 Booking</a>`:''}
+      <a class="res-btn res-btn-yelp" href="https://www.yelp.com/search?find_desc=${encodeURIComponent(b.place)}&find_loc=${encodeURIComponent(currentCity)}" target="_blank" rel="noopener">⭐ Yelp</a>
+    </div>`:''}
+  </div>
+</div>`}).join('');
 ```
 
-);
+return `${mapHTML}${dayCostBar}<div class="day-blocks">${blocksHTML}</div>`;
 }
 
-// ── APP ───────────────────────────────────────────────────────────
-function App() {
-const { dark, toggle, c } = useTheme();
-const [page, setPage] = useState(“home”);
-const [toast, setToast] = useState({ msg: “”, type: “info” });
-const toastRef = useRef(null);
-const [city, setCity] = useState(””);
-const [days, setDays] = useState(1);
-const [budget, setBudget] = useState(150);
-const [group, setGroup] = useState(“Solo”);
+function setView(view,dayIdx,btn){
+btn.closest(’.map-toggle-row’).querySelectorAll(’.view-toggle’).forEach(b=>b.classList.remove(‘active’));
+btn.classList.add(‘active’);
+const map=document.getElementById(‘map-’+dayIdx);
+const panel=document.getElementById(‘day-panel-’+dayIdx);
+if(map) map.classList.toggle(‘visible’,view===‘map’);
+if(panel){const db=panel.querySelector(’.day-blocks’);if(db) db.style.display=view===‘map’?‘none’:‘grid’;}
+}
 
-const showToast = (msg, type = “info”) => {
-clearTimeout(toastRef.current);
-setToast({ msg, type });
-toastRef.current = setTimeout(() => setToast({ msg: “”, type: “info” }), 3200);
-};
+function toggleVisited(key,btn){
+if(visitedBlocks.has(key)){visitedBlocks.delete(key);btn.classList.remove(‘active’);}
+else{visitedBlocks.add(key);btn.classList.add(‘active’);showToast(‘Marked as visited’,‘success’);}
+const blockId=`block-${key.replace('-','-')}`;
+// re-find by id pattern
+const parts=key.split(’-’);
+const el=document.getElementById(`block-${parts[0]}-${parts[1]}`);
+if(el) el.classList.toggle(‘visited’,visitedBlocks.has(key));
+}
 
-const navItems = [
-{ id: “home”, label: “Home” },
-{ id: “planner”, label: “Planner” },
-{ id: “saved”, label: “Saved” },
-{ id: “blog”, label: “Blog” },
+function toggleNotes(key,btn){
+const ta=document.getElementById(‘note-’+key);
+const isOpen=ta.classList.contains(‘open’);
+ta.classList.toggle(‘open’,!isOpen);
+if(!isOpen) ta.focus();
+}
+function saveNote(key){const ta=document.getElementById(‘note-’+key);if(ta) notes[key]=ta.value.trim();}
+
+// Star rating — each star gets a pop animation (Variable Reward micro-moment)
+function rateBlock(key,val){
+ratings[key]=val;
+const stars=document.querySelectorAll(`#stars-${key} .star-btn`);
+stars.forEach((s,i)=>{
+s.classList.toggle(‘filled’,i<val);
+if(i<val) s.classList.add(‘just-rated’);
+setTimeout(()=>s.classList.remove(‘just-rated’),500);
+});
+const label=document.getElementById(‘rlabel-’+key);
+if(label) label.textContent=[’’,‘⭐ Poor’,‘⭐⭐ Fair’,‘⭐⭐⭐ Good’,‘⭐⭐⭐⭐ Great’,‘⭐⭐⭐⭐⭐ Amazing’][val]||’’;
+if(val===5) showToast(‘Amazing! You loved it 🌟’,‘reward’);
+}
+
+// SWAP BLOCK
+async function regenBlock(dayIdx,blockIdx){
+const city=currentCity;
+const block=generatedDays[dayIdx]?.blocks[blockIdx];
+if(!block) return;
+const used=generatedDays.flatMap(d=>(d.blocks||[]).map(b=>b.place));
+const prefs=prefTags.join(’, ‘)||‘None’;
+try{
+const res=await fetch(’/api/chat’,{method:‘POST’,headers:{‘Content-Type’:‘application/json’},
+body:JSON.stringify({model:‘claude-sonnet-4-20250514’,max_tokens:500,messages:[{role:‘user’,
+content:`One alternative ${block.type} in "${city}" at ${block.time}, budget $${budgetAmt}/day, prefs: ${prefs}. Never use: ${used.join(', ')}. Return raw JSON: {"place":"","type":"${block.type}","desc":"2 sentences","tip":"tip","cost":"~$X","openTableSlug":"","googleMapsQuery":"place city","viatorQuery":"","bookingQuery":""}`}]})
+});
+const data=await res.json();
+const nb=JSON.parse(data.content?.find(b=>b.type===‘text’)?.text.replace(/`json|`/g,’’).trim()||’{}’);
+nb.time=block.time;
+generatedDays[dayIdx].blocks[blockIdx]=nb;
+const includeResv=document.getElementById(‘resvToggle’).checked;
+const temp=document.createElement(‘div’);
+temp.innerHTML=buildDayHTML(generatedDays[dayIdx],dayIdx,includeResv,false);
+const oldBlocks=document.getElementById(`block-${dayIdx}-${blockIdx}`)?.closest(’.day-blocks’);
+const newBlocks=temp.querySelector(’.day-blocks’);
+if(oldBlocks&&newBlocks) oldBlocks.innerHTML=newBlocks.innerHTML;
+showToast(‘Fresh suggestion found! ✨’,‘success’);
+}catch(err){showToast(‘Could not swap — try again’,‘error’);console.error(err);}
+}
+
+// PACKING
+async function openPacking(){
+document.getElementById(‘packingContent’).innerHTML=’<div class="itin-loading"><div class="itin-loader-wrap"><div class="itin-loader-ring"></div><div class="itin-loader-dot"></div></div><div class="loading-txt">Building your list…</div></div>’;
+document.getElementById(‘packingModal’).classList.add(‘open’);document.body.style.overflow=‘hidden’;
+try{
+const res=await fetch(’/api/chat’,{method:‘POST’,headers:{‘Content-Type’:‘application/json’},
+body:JSON.stringify({model:‘claude-sonnet-4-20250514’,max_tokens:1200,messages:[{role:‘user’,
+content:`Packing list for ${numDays}-day trip to "${currentCity}". Budget $${budgetAmt}/day. Vibes: ${itinSel.vibe.join(',')||'General'}. Group: ${itinSel.group}. Weather: ${weatherData?`${weatherData.avgMin}-${weatherData.avgMax}°C, ${weatherData.desc}`:'unknown'}. Raw JSON: {"sections":[{"title":"Essentials","items":["Passport","Phone charger"]},{"title":"Clothing","items":["..."]},{"title":"Toiletries","items":["..."]},{"title":"For ${currentCity}","items":["..."]}]}`}]})
+});
+const data=await res.json();
+const parsed=JSON.parse(data.content?.find(b=>b.type===‘text’)?.text.replace(/`json|`/g,’’).trim()||’{}’);
+let html=’’;
+(parsed.sections||[]).forEach(s=>{
+html+=`<div class="pack-section"><div class="pack-section-title">${s.title}</div><div class="pack-items">`;
+(s.items||[]).forEach((item,i)=>{
+const key=s.title+i;
+html+=`<div class="pack-item${packChecked[key]?' checked':''}" id="pack-${key}" onclick="togglePack('${key}')"><span class="pack-check">${packChecked[key]?'✓':'○'}</span>${item}</div>`;
+});
+html+=’</div></div>’;
+});
+document.getElementById(‘packingContent’).innerHTML=html||’<div class="err-msg">Could not generate.</div>’;
+}catch(err){document.getElementById(‘packingContent’).innerHTML=’<div class="err-msg"><strong>Error</strong>’+err.message+’</div>’;}
+}
+function togglePack(key){
+packChecked[key]=!packChecked[key];
+const el=document.getElementById(‘pack-’+key);
+if(el){el.classList.toggle(‘checked’,packChecked[key]);el.querySelector(’.pack-check’).textContent=packChecked[key]?‘✓’:‘○’;}
+if(packChecked[key]) showToast(‘Packed! ✓’,‘success’);
+}
+
+// LANGUAGE
+async function openLanguage(){
+document.getElementById(‘languageContent’).innerHTML=’<div class="itin-loading"><div class="itin-loader-wrap"><div class="itin-loader-ring"></div><div class="itin-loader-dot"></div></div><div class="loading-txt">Loading phrases…</div></div>’;
+document.getElementById(‘languageModal’).classList.add(‘open’);document.body.style.overflow=‘hidden’;
+try{
+const res=await fetch(’/api/chat’,{method:‘POST’,headers:{‘Content-Type’:‘application/json’},
+body:JSON.stringify({model:‘claude-sonnet-4-20250514’,max_tokens:1000,messages:[{role:‘user’,
+content:`12 essential travel phrases for "${currentCity}". Raw JSON: {"language":"e.g. Japanese","phrases":[{"local":"...","romanized":"...","meaning":"...","context":"..."}]}`}]})
+});
+const data=await res.json();
+const parsed=JSON.parse(data.content?.find(b=>b.type===‘text’)?.text.replace(/`json|`/g,’’).trim()||’{}’);
+let html=`<p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">Useful ${parsed.language||'local'} phrases for ${currentCity}:</p><div class="phrase-grid">`;
+(parsed.phrases||[]).forEach(p=>{html+=`<div class="phrase-card"><div class="phrase-local">${p.local}</div>${p.romanized?`<div class="phrase-roman">${p.romanized}</div>`:''}<div class="phrase-meaning">${p.meaning}</div>${p.context?`<div class="phrase-context">${p.context}</div>`:''}</div>`;});
+html+=’</div>’;
+document.getElementById(‘languageContent’).innerHTML=html;
+}catch(err){document.getElementById(‘languageContent’).innerHTML=’<div class="err-msg"><strong>Error</strong>’+err.message+’</div>’;}
+}
+
+// CARBON
+function calcCarbon(style,days){const m={Walking:0,Cycling:0.1,‘Public Transport’:1.2,‘Taxi / Rideshare’:3.5,Driving:4.8};return((m[style]||1.5)*days+2.5).toFixed(1);}
+function openCarbon(){
+const co2=parseFloat(calcCarbon(itinSel.style,numDays));
+const trees=Math.ceil(co2/21);
+document.getElementById(‘carbonContent’).innerHTML=` <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1.1rem;">Estimated carbon for your ${numDays}-day trip to ${currentCity||'your destination'}.</p> <div class="carbon-breakdown"> <div class="carbon-item"><span>🚶 Transport (${itinSel.style})</span><span class="carbon-val">${calcCarbon(itinSel.style,numDays)} kg</span></div> <div class="carbon-item"><span>🏨 Accommodation</span><span class="carbon-val">${(numDays*2.1).toFixed(1)} kg</span></div> <div class="carbon-item"><span>🍽 Food & dining</span><span class="carbon-val">${(numDays*1.8).toFixed(1)} kg</span></div> <div class="carbon-item" style="border-top:1px solid var(--border2);margin-top:0.3rem;"><span style="font-weight:600;">Total trip estimate</span><span class="carbon-val" style="font-size:1rem;">${(co2+numDays*1.8+numDays*2.1).toFixed(1)} kg CO₂</span></div> </div> <div style="background:rgba(6,214,160,0.05);border:1px solid rgba(6,214,160,0.13);border-radius:10px;padding:0.9rem;margin-top:0.9rem;font-size:0.78rem;color:var(--muted);"> 🌱 To offset this trip, plant approximately <strong style="color:var(--a2)">${trees} tree${trees>1?'s':''}</strong>. </div> <a class="carbon-offset-link" href="https://www.goldstandard.org/take-action/offset-my-footprint" target="_blank" rel="noopener">🌍 Offset My Carbon →</a>`;
+document.getElementById(‘carbonModal’).classList.add(‘open’);document.body.style.overflow=‘hidden’;
+}
+
+// MODALS
+function closeSideModal(id){document.getElementById(id).classList.remove(‘open’);document.body.style.overflow=’’;}
+function closeSideOut(id,e){if(e.target===document.getElementById(id))closeSideModal(id);}
+function closeModal(id){document.getElementById(id).classList.remove(‘open’);document.body.style.overflow=’’;}
+function closeModalOut(id,e){if(e.target===document.getElementById(id))closeModal(id);}
+
+// SAVE
+function saveTrip(){
+if(!generatedDays.length){showToast(‘Generate an itinerary first!’,‘error’);return;}
+const saved=JSON.parse(localStorage.getItem(‘wa_saved’)||’[]’);
+saved.unshift({id:Date.now(),title:currentItinTitle,city:currentCity,days:numDays,budget:budgetAmt,group:itinSel.group,date:new Date().toLocaleDateString(‘en-US’,{month:‘short’,day:‘numeric’,year:‘numeric’}),data:generatedDays});
+localStorage.setItem(‘wa_saved’,JSON.stringify(saved.slice(0,20)));
+showToast(‘Trip saved! 💾’,‘success’);
+}
+function renderSaved(){
+const grid=document.getElementById(‘savedGrid’);
+const saved=JSON.parse(localStorage.getItem(‘wa_saved’)||’[]’);
+if(!saved.length){grid.innerHTML=`<div class="empty-state"><div class="empty-icon">🗺</div><div class="empty-title">No saved trips yet</div><div style="font-size:0.8rem;color:var(--muted);margin-top:0.25rem;">Build and save an itinerary!</div><button class="btn-primary" style="margin-top:1rem;" onclick="showPage('planner')">Start Planning</button></div>`;return;}
+grid.innerHTML=’’;
+saved.forEach(trip=>{
+const card=document.createElement(‘div’);card.className=‘saved-card’;
+card.innerHTML=`<div class="saved-card-title">${trip.title}</div><div class="saved-card-meta"><span>📍 ${trip.city}</span><span>📅 ${trip.days}d</span><span>💰 $${trip.budget}/day</span><span>👥 ${trip.group}</span></div><div class="saved-card-actions"><button class="sc-btn" onclick="loadTrip(${trip.id},event)">📂 Load</button><button class="sc-btn" onclick="shareTrip('${encodeURIComponent(trip.title)}','${encodeURIComponent(trip.city)}',event)">🔗 Share</button><button class="sc-btn del" onclick="deleteTrip(${trip.id},event)">🗑</button></div>`;
+grid.appendChild(card);
+});
+}
+function loadTrip(id,e){
+if(e)e.stopPropagation();
+const saved=JSON.parse(localStorage.getItem(‘wa_saved’)||’[]’);
+const trip=saved.find(t=>t.id===id);if(!trip)return;
+generatedDays=trip.data;currentCity=trip.city;currentItinTitle=trip.title;
+document.getElementById(‘itinCity’).value=trip.city;
+document.getElementById(‘itinTitle’).textContent=trip.title;
+document.getElementById(‘itinSub’).textContent=`${trip.days}d · ${trip.city}`;
+const tabs=document.getElementById(‘dayTabs’),panels=document.getElementById(‘dayPanels’);
+tabs.innerHTML=’’;panels.innerHTML=’’;
+generatedDays.forEach((day,i)=>{
+const tab=document.createElement(‘button’);tab.className=‘day-tab’+(i===0?’ active’:’’);
+tab.textContent=`Day ${day.dayNum}${day.theme?' · '+day.theme:''}`;tab.onclick=()=>switchDayTab(i);tabs.appendChild(tab);
+const panel=document.createElement(‘div’);panel.className=‘day-panel’+(i===0?’ active’:’’);
+panel.id=‘day-panel-’+i;panel.innerHTML=buildDayHTML(day,i,true,true);panels.appendChild(panel);
+});
+document.getElementById(‘itinResult’).style.display=‘block’;
+document.getElementById(‘celebrateBlock’).style.display=‘none’;
+showPage(‘planner’);
+document.getElementById(‘itinResult’).scrollIntoView({behavior:‘smooth’,block:‘start’});
+showToast(‘Trip loaded!’,‘success’);
+}
+function deleteTrip(id,e){
+if(e)e.stopPropagation();
+let saved=JSON.parse(localStorage.getItem(‘wa_saved’)||’[]’);
+saved=saved.filter(t=>t.id!==id);localStorage.setItem(‘wa_saved’,JSON.stringify(saved));
+renderSaved();showToast(‘Deleted’,‘info’);
+}
+
+// SHARE
+function openShare(){
+const url=`${window.location.origin}?trip=${encodeURIComponent(currentItinTitle||'My Trip')}&city=${encodeURIComponent(currentCity)}`;
+document.getElementById(‘shareLinkInput’).value=url;
+document.getElementById(‘shareModal’).classList.add(‘open’);document.body.style.overflow=‘hidden’;
+}
+function copyShareLink(){navigator.clipboard.writeText(document.getElementById(‘shareLinkInput’).value);showToast(‘Link copied!’,‘success’);}
+function shareTrip(title,city,e){if(e)e.stopPropagation();document.getElementById(‘shareLinkInput’).value=`${location.origin}?trip=${title}&city=${city}`;document.getElementById(‘shareModal’).classList.add(‘open’);document.body.style.overflow=‘hidden’;}
+function shareToWhatsApp(){window.open(`https://wa.me/?text=${encodeURIComponent('Check out my trip! '+document.getElementById('shareLinkInput').value)}`);}
+function shareToTwitter(){window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent("Just planned my trip with What's Around? "+document.getElementById('shareLinkInput').value)}`);}
+function shareToFacebook(){window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(document.getElementById('shareLinkInput').value)}`);}
+function shareToInstagram(){copyShareLink();showToast(‘Link copied — paste in your story!’,‘info’);}
+
+// EMAIL
+function openEmail(){document.getElementById(‘emailModal’).classList.add(‘open’);document.body.style.overflow=‘hidden’;}
+function sendEmail(){
+const email=document.getElementById(‘emailInput’).value.trim();
+if(!email){showToast(‘Please enter your email’,‘error’);return;}
+let body=currentItinTitle+’\n\n’;
+generatedDays.forEach(day=>{
+body+=`--- Day ${day.dayNum}${day.theme?' — '+day.theme:''} ---\n`;
+(day.blocks||[]).forEach(b=>{body+=`\n${b.time} · ${b.place} (${b.type})\n${b.desc}\n${b.tip?'Tip: '+b.tip+'\n':''}${b.cost?'Cost: '+b.cost+'\n':''}`;});
+body+=’\n’;
+});
+window.location.href=`mailto:${email}?subject=${encodeURIComponent(currentItinTitle||'My Itinerary')}&body=${encodeURIComponent(body)}`;
+closeModal(‘emailModal’);showToast(‘Opening mail app…’,‘success’);
+}
+
+// AUTH
+function openAuth(tab=‘login’){switchAuthTab(tab);document.getElementById(‘authModal’).classList.add(‘open’);document.body.style.overflow=‘hidden’;}
+function closeAuth(){document.getElementById(‘authModal’).classList.remove(‘open’);document.body.style.overflow=’’;}
+function closeAuthOut(e){if(e.target===document.getElementById(‘authModal’))closeAuth();}
+function switchAuthTab(tab){
+document.querySelectorAll(’.auth-tab’).forEach(t=>t.classList.remove(‘active’));
+document.getElementById(‘atab-’+tab).classList.add(‘active’);
+document.getElementById(‘auth-login-form’).style.display=tab===‘login’?‘block’:‘none’;
+document.getElementById(‘auth-signup-form’).style.display=tab===‘signup’?‘block’:‘none’;
+}
+function doAuth(type){
+if(type===‘login’){
+const email=document.getElementById(‘authEmail’).value.trim(),pass=document.getElementById(‘authPass’).value;
+if(!email||!pass){showToast(‘Please fill in all fields’,‘error’);return;}
+const users=JSON.parse(localStorage.getItem(‘wa_users’)||’{}’);
+if(!users[email]||users[email].pass!==pass){showToast(‘Incorrect email or password’,‘error’);return;}
+currentUser={email,name:users[email].name};updateNavUser();closeAuth();
+showToast(`Welcome back, ${currentUser.name}!`,‘success’);
+}else{
+const name=document.getElementById(‘authNameNew’).value.trim(),email=document.getElementById(‘authEmailNew’).value.trim(),pass=document.getElementById(‘authPassNew’).value;
+if(!name||!email||!pass){showToast(‘Please fill in all fields’,‘error’);return;}
+if(pass.length<6){showToast(‘Password needs 6+ characters’,‘error’);return;}
+const users=JSON.parse(localStorage.getItem(‘wa_users’)||’{}’);
+if(users[email]){showToast(‘Account already exists’,‘error’);return;}
+users[email]={name,pass};localStorage.setItem(‘wa_users’,JSON.stringify(users));
+currentUser={email,name};updateNavUser();closeAuth();
+fireConfetti();showToast(`Welcome, ${name}! 🎉`,‘success’);
+}
+}
+function updateNavUser(){
+const area=document.getElementById(‘navUserArea’);
+if(currentUser){const init=currentUser.name.split(’ ‘).map(w=>w[0]).join(’’).slice(0,2).toUpperCase();area.innerHTML=`<div class="nav-avatar" onclick="signOut()" title="Sign out">${init}</div>`;}
+else area.innerHTML=`<button class="nav-user-btn" onclick="openAuth('login')">Sign In</button>`;
+}
+function signOut(){currentUser=null;updateNavUser();showToast(‘Signed out’,‘info’);}
+
+// BLOG
+let blogPosts=[
+{id:1,title:“The tiny yakitori alley that changed my life”,author:“James T.”,init:“JT”,city:“Tokyo”,cat:“Eat”,date:“Mar 18 2026”,excerpt:“Tucked behind Shinjuku station, Omoide Yokocho is everything you want late-night Tokyo to be — smoke, skewers, and strangers becoming friends.”,emoji:“🍢”,photo:null},
+{id:2,title:“Paris wine bars vs tourist traps”,author:“Céline M.”,init:“CM”,city:“Paris”,cat:“Drink”,date:“Mar 12 2026”,excerpt:“After three visits I finally figured out how to find the real caves à vin. Hint: avoid anything with an English menu on the door.”,emoji:“🍷”,photo:null},
+{id:3,title:“48 hours in Barcelona’s El Born”,author:“Ravi K.”,init:“RK”,city:“Barcelona”,cat:“Explore”,date:“Mar 5 2026”,excerpt:“El Born is walkable, beautiful, and genuinely underrated. Here’s my honest 48-hour itinerary.”,emoji:“🏛”,photo:null},
+{id:4,title:“Bangkok street food: a beginner’s guide”,author:“Priya N.”,init:“PN”,city:“Bangkok”,cat:“Eat”,date:“Feb 28 2026”,excerpt:“I was nervous about street food on my first trip. By day three I was eating pad kra pao for breakfast and have zero regrets.”,emoji:“🌶”,photo:null},
+{id:5,title:“The Lisbon viewpoints nobody talks about”,author:“Sofia A.”,init:“SA”,city:“Lisbon”,cat:“Explore”,date:“Feb 20 2026”,excerpt:“Everyone goes to Miradouro da Graça. Here are three I found by just walking uphill without Google Maps.”,emoji:“🌇”,photo:null},
+{id:6,title:“NYC coffee shops for remote work”,author:“Marcus L.”,init:“ML”,city:“New York”,cat:“Drink”,date:“Feb 14 2026”,excerpt:“I tested 22 coffee shops working remotely from NYC for a month. Here are the 5 worth your laptop.”,emoji:“☕”,photo:null}
 ];
-
-return (
-<div style={{ minHeight: “100vh”, background: c.bg, color: c.txt, fontFamily: “‘DM Sans’, system-ui, sans-serif” }}>
-<style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,900;1,9..40,300&display=swap'); *{box-sizing:border-box;margin:0;padding:0;} html{-webkit-text-size-adjust:100%;} body{-webkit-tap-highlight-color:transparent;touch-action:manipulation;} input,textarea,select{font-size:16px !important;} ::-webkit-scrollbar{width:3px;height:3px;} ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:2px;}`}</style>
-
-```
-  {/* Background */}
-  <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden" }}>
-    <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse 70% 50% at 15% 10%,rgba(124,58,237,${dark ? "0.18" : "0.07"}) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(6,214,160,${dark ? "0.1" : "0.05"}) 0%,transparent 60%)` }} />
-    <div style={{ position: "absolute", inset: 0, backgroundImage: `linear-gradient(${c.bdr} 1px,transparent 1px),linear-gradient(90deg,${c.bdr} 1px,transparent 1px)`, backgroundSize: "52px 52px", maskImage: "radial-gradient(ellipse 70% 60% at 50% 50%,black 0%,transparent 80%)" }} />
-  </div>
-
-  {/* NAV */}
-  <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 1.2rem", height: 54, background: dark ? "rgba(7,6,15,0.88)" : "rgba(244,242,255,0.92)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderBottom: `1px solid ${c.bdr}` }}>
-    <div onClick={() => setPage("home")} style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontFamily: "'DM Sans',sans-serif", fontWeight: 900, fontSize: "1rem", color: c.txt, cursor: "pointer", userSelect: "none" }}>
-      <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg,${D.p1},${D.a1})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.85rem" }}>✦</div>
-      What's Around?
-    </div>
-    <div style={{ display: "flex", alignItems: "center", gap: "0.15rem", overflowX: "auto", scrollbarWidth: "none" }}>
-      {navItems.map(({ id, label }) => (
-        <button key={id} onClick={() => setPage(id)} style={{ padding: "0.42rem 0.8rem", background: page === id ? "rgba(124,58,237,0.1)" : "none", border: "none", borderRadius: 8, fontSize: "0.78rem", fontWeight: 600, color: page === id ? D.p3 : c.muted, cursor: "pointer", fontFamily: "'DM Sans',sans-serif", whiteSpace: "nowrap", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>{label}</button>
-      ))}
-      <button onClick={toggle} style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(124,58,237,0.1)", border: `1px solid ${c.bdr2}`, fontSize: "0.95rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "0.2rem", WebkitTapHighlightColor: "transparent", flexShrink: 0 }}>{dark ? "🌙" : "☀️"}</button>
-    </div>
-  </nav>
-
-  {/* PAGES */}
-  <div style={{ paddingTop: 54, position: "relative", zIndex: 1 }}>
-
-    {/* HOME */}
-    {page === "home" && (
-      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "4rem 1.5rem 3rem", textAlign: "center" }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: "0.45rem", padding: "0.35rem 0.9rem", border: `1px solid ${c.bdr2}`, borderRadius: 100, background: "rgba(124,58,237,0.06)", fontSize: "0.7rem", color: D.p3, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "1.8rem" }}>
-          <div style={{ width: 6, height: 6, background: D.a2, borderRadius: "50%", boxShadow: `0 0 6px ${D.a2}` }} />
-          Plan Any Destination · Instantly
-        </div>
-        <h1 style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 900, fontSize: "clamp(3rem,10vw,7rem)", lineHeight: 0.93, letterSpacing: "-0.04em", marginBottom: "1.4rem", color: c.txt }}>
-          Plan your<br />
-          <span style={{ background: `linear-gradient(135deg,${D.p2},${D.a2})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>perfect trip.</span>
-        </h1>
-        <p style={{ fontSize: "1rem", color: c.muted, maxWidth: 420, lineHeight: 1.7, fontWeight: 300, marginBottom: "2.2rem" }}>
-          Tell us where you're going and what you love — we'll build a personalised multi-day itinerary with real places, weather, costs, and booking links.
-        </p>
-        <div style={{ display: "flex", gap: "0.7rem", flexWrap: "wrap", justifyContent: "center", marginBottom: "2rem" }}>
-          <button onClick={() => setPage("planner")} style={{ padding: "0.9rem 2rem", background: `linear-gradient(135deg,${D.p1},${D.p2})`, color: "white", fontFamily: "'DM Sans',sans-serif", fontSize: "0.9rem", fontWeight: 700, border: "none", borderRadius: 14, cursor: "pointer", boxShadow: `0 6px 24px rgba(124,58,237,0.4)`, WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>✨ Start Planning</button>
-          <button onClick={() => { const city = SURPRISE_CITIES[Math.floor(Math.random() * SURPRISE_CITIES.length)]; setPage("planner"); showToast(`🎲 Try ${city}!`, "info"); }} style={{ padding: "0.9rem 1.8rem", background: "rgba(255,255,255,0.05)", color: c.txt2, fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 600, border: `1px solid ${c.bdr2}`, borderRadius: 14, cursor: "pointer", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>🎲 Surprise Me</button>
-          <button onClick={() => setPage("blog")} style={{ padding: "0.9rem 1.8rem", background: "transparent", color: c.muted, fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 600, border: `1px solid ${c.bdr}`, borderRadius: 14, cursor: "pointer", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>Read Stories</button>
-        </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", justifyContent: "center" }}>
-          {["🌤 Weather","💰 Costs","🎒 Packing","🗣 Phrases","🌱 Carbon","🗺 Map","⭐ Ratings","🔄 Compare","🤖 Concierge"].map(p => (
-            <span key={p} style={{ padding: "0.25rem 0.7rem", border: `1px solid ${c.bdr}`, borderRadius: 100, fontSize: "0.68rem", color: c.muted2, background: "rgba(255,255,255,0.02)" }}>{p}</span>
-          ))}
-        </div>
-      </div>
-    )}
-
-    {page === "planner" && <PlannerPage c={c} showToast={showToast} />}
-    {page === "saved" && <SavedPage c={c} showToast={showToast} />}
-    {page === "blog" && <BlogPage c={c} showToast={showToast} />}
-  </div>
-
-  <Toast msg={toast.msg} type={toast.type} />
-  <Concierge c={c} city={city} days={days} budget={budget} group={group} />
-</div>
-```
-
-);
+function renderBlog(city){
+const grid=document.getElementById(‘blogGrid’);grid.innerHTML=’’;
+const list=city===‘all’?blogPosts:blogPosts.filter(p=>p.city===city);
+if(!list.length){grid.innerHTML=’<div class="err-msg"><strong>No posts yet</strong>Be the first!</div>’;return;}
+list.forEach(p=>{
+const card=document.createElement(‘div’);card.className=‘blog-card’;
+const imgH=p.photo?`<img class="bc-img" src="${p.photo}" alt="${p.title}"/>`:`<div class="bc-img-ph">${p.emoji}</div>`;
+card.innerHTML=`${imgH}<div class="bc-body"><div class="bc-tags"><span class="bc-city">${p.city}</span><span class="bc-cat">${p.cat}</span></div><div class="bc-title">${p.title}</div><div class="bc-excerpt">${p.excerpt}</div><div class="bc-footer"><div class="bc-author"><div class="avatar">${p.init}</div><span class="author-name">${p.author}</span></div><span class="bc-date">${p.date}</span></div></div>`;
+grid.appendChild(card);
+});
+}
+function filterBlog(city,el){document.querySelectorAll(’#blogFilters .btag’).forEach(t=>t.classList.remove(‘active’));el.classList.add(‘active’);renderBlog(city);}
+function previewImg(e){const f=e.target.files[0];if(!f)return;if(f.size>5*1024*1024){showToast(‘Max 5MB’,‘error’);return;}const r=new FileReader();r.onload=ev=>{photoData=ev.target.result;const p=document.getElementById(‘photoPreview’);p.src=photoData;p.style.display=‘block’;};r.readAsDataURL(f);}
+function openWrite(){document.getElementById(‘writeOverlay’).classList.add(‘open’);document.body.style.overflow=‘hidden’;}
+function closeWrite(){document.getElementById(‘writeOverlay’).classList.remove(‘open’);document.body.style.overflow=’’;photoData=null;document.getElementById(‘photoPreview’).style.display=‘none’;}
+function closeWriteOut(e){if(e.target===document.getElementById(‘writeOverlay’))closeWrite();}
+function toggleTag(el,tag){el.classList.toggle(‘sel’);if(el.classList.contains(‘sel’))selTags.push(tag);else selTags=selTags.filter(t=>t!==tag);}
+function submitPost(){
+const title=document.getElementById(‘postTitle’).value.trim(),author=document.getElementById(‘postAuthor’).value.trim(),body=document.getElementById(‘postBody’).value.trim(),cat=document.getElementById(‘postCat’).value;
+if(!title||!author||!body){showToast(‘Please fill in all fields’,‘error’);return;}
+if(hasBad(title)||hasBad(body)){showToast(‘Remove inappropriate language’,‘error’);return;}
+const city=selTags[0]||‘Other’;
+const emojis={Eat:‘🍽’,Drink:‘🍸’,Explore:‘🗺’,Stay:‘🏨’};
+const init=author.split(’ ‘).map(w=>w[0]).join(’’).slice(0,2).toUpperCase();
+blogPosts.unshift({id:Date.now(),title,author,init,city,cat,date:new Date().toLocaleDateString(‘en-US’,{month:‘short’,day:‘numeric’,year:‘numeric’}),excerpt:body.slice(0,160)+(body.length>160?’…’:’’),emoji:emojis[cat]||‘✍️’,photo:photoData||null});
+closeWrite();
+[‘postTitle’,‘postAuthor’,‘postBody’].forEach(id=>document.getElementById(id).value=’’);
+document.getElementById(‘profWarn’).style.display=‘none’;
+selTags=[];document.querySelectorAll(’.tpick’).forEach(t=>t.classList.remove(‘sel’));
+const filters=document.getElementById(‘blogFilters’);
+const exists=[…filters.querySelectorAll(’.btag’)].some(t=>t.textContent===city);
+if(!exists&&city!==‘Other’){const nt=document.createElement(‘span’);nt.className=‘btag’;nt.textContent=city;nt.onclick=function(){filterBlog(city,this);};filters.appendChild(nt);}
+renderBlog(‘all’);document.querySelectorAll(’#blogFilters .btag’).forEach((t,i)=>t.classList.toggle(‘active’,i===0));
+fireConfetti();showToast(‘Post published! 🎉’,‘success’);
 }
 
-const root = ReactDOM.createRoot(document.getElementById(‘root’));
-root.render(React.createElement(App));
+// DEFAULT DATES
+const today=new Date(),tomorrow=new Date(today);tomorrow.setDate(today.getDate()+1);
+document.getElementById(‘startDate’).value=today.toISOString().split(‘T’)[0];
+document.getElementById(‘endDate’).value=tomorrow.toISOString().split(‘T’)[0];
+document.getElementById(‘itinCity’).addEventListener(‘keydown’,e=>{if(e.key===‘Enter’)generateItinerary(false);});
 </script>
 
 </body>
