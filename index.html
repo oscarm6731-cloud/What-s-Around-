@@ -1,4 +1,27 @@
-import { useState, useEffect, useRef, useCallback } from “react”;
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#7c3aed">
+<title>What's Around? — Plan Your Trip</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;}
+body{-webkit-tap-highlight-color:transparent;touch-action:manipulation;background:#07060f;}
+input,textarea,select{font-size:16px!important;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:2px;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
 
 // ── palette ──────────────────────────────────────────────────────
 const D = {
@@ -838,7 +861,7 @@ style={{ position: “fixed”, bottom: “1.5rem”, right: “1.5rem”, zInde
 }
 
 // ── APP ───────────────────────────────────────────────────────────
-export default function App() {
+function App() {
 const { dark, toggle, c } = useTheme();
 const [page, setPage] = useState(“home”);
 const [toast, setToast] = useState({ msg: “”, type: “info” });
@@ -928,3 +951,10 @@ return (
 
 );
 }
+
+const root = ReactDOM.createRoot(document.getElementById(‘root’));
+root.render(React.createElement(App));
+</script>
+
+</body>
+</html>
