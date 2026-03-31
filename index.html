@@ -40,6 +40,7 @@
 –text2:#c4c0e0;
 –muted:rgba(196,192,224,0.5);
 –muted2:rgba(196,192,224,0.28);
+color-scheme:dark;
 
 /* Brand palette — warm violet + electric teal */
 –p1:#7c3aed;   /* primary violet */
@@ -52,6 +53,55 @@
 –w2:#fcd34d;   /* gold */
 –r1:#f43f5e;   /* rose */
 –b1:#3b82f6;   /* blue */
+}
+
+/* ===== LIGHT THEME ===== */
+[data-theme=“light”]{
+–bg:#f5f4ff;
+–bg2:#ede9ff;
+–surface:#ffffff;
+–surface2:#f0eeff;
+–surface3:#e8e2ff;
+–surface4:#ddd5ff;
+–border:rgba(124,58,237,0.1);
+–border2:rgba(124,58,237,0.18);
+–border3:rgba(124,58,237,0.28);
+–text:#1a1035;
+–text2:#3d2f6e;
+–muted:rgba(60,40,100,0.55);
+–muted2:rgba(60,40,100,0.32);
+color-scheme:light;
+}
+[data-theme=“light”] .bg-mesh{
+background:
+radial-gradient(ellipse 80% 60% at 20% 10%, rgba(124,58,237,0.08) 0%, transparent 55%),
+radial-gradient(ellipse 60% 80% at 80% 90%, rgba(6,214,160,0.06) 0%, transparent 55%),
+var(–bg);
+}
+[data-theme=“light”] .aurora{opacity:0.25;}
+[data-theme=“light”] .bg-grid{
+background-image:
+linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
+linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px);
+}
+[data-theme=“light”] nav{background:rgba(245,244,255,0.88);}
+[data-theme=“light”] .time-block:hover{box-shadow:0 8px 28px rgba(124,58,237,0.12);}
+[data-theme=“light”] .step-card{box-shadow:0 2px 12px rgba(124,58,237,0.06);}
+[data-theme=“light”] .saved-card:hover{box-shadow:0 12px 36px rgba(124,58,237,0.14);}
+[data-theme=“light”] .blog-card:hover{box-shadow:0 16px 44px rgba(124,58,237,0.1);}
+[data-theme=“light”] .hero h1 .line1{color:var(–text);}
+[data-theme=“light”] .toast{box-shadow:0 8px 30px rgba(124,58,237,0.15);}
+
+/* Theme toggle button */
+.theme-toggle{
+width:36px;height:36px;border-radius:10px;
+background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.22);
+display:flex;align-items:center;justify-content:center;
+cursor:pointer;font-size:1rem;transition:all 0.2s;flex-shrink:0;
+}
+.theme-toggle:hover{background:rgba(124,58,237,0.2);transform:scale(1.08);}
+
+:root{
 
 –glow-p:0 0 40px rgba(124,58,237,0.35);
 –glow-a:0 0 40px rgba(6,214,160,0.3);
@@ -1403,16 +1453,17 @@ body{background:white;color:black;}
 
 <div class="wrapper">
 <nav id="mainNav">
-  <div class="logo" onclick="showPage('home');ripple(event)">
+  <div class="logo" onclick="showPage('home')">
     <div class="logo-mark">✦</div>
     What's Around?
   </div>
   <div class="nav-links">
-    <button class="nav-link active" id="nav-home" onclick="showPage('home');ripple(event)">Home</button>
-    <button class="nav-link" id="nav-planner" onclick="showPage('planner');ripple(event)">Planner</button>
-    <button class="nav-link" id="nav-saved" onclick="showPage('saved');ripple(event)">Saved</button>
-    <button class="nav-link" id="nav-blog" onclick="showPage('blog');ripple(event)">Blog</button>
-    <button class="nav-surprise" onclick="surpriseMe();ripple(event)">🎲 Surprise Me</button>
+    <button class="nav-link active" id="nav-home" onclick="showPage('home')">Home</button>
+    <button class="nav-link" id="nav-planner" onclick="showPage('planner')">Planner</button>
+    <button class="nav-link" id="nav-saved" onclick="showPage('saved')">Saved</button>
+    <button class="nav-link" id="nav-blog" onclick="showPage('blog')">Blog</button>
+    <button class="nav-surprise" onclick="surpriseMe()">🎲 Surprise Me</button>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
     <div id="navUserArea"><button class="nav-user-btn" onclick="openAuth('login')">Sign In</button></div>
   </div>
 </nav>
@@ -1445,9 +1496,9 @@ body{background:white;color:black;}
 </p>
 
 <div class="hero-cta">
-  <button class="btn-primary" onclick="showPage('planner');ripple(event);updateProgress(1)">✨ Start Planning Free</button>
-  <button class="btn-surprise" onclick="surpriseMe();ripple(event)">🎲 Surprise Me!</button>
-  <button class="btn-ghost" onclick="showPage('blog');ripple(event)">Read Stories</button>
+  <button class="btn-primary" onclick="showPage('planner');updateProgress(1)">✨ Start Planning Free</button>
+  <button class="btn-surprise" onclick="surpriseMe()">🎲 Surprise Me!</button>
+  <button class="btn-ghost" onclick="showPage('blog')">Read Stories</button>
 </div>
 
 <div class="feature-pills">
@@ -1510,9 +1561,9 @@ body{background:white;color:black;}
     <div class="step-hdr"><div class="step-num" id="sn-2">03</div><div><div class="step-title">How many days?</div><div class="step-sub">Auto-syncs from your dates, or adjust manually</div></div></div>
     <div class="days-row">
       <div class="days-counter">
-        <button class="day-btn" onclick="changeDays(-1);ripple(event)">−</button>
+        <button class="day-btn" onclick="changeDays(-1)">−</button>
         <div class="days-num" id="daysNum">1</div>
-        <button class="day-btn" onclick="changeDays(1);ripple(event)">+</button>
+        <button class="day-btn" onclick="changeDays(1)">+</button>
       </div>
       <div class="days-label" id="daysLabel">1 day</div>
     </div>
@@ -1521,25 +1572,25 @@ body{background:white;color:black;}
   <div class="step-card" id="sc-3">
     <div class="step-hdr"><div class="step-num" id="sn-3">04</div><div><div class="step-title">Daily duration</div><div class="step-sub">How long each day runs</div></div></div>
     <div class="opt-grid">
-      <div class="opt" onclick="selectOpt(this,'duration','Half day (4hrs)');markStep(3);ripple(event)">Half Day</div>
-      <div class="opt sel" onclick="selectOpt(this,'duration','Full day (8hrs)');markStep(3);ripple(event)">Full Day</div>
-      <div class="opt" onclick="selectOpt(this,'duration','Day + Evening (12hrs)');markStep(3);ripple(event)">Day + Evening</div>
+      <div class="opt" onclick="selectOpt(this,'duration','Half day (4hrs)');markStep(3)">Half Day</div>
+      <div class="opt sel" onclick="selectOpt(this,'duration','Full day (8hrs)');markStep(3)">Full Day</div>
+      <div class="opt" onclick="selectOpt(this,'duration','Day + Evening (12hrs)');markStep(3)">Day + Evening</div>
     </div>
   </div>
 
   <div class="step-card" id="sc-4">
     <div class="step-hdr"><div class="step-num" id="sn-4">05</div><div><div class="step-title">What's your vibe?</div><div class="step-sub">Pick all that apply — we'll weave them all in</div></div></div>
     <div class="opt-grid">
-      <div class="opt" onclick="toggleOpt(this,'vibe','Culture & History');markStep(4);ripple(event)">🏛 Culture</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Food & Drink');markStep(4);ripple(event)">🍽 Food</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Nature & Outdoors');markStep(4);ripple(event)">🌿 Nature</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Shopping');markStep(4);ripple(event)">🛍 Shopping</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Nightlife');markStep(4);ripple(event)">🌙 Nightlife</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Art & Design');markStep(4);ripple(event)">🎨 Art</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Relaxation');markStep(4);ripple(event)">🧘 Wellness</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Hidden Gems');markStep(4);ripple(event)">💎 Hidden Gems</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Adventure');markStep(4);ripple(event)">🏄 Adventure</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Photography');markStep(4);ripple(event)">📸 Photography</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Culture & History');markStep(4)">🏛 Culture</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Food & Drink');markStep(4)">🍽 Food</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Nature & Outdoors');markStep(4)">🌿 Nature</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Shopping');markStep(4)">🛍 Shopping</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Nightlife');markStep(4)">🌙 Nightlife</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Art & Design');markStep(4)">🎨 Art</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Relaxation');markStep(4)">🧘 Wellness</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Hidden Gems');markStep(4)">💎 Hidden Gems</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Adventure');markStep(4)">🏄 Adventure</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Photography');markStep(4)">📸 Photography</div>
     </div>
   </div>
 
@@ -1555,28 +1606,28 @@ body{background:white;color:black;}
       <input class="tags-input" id="tagsInput" placeholder="Type and press Enter — e.g. vegan, coffee, rooftop, wheelchair..." onkeydown="handleTagInput(event)"/>
     </div>
     <div class="tag-suggestions">
-      <span class="tag-sug" onclick="addTag('Vegan');ripple(event)">Vegan</span>
-      <span class="tag-sug" onclick="addTag('Vegetarian');ripple(event)">Vegetarian</span>
-      <span class="tag-sug" onclick="addTag('Gluten Free');ripple(event)">Gluten Free</span>
-      <span class="tag-sug" onclick="addTag('Halal');ripple(event)">Halal</span>
-      <span class="tag-sug" onclick="addTag('No Spicy');ripple(event)">No Spicy</span>
-      <span class="tag-sug" onclick="addTag('Ramen');ripple(event)">Ramen</span>
-      <span class="tag-sug" onclick="addTag('Coffee');ripple(event)">Coffee</span>
-      <span class="tag-sug" onclick="addTag('Rooftop Bars');ripple(event)">Rooftop Bars</span>
-      <span class="tag-sug" onclick="addTag('Pet Friendly');ripple(event)">Pet Friendly</span>
-      <span class="tag-sug" onclick="addTag('Wheelchair Accessible');ripple(event)">Wheelchair</span>
-      <span class="tag-sug" onclick="addTag('Kid Friendly');ripple(event)">Kid Friendly</span>
-      <span class="tag-sug" onclick="addTag('Late Night');ripple(event)">Late Night</span>
+      <span class="tag-sug" onclick="addTag('Vegan')">Vegan</span>
+      <span class="tag-sug" onclick="addTag('Vegetarian')">Vegetarian</span>
+      <span class="tag-sug" onclick="addTag('Gluten Free')">Gluten Free</span>
+      <span class="tag-sug" onclick="addTag('Halal')">Halal</span>
+      <span class="tag-sug" onclick="addTag('No Spicy')">No Spicy</span>
+      <span class="tag-sug" onclick="addTag('Ramen')">Ramen</span>
+      <span class="tag-sug" onclick="addTag('Coffee')">Coffee</span>
+      <span class="tag-sug" onclick="addTag('Rooftop Bars')">Rooftop Bars</span>
+      <span class="tag-sug" onclick="addTag('Pet Friendly')">Pet Friendly</span>
+      <span class="tag-sug" onclick="addTag('Wheelchair Accessible')">Wheelchair</span>
+      <span class="tag-sug" onclick="addTag('Kid Friendly')">Kid Friendly</span>
+      <span class="tag-sug" onclick="addTag('Late Night')">Late Night</span>
     </div>
   </div>
 
   <div class="step-card" id="sc-7">
     <div class="step-hdr"><div class="step-num" id="sn-7">08</div><div><div class="step-title">How are you getting around?</div><div class="step-sub">Affects how spread-out recommendations will be</div></div></div>
     <div class="opt-grid">
-      <div class="opt sel" onclick="selectOpt(this,'style','Walking');markStep(7);ripple(event)">🚶 Walking</div>
-      <div class="opt" onclick="selectOpt(this,'style','Public Transport');markStep(7);ripple(event)">🚇 Transit</div>
-      <div class="opt" onclick="selectOpt(this,'style','Taxi / Rideshare');markStep(7);ripple(event)">🚕 Rideshare</div>
-      <div class="opt" onclick="selectOpt(this,'style','Driving');markStep(7);ripple(event)">🚗 Driving</div>
+      <div class="opt sel" onclick="selectOpt(this,'style','Walking');markStep(7)">🚶 Walking</div>
+      <div class="opt" onclick="selectOpt(this,'style','Public Transport');markStep(7)">🚇 Transit</div>
+      <div class="opt" onclick="selectOpt(this,'style','Taxi / Rideshare');markStep(7)">🚕 Rideshare</div>
+      <div class="opt" onclick="selectOpt(this,'style','Driving');markStep(7)">🚗 Driving</div>
     </div>
   </div>
 
@@ -1595,10 +1646,10 @@ body{background:white;color:black;}
   <div class="step-card" id="sc-9">
     <div class="step-hdr"><div class="step-num" id="sn-9">10</div><div><div class="step-title">Who's coming?</div><div class="step-sub">Personalises activity and dining suggestions</div></div></div>
     <div class="opt-grid">
-      <div class="opt sel" onclick="selectOpt(this,'group','Solo');markStep(9);ripple(event)">🙋 Solo</div>
-      <div class="opt" onclick="selectOpt(this,'group','Couple');markStep(9);ripple(event)">👫 Couple</div>
-      <div class="opt" onclick="selectOpt(this,'group','Friends');markStep(9);ripple(event)">👯 Friends</div>
-      <div class="opt" onclick="selectOpt(this,'group','Family with kids');markStep(9);ripple(event)">👨‍👩‍👧 Family</div>
+      <div class="opt sel" onclick="selectOpt(this,'group','Solo');markStep(9)">🙋 Solo</div>
+      <div class="opt" onclick="selectOpt(this,'group','Couple');markStep(9)">👫 Couple</div>
+      <div class="opt" onclick="selectOpt(this,'group','Friends');markStep(9)">👯 Friends</div>
+      <div class="opt" onclick="selectOpt(this,'group','Family with kids');markStep(9)">👨‍👩‍👧 Family</div>
     </div>
   </div>
 
@@ -1647,7 +1698,7 @@ body{background:white;color:black;}
 </div><!-- end steps grid -->
 
 <div class="gen-btn-wrap">
-  <button class="gen-btn" id="genBtn" onclick="generateItinerary(false);ripple(event)">
+  <button class="gen-btn" id="genBtn" onclick="generateItinerary(false)">
     <span id="genBtnText">✨ Build My Itinerary</span>
   </button>
 </div>
@@ -1666,13 +1717,13 @@ body{background:white;color:black;}
       <div class="itin-result-sub" id="itinSub"></div>
     </div>
     <div class="result-actions">
-      <button class="action-btn regen" onclick="generateItinerary(true);ripple(event)">🎲 Regenerate</button>
-      <button class="action-btn save-btn" onclick="saveTrip();ripple(event)">💾 Save</button>
-      <button class="action-btn" onclick="openShare();ripple(event)">🔗 Share</button>
-      <button class="action-btn" onclick="openEmail();ripple(event)">📧 Email</button>
-      <button class="action-btn" onclick="openPacking();ripple(event)">🎒 Pack</button>
-      <button class="action-btn" onclick="openLanguage();ripple(event)">🗣 Phrases</button>
-      <button class="action-btn" onclick="openCarbon();ripple(event)">🌱 Carbon</button>
+      <button class="action-btn regen" onclick="generateItinerary(true)">🎲 Regenerate</button>
+      <button class="action-btn save-btn" onclick="saveTrip()">💾 Save</button>
+      <button class="action-btn" onclick="openShare()">🔗 Share</button>
+      <button class="action-btn" onclick="openEmail()">📧 Email</button>
+      <button class="action-btn" onclick="openPacking()">🎒 Pack</button>
+      <button class="action-btn" onclick="openLanguage()">🗣 Phrases</button>
+      <button class="action-btn" onclick="openCarbon()">🌱 Carbon</button>
       <button class="action-btn" onclick="window.print()">🖨 Print</button>
     </div>
   </div>
@@ -1731,7 +1782,7 @@ body{background:white;color:black;}
         <span class="btag" onclick="filterBlog('Lisbon',this)">Lisbon</span>
         <span class="btag" onclick="filterBlog('Sydney',this)">Sydney</span>
       </div>
-      <button class="write-btn" onclick="openWrite();ripple(event)">+ Write a Post</button>
+      <button class="write-btn" onclick="openWrite()">+ Write a Post</button>
     </div>
     <div class="blog-grid" id="blogGrid"></div>
   </div>
@@ -1817,13 +1868,18 @@ renderProgress();
 
 // 5. RIPPLE EFFECT (Haptic-like feedback)
 function ripple(e){
-  const wrap=document.getElementById('rippleWrap');
-  const r=document.createElement('div');
-  r.className='ripple';
-  const size=80;
-  r.style.cssText=`width:${size}px;height:${size}px;left:${e.clientX-size/2}px;top:${e.clientY-size/2}px;`;
-  wrap.appendChild(r);
-  setTimeout(()=>r.remove(),700);
+  try{
+    const wrap=document.getElementById('rippleWrap');
+    if(!wrap||!e) return;
+    const r=document.createElement('div');
+    r.className='ripple';
+    const size=80;
+    const x=e.clientX||e.touches?.[0]?.clientX||0;
+    const y=e.clientY||e.touches?.[0]?.clientY||0;
+    r.style.cssText=`width:${size}px;height:${size}px;left:${x-size/2}px;top:${y-size/2}px;`;
+    wrap.appendChild(r);
+    setTimeout(()=>r.remove(),700);
+  }catch(err){}
 }
 
 // 6. CONFETTI (Variable Reward — only on big moments)
@@ -2156,7 +2212,7 @@ function buildDayHTML(day,dayIdx,includeResv,showMap){
         ${b.cost?`<div class="tb-cost">${b.cost}</div>`:''}
         <div class="tb-actions">
           <button class="tb-icon-btn${isV?' active':''}" onclick="toggleVisited('${key}',this)" title="Mark visited">✓</button>
-          <button class="tb-icon-btn regen-block-btn" style="width:auto;padding:0 0.5rem;font-size:0.67rem;" onclick="regenBlock(${dayIdx},${bi});ripple(event)">🎲</button>
+          <button class="tb-icon-btn regen-block-btn" style="width:auto;padding:0 0.5rem;font-size:0.67rem;" onclick="regenBlock(${dayIdx},${bi})">🎲</button>
         </div>
       </div>
       <div class="tb-body">
@@ -2170,7 +2226,7 @@ function buildDayHTML(day,dayIdx,includeResv,showMap){
     </div>
     <div class="rating-row">
       <div class="star-rating" id="stars-${key}">
-        ${[1,2,3,4,5].map(s=>`<button class="star-btn${(ratings[key]||0)>=s?' filled':''}" onclick="rateBlock('${key}',${s});ripple(event)">★</button>`).join('')}
+        ${[1,2,3,4,5].map(s=>`<button class="star-btn${(ratings[key]||0)>=s?' filled':''}" onclick="rateBlock('${key}',${s})">★</button>`).join('')}
       </div>
       <span class="rating-label" id="rlabel-${key}">${ratings[key]?['','⭐ Poor','⭐⭐ Fair','⭐⭐⭐ Good','⭐⭐⭐⭐ Great','⭐⭐⭐⭐⭐ Amazing'][ratings[key]]:'Rate this stop'}</span>
     </div>
@@ -2726,6 +2782,30 @@ return document.getElementById(‘endDate’)?.value || new Date(Date.now() + 86
 }
 
 document.getElementById(‘itinCity’).addEventListener(‘keydown’,e=>{if(e.key===‘Enter’)generateItinerary(false);});
+
+// ============================================================
+// THEME TOGGLE — Light / Dark
+// ============================================================
+function toggleTheme(){
+const html = document.documentElement;
+const current = html.getAttribute(‘data-theme’);
+const next = current === ‘light’ ? ‘dark’ : ‘light’;
+html.setAttribute(‘data-theme’, next === ‘dark’ ? ‘’ : ‘light’);
+const btn = document.getElementById(‘themeToggle’);
+if(btn) btn.textContent = next === ‘light’ ? ‘☀️’ : ‘🌙’;
+localStorage.setItem(‘wa_theme’, next);
+showToast(next === ‘light’ ? ‘☀️ Light mode’ : ‘🌙 Dark mode’, ‘info’);
+}
+
+// Restore saved theme on load
+(function(){
+const saved = localStorage.getItem(‘wa_theme’);
+if(saved === ‘light’){
+document.documentElement.setAttribute(‘data-theme’,‘light’);
+const btn = document.getElementById(‘themeToggle’);
+if(btn) btn.textContent = ‘☀️’;
+}
+})();
 </script>
 
 </body>
