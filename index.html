@@ -130,7 +130,7 @@ touch-action:manipulation;
 
 /* Deep space mesh gradient */
 .bg-mesh{
-position:absolute;inset:0;
+position:absolute;inset:0;pointer-events:none;
 background:
 radial-gradient(ellipse 80% 60% at 20% 10%, rgba(124,58,237,0.18) 0%, transparent 55%),
 radial-gradient(ellipse 60% 80% at 80% 90%, rgba(6,214,160,0.12) 0%, transparent 55%),
@@ -140,7 +140,7 @@ var(–bg);
 
 /* Animated aurora */
 .aurora{
-position:absolute;inset:0;
+position:absolute;inset:0;pointer-events:none;
 background:
 conic-gradient(from 180deg at 50% 120%, rgba(124,58,237,0.0) 0deg, rgba(124,58,237,0.08) 60deg, rgba(6,214,160,0.06) 120deg, rgba(59,130,246,0.05) 180deg, rgba(124,58,237,0.0) 360deg);
 animation:aurora-spin 25s linear infinite;
@@ -149,12 +149,13 @@ opacity:0.7;
 @keyframes aurora-spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 
 /* Floating particles */
-.particles{position:absolute;inset:0;}
+.particles{position:absolute;inset:0;pointer-events:none;}
 .particle{
 position:absolute;
 border-radius:50%;
 animation:float-particle linear infinite;
 opacity:0;
+pointer-events:none;
 }
 @keyframes float-particle{
 0%{transform:translateY(100vh) scale(0);opacity:0;}
@@ -165,7 +166,7 @@ opacity:0;
 
 /* Grid lines */
 .bg-grid{
-position:absolute;inset:0;
+position:absolute;inset:0;pointer-events:none;
 background-image:
 linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
 linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
@@ -173,7 +174,7 @@ background-size:60px 60px;
 mask-image:radial-gradient(ellipse 80% 60% at 50% 50%, black 0%, transparent 80%);
 }
 
-.wrapper{position:relative;z-index:1;}
+.wrapper{position:relative;z-index:10;}
 
 /* ===================== NAV ===================== */
 nav{
@@ -263,9 +264,10 @@ box-shadow:var(–glow-p);transition:transform 0.2s var(–ease-spring);
 .progress-bar-wrap{
 position:fixed;top:0;left:0;right:0;height:3px;z-index:500;
 background:rgba(255,255,255,0.05);
+pointer-events:none;
 }
 .progress-bar-fill{
-height:100%;width:0%;
+pointer-events:none;height:100%;width:0%;
 background:linear-gradient(90deg,var(–p1),var(–a1),var(–p2));
 transition:width 0.6s var(–ease-smooth);
 box-shadow:0 0 12px rgba(124,58,237,0.6);
@@ -274,6 +276,7 @@ box-shadow:0 0 12px rgba(124,58,237,0.6);
 /* ===================== TOAST (Variable Reward) ===================== */
 /* Each toast is slightly different — creates anticipation */
 .toast{
+pointer-events:none;
 position:fixed;bottom:2.2rem;left:50%;
 transform:translateX(-50%) translateY(120px) scale(0.9);
 background:var(–surface2);
@@ -1226,6 +1229,143 @@ footer{border-top:1px solid var(–border);padding:1.6rem;text-align:center;font
 
 @media(max-width:700px){.compare-layout{grid-template-columns:1fr;}}
 
+/* ===== AI CONCIERGE CHAT ===== */
+.concierge-fab{
+position:fixed;bottom:2rem;right:2rem;z-index:450;
+width:58px;height:58px;border-radius:18px;
+background:linear-gradient(135deg,var(–p1),var(–a1));
+border:none;cursor:pointer;
+display:flex;align-items:center;justify-content:center;
+font-size:1.5rem;
+box-shadow:0 8px 28px rgba(124,58,237,0.5),0 0 0 0 rgba(124,58,237,0.4);
+transition:all 0.25s var(–ease-spring);
+animation:fab-pulse 3s ease-in-out infinite;
+}
+@keyframes fab-pulse{
+0%,100%{box-shadow:0 8px 28px rgba(124,58,237,0.5),0 0 0 0 rgba(124,58,237,0.3);}
+50%{box-shadow:0 12px 36px rgba(124,58,237,0.6),0 0 0 10px rgba(124,58,237,0);}
+}
+.concierge-fab:hover{transform:scale(1.1) translateY(-2px);}
+.concierge-fab:active{transform:scale(0.95);}
+.concierge-fab-label{
+position:absolute;right:68px;top:50%;transform:translateY(-50%);
+background:var(–surface);border:1px solid var(–border2);
+padding:0.38rem 0.85rem;border-radius:100px;
+font-size:0.75rem;font-weight:600;color:var(–text);white-space:nowrap;
+box-shadow:0 4px 16px rgba(0,0,0,0.3);
+opacity:0;transition:opacity 0.2s;pointer-events:none;
+}
+.concierge-fab:hover .concierge-fab-label{opacity:1;}
+.concierge-unread{
+position:absolute;top:-4px;right:-4px;
+width:16px;height:16px;background:var(–r1);border-radius:50%;
+font-size:0.58rem;font-weight:700;color:white;
+display:flex;align-items:center;justify-content:center;
+border:2px solid var(–bg);
+}
+
+.concierge-window{
+position:fixed;bottom:5.5rem;right:2rem;z-index:450;
+width:360px;max-width:calc(100vw - 2rem);
+background:var(–surface);border:1px solid var(–border2);
+border-radius:22px;
+box-shadow:0 24px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.04) inset;
+display:none;flex-direction:column;
+max-height:520px;
+animation:slideUp 0.32s var(–ease-spring);
+overflow:hidden;
+}
+.concierge-window.open{display:flex;}
+.concierge-header{
+display:flex;align-items:center;gap:0.75rem;
+padding:1rem 1.2rem;
+border-bottom:1px solid var(–border);
+background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(6,214,160,0.04));
+flex-shrink:0;
+}
+.concierge-avatar{
+width:38px;height:38px;border-radius:12px;
+background:linear-gradient(135deg,var(–p1),var(–a1));
+display:flex;align-items:center;justify-content:center;
+font-size:1.1rem;flex-shrink:0;
+box-shadow:0 4px 12px rgba(124,58,237,0.35);
+}
+.concierge-name{font-family:‘Syne’,sans-serif;font-size:0.9rem;font-weight:800;letter-spacing:-0.01em;}
+.concierge-status{font-size:0.7rem;color:var(–a2);display:flex;align-items:center;gap:0.3rem;}
+.concierge-status-dot{width:6px;height:6px;background:var(–a2);border-radius:50%;box-shadow:0 0 6px var(–a2);animation:kicker-blink 1.4s ease-in-out infinite;}
+.concierge-close{margin-left:auto;background:rgba(255,255,255,0.06);border:1px solid var(–border);width:28px;height:28px;border-radius:8px;cursor:pointer;color:var(–muted);font-size:0.85rem;display:flex;align-items:center;justify-content:center;transition:all 0.18s;flex-shrink:0;}
+.concierge-close:hover{color:var(–text);}
+
+.concierge-messages{
+flex:1;overflow-y:auto;padding:1rem;
+display:flex;flex-direction:column;gap:0.75rem;
+scroll-behavior:smooth;
+}
+.concierge-messages::-webkit-scrollbar{width:3px;}
+.concierge-messages::-webkit-scrollbar-thumb{background:var(–border2);border-radius:2px;}
+
+.msg{display:flex;gap:0.5rem;max-width:100%;animation:fadeUp 0.25s ease both;}
+.msg.user{flex-direction:row-reverse;}
+.msg-bubble{
+padding:0.65rem 0.9rem;border-radius:14px;font-size:0.82rem;line-height:1.55;
+max-width:82%;
+}
+.msg.ai .msg-bubble{
+background:var(–surface2);border:1px solid var(–border);color:var(–text2);
+border-radius:4px 14px 14px 14px;
+}
+.msg.user .msg-bubble{
+background:linear-gradient(135deg,var(–p1),var(–p2));color:white;
+border-radius:14px 4px 14px 14px;
+}
+.msg-avatar{width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,var(–p1),var(–a1));display:flex;align-items:center;justify-content:center;font-size:0.78rem;flex-shrink:0;margin-top:2px;}
+.msg-avatar.user-av{background:var(–surface3);font-size:0.7rem;}
+.typing-indicator{display:flex;gap:3px;padding:0.5rem 0.2rem;}
+.typing-dot{width:6px;height:6px;border-radius:50%;background:var(–muted);animation:gen-dot-bounce 1s ease-in-out infinite;}
+.typing-dot:nth-child(2){animation-delay:0.15s;}
+.typing-dot:nth-child(3){animation-delay:0.3s;}
+
+.concierge-suggestions{
+display:flex;flex-wrap:wrap;gap:0.35rem;
+padding:0.6rem 1rem 0;
+}
+.concierge-sug{
+padding:0.3rem 0.72rem;
+background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2);
+border-radius:100px;font-size:0.7rem;color:var(–p3);
+cursor:pointer;transition:all 0.18s;
+font-family:‘General Sans’,sans-serif;white-space:nowrap;
+}
+.concierge-sug:hover{background:rgba(124,58,237,0.16);}
+
+.concierge-input-row{
+display:flex;gap:0.5rem;padding:0.85rem 1rem;
+border-top:1px solid var(–border);flex-shrink:0;
+}
+.concierge-input{
+flex:1;background:var(–surface2);border:1px solid var(–border2);
+border-radius:12px;padding:0.6rem 0.9rem;
+font-family:‘General Sans’,sans-serif;font-size:0.85rem;
+color:var(–text);outline:none;transition:all 0.2s;
+resize:none;max-height:80px;line-height:1.4;
+}
+.concierge-input:focus{border-color:rgba(124,58,237,0.4);}
+.concierge-input::placeholder{color:var(–muted2);}
+.concierge-send{
+width:38px;height:38px;border-radius:11px;flex-shrink:0;
+background:linear-gradient(135deg,var(–p1),var(–p2));
+border:none;cursor:pointer;color:white;font-size:1rem;
+display:flex;align-items:center;justify-content:center;
+transition:all 0.2s;align-self:flex-end;
+}
+.concierge-send:hover{opacity:0.88;transform:scale(1.05);}
+.concierge-send:disabled{opacity:0.35;cursor:wait;}
+
+@media(max-width:480px){
+.concierge-fab{bottom:1.2rem;right:1.2rem;width:52px;height:52px;}
+.concierge-window{right:1rem;bottom:4.8rem;width:calc(100vw - 2rem);}
+}
+
 /* SHARED ANIMATIONS */
 @keyframes fadeDown{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
@@ -1808,6 +1948,38 @@ body{background:white;color:black;}
 <div class="woverlay" id="writeOverlay" onclick="closeWriteOut(event)"><div class="write-modal"><div class="modal-hdr"><div class="modal-ttl">Share a Place</div><button class="close-btn" onclick="closeWrite()">✕</button></div><div class="fg"><label class="fl2">Post Title</label><input class="fi" id="postTitle" placeholder="e.g. The best hidden ramen in Tokyo..."/></div><div class="frow"><div class="fg"><label class="fl2">Your Name</label><input class="fi" id="postAuthor" placeholder="e.g. Maria S."/></div><div class="fg"><label class="fl2">Category</label><select class="fsel" id="postCat"><option value="Eat">🍽 Eat</option><option value="Drink">🍸 Drink</option><option value="Explore">🗺 Explore</option><option value="Stay">🏨 Stay</option></select></div></div><div class="fg"><label class="fl2">Your Experience</label><textarea class="fta" id="postBody" placeholder="Tell us about your experience..." oninput="checkProf(this)"></textarea><div class="prof-warn" id="profWarn">⚠️ Keep it friendly!</div></div><div class="fg"><label class="fl2">Add a Photo</label><div class="upload-area"><input type="file" accept="image/*" id="photoInput" onchange="previewImg(event)"/><div class="upload-txt">📷 Tap to upload</div><div class="upload-hint">JPG, PNG, WEBP · Max 5MB</div></div><img class="img-preview" id="photoPreview" alt=""/></div><div class="fg"><label class="fl2">City Tags</label><div class="tpick-wrap" id="tagPicker"><span class="tpick" onclick="toggleTag(this,'Tokyo')">Tokyo</span><span class="tpick" onclick="toggleTag(this,'Paris')">Paris</span><span class="tpick" onclick="toggleTag(this,'New York')">New York</span><span class="tpick" onclick="toggleTag(this,'Barcelona')">Barcelona</span><span class="tpick" onclick="toggleTag(this,'Bangkok')">Bangkok</span><span class="tpick" onclick="toggleTag(this,'Lisbon')">Lisbon</span><span class="tpick" onclick="toggleTag(this,'Sydney')">Sydney</span><span class="tpick" onclick="toggleTag(this,'Other')">Other</span></div></div><button class="sub-btn" onclick="submitPost()">Publish Post →</button></div></div>
 
 <div class="toast" id="toast"></div>
+
+<!-- AI TRAVEL CONCIERGE -->
+
+<button class="concierge-fab" id="conciergeFab" onclick="toggleConcierge()">
+  🤖
+  <span class="concierge-fab-label">Ask your travel concierge</span>
+  <span class="concierge-unread" id="conciergeUnread" style="display:none;">1</span>
+</button>
+
+<div class="concierge-window" id="conciergeWindow">
+  <div class="concierge-header">
+    <div class="concierge-avatar">🤖</div>
+    <div>
+      <div class="concierge-name">Travel Concierge</div>
+      <div class="concierge-status"><span class="concierge-status-dot"></span>Online · Ask me anything</div>
+    </div>
+    <button class="concierge-close" onclick="toggleConcierge()">✕</button>
+  </div>
+  <div class="concierge-messages" id="conciergeMessages"></div>
+  <div class="concierge-suggestions" id="conciergeSugs">
+    <span class="concierge-sug" onclick="askConcierge('Is it safe to travel there solo?')">Solo safety?</span>
+    <span class="concierge-sug" onclick="askConcierge('What should I pack for this trip?')">What to pack?</span>
+    <span class="concierge-sug" onclick="askConcierge('What is the tipping culture there?')">Tipping culture?</span>
+    <span class="concierge-sug" onclick="askConcierge('What is the best time of year to visit?')">Best time to go?</span>
+    <span class="concierge-sug" onclick="askConcierge('What local foods must I try?')">Must-try food?</span>
+    <span class="concierge-sug" onclick="askConcierge('How do I get around cheaply?')">Getting around?</span>
+  </div>
+  <div class="concierge-input-row">
+    <textarea class="concierge-input" id="conciergeInput" placeholder="Ask anything about your trip..." rows="1" onkeydown="conciergeKey(event)" oninput="autoResizeTA(this)"></textarea>
+    <button class="concierge-send" id="conciergeSend" onclick="sendConcierge()">➤</button>
+  </div>
+</div>
 
 <script>
 // ============================================================
@@ -2782,6 +2954,149 @@ return document.getElementById(‘endDate’)?.value || new Date(Date.now() + 86
 }
 
 document.getElementById(‘itinCity’).addEventListener(‘keydown’,e=>{if(e.key===‘Enter’)generateItinerary(false);});
+
+// ============================================================
+// AI TRAVEL CONCIERGE CHAT
+// ============================================================
+let conciergeOpen = false;
+let conciergeHistory = [];
+let conciergeTyping = false;
+
+const CONCIERGE_SYSTEM = `You are a friendly, knowledgeable AI travel concierge for What's Around?, a trip planning app.  You help users plan trips, answer travel questions, give local tips, safety advice, cultural guidance, food recommendations, packing advice, transport tips, visa info, and anything travel-related. Keep answers concise (2-4 sentences max), warm, and practical. Use occasional travel emojis. If the user has a current destination or itinerary context, use it to give more personalised answers. Never make up specific prices or guarantee safety conditions — always add a caveat for critical safety/health matters.`;
+
+function toggleConcierge() {
+conciergeOpen = !conciergeOpen;
+const win = document.getElementById(‘conciergeWindow’);
+win.classList.toggle(‘open’, conciergeOpen);
+document.getElementById(‘conciergeUnread’).style.display = ‘none’;
+if (conciergeOpen) {
+if (conciergeHistory.length === 0) showConciergeWelcome();
+setTimeout(() => document.getElementById(‘conciergeInput’)?.focus(), 150);
+}
+}
+
+function showConciergeWelcome() {
+const city = currentCity || document.getElementById(‘itinCity’)?.value?.trim() || ‘’;
+const greeting = city
+? `Hey there! 👋 I see you're planning a trip to **${city}**. I'm your personal travel concierge — ask me anything about the destination, what to pack, local customs, food, safety, or anything else on your mind!`
+: `Hey there! 👋 I'm your AI travel concierge. I can answer questions about any destination — safety, culture, food, packing, transport, visas, and more. Where are you thinking of going?`;
+addConciergeMessage(‘ai’, greeting);
+}
+
+function addConciergeMessage(role, text) {
+const msgs = document.getElementById(‘conciergeMessages’);
+if (!msgs) return;
+const div = document.createElement(‘div’);
+div.className = ‘msg ’ + role;
+const isAI = role === ‘ai’;
+// Format bold text safely without regex in template literal
+let formatted = ‘’;
+const parts = text.split(’**’);
+for (let i = 0; i < parts.length; i++) {
+if (i % 2 === 1) formatted += ‘<strong>’ + parts[i] + ‘</strong>’;
+else formatted += parts[i];
+}
+formatted = formatted.replace(/\n/g, ‘<br>’);
+const avatarLeft = isAI ? ‘<div class="msg-avatar">🤖</div>’ : ‘’;
+const avatarRight = !isAI ? ‘<div class="msg-avatar user-av">👤</div>’ : ‘’;
+div.innerHTML = avatarLeft + ‘<div class="msg-bubble">’ + formatted + ‘</div>’ + avatarRight;
+msgs.appendChild(div);
+msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping() {
+const msgs = document.getElementById(‘conciergeMessages’);
+if (!msgs) return;
+const div = document.createElement(‘div’);
+div.className = ‘msg ai’;
+div.id = ‘typingIndicator’;
+div.innerHTML = `<div class="msg-avatar">🤖</div><div class="msg-bubble"><div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div></div>`;
+msgs.appendChild(div);
+msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+document.getElementById(‘typingIndicator’)?.remove();
+}
+
+function askConcierge(question) {
+document.getElementById(‘conciergeInput’).value = question;
+sendConcierge();
+}
+
+async function sendConcierge() {
+const input = document.getElementById(‘conciergeInput’);
+const msg = input?.value?.trim();
+if (!msg || conciergeTyping) return;
+
+input.value = ‘’;
+autoResizeTA(input);
+addConciergeMessage(‘user’, msg);
+conciergeHistory.push({ role: ‘user’, content: msg });
+
+// Hide suggestion pills after first message
+const sugs = document.getElementById(‘conciergeSugs’);
+if (sugs && conciergeHistory.length > 1) sugs.style.display = ‘none’;
+
+conciergeTyping = true;
+const sendBtn = document.getElementById(‘conciergeSend’);
+if (sendBtn) sendBtn.disabled = true;
+showTyping();
+
+// Build context about current trip
+const city = currentCity || document.getElementById(‘itinCity’)?.value?.trim() || ‘’;
+const tripContext = city
+? `
+
+Current trip context: User is planning a trip to ${city}, ${numDays} day(s), budget $${budgetAmt}/day, group: ${itinSel.group || ‘unknown’}.`
+: ‘’;
+
+try {
+const res = await fetch(’/api/chat’, {
+method: ‘POST’,
+headers: { ‘Content-Type’: ‘application/json’ },
+body: JSON.stringify({
+model: ‘claude-sonnet-4-20250514’,
+max_tokens: 400,
+system: CONCIERGE_SYSTEM + tripContext,
+messages: conciergeHistory.slice(-8) // last 8 messages for context
+})
+});
+const data = await res.json();
+const reply = data.content?.find(b => b.type === ‘text’)?.text || “Sorry, I could not get a response. Try again!”;
+removeTyping();
+addConciergeMessage(‘ai’, reply);
+conciergeHistory.push({ role: ‘assistant’, content: reply });
+} catch (err) {
+removeTyping();
+addConciergeMessage(‘ai’, ‘Hmm, I had trouble connecting. Make sure the API is set up and try again! 🙏’);
+console.error(err);
+}
+
+conciergeTyping = false;
+if (sendBtn) sendBtn.disabled = false;
+input?.focus();
+}
+
+function conciergeKey(e) {
+if (e.key === ‘Enter’ && !e.shiftKey) {
+e.preventDefault();
+sendConcierge();
+}
+}
+
+function autoResizeTA(el) {
+el.style.height = ‘auto’;
+el.style.height = Math.min(el.scrollHeight, 80) + ‘px’;
+}
+
+// Show unread badge after 4 seconds to drive engagement
+setTimeout(() => {
+if (!conciergeOpen) {
+const badge = document.getElementById(‘conciergeUnread’);
+if (badge) badge.style.display = ‘flex’;
+}
+}, 4000);
 
 // ============================================================
 // THEME TOGGLE — Light / Dark
