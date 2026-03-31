@@ -1,2219 +1,930 @@
-<!DOCTYPE html>
+import { useState, useEffect, useRef, useCallback } from “react”;
 
-<html lang="en" data-theme="dark">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#7c3aed">
-<title>What's Around? — Plan Your Trip</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-/* ===== THEME VARIABLES ===== */
-[data-theme="dark"]{
-  --bg:#07060f;--surf:#111020;--surf2:#1a1830;--surf3:#232140;
-  --bdr:rgba(255,255,255,0.08);--bdr2:rgba(255,255,255,0.14);
-  --txt:#f0eeff;--txt2:#c0bae0;--muted:rgba(192,186,224,0.5);--muted2:rgba(192,186,224,0.28);
-}
-[data-theme="light"]{
-  --bg:#f4f2ff;--surf:#ffffff;--surf2:#ede9ff;--surf3:#e2dcff;
-  --bdr:rgba(100,70,200,0.12);--bdr2:rgba(100,70,200,0.2);
-  --txt:#1a0f35;--txt2:#3d2f6e;--muted:rgba(60,40,100,0.55);--muted2:rgba(60,40,100,0.32);
-}
-:root{
-  --p1:#7c3aed;--p2:#9f67f7;--p3:#c4a7fd;
-  --a1:#06d6a0;--a2:#00f5c4;
-  --w1:#f59e0b;--w2:#fcd34d;
-  --r1:#f43f5e;--b1:#3b82f6;
-  --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
-  --ease-out:cubic-bezier(0,0,0.2,1);
-}
+// ── palette ──────────────────────────────────────────────────────
+const D = {
+bg: “#07060f”, surf: “#111020”, surf2: “#1a1830”, surf3: “#232140”,
+bdr: “rgba(255,255,255,0.08)”, bdr2: “rgba(255,255,255,0.14)”,
+txt: “#f0eeff”, txt2: “#c0bae0”, muted: “rgba(192,186,224,0.5)”, muted2: “rgba(192,186,224,0.28)”,
+p1: “#7c3aed”, p2: “#9f67f7”, p3: “#c4a7fd”,
+a1: “#06d6a0”, a2: “#00f5c4”,
+w1: “#f59e0b”, w2: “#fcd34d”, r1: “#f43f5e”, b1: “#3b82f6”,
+};
+const L = {
+bg: “#f4f2ff”, surf: “#ffffff”, surf2: “#ede9ff”, surf3: “#e2dcff”,
+bdr: “rgba(100,70,200,0.12)”, bdr2: “rgba(100,70,200,0.2)”,
+txt: “#1a0f35”, txt2: “#3d2f6e”, muted: “rgba(60,40,100,0.55)”, muted2: “rgba(60,40,100,0.32)”,
+p1: “#7c3aed”, p2: “#9f67f7”, p3: “#7c3aed”,
+a1: “#06d6a0”, a2: “#059669”,
+w1: “#d97706”, w2: “#b45309”, r1: “#e11d48”, b1: “#2563eb”,
+};
 
-/* ===== RESET ===== */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
-body{
-font-family:‘Inter’,system-ui,sans-serif;
-background:var(–bg);color:var(–txt);
-min-height:100vh;overflow-x:hidden;
--webkit-font-smoothing:antialiased;
-touch-action:manipulation;
--webkit-tap-highlight-color:transparent;
--webkit-touch-callout:none;
-cursor:pointer;
-}
-/* Force all buttons/interactive to be tappable on iOS */
-button,a,[onclick]{
-cursor:pointer;
--webkit-tap-highlight-color:transparent;
-touch-action:manipulation;
-position:relative;
-z-index:auto;
-}
+const SURPRISE_CITIES = [
+“Kyoto, Japan”,“Porto, Portugal”,“Marrakech, Morocco”,“Seoul, South Korea”,
+“Copenhagen, Denmark”,“Hanoi, Vietnam”,“Medellín, Colombia”,“Cape Town, South Africa”,
+“Reykjavik, Iceland”,“Tbilisi, Georgia”,“Oaxaca, Mexico”,“Chiang Mai, Thailand”,
+];
 
-/* ===== BACKGROUND ===== */
-.bg-layer{
-position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
-will-change:transform;
-transform:translateZ(0);
-}
-.bg-gradient{
-position:absolute;inset:0;pointer-events:none;
-transform:translateZ(0);
-background:
-radial-gradient(ellipse 70% 50% at 15% 10%, rgba(124,58,237,0.18) 0%,transparent 60%),
-radial-gradient(ellipse 60% 70% at 85% 90%, rgba(6,214,160,0.1) 0%,transparent 60%);
-}
-[data-theme=“light”] .bg-gradient{
-background:
-radial-gradient(ellipse 70% 50% at 15% 10%, rgba(124,58,237,0.07) 0%,transparent 60%),
-radial-gradient(ellipse 60% 70% at 85% 90%, rgba(6,214,160,0.05) 0%,transparent 60%);
-}
-.bg-grid{
-position:absolute;inset:0;pointer-events:none;
-transform:translateZ(0);
-background-image:linear-gradient(var(–bdr) 1px,transparent 1px),linear-gradient(90deg,var(–bdr) 1px,transparent 1px);
-background-size:52px 52px;
-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,black 0%,transparent 80%);
+const VIBE_OPTIONS = [
+{emoji:“🏛”,label:“Culture”},
+{emoji:“🍽”,label:“Food & Drink”},
+{emoji:“🌿”,label:“Nature”},
+{emoji:“🛍”,label:“Shopping”},
+{emoji:“🌙”,label:“Nightlife”},
+{emoji:“🎨”,label:“Art”},
+{emoji:“🧘”,label:“Wellness”},
+{emoji:“💎”,label:“Hidden Gems”},
+{emoji:“🏄”,label:“Adventure”},
+{emoji:“📸”,label:“Photography”},
+];
+
+const TAG_SUGGESTIONS = [“Vegan”,“Vegetarian”,“Halal”,“Gluten Free”,“No Spicy”,“Ramen”,“Coffee”,“Rooftop Bars”,“Kid Friendly”,“Wheelchair”,“Late Night”,“Pet Friendly”];
+
+const BLOG_POSTS = [
+{id:1,city:“Tokyo”,cat:“Eat”,emoji:“🍢”,title:“The yakitori alley that changed my life”,author:“James T.”,init:“JT”,date:“Mar 18 2026”,excerpt:“Tucked behind Shinjuku station, Omoide Yokocho is everything you want late-night Tokyo to be — smoke, skewers, and strangers.”},
+{id:2,city:“Paris”,cat:“Drink”,emoji:“🍷”,title:“Paris wine bars vs tourist traps”,author:“Céline M.”,init:“CM”,date:“Mar 12 2026”,excerpt:“After three visits I finally figured out how to find the real caves à vin. Avoid anything with an English menu.”},
+{id:3,city:“Barcelona”,cat:“Explore”,emoji:“🏛”,title:“48 hours in El Born”,author:“Ravi K.”,init:“RK”,date:“Mar 5 2026”,excerpt:“El Born is walkable, beautiful, and genuinely underrated next to the Gothic Quarter.”},
+{id:4,city:“Bangkok”,cat:“Eat”,emoji:“🌶”,title:“Bangkok street food: a beginner’s guide”,author:“Priya N.”,init:“PN”,date:“Feb 28 2026”,excerpt:“By day three I was eating pad kra pao for breakfast and have zero regrets.”},
+{id:5,city:“Lisbon”,cat:“Explore”,emoji:“🌇”,title:“Viewpoints nobody talks about”,author:“Sofia A.”,init:“SA”,date:“Feb 20 2026”,excerpt:“Here are three I found by just walking uphill without opening Google Maps.”},
+{id:6,city:“New York”,cat:“Drink”,emoji:“☕”,title:“NYC coffee shops for remote work”,author:“Marcus L.”,init:“ML”,date:“Feb 14 2026”,excerpt:“I tested 22 coffee shops working remotely. Here are the 5 worth your laptop.”},
+];
+
+// ── helpers ───────────────────────────────────────────────────────
+function useTheme() {
+const [dark, setDark] = useState(true);
+const toggle = () => setDark(d => !d);
+const c = dark ? D : L;
+return { dark, toggle, c };
 }
 
-/* ===== WRAPPER (above bg) ===== */
-.wrapper{position:relative;z-index:10;isolation:isolate;}
-
-/* ===== PROGRESS BAR ===== */
-.top-progress{
-position:fixed;top:0;left:0;right:0;height:3px;z-index:200;
-pointer-events:none;background:transparent;
-}
-.top-progress-fill{
-height:100%;width:0%;
-background:linear-gradient(90deg,var(–p1),var(–a1));
-transition:width 0.5s var(–ease-out);
-box-shadow:0 0 10px rgba(124,58,237,0.6);
-pointer-events:none;
-}
-
-/* ===== NAV ===== */
-nav{
-position:fixed;top:0;left:0;right:0;z-index:100;
-display:flex;align-items:center;justify-content:space-between;
-padding:0 1.5rem;height:56px;
-background:rgba(7,6,15,0.82);
-backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-border-bottom:1px solid var(–bdr);
-}
-[data-theme=“light”] nav{background:rgba(244,242,255,0.88);}
-.nav-logo{
-display:flex;align-items:center;gap:0.5rem;
-font-family:‘Syne’,sans-serif;font-weight:800;font-size:1rem;
-color:var(–txt);cursor:pointer;text-decoration:none;flex-shrink:0;
--webkit-tap-highlight-color:transparent;
-}
-.nav-logo-icon{
-width:28px;height:28px;border-radius:8px;
-background:linear-gradient(135deg,var(–p1),var(–a1));
-display:flex;align-items:center;justify-content:center;
-font-size:0.85rem;flex-shrink:0;
-}
-.nav-links{
-display:flex;align-items:center;gap:0.2rem;
-overflow-x:auto;scrollbar-width:none;
--webkit-overflow-scrolling:touch;
-}
-.nav-links::-webkit-scrollbar{display:none;}
-.nav-btn{
-padding:0.45rem 0.8rem;
-background:none;border:none;
-font-family:‘Inter’,sans-serif;font-size:0.8rem;font-weight:500;
-color:var(–muted);border-radius:8px;cursor:pointer;
-white-space:nowrap;
--webkit-tap-highlight-color:transparent;
-transition:color 0.15s,background 0.15s;
-position:relative;
-}
-.nav-btn:hover,.nav-btn.active{color:var(–p3);background:rgba(124,58,237,0.08);}
-.nav-btn.active::after{
-content:’’;position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
-width:16px;height:2px;border-radius:1px;
-background:linear-gradient(90deg,var(–p1),var(–a1));
-}
-.nav-right{display:flex;align-items:center;gap:0.4rem;flex-shrink:0;}
-.nav-icon-btn{
-width:34px;height:34px;border-radius:9px;
-background:rgba(124,58,237,0.1);border:1px solid var(–bdr2);
-display:flex;align-items:center;justify-content:center;
-font-size:1rem;cursor:pointer;
--webkit-tap-highlight-color:transparent;
-transition:background 0.15s,transform 0.15s;
-color:var(–txt2);
-}
-.nav-icon-btn:hover{background:rgba(124,58,237,0.2);transform:scale(1.05);}
-.nav-sign-btn{
-padding:0.42rem 0.9rem;
-background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.25);
-border-radius:8px;font-size:0.76rem;font-weight:600;color:var(–p3);
-cursor:pointer;font-family:‘Inter’,sans-serif;white-space:nowrap;
--webkit-tap-highlight-color:transparent;
-transition:background 0.15s;
-}
-.nav-sign-btn:hover{background:rgba(124,58,237,0.22);}
-.nav-avatar{
-width:30px;height:30px;border-radius:8px;
-background:linear-gradient(135deg,var(–p1),var(–a1));
-display:flex;align-items:center;justify-content:center;
-font-size:0.68rem;font-weight:700;color:white;cursor:pointer;
--webkit-tap-highlight-color:transparent;
+function Btn({ onClick, children, style = {}, disabled = false, variant = “primary” }) {
+const base = {
+display: “inline-flex”, alignItems: “center”, justifyContent: “center”,
+gap: “0.3rem”, border: “none”, cursor: disabled ? “wait” : “pointer”,
+fontFamily: “‘DM Sans’, sans-serif”, fontWeight: 700, borderRadius: 12,
+transition: “all 0.15s”, userSelect: “none”, WebkitTapHighlightColor: “transparent”,
+touchAction: “manipulation”, padding: “0.85rem 1.6rem”, fontSize: “0.9rem”,
+opacity: disabled ? 0.4 : 1,
+};
+return (
+<button onClick={disabled ? undefined : onClick} style={{ …base, …style }}>
+{children}
+</button>
+);
 }
 
-/* ===== PAGES ===== */
-.page{display:none;}
-.page.active{display:block;}
-
-/* ===== TOAST ===== */
-.toast{
-position:fixed;bottom:1.5rem;left:50%;
-transform:translateX(-50%) translateY(80px);
-opacity:0;
-pointer-events:none;
-z-index:9000;
-background:var(–surf2);border:1px solid var(–bdr2);
-border-radius:12px;padding:0.7rem 1.2rem;
-font-size:0.82rem;font-weight:500;
-white-space:nowrap;max-width:90vw;
-box-shadow:0 8px 24px rgba(0,0,0,0.4);
-transition:transform 0.35s var(–ease-spring),opacity 0.25s;
-}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
-.toast.success{border-color:rgba(6,214,160,0.4);color:var(–a2);}
-.toast.error{border-color:rgba(244,63,94,0.4);color:#fb7185;}
-.toast.info{border-color:rgba(124,58,237,0.4);color:var(–p3);}
-
-/* ===== HERO ===== */
-.hero{
-min-height:100vh;
-display:flex;flex-direction:column;
-justify-content:center;align-items:center;
-padding:5rem 1.5rem 4rem;
-text-align:center;
-}
-.hero-badge{
-display:inline-flex;align-items:center;gap:0.45rem;
-padding:0.35rem 0.9rem;
-border:1px solid var(–bdr2);border-radius:100px;
-background:rgba(124,58,237,0.06);
-font-size:0.7rem;color:var(–p3);letter-spacing:0.1em;text-transform:uppercase;
-margin-bottom:1.8rem;
-}
-.badge-dot{width:6px;height:6px;background:var(–a2);border-radius:50%;box-shadow:0 0 6px var(–a2);}
-.hero h1{
-font-family:‘Syne’,sans-serif;
-font-size:clamp(2.8rem,10vw,7rem);
-font-weight:800;line-height:0.93;letter-spacing:-0.04em;
-margin-bottom:1.4rem;
-}
-.h1-line1{display:block;color:var(–txt);}
-.h1-line2{
-display:block;
-background:linear-gradient(135deg,var(–p2),var(–a2));
--webkit-background-clip:text;-webkit-text-fill-color:transparent;
-background-clip:text;
-}
-.hero-sub{
-font-size:1rem;color:var(–muted);
-max-width:420px;line-height:1.7;font-weight:300;
-margin-bottom:2.2rem;
-}
-.hero-cta{
-display:flex;gap:0.7rem;flex-wrap:wrap;
-justify-content:center;margin-bottom:2rem;
-}
-.btn-primary{
-padding:0.9rem 2rem;
-background:linear-gradient(135deg,var(–p1),var(–p2));
-color:white;font-family:‘Syne’,sans-serif;font-size:0.9rem;font-weight:700;
-border:none;border-radius:14px;cursor:pointer;
--webkit-tap-highlight-color:transparent;
-box-shadow:0 6px 24px rgba(124,58,237,0.4);
-transition:opacity 0.15s,transform 0.15s;
-}
-.btn-primary:hover{opacity:0.88;transform:translateY(-2px);}
-.btn-primary:active{transform:scale(0.97);}
-.btn-secondary{
-padding:0.9rem 1.8rem;
-background:rgba(255,255,255,0.05);
-color:var(–txt2);font-family:‘Syne’,sans-serif;font-size:0.88rem;font-weight:600;
-border:1px solid var(–bdr2);border-radius:14px;cursor:pointer;
--webkit-tap-highlight-color:transparent;
-transition:background 0.15s,transform 0.15s;
-}
-.btn-secondary:hover{background:rgba(255,255,255,0.09);transform:translateY(-1px);}
-.btn-secondary:active{transform:scale(0.97);}
-.hero-pills{
-display:flex;flex-wrap:wrap;gap:0.4rem;justify-content:center;
-}
-.hero-pill{
-padding:0.25rem 0.7rem;border:1px solid var(–bdr);border-radius:100px;
-font-size:0.68rem;color:var(–muted2);background:rgba(255,255,255,0.02);
+function Toast({ msg, type }) {
+if (!msg) return null;
+const colors = { success: D.a2, error: D.r1, info: D.p3 };
+return (
+<div style={{
+position: “fixed”, bottom: “1.5rem”, left: “50%”, transform: “translateX(-50%)”,
+background: “#1a1830”, border: `1px solid ${colors[type] || D.p3}`,
+color: colors[type] || D.p3, borderRadius: 12, padding: “0.7rem 1.4rem”,
+fontSize: “0.83rem”, fontWeight: 600, zIndex: 9999, pointerEvents: “none”,
+whiteSpace: “nowrap”, boxShadow: “0 8px 30px rgba(0,0,0,0.5)”,
+}}>{msg}</div>
+);
 }
 
-/* ===== PLANNER PAGE ===== */
-#planner-page{padding:4.5rem 1.2rem 4rem;}
-.planner-inner{max-width:780px;margin:0 auto;}
-
-/* sticky progress */
-.planner-progress{
-position:sticky;top:56px;z-index:50;
-pointer-events:auto;
-background:rgba(7,6,15,0.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-border:1px solid var(–bdr);border-radius:14px;
-padding:0.75rem 1rem;margin-bottom:1.4rem;
-display:flex;align-items:center;gap:0.8rem;
-}
-[data-theme=“light”] .planner-progress{background:rgba(244,242,255,0.92);}
-.prog-steps{display:flex;gap:3px;flex:1;}
-.prog-step{height:4px;border-radius:2px;background:var(–surf3);flex:1;transition:background 0.3s;}
-.prog-step.done{background:linear-gradient(90deg,var(–p1),var(–a1));}
-.prog-label{font-size:0.7rem;color:var(–muted);white-space:nowrap;}
-.prog-label strong{color:var(–p3);}
-
-.page-eyebrow{font-size:0.68rem;color:var(–p3);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:0.55rem;}
-.page-title{
-font-family:‘Syne’,sans-serif;font-size:clamp(1.8rem,5vw,2.6rem);
-font-weight:800;letter-spacing:-0.03em;line-height:1.05;margin-bottom:0.4rem;
-}
-.grad{background:linear-gradient(135deg,var(–p2),var(–a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.page-sub{font-size:0.86rem;color:var(–muted);line-height:1.65;margin-bottom:1.8rem;}
-
-/* ===== STEP CARDS ===== */
-.steps-grid{display:grid;gap:0.85rem;}
-.step-card{
-background:var(–surf);border:1px solid var(–bdr);
-border-radius:16px;padding:1.3rem;
-transition:border-color 0.2s;
-}
-.step-card:focus-within{border-color:rgba(124,58,237,0.35);box-shadow:0 0 0 3px rgba(124,58,237,0.07);}
-.step-hdr{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.9rem;}
-.step-num{
-width:26px;height:26px;border-radius:8px;
-background:var(–surf3);border:1px solid var(–bdr2);
-display:flex;align-items:center;justify-content:center;
-font-size:0.68rem;font-weight:700;color:var(–muted);flex-shrink:0;
-}
-.step-card.done .step-num{background:rgba(6,214,160,0.12);border-color:rgba(6,214,160,0.3);color:var(–a2);}
-.step-title{font-family:‘Syne’,sans-serif;font-size:0.92rem;font-weight:700;letter-spacing:-0.01em;}
-.step-sub{font-size:0.7rem;color:var(–muted);margin-top:0.08rem;}
-
-/* inputs */
-.inp{
-width:100%;background:var(–surf2);border:1px solid var(–bdr2);
-border-radius:10px;padding:0.78rem 1rem;
-font-family:‘Inter’,sans-serif;font-size:1rem;
-color:var(–txt);outline:none;
--webkit-appearance:none;appearance:none;
-transition:border-color 0.2s,box-shadow 0.2s;
-}
-.inp:focus{border-color:rgba(124,58,237,0.45);box-shadow:0 0 0 3px rgba(124,58,237,0.08);}
-.inp::placeholder{color:var(–muted2);}
-.inp-hint{font-size:0.68rem;color:var(–muted2);margin-top:0.35rem;}
-
-/* date row */
-.date-row{display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;}
-.date-lbl{display:block;font-size:0.68rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(–muted);margin-bottom:0.32rem;}
-.date-inp{
-width:100%;background:var(–surf2);border:1px solid var(–bdr2);
-border-radius:10px;padding:0.72rem 0.9rem;
-font-family:‘Inter’,sans-serif;font-size:0.95rem;
-color:var(–txt);outline:none;-webkit-appearance:none;
-cursor:pointer;transition:border-color 0.2s;
-}
-.date-inp:focus{border-color:rgba(124,58,237,0.4);}
-.date-inp::-webkit-calendar-picker-indicator{opacity:0.4;}
-
-/* options grid */
-.opt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.42rem;}
-.opt{
-padding:0.62rem 0.75rem;
-background:var(–surf2);border:1px solid var(–bdr);
-border-radius:10px;text-align:center;
-font-size:0.78rem;font-weight:500;color:var(–muted);
-cursor:pointer;
--webkit-tap-highlight-color:transparent;
-transition:all 0.15s;
-user-select:none;
-}
-.opt:hover{background:var(–surf3);color:var(–txt);}
-.opt:active{transform:scale(0.96);}
-.opt.sel{
-background:rgba(124,58,237,0.12);
-border-color:rgba(124,58,237,0.4);
-color:var(–p3);
-}
-.opt.sel::before{content:’✓ ’;font-size:0.65rem;}
-
-/* days counter */
-.days-row{display:flex;align-items:center;gap:1rem;}
-.day-btn{
-width:38px;height:38px;border-radius:10px;
-background:var(–surf2);border:1px solid var(–bdr2);
-color:var(–txt);font-size:1.1rem;cursor:pointer;
--webkit-tap-highlight-color:transparent;
-transition:all 0.15s;
-display:flex;align-items:center;justify-content:center;
-}
-.day-btn:hover{border-color:rgba(124,58,237,0.4);color:var(–p3);}
-.day-btn:active{transform:scale(0.9);}
-.days-num{
-font-family:‘Syne’,sans-serif;font-size:2rem;font-weight:800;
-min-width:2.2rem;text-align:center;
-transition:transform 0.2s var(–ease-spring);
-}
-.days-label{font-size:0.78rem;color:var(–muted);}
-
-/* budget slider */
-.budget-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0.9rem;}
-.budget-val{font-family:‘Syne’,sans-serif;font-size:1.8rem;font-weight:800;color:var(–p3);}
-.budget-desc{font-size:0.72rem;color:var(–muted);padding-bottom:0.2rem;}
-input[type=range]{
--webkit-appearance:none;appearance:none;
-width:100%;height:6px;border-radius:100px;
-background:var(–surf3);outline:none;cursor:pointer;
-}
-input[type=range]::-webkit-slider-thumb{
--webkit-appearance:none;width:22px;height:22px;border-radius:50%;
-background:linear-gradient(135deg,var(–p2),var(–a2));
-cursor:pointer;border:3px solid var(–bg);
-box-shadow:0 0 10px rgba(124,58,237,0.4);
-}
-.slider-marks{display:flex;justify-content:space-between;margin-top:0.42rem;font-size:0.62rem;color:var(–muted2);}
-
-/* tags */
-.tags-wrap{
-display:flex;flex-wrap:wrap;gap:0.35rem;
-padding:0.55rem 0.8rem;min-height:44px;
-background:var(–surf2);border:1px solid var(–bdr2);
-border-radius:10px;cursor:text;align-items:center;
-transition:border-color 0.2s,box-shadow 0.2s;
-}
-.tags-wrap:focus-within{border-color:rgba(124,58,237,0.4);box-shadow:0 0 0 3px rgba(124,58,237,0.07);}
-.tag-chip{
-display:inline-flex;align-items:center;gap:0.22rem;
-padding:0.18rem 0.55rem;
-background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.28);
-border-radius:100px;font-size:0.7rem;color:var(–p3);
-}
-.tag-x{cursor:pointer;opacity:0.6;font-size:0.75rem;-webkit-tap-highlight-color:transparent;}
-.tag-x:hover{opacity:1;}
-.tags-input{
-border:none;outline:none;background:none;
-font-family:‘Inter’,sans-serif;font-size:1rem;color:var(–txt);
-flex:1;min-width:80px;
-}
-.tags-input::placeholder{color:var(–muted2);}
-.tag-sugs{display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.5rem;}
-.tag-sug{
-padding:0.22rem 0.6rem;background:var(–surf2);border:1px solid var(–bdr);
-border-radius:100px;font-size:0.68rem;color:var(–muted);cursor:pointer;
--webkit-tap-highlight-color:transparent;transition:all 0.15s;
-}
-.tag-sug:hover{background:rgba(124,58,237,0.1);color:var(–p3);border-color:rgba(124,58,237,0.25);}
-
-/* toggles */
-.toggle-row{
-display:flex;align-items:center;justify-content:space-between;
-padding:0.7rem 0.9rem;background:var(–surf2);border:1px solid var(–bdr);
-border-radius:10px;
-}
-.toggle-lbl{font-size:0.8rem;font-weight:500;}
-.toggle-sub{font-size:0.68rem;color:var(–muted);margin-top:0.06rem;}
-.tswitch{position:relative;width:40px;height:22px;flex-shrink:0;}
-.tswitch input{opacity:0;width:0;height:0;}
-.tslider{
-position:absolute;inset:0;background:var(–surf3);border:1px solid var(–bdr2);
-border-radius:100px;cursor:pointer;transition:all 0.25s;
-}
-.tslider::before{
-content:’’;position:absolute;width:16px;height:16px;
-left:2px;top:2px;background:var(–muted);border-radius:50%;
-transition:all 0.25s var(–ease-spring);
-}
-.tswitch input:checked+.tslider{background:rgba(124,58,237,0.2);border-color:rgba(124,58,237,0.4);}
-.tswitch input:checked+.tslider::before{transform:translateX(18px);background:var(–p2);}
-
-/* weather */
-.weather-card{
-background:linear-gradient(135deg,var(–surf2),rgba(6,214,160,0.04));
-border:1px solid rgba(6,214,160,0.15);border-radius:12px;
-padding:0.9rem 1.1rem;margin-bottom:0.9rem;
-display:none;align-items:center;gap:0.9rem;flex-wrap:wrap;
-}
-.weather-card.show{display:flex;}
-.weather-ico{font-size:2rem;}
-.weather-name{font-family:‘Syne’,sans-serif;font-size:0.9rem;font-weight:700;}
-.weather-info{font-size:0.75rem;color:var(–muted);}
-.weather-temps{display:flex;gap:0.5rem;margin-top:0.3rem;flex-wrap:wrap;}
-.weather-temp{font-size:0.72rem;background:rgba(255,255,255,0.05);padding:0.15rem 0.5rem;border-radius:5px;}
-.weather-alert{font-size:0.7rem;color:var(–w2);background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);padding:0.25rem 0.6rem;border-radius:6px;margin-left:auto;}
-
-/* mood board */
-.mood-wrap{display:flex;flex-wrap:wrap;gap:0.55rem;align-items:flex-start;min-height:80px;}
-.mood-img-wrap{position:relative;flex-shrink:0;}
-.mood-img{width:82px;height:82px;object-fit:cover;border-radius:10px;border:2px solid var(–bdr);display:block;}
-.mood-del{
-position:absolute;top:-6px;right:-6px;
-width:20px;height:20px;background:var(–r1);border-radius:50%;
-display:flex;align-items:center;justify-content:center;
-font-size:0.62rem;color:white;cursor:pointer;z-index:2;
--webkit-tap-highlight-color:transparent;
-transition:transform 0.15s;
-}
-.mood-del:hover{transform:scale(1.15);}
-.mood-add{
-width:82px;height:82px;border-radius:10px;
-border:2px dashed var(–bdr);background:rgba(255,255,255,0.02);
-display:flex;flex-direction:column;align-items:center;justify-content:center;
-font-size:1.3rem;color:var(–muted2);cursor:pointer;
-position:relative;flex-shrink:0;
--webkit-tap-highlight-color:transparent;transition:all 0.15s;
-}
-.mood-add:hover{border-color:rgba(124,58,237,0.4);color:var(–p3);}
-.mood-add input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.mood-add-lbl{font-size:0.58rem;color:var(–muted2);margin-top:0.2rem;}
-.mood-tags{display:flex;flex-wrap:wrap;gap:0.28rem;margin-top:0.6rem;}
-.mood-tag{padding:0.18rem 0.55rem;border-radius:100px;font-size:0.66rem;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.22);color:var(–p3);}
-.mood-hint{font-size:0.68rem;color:var(–muted2);margin-top:0.4rem;font-style:italic;}
-
-/* compare toggle */
-.compare-toggle{
-display:flex;align-items:center;justify-content:space-between;
-padding:0.72rem 0.9rem;
-background:linear-gradient(135deg,rgba(245,158,11,0.05),rgba(124,58,237,0.04));
-border:1px solid rgba(245,158,11,0.18);border-radius:10px;
-}
-.compare-new{font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.15rem 0.5rem;border-radius:4px;background:rgba(245,158,11,0.1);color:var(–w1);border:1px solid rgba(245,158,11,0.2);margin-right:0.5rem;}
-.compare-desc{font-size:0.76rem;color:var(–muted);}
-.compare-labels{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:0.7rem;}
-
-/* GEN BUTTON */
-.gen-wrap{margin-top:1.2rem;}
-.gen-btn{
-width:100%;padding:1rem;
-background:linear-gradient(135deg,var(–p1),var(–p2) 50%,var(–a1));
-color:white;font-family:‘Syne’,sans-serif;font-size:0.97rem;font-weight:800;
-border:none;border-radius:14px;cursor:pointer;
--webkit-tap-highlight-color:transparent;
-box-shadow:0 10px 30px rgba(124,58,237,0.38);
-transition:opacity 0.15s,transform 0.15s,box-shadow 0.15s;
-letter-spacing:-0.01em;
-}
-.gen-btn:hover{opacity:0.9;transform:translateY(-2px);box-shadow:0 16px 40px rgba(124,58,237,0.5);}
-.gen-btn:active{transform:scale(0.98);opacity:0.85;}
-.gen-btn:disabled{opacity:0.3;cursor:wait;transform:none;box-shadow:none;}
-
-/* ===== RESULTS ===== */
-#itinResult{display:none;margin-top:2rem;}
-.celebrate{
-text-align:center;padding:1.4rem;
-background:linear-gradient(135deg,rgba(124,58,237,0.07),rgba(6,214,160,0.05));
-border:1px solid rgba(124,58,237,0.18);border-radius:16px;margin-bottom:1.3rem;
-}
-.celebrate h3{font-family:‘Syne’,sans-serif;font-size:1.3rem;font-weight:800;letter-spacing:-0.02em;}
-.celebrate p{font-size:0.78rem;color:var(–muted);margin-top:0.2rem;}
-.result-hdr{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:0.7rem;margin-bottom:1rem;}
-.result-title{font-family:‘Syne’,sans-serif;font-size:1.55rem;font-weight:800;letter-spacing:-0.02em;line-height:1.1;}
-.result-sub{font-size:0.74rem;color:var(–muted);margin-top:0.2rem;}
-.result-actions{display:flex;flex-wrap:wrap;gap:0.35rem;}
-.act-btn{
-padding:0.46rem 0.85rem;background:var(–surf);border:1px solid var(–bdr2);
-border-radius:9px;font-size:0.7rem;font-weight:600;color:var(–txt2);
-cursor:pointer;font-family:‘Inter’,sans-serif;white-space:nowrap;
--webkit-tap-highlight-color:transparent;transition:all 0.15s;
-}
-.act-btn:hover{border-color:rgba(124,58,237,0.3);color:var(–p3);}
-.act-btn:active{transform:scale(0.97);}
-.act-btn.save{background:rgba(6,214,160,0.07);border-color:rgba(6,214,160,0.2);color:var(–a2);}
-.act-btn.regen{background:rgba(124,58,237,0.07);border-color:rgba(124,58,237,0.2);color:var(–p3);}
-
-/* summary bar */
-.summary-bar{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.5rem;margin-bottom:1.2rem;}
-.sbar-item{background:var(–surf);border:1px solid var(–bdr);border-radius:12px;padding:0.82rem 0.9rem;}
-.sbar-lbl{font-size:0.62rem;color:var(–muted);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:0.2rem;}
-.sbar-val{font-family:‘Syne’,sans-serif;font-size:1.1rem;font-weight:800;}
-.sbar-val.vp{color:var(–p3);}
-.sbar-val.va{color:var(–a2);}
-.sbar-val.vw{color:var(–w2);}
-
-/* day tabs */
-.day-tabs{display:flex;gap:0.32rem;margin-bottom:1rem;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
-.day-tabs::-webkit-scrollbar{display:none;}
-.day-tab{
-padding:0.45rem 0.9rem;white-space:nowrap;flex-shrink:0;
-background:var(–surf);border:1px solid var(–bdr);border-radius:9px;
-font-size:0.74rem;font-weight:500;color:var(–muted);
-cursor:pointer;font-family:‘Inter’,sans-serif;
--webkit-tap-highlight-color:transparent;transition:all 0.15s;
-}
-.day-tab:hover{color:var(–txt);}
-.day-tab.active{background:rgba(124,58,237,0.1);border-color:rgba(124,58,237,0.32);color:var(–p3);}
-.day-panel{display:none;}
-.day-panel.active{display:block;}
-
-/* day cost */
-.day-cost{
-background:linear-gradient(135deg,var(–surf),rgba(245,158,11,0.04));
-border:1px solid rgba(245,158,11,0.14);border-radius:12px;
-padding:0.8rem 1rem;margin-bottom:0.85rem;
-display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.4rem;
-}
-.day-cost-lbl{font-size:0.68rem;color:var(–muted);}
-.day-cost-val{font-family:‘Syne’,sans-serif;font-size:1rem;font-weight:800;color:var(–w2);}
-
-/* map */
-.map-row{display:flex;gap:0.35rem;margin-bottom:0.85rem;}
-.view-toggle{
-padding:0.36rem 0.8rem;background:var(–surf);border:1px solid var(–bdr);
-border-radius:8px;font-size:0.72rem;font-weight:600;color:var(–muted);
-cursor:pointer;font-family:‘Inter’,sans-serif;
--webkit-tap-highlight-color:transparent;transition:all 0.15s;
-}
-.view-toggle.active{background:rgba(124,58,237,0.1);border-color:rgba(124,58,237,0.28);color:var(–p3);}
-.map-box{background:var(–surf);border:1px solid var(–bdr);border-radius:12px;overflow:hidden;margin-bottom:0.85rem;display:none;}
-.map-box.show{display:block;}
-.map-frame{width:100%;height:320px;border:none;display:block;}
-.map-pins{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.38rem;padding:0.8rem;}
-.map-pin{display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.6rem;background:var(–surf2);border-radius:7px;font-size:0.72rem;}
-.pin-n{width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(–p1),var(–a1));display:flex;align-items:center;justify-content:center;font-size:0.56rem;font-weight:700;color:white;flex-shrink:0;}
-
-/* loading */
-.loading-box{text-align:center;padding:3rem 1.5rem;}
-.loading-ring{width:40px;height:40px;border:2px solid var(–surf3);border-top-color:var(–p2);border-radius:50%;animation:spin 0.85s linear infinite;margin:0 auto 1rem;}
-.loading-txt{font-size:0.8rem;color:var(–muted);}
-
-/* time blocks */
-.blocks-grid{display:grid;gap:0.72rem;}
-.tblock{
-background:var(–surf);border:1px solid var(–bdr);
-border-radius:14px;overflow:hidden;
-transition:border-color 0.2s,transform 0.2s;
-}
-.tblock:hover{border-color:var(–bdr2);transform:translateY(-1px);}
-.tblock-hdr{
-display:flex;align-items:center;gap:0.55rem;
-padding:0.8rem 1rem 0.65rem;border-bottom:1px solid var(–bdr);
-flex-wrap:wrap;
-}
-.tblock-num{
-width:20px;height:20px;border-radius:6px;
-background:linear-gradient(135deg,var(–p1),var(–a1));
-display:flex;align-items:center;justify-content:center;
-font-size:0.58rem;font-weight:700;color:white;flex-shrink:0;
-}
-.tblock-time{
-font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
-color:var(–p3);background:rgba(124,58,237,0.08);
-padding:0.15rem 0.48rem;border-radius:5px;border:1px solid rgba(124,58,237,0.16);
-white-space:nowrap;
-}
-.tblock-place{font-family:‘Syne’,sans-serif;font-size:0.93rem;font-weight:700;letter-spacing:-0.01em;flex:1;}
-.tblock-type{font-size:0.62rem;color:var(–muted);background:rgba(255,255,255,0.04);padding:0.14rem 0.45rem;border-radius:4px;white-space:nowrap;}
-.tblock-cost{font-size:0.68rem;color:var(–w2);font-weight:600;white-space:nowrap;}
-.tblock-actions{display:flex;gap:0.25rem;margin-left:auto;}
-.taction{
-width:28px;height:28px;border-radius:7px;border:1px solid var(–bdr);
-background:rgba(255,255,255,0.03);color:var(–muted);
-font-size:0.7rem;cursor:pointer;
--webkit-tap-highlight-color:transparent;
-display:flex;align-items:center;justify-content:center;
-transition:all 0.15s;
-}
-.taction:hover{background:rgba(255,255,255,0.08);color:var(–txt);}
-.taction:active{transform:scale(0.9);}
-.taction.visited{background:rgba(6,214,160,0.1);border-color:rgba(6,214,160,0.28);color:var(–a2);}
-.tblock-body{padding:0.8rem 1rem;}
-.tblock-desc{font-size:0.8rem;color:var(–txt2);line-height:1.62;margin-bottom:0.65rem;font-weight:300;}
-.tblock-tip{font-size:0.73rem;color:var(–a2);background:rgba(6,214,160,0.05);border:1px solid rgba(6,214,160,0.13);padding:0.32rem 0.62rem;border-radius:6px;margin-bottom:0.7rem;display:inline-block;}
-
-/* notes */
-.note-toggle{
-display:flex;align-items:center;gap:0.35rem;font-size:0.7rem;color:var(–muted);
-cursor:pointer;background:none;border:none;font-family:‘Inter’,sans-serif;
--webkit-tap-highlight-color:transparent;margin-bottom:0.25rem;transition:color 0.15s;
-}
-.note-toggle:hover{color:var(–txt2);}
-.note-ta{
-display:none;width:100%;background:var(–surf2);border:1px solid var(–bdr);
-border-radius:8px;padding:0.55rem 0.75rem;font-family:‘Inter’,sans-serif;
-font-size:0.8rem;color:var(–txt);outline:none;resize:vertical;min-height:60px;
--webkit-appearance:none;transition:border-color 0.2s;
-}
-.note-ta.open{display:block;}
-.note-ta:focus{border-color:rgba(124,58,237,0.32);}
-.note-ta::placeholder{color:var(–muted2);}
-
-/* star rating */
-.star-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.7rem;flex-wrap:wrap;}
-.stars{display:flex;gap:2px;}
-.star{font-size:1rem;color:var(–surf3);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color 0.1s,transform 0.1s;}
-.star:hover,.star.on{color:var(–w1);}
-.star:active{transform:scale(1.3);}
-.star-lbl{font-size:0.68rem;color:var(–muted);}
-
-/* booking links */
-.blinks{display:flex;flex-wrap:wrap;gap:0.32rem;margin-top:0.45rem;}
-.blink{
-display:inline-flex;align-items:center;gap:0.25rem;
-padding:0.28rem 0.65rem;border-radius:7px;
-font-size:0.68rem;font-weight:600;text-decoration:none;
-border:1px solid;cursor:pointer;
--webkit-tap-highlight-color:transparent;transition:all 0.15s;
-font-family:‘Inter’,sans-serif;
-}
-.blink:hover{transform:translateY(-1px);}
-.blink:active{transform:scale(0.95);}
-.bl-maps{color:var(–b1);background:rgba(59,130,246,0.07);border-color:rgba(59,130,246,0.18);}
-.bl-maps:hover{background:rgba(59,130,246,0.14);}
-.bl-ot{color:#ff6b81;background:rgba(255,107,129,0.07);border-color:rgba(255,107,129,0.2);}
-.bl-ot:hover{background:rgba(255,107,129,0.14);}
-.bl-viator{color:var(–w1);background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.2);}
-.bl-viator:hover{background:rgba(245,158,11,0.14);}
-.bl-booking{color:var(–p3);background:rgba(124,58,237,0.07);border-color:rgba(124,58,237,0.18);}
-.bl-booking:hover{background:rgba(124,58,237,0.14);}
-.bl-yelp{color:#fb7185;background:rgba(251,113,133,0.07);border-color:rgba(251,113,133,0.18);}
-.bl-yelp:hover{background:rgba(251,113,133,0.14);}
-.swap-btn{
-display:inline-flex;align-items:center;gap:0.22rem;
-padding:0.26rem 0.6rem;background:rgba(124,58,237,0.06);
-border:1px solid rgba(124,58,237,0.16);border-radius:7px;
-font-size:0.67rem;font-weight:600;color:var(–p3);cursor:pointer;
--webkit-tap-highlight-color:transparent;margin-left:auto;transition:all 0.15s;
-font-family:‘Inter’,sans-serif;
-}
-.swap-btn:hover{background:rgba(124,58,237,0.14);}
-.swap-btn:disabled{opacity:0.35;cursor:wait;}
-
-/* compare view */
-.compare-layout{display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;margin-top:1rem;}
-.compare-col-hdr{background:var(–surf2);border:1px solid var(–bdr2);border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;}
-.compare-col-tag{display:inline-block;font-size:0.6rem;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;padding:0.15rem 0.48rem;border-radius:4px;margin-bottom:0.28rem;}
-.compare-col-tag.ta{background:rgba(6,214,160,0.1);color:var(–a2);border:1px solid rgba(6,214,160,0.2);}
-.compare-col-tag.tb{background:rgba(124,58,237,0.1);color:var(–p3);border:1px solid rgba(124,58,237,0.2);}
-.compare-col-title{font-family:‘Syne’,sans-serif;font-size:0.9rem;font-weight:800;letter-spacing:-0.01em;}
-.compare-col-meta{font-size:0.66rem;color:var(–muted);}
-.compare-col-cost{font-family:‘Syne’,sans-serif;font-size:0.92rem;font-weight:800;color:var(–w2);margin-top:0.28rem;}
-.compare-loading{text-align:center;padding:2rem 1rem;}
-.compare-loader{width:26px;height:26px;border:2px solid var(–surf3);border-top-color:var(–p2);border-radius:50%;animation:spin 0.85s linear infinite;margin:0 auto 0.6rem;}
-.compare-mini{background:var(–surf);border:1px solid var(–bdr);border-radius:9px;padding:0.6rem 0.75rem;margin-bottom:0.4rem;transition:all 0.15s;}
-.compare-mini:hover{border-color:var(–bdr2);}
-.compare-mini-time{font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(–p3);margin-bottom:0.1rem;}
-.compare-mini-place{font-family:‘Syne’,sans-serif;font-size:0.82rem;font-weight:700;}
-.compare-mini-desc{font-size:0.68rem;color:var(–muted);line-height:1.45;margin-top:0.08rem;}
-.compare-mini-cost{font-size:0.65rem;color:var(–w2);font-weight:600;margin-top:0.12rem;}
-.compare-pick{
-width:100%;padding:0.65rem;background:linear-gradient(135deg,var(–p1),var(–a1));
-color:white;font-family:‘Syne’,sans-serif;font-size:0.78rem;font-weight:700;
-border:none;border-radius:9px;cursor:pointer;
--webkit-tap-highlight-color:transparent;margin-top:0.5rem;transition:opacity 0.15s,transform 0.15s;
-}
-.compare-pick:hover{opacity:0.88;transform:translateY(-1px);}
-.compare-pick:active{transform:scale(0.97);}
-.compare-winner{
-background:linear-gradient(135deg,rgba(6,214,160,0.07),rgba(124,58,237,0.05));
-border:1px solid rgba(6,214,160,0.2);border-radius:12px;
-padding:0.82rem 1rem;margin-bottom:1rem;
-display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;
-}
-.compare-winner-txt{font-size:0.78rem;color:var(–txt2);}
-.compare-winner-txt strong{color:var(–a2);}
-
-/* ===== MODALS ===== */
-.overlay{
-display:none;position:fixed;inset:0;z-index:500;
-background:rgba(0,0,0,0.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-align-items:flex-end;justify-content:center;
-padding:0;overflow-y:auto;
-pointer-events:none;
-}
-.overlay.open{display:flex;pointer-events:auto;}
-
-.modal-box{
-background:var(–surf);border:1px solid var(–bdr2);
-border-radius:22px 22px 0 0;
-padding:1.8rem;width:100%;max-width:520px;
-max-height:92vh;overflow-y:auto;
-}
-
-.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.3rem;}
-.modal-title{font-family:‘Syne’,sans-serif;font-size:1.15rem;font-weight:800;letter-spacing:-0.02em;}
-.modal-close{
-width:30px;height:30px;border-radius:8px;
-background:rgba(255,255,255,0.05);border:1px solid var(–bdr);
-color:var(–muted);font-size:0.85rem;cursor:pointer;
--webkit-tap-highlight-color:transparent;
-display:flex;align-items:center;justify-content:center;transition:all 0.15s;
-}
-.modal-close:hover{color:var(–txt);background:rgba(255,255,255,0.1);}
-
-/* auth modal */
-.auth-tabs{display:flex;border-bottom:1px solid var(–bdr);margin-bottom:1.2rem;}
-.auth-tab{
-padding:0.45rem 0.9rem;font-size:0.78rem;font-weight:600;color:var(–muted);
-cursor:pointer;background:none;border:none;border-bottom:2px solid transparent;
-margin-bottom:-1px;font-family:‘Inter’,sans-serif;
--webkit-tap-highlight-color:transparent;transition:all 0.15s;
-}
-.auth-tab.active{color:var(–p3);border-bottom-color:var(–p2);}
-.auth-inp{
-width:100%;background:var(–surf2);border:1px solid var(–bdr2);
-border-radius:10px;padding:0.72rem 0.95rem;
-font-family:‘Inter’,sans-serif;font-size:1rem;color:var(–txt);
-outline:none;-webkit-appearance:none;margin-bottom:0.65rem;transition:border-color 0.2s;
-}
-.auth-inp:focus{border-color:rgba(124,58,237,0.4);}
-.auth-btn{
-width:100%;padding:0.82rem;background:linear-gradient(135deg,var(–p1),var(–p2));
-color:white;font-family:‘Syne’,sans-serif;font-size:0.86rem;font-weight:700;
-border:none;border-radius:11px;cursor:pointer;
--webkit-tap-highlight-color:transparent;transition:all 0.15s;
-}
-.auth-btn:hover{opacity:0.88;}
-.auth-btn:active{transform:scale(0.98);}
-
-/* share */
-.share-link-row{display:flex;gap:0.4rem;margin-bottom:1rem;}
-.share-link-inp{
-flex:1;background:var(–surf2);border:1px solid var(–bdr2);
-border-radius:9px;padding:0.6rem 0.85rem;font-size:0.78rem;color:var(–muted);
-font-family:‘Inter’,sans-serif;outline:none;
-}
-.copy-btn{
-padding:0.6rem 0.9rem;background:rgba(6,214,160,0.1);border:1px solid rgba(6,214,160,0.22);
-border-radius:9px;font-family:‘Syne’,sans-serif;font-size:0.74rem;font-weight:700;color:var(–a2);
-cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:all 0.15s;
-}
-.copy-btn:hover{background:rgba(6,214,160,0.18);}
-.share-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;}
-.share-plat{
-padding:0.65rem;background:var(–surf2);border:1px solid var(–bdr);border-radius:9px;
-font-size:0.77rem;font-weight:600;color:var(–txt2);cursor:pointer;text-align:center;
-font-family:‘Inter’,sans-serif;-webkit-tap-highlight-color:transparent;transition:all 0.15s;
-}
-.share-plat:hover{background:var(–surf3);border-color:var(–bdr2);}
-
-/* packing */
-.pack-section{margin-bottom:1.1rem;}
-.pack-section-title{font-size:0.67rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(–p3);margin-bottom:0.5rem;}
-.pack-items{display:flex;flex-wrap:wrap;gap:0.35rem;}
-.pack-item{
-display:flex;align-items:center;gap:0.35rem;
-padding:0.3rem 0.68rem;background:var(–surf2);border:1px solid var(–bdr);
-border-radius:8px;font-size:0.76rem;cursor:pointer;
--webkit-tap-highlight-color:transparent;transition:all 0.15s;font-family:‘Inter’,sans-serif;
-}
-.pack-item:hover{border-color:var(–bdr2);}
-.pack-item.checked{background:rgba(6,214,160,0.06);border-color:rgba(6,214,160,0.24);color:var(–a2);text-decoration:line-through;opacity:0.62;}
-.pack-check{font-size:0.72rem;}
-
-/* phrases */
-.phrase-list{display:grid;gap:0.45rem;}
-.phrase-card{background:var(–surf2);border:1px solid var(–bdr);border-radius:10px;padding:0.8rem;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all 0.15s;}
-.phrase-card:hover{border-color:var(–bdr2);}
-.phrase-local{font-family:‘Syne’,sans-serif;font-size:0.95rem;font-weight:700;}
-.phrase-roman{font-size:0.72rem;color:var(–p3);font-style:italic;margin-top:0.08rem;}
-.phrase-meaning{font-size:0.75rem;color:var(–muted);}
-
-/* carbon */
-.carbon-list{display:grid;gap:0.42rem;}
-.carbon-item{display:flex;align-items:center;justify-content:space-between;padding:0.62rem 0.85rem;background:var(–surf2);border:1px solid var(–bdr);border-radius:9px;}
-.carbon-val{font-family:‘Syne’,sans-serif;font-size:0.86rem;font-weight:700;color:var(–a2);}
-.carbon-offset{display:flex;align-items:center;justify-content:center;gap:0.4rem;width:100%;padding:0.72rem;background:rgba(6,214,160,0.07);border:1px solid rgba(6,214,160,0.2);border-radius:10px;font-family:‘Syne’,sans-serif;font-size:0.8rem;font-weight:700;color:var(–a2);text-decoration:none;margin-top:0.9rem;-webkit-tap-highlight-color:transparent;transition:all 0.15s;}
-.carbon-offset:hover{background:rgba(6,214,160,0.14);}
-
-/* blog/write modal inputs */
-.fg{margin-bottom:1rem;}
-.fl{display:block;font-size:0.67rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(–muted);margin-bottom:0.32rem;}
-.fi,.fta,.fsel{
-width:100%;background:var(–surf2);border:1px solid var(–bdr2);
-border-radius:9px;padding:0.7rem 0.9rem;font-family:‘Inter’,sans-serif;
-font-size:1rem;color:var(–txt);outline:none;-webkit-appearance:none;transition:border-color 0.2s;
-}
-.fi:focus,.fta:focus,.fsel:focus{border-color:rgba(6,214,160,0.32);}
-.fta{resize:vertical;min-height:90px;line-height:1.55;}
-.fsel{cursor:pointer;background-image:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’%3E%3Cpath d=‘M1 1l5 5 5-5’ stroke=‘rgba(192,186,224,0.4)’ stroke-width=‘1.5’ fill=‘none’/%3E%3C/svg%3E”);background-repeat:no-repeat;background-position:right 0.9rem center;}
-.frow{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;}
-.upload-area{border:2px dashed var(–bdr);border-radius:11px;padding:1.1rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;-webkit-tap-highlight-color:transparent;}
-.upload-area:hover{border-color:rgba(6,214,160,0.3);}
-.upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.upload-txt{font-size:0.77rem;color:var(–muted);}
-.upload-hint{font-size:0.63rem;color:var(–muted2);margin-top:0.18rem;}
-.img-preview{width:100%;height:130px;object-fit:cover;border-radius:9px;margin-top:0.6rem;display:none;}
-.prof-warn{display:none;background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.26);border-radius:7px;padding:0.45rem 0.8rem;font-size:0.73rem;color:#fb7185;margin-top:0.32rem;}
-.sub-btn{width:100%;padding:0.8rem;background:linear-gradient(135deg,var(–p1),var(–p2));color:white;font-family:‘Syne’,sans-serif;font-size:0.84rem;font-weight:700;border:none;border-radius:11px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all 0.15s;margin-top:0.35rem;}
-.sub-btn:hover{opacity:0.88;}
-.sub-btn:active{transform:scale(0.98);}
-.tpick-wrap{display:flex;flex-wrap:wrap;gap:0.32rem;}
-.tpick{padding:0.24rem 0.62rem;border:1px solid var(–bdr);border-radius:100px;font-size:0.68rem;cursor:pointer;background:rgba(255,255,255,0.02);color:var(–muted);font-family:‘Inter’,sans-serif;-webkit-tap-highlight-color:transparent;transition:all 0.15s;}
-.tpick.sel{background:rgba(6,214,160,0.08);border-color:rgba(6,214,160,0.28);color:var(–a2);}
-
-/* ===== SAVED PAGE ===== */
-#saved-page{padding:4.5rem 1.2rem 4rem;}
-.saved-inner{max-width:780px;margin:0 auto;}
-.saved-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0.9rem;margin-top:1.3rem;}
-.saved-card{background:var(–surf);border:1px solid var(–bdr);border-radius:14px;padding:1.1rem;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all 0.2s;}
-.saved-card:hover{border-color:rgba(124,58,237,0.28);transform:translateY(-2px);}
-.saved-card:active{transform:scale(0.98);}
-.saved-title{font-family:‘Syne’,sans-serif;font-size:0.93rem;font-weight:700;margin-bottom:0.25rem;}
-.saved-meta{font-size:0.7rem;color:var(–muted);display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.65rem;}
-.saved-actions{display:flex;gap:0.3rem;}
-.saved-btn{padding:0.26rem 0.62rem;border-radius:6px;font-size:0.68rem;font-weight:600;cursor:pointer;border:1px solid var(–bdr);background:rgba(255,255,255,0.02);color:var(–muted);font-family:‘Inter’,sans-serif;-webkit-tap-highlight-color:transparent;transition:all 0.15s;}
-.saved-btn:hover{color:var(–txt);}
-.saved-btn.del{color:var(–r1);border-color:rgba(244,63,94,0.18);}
-.saved-btn.del:hover{background:rgba(244,63,94,0.08);}
-.empty-state{text-align:center;padding:3rem 1.5rem;color:var(–muted);grid-column:1/-1;}
-.empty-icon{font-size:2.8rem;margin-bottom:0.8rem;}
-.empty-title{font-family:‘Syne’,sans-serif;font-size:1.05rem;font-weight:700;color:var(–txt);}
-
-/* ===== BLOG PAGE ===== */
-#blog-page{padding:4.5rem 1.2rem 4rem;}
-.blog-inner{max-width:1000px;margin:0 auto;}
-.blog-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.7rem;margin-bottom:1.6rem;}
-.blog-filters{display:flex;gap:0.32rem;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px;}
-.blog-filters::-webkit-scrollbar{display:none;}
-.btag{padding:0.26rem 0.68rem;border-radius:100px;font-size:0.7rem;font-weight:500;cursor:pointer;border:1px solid var(–bdr);background:rgba(255,255,255,0.02);color:var(–muted);-webkit-tap-highlight-color:transparent;transition:all 0.15s;white-space:nowrap;font-family:‘Inter’,sans-serif;}
-.btag:hover,.btag.active{background:rgba(6,214,160,0.08);border-color:rgba(6,214,160,0.26);color:var(–a2);}
-.write-btn{padding:0.55rem 1.1rem;background:linear-gradient(135deg,var(–p1),var(–p2));color:white;font-family:‘Syne’,sans-serif;font-size:0.75rem;font-weight:700;border:none;border-radius:9px;cursor:pointer;-webkit-tap-highlight-color:transparent;white-space:nowrap;transition:all 0.15s;box-shadow:0 4px 14px rgba(124,58,237,0.3);}
-.write-btn:hover{opacity:0.88;}
-.write-btn:active{transform:scale(0.97);}
-.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1rem;}
-.blog-card{background:var(–surf);border:1px solid var(–bdr);border-radius:14px;overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all 0.2s;}
-.blog-card:hover{transform:translateY(-3px);border-color:var(–bdr2);box-shadow:0 14px 40px rgba(0,0,0,0.3);}
-.bc-ph{width:100%;height:150px;display:flex;align-items:center;justify-content:center;font-size:2.4rem;background:linear-gradient(135deg,var(–surf2),var(–surf3));}
-.bc-img{width:100%;height:150px;object-fit:cover;display:block;}
-.bc-body{padding:1rem;}
-.bc-tags{display:flex;gap:0.3rem;flex-wrap:wrap;margin-bottom:0.6rem;}
-.bc-city{font-size:0.58rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;padding:0.15rem 0.48rem;border-radius:4px;background:rgba(59,130,246,0.09);color:var(–b1);border:1px solid rgba(59,130,246,0.18);}
-.bc-cat{font-size:0.58rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;padding:0.15rem 0.48rem;border-radius:4px;background:rgba(124,58,237,0.09);color:var(–p3);border:1px solid rgba(124,58,237,0.18);}
-.bc-title{font-family:‘Syne’,sans-serif;font-size:0.92rem;font-weight:700;letter-spacing:-0.01em;margin-bottom:0.35rem;line-height:1.2;}
-.bc-excerpt{font-size:0.76rem;color:var(–muted);line-height:1.55;font-weight:300;margin-bottom:0.8rem;}
-.bc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:0.7rem;border-top:1px solid var(–bdr);}
-.bc-author{display:flex;align-items:center;gap:0.38rem;}
-.bc-av{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,var(–p1),var(–a1));display:flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:700;color:white;flex-shrink:0;}
-.bc-name{font-size:0.7rem;color:var(–muted);}
-.bc-date{font-size:0.64rem;color:var(–muted2);}
-
-/* ===== CONCIERGE ===== */
-.fab{
-position:fixed;bottom:1.5rem;right:1.5rem;z-index:200;
-width:54px;height:54px;border-radius:16px;
-background:linear-gradient(135deg,var(–p1),var(–a1));
-border:none;cursor:pointer;
--webkit-tap-highlight-color:transparent;
-display:flex;align-items:center;justify-content:center;
-font-size:1.4rem;
-box-shadow:0 8px 24px rgba(124,58,237,0.45);
-transition:transform 0.2s,box-shadow 0.2s;
-}
-.fab:hover{transform:scale(1.08);}
-.fab:active{transform:scale(0.95);}
-.fab-badge{
-position:absolute;top:-4px;right:-4px;
-width:16px;height:16px;background:var(–r1);border-radius:50%;
-border:2px solid var(–bg);
-display:none;align-items:center;justify-content:center;
-font-size:0.55rem;font-weight:700;color:white;
-}
-.fab-badge.show{display:flex;}
-.chat-window{
-position:fixed;bottom:4.5rem;right:1.5rem;z-index:200;
-width:340px;max-width:calc(100vw - 2rem);
-background:var(–surf);border:1px solid var(–bdr2);
-border-radius:20px;
-display:none;flex-direction:column;
-max-height:500px;
-box-shadow:0 20px 50px rgba(0,0,0,0.5);
-overflow:hidden;
-pointer-events:none;
-}
-.chat-window.open{display:flex;pointer-events:auto;}
-.chat-hdr{
-display:flex;align-items:center;gap:0.65rem;
-padding:0.9rem 1.1rem;border-bottom:1px solid var(–bdr);
-background:linear-gradient(135deg,rgba(124,58,237,0.07),rgba(6,214,160,0.04));
-flex-shrink:0;
-}
-.chat-av{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(–p1),var(–a1));display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
-.chat-name{font-family:‘Syne’,sans-serif;font-size:0.88rem;font-weight:800;}
-.chat-status{font-size:0.67rem;color:var(–a2);display:flex;align-items:center;gap:0.25rem;}
-.chat-sdot{width:5px;height:5px;background:var(–a2);border-radius:50%;box-shadow:0 0 5px var(–a2);}
-.chat-close{margin-left:auto;background:rgba(255,255,255,0.05);border:1px solid var(–bdr);width:28px;height:28px;border-radius:8px;cursor:pointer;color:var(–muted);font-size:0.82rem;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:all 0.15s;}
-.chat-close:hover{color:var(–txt);}
-.chat-msgs{flex:1;overflow-y:auto;padding:0.9rem;display:flex;flex-direction:column;gap:0.65rem;scroll-behavior:smooth;}
-.chat-msgs::-webkit-scrollbar{width:3px;}
-.chat-msgs::-webkit-scrollbar-thumb{background:var(–bdr2);}
-.msg{display:flex;gap:0.42rem;max-width:100%;}
-.msg.user{flex-direction:row-reverse;}
-.msg-bubble{padding:0.6rem 0.85rem;border-radius:12px;font-size:0.8rem;line-height:1.52;max-width:84%;}
-.msg.ai .msg-bubble{background:var(–surf2);border:1px solid var(–bdr);color:var(–txt2);border-radius:4px 12px 12px 12px;}
-.msg.user .msg-bubble{background:linear-gradient(135deg,var(–p1),var(–p2));color:white;border-radius:12px 4px 12px 12px;}
-.msg-av{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(–p1),var(–a1));display:flex;align-items:center;justify-content:center;font-size:0.72rem;flex-shrink:0;margin-top:2px;}
-.msg-av.u{background:var(–surf3);}
-.typing{display:flex;gap:3px;padding:0.4rem 0.2rem;}
-.tdot{width:5px;height:5px;border-radius:50%;background:var(–muted);animation:spin-dot 1s ease-in-out infinite;}
-.tdot:nth-child(2){animation-delay:0.15s;}
-.tdot:nth-child(3){animation-delay:0.3s;}
-@keyframes spin-dot{0%,80%,100%{transform:scale(0.5);opacity:0.4;}40%{transform:scale(1);opacity:1;}}
-.chat-sugs{display:flex;flex-wrap:wrap;gap:0.3rem;padding:0.55rem 0.9rem 0;}
-.chat-sug{padding:0.26rem 0.65rem;background:rgba(124,58,237,0.07);border:1px solid rgba(124,58,237,0.18);border-radius:100px;font-size:0.67rem;color:var(–p3);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all 0.15s;white-space:nowrap;font-family:‘Inter’,sans-serif;}
-.chat-sug:hover{background:rgba(124,58,237,0.15);}
-.chat-input-row{display:flex;gap:0.42rem;padding:0.8rem 0.9rem;border-top:1px solid var(–bdr);flex-shrink:0;}
-.chat-inp{
-flex:1;background:var(–surf2);border:1px solid var(–bdr2);
-border-radius:10px;padding:0.55rem 0.8rem;
-font-family:‘Inter’,sans-serif;font-size:0.95rem;color:var(–txt);
-outline:none;-webkit-appearance:none;resize:none;max-height:70px;line-height:1.4;
-transition:border-color 0.2s;
-}
-.chat-inp:focus{border-color:rgba(124,58,237,0.35);}
-.chat-inp::placeholder{color:var(–muted2);}
-.chat-send{
-width:36px;height:36px;border-radius:10px;flex-shrink:0;align-self:flex-end;
-background:linear-gradient(135deg,var(–p1),var(–p2));
-border:none;cursor:pointer;color:white;font-size:0.9rem;
--webkit-tap-highlight-color:transparent;
-display:flex;align-items:center;justify-content:center;
-transition:all 0.15s;
-}
-.chat-send:hover{opacity:0.88;}
-.chat-send:active{transform:scale(0.93);}
-.chat-send:disabled{opacity:0.3;cursor:wait;}
-
-/* error */
-.err-msg{text-align:center;padding:2.5rem 1.5rem;color:var(–muted);font-size:0.83rem;}
-.err-msg strong{color:var(–txt);display:block;margin-bottom:0.35rem;font-family:‘Syne’,sans-serif;}
-
-/* footer */
-footer{border-top:1px solid var(–bdr);padding:1.5rem;text-align:center;font-size:0.68rem;color:var(–muted2);}
-
-/* ===== ANIMATIONS ===== */
-@keyframes spin{to{transform:rotate(360deg);}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
-
-/* ===== RESPONSIVE ===== */
-
-</style>
-</head>
-<body>
-<div class="bg-layer">
-  <div class="bg-gradient"></div>
-  <div class="bg-grid"></div>
+function Modal({ open, onClose, title, children, c }) {
+if (!open) return null;
+return (
+<div
+onClick={e => e.target === e.currentTarget && onClose()}
+style={{
+position: “fixed”, inset: 0, background: “rgba(0,0,0,0.75)”,
+zIndex: 500, display: “flex”, alignItems: “flex-end”,
+justifyContent: “center”, backdropFilter: “blur(8px)”,
+WebkitBackdropFilter: “blur(8px)”,
+}}
+>
+<div style={{
+background: c.surf, border: `1px solid ${c.bdr2}`,
+borderRadius: “20px 20px 0 0”, padding: “1.8rem”,
+width: “100%”, maxWidth: 540, maxHeight: “90vh”, overflowY: “auto”,
+}}>
+<div style={{ display: “flex”, justifyContent: “space-between”, alignItems: “center”, marginBottom: “1.3rem” }}>
+<div style={{ fontFamily: “‘DM Sans’,sans-serif”, fontSize: “1.15rem”, fontWeight: 800, color: c.txt }}>{title}</div>
+<button onClick={onClose} style={{
+width: 30, height: 30, borderRadius: 8, border: `1px solid ${c.bdr2}`,
+background: “rgba(255,255,255,0.05)”, color: c.muted, cursor: “pointer”,
+fontSize: “0.85rem”, display: “flex”, alignItems: “center”, justifyContent: “center”,
+WebkitTapHighlightColor: “transparent”,
+}}>✕</button>
 </div>
-
-<div class="top-progress"><div class="top-progress-fill" id="topFill"></div></div>
-
-<div class="wrapper">
-<nav>
-  <a class="nav-logo" onclick="showPage('home')">
-    <div class="nav-logo-icon">✦</div>
-    What's Around?
-  </a>
-  <div class="nav-links">
-    <button class="nav-btn active" id="nb-home" onclick="showPage('home')">Home</button>
-    <button class="nav-btn" id="nb-planner" onclick="showPage('planner')">Planner</button>
-    <button class="nav-btn" id="nb-saved" onclick="showPage('saved')">Saved</button>
-    <button class="nav-btn" id="nb-blog" onclick="showPage('blog')">Blog</button>
-  </div>
-  <div class="nav-right">
-    <button class="nav-icon-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
-    <div id="userArea"><button class="nav-sign-btn" onclick="openModal('authModal')">Sign In</button></div>
-  </div>
-</nav>
-
-<!-- HOME -->
-
-<div class="page active" id="home-page">
-  <div class="hero">
-    <div class="hero-badge"><span class="badge-dot"></span>Plan Any Destination · Instantly</div>
-    <h1>
-      <span class="h1-line1">Plan your</span>
-      <span class="h1-line2">perfect trip.</span>
-    </h1>
-    <p class="hero-sub">Tell us where you're going and what you love — we'll build a personalised multi-day itinerary with real places, weather, costs, and booking links.</p>
-    <div class="hero-cta">
-      <button class="btn-primary" onclick="showPage('planner')">✨ Start Planning</button>
-      <button class="btn-secondary" onclick="surpriseMe()">🎲 Surprise Me</button>
-      <button class="btn-secondary" onclick="showPage('blog')">Read Stories</button>
-    </div>
-    <div class="hero-pills">
-      <span class="hero-pill">🌤 Weather</span>
-      <span class="hero-pill">💰 Cost Estimate</span>
-      <span class="hero-pill">🎒 Packing List</span>
-      <span class="hero-pill">🗣 Local Phrases</span>
-      <span class="hero-pill">🌱 Carbon</span>
-      <span class="hero-pill">🗺 Map View</span>
-      <span class="hero-pill">⭐ Ratings</span>
-      <span class="hero-pill">🔄 Compare Trips</span>
-      <span class="hero-pill">🤖 AI Concierge</span>
-    </div>
-  </div>
+{children}
 </div>
+</div>
+);
+}
 
-<!-- PLANNER -->
+function Tag({ label, onRemove, c }) {
+return (
+<span style={{
+display: “inline-flex”, alignItems: “center”, gap: “0.25rem”,
+padding: “0.2rem 0.6rem”, background: `rgba(124,58,237,0.14)`,
+border: `1px solid rgba(124,58,237,0.3)`, borderRadius: 100,
+fontSize: “0.72rem”, color: c.p3,
+}}>
+{label}
+<span onClick={onRemove} style={{ cursor: “pointer”, opacity: 0.6, fontSize: “0.75rem” }}>✕</span>
+</span>
+);
+}
 
-<div class="page" id="planner-page">
-<div class="planner-inner">
-  <div class="planner-progress">
-    <div class="prog-steps" id="progSteps"></div>
-    <div class="prog-label">Step <strong id="progCur">0</strong> of 13</div>
-  </div>
-  <div class="page-eyebrow">✦ Trip Planner</div>
-  <h2 class="page-title">Build your <span class="grad">itinerary.</span></h2>
-  <p class="page-sub">Fill in the details below — the more you add, the better your plan.</p>
+function Inp({ value, onChange, placeholder, onKeyDown, style = {}, c }) {
+return (
+<input
+value={value} onChange={onChange} placeholder={placeholder}
+onKeyDown={onKeyDown}
+style={{
+width: “100%”, background: c.surf2, border: `1px solid ${c.bdr2}`,
+borderRadius: 10, padding: “0.8rem 1rem”,
+fontFamily: “‘DM Sans’,sans-serif”, fontSize: “1rem”,
+color: c.txt, outline: “none”, WebkitAppearance: “none”, …style,
+}}
+/>
+);
+}
 
-  <div class="steps-grid">
-    <div class="step-card" id="sc0">
-      <div class="step-hdr"><div class="step-num" id="sn0">01</div><div><div class="step-title">Where are you going?</div><div class="step-sub">City, state, country, or zip code</div></div></div>
-      <input class="inp" id="itinCity" placeholder="e.g. Tokyo, Japan · Austin TX · 90210" oninput="onCityInput()"/>
-    </div>
+function ToggleSwitch({ checked, onChange, c }) {
+return (
+<div
+onClick={() => onChange(!checked)}
+style={{
+width: 42, height: 24, borderRadius: 100, position: “relative”,
+background: checked ? `rgba(124,58,237,0.25)` : c.surf3,
+border: `1px solid ${checked ? D.p2 : c.bdr2}`,
+cursor: “pointer”, transition: “all 0.25s”, flexShrink: 0,
+WebkitTapHighlightColor: “transparent”,
+}}
+>
+<div style={{
+position: “absolute”, width: 18, height: 18, borderRadius: “50%”,
+background: checked ? D.p2 : c.muted,
+top: 2, left: checked ? 20 : 2,
+transition: “all 0.25s cubic-bezier(0.34,1.56,0.64,1)”,
+boxShadow: checked ? `0 0 8px ${D.p2}` : “none”,
+}} />
+</div>
+);
+}
+
+// ── PLANNER ───────────────────────────────────────────────────────
+function PlannerPage({ c, showToast }) {
+const [city, setCity] = useState(””);
+const [days, setDays] = useState(1);
+const [budget, setBudget] = useState(150);
+const [vibes, setVibes] = useState([]);
+const [group, setGroup] = useState(“Solo”);
+const [style, setStyle] = useState(“Walking”);
+const [tags, setTags] = useState([]);
+const [tagInput, setTagInput] = useState(””);
+const [nbhd, setNbhd] = useState(””);
+const [randomize, setRandomize] = useState(true);
+const [showResv, setShowResv] = useState(true);
+const [compareMode, setCompareMode] = useState(false);
+const [lblA, setLblA] = useState(“Budget Version”);
+const [lblB, setLblB] = useState(“Luxury Version”);
+const [loading, setLoading] = useState(false);
+const [result, setResult] = useState(null);
+const [compareResult, setCompareResult] = useState(null);
+const [activeDay, setActiveDay] = useState(0);
+const [weather, setWeather] = useState(null);
+const [notes, setNotes] = useState({});
+const [ratings, setRatings] = useState({});
+const [visited, setVisited] = useState(new Set());
+const wxRef = useRef(null);
+
+const budgetLabel = budget < 60 ? “Free” : budget < 120 ? “Budget” : budget < 250 ? “Mid-range” : budget < 450 ? “Premium” : budget < 700 ? “Luxury” : “Ultra Luxury”;
+
+// weather fetch
+useEffect(() => {
+if (!city || city.length < 3) return;
+clearTimeout(wxRef.current);
+wxRef.current = setTimeout(async () => {
+try {
+const g = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`);
+const gd = await g.json();
+if (!gd.results?.length) return;
+const { latitude: lat, longitude: lon, name, country } = gd.results[0];
+const w = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode&timezone=auto&forecast_days=7`);
+const wd = await w.json();
+const code = wd.daily.weathercode?.[0] || 0;
+const maxT = wd.daily.temperature_2m_max || [];
+const minT = wd.daily.temperature_2m_min || [];
+const rain = (wd.daily.precipitation_sum || []).slice(0, 3).reduce((a, b) => a + b, 0).toFixed(1);
+const emoji = code < 3 ? “☀️” : code < 50 ? “⛅” : code < 70 ? “🌧” : code < 80 ? “⛈” : “🌨”;
+const desc = code < 3 ? “Clear” : code < 50 ? “Partly cloudy” : code < 70 ? “Rainy” : “Stormy”;
+const hi = Math.round(maxT.slice(0, 3).reduce((a, b) => a + b, 0) / 3);
+const lo = Math.round(minT.slice(0, 3).reduce((a, b) => a + b, 0) / 3);
+setWeather({ name, country, emoji, desc, hi, lo, rain });
+} catch (e) {}
+}, 900);
+}, [city]);
+
+const toggleVibe = v => setVibes(prev => prev.includes(v) ? prev.filter(x => x !== v) : […prev, v]);
+const addTag = t => { const tag = t.trim(); if (tag && !tags.includes(tag)) { setTags(p => […p, tag]); setTagInput(””); } };
+const tagKeyDown = e => { if (e.key === “Enter” || e.key === “,”) { e.preventDefault(); addTag(tagInput); } };
+
+const buildPrompt = (label = “”, budgetOverride = null, styleOverride = null) => {
+const b = budgetOverride || budget;
+const s = styleOverride || style;
+return `Create a ${days}-day travel itinerary for "${city}".${label ? ` Style/Theme: “${label}”.`: ""} ${nbhd ?`Focus near: ${nbhd}`: ""} Interests: ${vibes.length ? vibes.join(", ") : "General sightseeing"} Preferences: ${tags.length ? tags.join(", ") : "None"} Transport: ${s} Budget: $${b}/day (${budgetLabel}) Group: ${group} Randomize: ${randomize ? "YES" : "NO"} ${weather ?`Weather: ${weather.desc}, ${weather.lo}–${weather.hi}°C` : “”}
+
+Return ONLY raw valid JSON (no markdown, no explanation):
+{“title”:“3 Days in Tokyo”,“totalEstCost”:”$450”,“days”:[{“dayNum”:1,“theme”:“Street Food & Temples”,“estDayCost”:”$120”,“blocks”:[{“time”:“9:00 AM”,“place”:“Real place name”,“type”:“Breakfast”,“desc”:“Two vivid sentences about this place.”,“tip”:“One insider tip.”,“cost”:”~$12”,“googleMapsQuery”:“Tsukiji Outer Market Tokyo Japan”}]}]}
+
+Rules: 5-7 blocks per day. Real places only. Logical geographic flow.`;
+};
+
+async function callAPI(prompt) {
+const res = await fetch(”/api/chat”, {
+method: “POST”, headers: { “Content-Type”: “application/json” },
+body: JSON.stringify({ model: “claude-sonnet-4-20250514”, max_tokens: 8000, messages: [{ role: “user”, content: prompt }] }),
+});
+const data = await res.json();
+const text = data.content?.find(b => b.type === “text”)?.text || “”;
+return JSON.parse(text.replace(/`json|`/g, “”).trim());
+}
+
+async function generate() {
+if (!city.trim()) { showToast(“Please enter a destination!”, “error”); return; }
+setLoading(true); setResult(null); setCompareResult(null); setActiveDay(0);
+try {
+if (compareMode) {
+const [pA, pB] = await Promise.all([
+callAPI(buildPrompt(lblA, Math.round(budget * 0.55), “Walking”)),
+callAPI(buildPrompt(lblB, Math.round(budget * 1.45), style)),
+]);
+setCompareResult({ pA, pB });
+showToast(“Both versions ready! ✨”, “success”);
+} else {
+const parsed = await callAPI(buildPrompt());
+setResult(parsed); setActiveDay(0);
+showToast(“Itinerary ready! 🎉”, “success”);
+}
+} catch (err) {
+showToast(“Error — check your API key in Vercel”, “error”);
+console.error(err);
+}
+setLoading(false);
+}
+
+const saveTrip = () => {
+if (!result) { showToast(“Generate an itinerary first!”, “error”); return; }
+const saved = JSON.parse(localStorage.getItem(“wa_saved”) || “[]”);
+saved.unshift({ id: Date.now(), title: result.title, city, days, budget, group, date: new Date().toLocaleDateString(), data: result.days });
+localStorage.setItem(“wa_saved”, JSON.stringify(saved.slice(0, 20)));
+showToast(“Trip saved! 💾”, “success”);
+};
+
+const pickCompare = (plan) => { setResult(plan); setCompareResult(null); setActiveDay(0); showToast(“Version selected! 🎉”, “success”); };
+
+const inputStyle = { width: “100%”, background: c.surf2, border: `1px solid ${c.bdr2}`, borderRadius: 10, padding: “0.8rem 1rem”, fontFamily: “‘DM Sans’,sans-serif”, fontSize: “1rem”, color: c.txt, outline: “none”, WebkitAppearance: “none” };
+
+const card = { background: c.surf, border: `1px solid ${c.bdr}`, borderRadius: 16, padding: “1.3rem”, marginBottom: “0.85rem” };
+const cardTitle = { fontFamily: “‘DM Sans’,sans-serif”, fontWeight: 800, fontSize: “0.92rem”, marginBottom: “0.4rem”, color: c.txt };
+const cardSub = { fontSize: “0.7rem”, color: c.muted, marginBottom: “0.85rem” };
+
+return (
+<div style={{ maxWidth: 760, margin: “0 auto”, padding: “0 1rem 4rem” }}>
+<div style={{ marginBottom: “1.6rem” }}>
+<div style={{ fontSize: “0.68rem”, color: D.p3, letterSpacing: “0.14em”, textTransform: “uppercase”, marginBottom: “0.5rem” }}>✦ Trip Planner</div>
+<h2 style={{ fontFamily: “‘DM Sans’,sans-serif”, fontWeight: 900, fontSize: “clamp(1.8rem,5vw,2.5rem)”, letterSpacing: “-0.03em”, color: c.txt, marginBottom: “0.4rem” }}>
+Build your <span style={{ background: `linear-gradient(135deg,${D.p2},${D.a2})`, WebkitBackgroundClip: “text”, WebkitTextFillColor: “transparent” }}>itinerary.</span>
+</h2>
+<p style={{ fontSize: “0.86rem”, color: c.muted, lineHeight: 1.65 }}>Fill in the details — the more you add, the better your plan.</p>
+</div>
 
 ```
-<div class="step-card" id="sc1">
-  <div class="step-hdr"><div class="step-num" id="sn1">02</div><div><div class="step-title">When are you going?</div><div class="step-sub">Helps with seasonal recommendations</div></div></div>
-  <div id="weatherCard" class="weather-card"></div>
-  <div class="date-row">
-    <div><label class="date-lbl">Start Date</label><input class="date-inp" type="date" id="startDate" onchange="syncDays()"/></div>
-    <div><label class="date-lbl">End Date</label><input class="date-inp" type="date" id="endDate" onchange="syncDays()"/></div>
-  </div>
-</div>
-
-<div class="step-card" id="sc2">
-  <div class="step-hdr"><div class="step-num" id="sn2">03</div><div><div class="step-title">How many days?</div></div></div>
-  <div class="days-row">
-    <button class="day-btn" onclick="chDays(-1)">−</button>
-    <div class="days-num" id="daysNum">1</div>
-    <button class="day-btn" onclick="chDays(1)">+</button>
-    <div class="days-label" id="daysLbl">day</div>
-  </div>
-</div>
-
-<div class="step-card" id="sc3">
-  <div class="step-hdr"><div class="step-num" id="sn3">04</div><div><div class="step-title">Daily duration</div></div></div>
-  <div class="opt-grid">
-    <div class="opt" onclick="selOpt(this,'dur','Half day')">Half Day</div>
-    <div class="opt sel" onclick="selOpt(this,'dur','Full day')">Full Day</div>
-    <div class="opt" onclick="selOpt(this,'dur','Day + Evening')">Day + Evening</div>
-  </div>
-</div>
-
-<div class="step-card" id="sc4">
-  <div class="step-hdr"><div class="step-num" id="sn4">05</div><div><div class="step-title">Vibe</div><div class="step-sub">Pick all that apply</div></div></div>
-  <div class="opt-grid">
-    <div class="opt" onclick="togOpt(this,'vibe','Culture')">🏛 Culture</div>
-    <div class="opt" onclick="togOpt(this,'vibe','Food & Drink')">🍽 Food</div>
-    <div class="opt" onclick="togOpt(this,'vibe','Nature')">🌿 Nature</div>
-    <div class="opt" onclick="togOpt(this,'vibe','Shopping')">🛍 Shopping</div>
-    <div class="opt" onclick="togOpt(this,'vibe','Nightlife')">🌙 Nightlife</div>
-    <div class="opt" onclick="togOpt(this,'vibe','Art')">🎨 Art</div>
-    <div class="opt" onclick="togOpt(this,'vibe','Wellness')">🧘 Wellness</div>
-    <div class="opt" onclick="togOpt(this,'vibe','Hidden Gems')">💎 Hidden Gems</div>
-    <div class="opt" onclick="togOpt(this,'vibe','Adventure')">🏄 Adventure</div>
-    <div class="opt" onclick="togOpt(this,'vibe','Photography')">📸 Photography</div>
-  </div>
-</div>
-
-<div class="step-card" id="sc5">
-  <div class="step-hdr"><div class="step-num" id="sn5">06</div><div><div class="step-title">Stay in a specific area?</div><div class="step-sub">Optional — keeps stops close together</div></div></div>
-  <input class="inp" id="nbhd" placeholder="e.g. Shibuya · Near Eiffel Tower · Beachfront" oninput="markStep(5)"/>
-  <div class="inp-hint">Leave blank to cover the whole destination</div>
-</div>
-
-<div class="step-card" id="sc6">
-  <div class="step-hdr"><div class="step-num" id="sn6">07</div><div><div class="step-title">Tailor your experience</div><div class="step-sub">Dietary needs, food type, accessibility</div></div></div>
-  <div class="tags-wrap" onclick="document.getElementById('tagsInp').focus()">
-    <input class="tags-input" id="tagsInp" placeholder="Type and press Enter — e.g. vegan, coffee, rooftop..." onkeydown="tagKey(event)"/>
-  </div>
-  <div class="tag-sugs" id="tagSugs">
-    <span class="tag-sug" onclick="addTag('Vegan')">Vegan</span>
-    <span class="tag-sug" onclick="addTag('Vegetarian')">Vegetarian</span>
-    <span class="tag-sug" onclick="addTag('Gluten Free')">Gluten Free</span>
-    <span class="tag-sug" onclick="addTag('Halal')">Halal</span>
-    <span class="tag-sug" onclick="addTag('No Spicy')">No Spicy</span>
-    <span class="tag-sug" onclick="addTag('Ramen')">Ramen</span>
-    <span class="tag-sug" onclick="addTag('Coffee')">Coffee</span>
-    <span class="tag-sug" onclick="addTag('Rooftop Bars')">Rooftop Bars</span>
-    <span class="tag-sug" onclick="addTag('Kid Friendly')">Kid Friendly</span>
-    <span class="tag-sug" onclick="addTag('Wheelchair Accessible')">Wheelchair</span>
-    <span class="tag-sug" onclick="addTag('Late Night')">Late Night</span>
-    <span class="tag-sug" onclick="addTag('Pet Friendly')">Pet Friendly</span>
-  </div>
-</div>
-
-<div class="step-card" id="sc7">
-  <div class="step-hdr"><div class="step-num" id="sn7">08</div><div><div class="step-title">Transport</div></div></div>
-  <div class="opt-grid">
-    <div class="opt sel" onclick="selOpt(this,'style','Walking')">🚶 Walking</div>
-    <div class="opt" onclick="selOpt(this,'style','Public Transport')">🚇 Transit</div>
-    <div class="opt" onclick="selOpt(this,'style','Rideshare')">🚕 Rideshare</div>
-    <div class="opt" onclick="selOpt(this,'style','Driving')">🚗 Driving</div>
-  </div>
-</div>
-
-<div class="step-card" id="sc8">
-  <div class="step-hdr"><div class="step-num" id="sn8">09</div><div><div class="step-title">Daily budget per person</div></div></div>
-  <div class="budget-top">
-    <div><div class="budget-val" id="budgetVal">$150</div><div class="budget-desc" id="budgetDesc">Mid-range</div></div>
-    <div style="font-size:0.68rem;color:var(--muted2);align-self:flex-end">per person · per day</div>
-  </div>
-  <input type="range" id="budgetRange" min="0" max="999" value="150" step="1" oninput="updBudget(this.value)" onchange="markStep(8)"/>
-  <div class="slider-marks"><span>$0</span><span>$250</span><span>$500</span><span>$999</span></div>
-</div>
-
-<div class="step-card" id="sc9">
-  <div class="step-hdr"><div class="step-num" id="sn9">10</div><div><div class="step-title">Who's coming?</div></div></div>
-  <div class="opt-grid">
-    <div class="opt sel" onclick="selOpt(this,'group','Solo')">🙋 Solo</div>
-    <div class="opt" onclick="selOpt(this,'group','Couple')">👫 Couple</div>
-    <div class="opt" onclick="selOpt(this,'group','Friends')">👯 Friends</div>
-    <div class="opt" onclick="selOpt(this,'group','Family')">👨‍👩‍👧 Family</div>
-  </div>
-</div>
-
-<div class="step-card" id="sc10">
-  <div class="step-hdr"><div class="step-num" id="sn10">11</div><div><div class="step-title">Trip Mood Board</div><div class="step-sub">Upload inspiration photos — AI reads the vibe</div></div></div>
-  <div class="mood-wrap" id="moodWrap">
-    <div class="mood-add">
-      <input type="file" accept="image/*" multiple onchange="addMoodImgs(event)"/>
-      <span>📸</span>
-      <div class="mood-add-lbl">Add photos</div>
-    </div>
-  </div>
-  <div class="mood-tags" id="moodTags"></div>
-  <div class="mood-hint" id="moodHint">Add photos of aesthetics, food, or places that inspire your trip</div>
-</div>
-
-<div class="step-card" id="sc11">
-  <div class="step-hdr"><div class="step-num" id="sn11">12</div><div><div class="step-title">Settings</div></div></div>
-  <div style="display:grid;gap:0.5rem;">
-    <div class="toggle-row"><div><div class="toggle-lbl">🎲 Randomize days</div><div class="toggle-sub">No repeated places across any day</div></div><label class="tswitch"><input type="checkbox" id="randToggle" checked/><span class="tslider"></span></label></div>
-    <div class="toggle-row"><div><div class="toggle-lbl">🔗 Reservation links</div><div class="toggle-sub">OpenTable, Viator, Booking.com, Yelp, Maps</div></div><label class="tswitch"><input type="checkbox" id="resvToggle" checked/><span class="tslider"></span></label></div>
-    <div class="toggle-row"><div><div class="toggle-lbl">🗺 Map view</div><div class="toggle-sub">See all stops on a map per day</div></div><label class="tswitch"><input type="checkbox" id="mapToggle" checked/><span class="tslider"></span></label></div>
-  </div>
-</div>
-
-<div class="step-card" id="sc12">
-  <div class="step-hdr"><div class="step-num" id="sn12">13</div><div><div class="step-title">Compare Mode</div><div class="step-sub">Generate two versions side by side</div></div></div>
-  <div class="compare-toggle">
-    <div><span class="compare-new">NEW</span><span class="compare-desc">Budget vs Luxury · Relaxed vs Packed</span></div>
-    <label class="tswitch"><input type="checkbox" id="compareToggle" onchange="toggleCompare()"/><span class="tslider"></span></label>
-  </div>
-  <div class="compare-labels" id="compareLabels" style="display:none;">
-    <div><label class="date-lbl">Version A</label><input class="inp" id="lblA" placeholder="e.g. Budget · Relaxed" style="font-size:0.85rem;padding:0.6rem 0.85rem;"/></div>
-    <div><label class="date-lbl">Version B</label><input class="inp" id="lblB" placeholder="e.g. Luxury · Packed" style="font-size:0.85rem;padding:0.6rem 0.85rem;"/></div>
-  </div>
-</div>
-```
-
-  </div>
-
-  <div class="gen-wrap">
-    <button class="gen-btn" id="genBtn" onclick="generate(false)">✨ Build My Itinerary</button>
-  </div>
-
-  <div id="itinResult">
-    <div class="celebrate" id="celebrateBox" style="display:none;">
-      <div style="font-size:2rem;margin-bottom:0.4rem;">🎉</div>
-      <h3 id="celebTitle">Your itinerary is ready!</h3>
-      <p id="celebSub"></p>
-    </div>
-    <div class="result-hdr">
-      <div>
-        <div class="result-title" id="itinTitle">Your Itinerary</div>
-        <div class="result-sub" id="itinSub"></div>
-      </div>
-      <div class="result-actions">
-        <button class="act-btn regen" onclick="generate(true)">🎲 Regen</button>
-        <button class="act-btn save" onclick="saveTrip()">💾 Save</button>
-        <button class="act-btn" onclick="openModal('shareModal')">🔗 Share</button>
-        <button class="act-btn" onclick="openModal('emailModal')">📧 Email</button>
-        <button class="act-btn" onclick="openPacking()">🎒 Pack</button>
-        <button class="act-btn" onclick="openPhrases()">🗣 Phrases</button>
-        <button class="act-btn" onclick="openCarbon()">🌱 CO₂</button>
-        <button class="act-btn" onclick="window.print()">🖨 Print</button>
-      </div>
-    </div>
-    <div class="summary-bar" id="summaryBar"></div>
-    <div id="compareView" style="display:none;"></div>
-    <div id="normalView">
-      <div class="day-tabs" id="dayTabs"></div>
-      <div id="dayPanels"></div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- SAVED -->
-
-<div class="page" id="saved-page">
-<div class="saved-inner">
-  <div class="page-eyebrow">✦ My Trips</div>
-  <h2 class="page-title">Saved <span class="grad">Itineraries</span></h2>
-  <div class="saved-grid" id="savedGrid"></div>
-</div>
-</div>
-
-<!-- BLOG -->
-
-<div class="page" id="blog-page">
-<div class="blog-inner">
-  <div style="margin-bottom:1.6rem;">
-    <div class="page-eyebrow">✦ Community</div>
-    <h2 class="page-title">Travel stories, <span class="grad">real people.</span></h2>
-  </div>
-  <div class="blog-toolbar">
-    <div class="blog-filters" id="blogFilters">
-      <span class="btag active" onclick="filterBlog('all',this)">All</span>
-      <span class="btag" onclick="filterBlog('Tokyo',this)">Tokyo</span>
-      <span class="btag" onclick="filterBlog('Paris',this)">Paris</span>
-      <span class="btag" onclick="filterBlog('New York',this)">New York</span>
-      <span class="btag" onclick="filterBlog('Barcelona',this)">Barcelona</span>
-      <span class="btag" onclick="filterBlog('Bangkok',this)">Bangkok</span>
-      <span class="btag" onclick="filterBlog('Lisbon',this)">Lisbon</span>
-    </div>
-    <button class="write-btn" onclick="openModal('writeModal')">+ Write Post</button>
-  </div>
-  <div class="blog-grid" id="blogGrid"></div>
-</div>
-</div>
-
-<footer>© 2026 What's Around? · Plan every destination</footer>
-</div><!-- .wrapper -->
-
-<!-- CONCIERGE FAB -->
-
-<button class="fab" id="concFab" onclick="toggleChat()">🤖<span class="fab-badge" id="fabBadge">1</span></button>
-
-<div class="chat-window" id="chatWin">
-  <div class="chat-hdr">
-    <div class="chat-av">🤖</div>
-    <div>
-      <div class="chat-name">Travel Concierge</div>
-      <div class="chat-status"><span class="chat-sdot"></span>Online · Ask me anything</div>
-    </div>
-    <button class="chat-close" onclick="toggleChat()">✕</button>
-  </div>
-  <div class="chat-msgs" id="chatMsgs"></div>
-  <div class="chat-sugs" id="chatSugs">
-    <span class="chat-sug" onclick="askChat('Is it safe to travel there solo?')">Safety?</span>
-    <span class="chat-sug" onclick="askChat('What should I pack?')">Packing?</span>
-    <span class="chat-sug" onclick="askChat('What is the tipping culture?')">Tipping?</span>
-    <span class="chat-sug" onclick="askChat('What local foods must I try?')">Food?</span>
-    <span class="chat-sug" onclick="askChat('How do I get around cheaply?')">Transport?</span>
-  </div>
-  <div class="chat-input-row">
-    <textarea class="chat-inp" id="chatInp" placeholder="Ask anything about your trip..." rows="1" onkeydown="chatKey(event)" oninput="autoH(this)"></textarea>
-    <button class="chat-send" id="chatSend" onclick="sendChat()">➤</button>
-  </div>
-</div>
-
-<!-- MODALS -->
-
-<!-- Auth -->
-
-<div class="overlay" id="authModal" onclick="overlayClick('authModal',event)">
-  <div class="modal-box">
-    <div class="modal-hdr"><div class="modal-title">Welcome 👋</div><button class="modal-close" onclick="closeModal('authModal')">✕</button></div>
-    <div class="auth-tabs">
-      <button class="auth-tab active" id="atab-login" onclick="switchAuth('login')">Sign In</button>
-      <button class="auth-tab" id="atab-signup" onclick="switchAuth('signup')">Sign Up</button>
-    </div>
-    <div id="loginForm">
-      <input class="auth-inp" id="authEmail" type="email" placeholder="Email"/>
-      <input class="auth-inp" id="authPass" type="password" placeholder="Password"/>
-      <button class="auth-btn" onclick="doAuth('login')">Sign In →</button>
-    </div>
-    <div id="signupForm" style="display:none;">
-      <input class="auth-inp" id="authName" type="text" placeholder="Your name"/>
-      <input class="auth-inp" id="authEmail2" type="email" placeholder="Email"/>
-      <input class="auth-inp" id="authPass2" type="password" placeholder="Password (min 6 chars)"/>
-      <button class="auth-btn" onclick="doAuth('signup')">Create Account →</button>
-    </div>
-  </div>
-</div>
-
-<!-- Share -->
-
-<div class="overlay" id="shareModal" onclick="overlayClick('shareModal',event)">
-  <div class="modal-box">
-    <div class="modal-hdr"><div class="modal-title">🔗 Share Your Trip</div><button class="modal-close" onclick="closeModal('shareModal')">✕</button></div>
-    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">Copy the link or share to your platform.</p>
-    <div class="share-link-row"><input class="share-link-inp" id="shareLink" readonly/><button class="copy-btn" onclick="copyLink()">Copy</button></div>
-    <div class="share-grid">
-      <button class="share-plat" onclick="sToWA()">💬 WhatsApp</button>
-      <button class="share-plat" onclick="sToTW()">𝕏 Twitter</button>
-      <button class="share-plat" onclick="sToFB()">👥 Facebook</button>
-      <button class="share-plat" onclick="sToIG()">📸 Instagram</button>
-    </div>
-  </div>
-</div>
-
-<!-- Email -->
-
-<div class="overlay" id="emailModal" onclick="overlayClick('emailModal',event)">
-  <div class="modal-box">
-    <div class="modal-hdr"><div class="modal-title">📧 Email Itinerary</div><button class="modal-close" onclick="closeModal('emailModal')">✕</button></div>
-    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">Opens your mail app with the full plan.</p>
-    <input class="auth-inp" id="emailTo" type="email" placeholder="your@email.com"/>
-    <button class="auth-btn" onclick="sendEmail()">Send →</button>
-  </div>
-</div>
-
-<!-- Packing -->
-
-<div class="overlay" id="packModal" onclick="overlayClick('packModal',event)">
-  <div class="modal-box">
-    <div class="modal-hdr"><div class="modal-title">🎒 Packing List</div><button class="modal-close" onclick="closeModal('packModal')">✕</button></div>
-    <div id="packContent"></div>
-  </div>
-</div>
-
-<!-- Phrases -->
-
-<div class="overlay" id="phrasesModal" onclick="overlayClick('phrasesModal',event)">
-  <div class="modal-box">
-    <div class="modal-hdr"><div class="modal-title">🗣 Local Phrases</div><button class="modal-close" onclick="closeModal('phrasesModal')">✕</button></div>
-    <div id="phrasesContent"></div>
-  </div>
-</div>
-
-<!-- Carbon -->
-
-<div class="overlay" id="carbonModal" onclick="overlayClick('carbonModal',event)">
-  <div class="modal-box">
-    <div class="modal-hdr"><div class="modal-title">🌱 Carbon Footprint</div><button class="modal-close" onclick="closeModal('carbonModal')">✕</button></div>
-    <div id="carbonContent"></div>
-  </div>
-</div>
-
-<!-- Write Post -->
-
-<div class="overlay" id="writeModal" onclick="overlayClick('writeModal',event)">
-  <div class="modal-box">
-    <div class="modal-hdr"><div class="modal-title">Share a Place</div><button class="modal-close" onclick="closeModal('writeModal')">✕</button></div>
-    <div class="fg"><label class="fl">Post Title</label><input class="fi" id="postTitle" placeholder="e.g. Best hidden ramen in Tokyo..."/></div>
-    <div class="frow">
-      <div class="fg"><label class="fl">Your Name</label><input class="fi" id="postAuthor" placeholder="Maria S."/></div>
-      <div class="fg"><label class="fl">Category</label><select class="fsel" id="postCat"><option value="Eat">🍽 Eat</option><option value="Drink">🍸 Drink</option><option value="Explore">🗺 Explore</option><option value="Stay">🏨 Stay</option></select></div>
-    </div>
-    <div class="fg"><label class="fl">Your Experience</label><textarea class="fta" id="postBody" placeholder="Tell us about your experience..." oninput="checkProf(this)"></textarea><div class="prof-warn" id="profWarn">⚠️ Keep it friendly!</div></div>
-    <div class="fg"><label class="fl">Add a Photo</label><div class="upload-area"><input type="file" accept="image/*" id="photoInput" onchange="prevImg(event)"/><div class="upload-txt">📷 Tap to upload</div><div class="upload-hint">JPG PNG WEBP · Max 5MB</div></div><img class="img-preview" id="photoPreview" alt=""/></div>
-    <div class="fg"><label class="fl">City Tags</label><div class="tpick-wrap" id="tagPicker"><span class="tpick" onclick="togTag(this,'Tokyo')">Tokyo</span><span class="tpick" onclick="togTag(this,'Paris')">Paris</span><span class="tpick" onclick="togTag(this,'New York')">New York</span><span class="tpick" onclick="togTag(this,'Barcelona')">Barcelona</span><span class="tpick" onclick="togTag(this,'Bangkok')">Bangkok</span><span class="tpick" onclick="togTag(this,'Lisbon')">Lisbon</span><span class="tpick" onclick="togTag(this,'Other')">Other</span></div></div>
-    <button class="sub-btn" onclick="submitPost()">Publish Post →</button>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-// ====================================================
-// STATE
-// ====================================================
-let numDays=1, budgetAmt=150;
-let sel={dur:'Full day',style:'Walking',group:'Solo',vibe:[]};
-let prefTags=[], selTags=[], photoData=null;
-let genDays=[], curCity='', curTitle='';
-let curUser=null, ratings={}, notes={}, visited=new Set(), packChecked={};
-let weatherData=null, wxTimer=null;
-let moodImgs=[], compareMode=false, planA=null, planB=null;
-let chatOpen=false, chatHistory=[], chatBusy=false;
-let doneSteps=new Set([3,7,9,11]);
-
-const BAD=['fuck','shit','bitch','bastard','cunt','dick','piss','cock','crap','asshole','bullshit','motherfucker'];
-const hasBad=t=>BAD.some(w=>t.toLowerCase().includes(w));
-const checkProf=el=>{ document.getElementById('profWarn').style.display=hasBad(el.value)?'block':'none'; };
-
-// ====================================================
-// TOAST
-// ====================================================
-function toast(msg,type='info'){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.className='toast '+type;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3200);
-}
-
-// ====================================================
-// MODAL SYSTEM (clean, no pointer-events issues)
-// ====================================================
-function openModal(id){
-  const el=document.getElementById(id);
-  if(!el) return;
-  el.classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeModal(id){
-  const el=document.getElementById(id);
-  if(!el) return;
-  el.classList.remove('open');
-  document.body.style.overflow='';
-}
-function overlayClick(id,e){
-  if(e.target===document.getElementById(id)) closeModal(id);
-}
-
-// ====================================================
-// NAV
-// ====================================================
-function showPage(p){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
-  document.getElementById(p+'-page').classList.add('active');
-  document.getElementById('nb-'+p)?.classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-  if(p==='blog') renderBlog('all');
-  if(p==='saved') renderSaved();
-}
-
-// ====================================================
-// PROGRESS
-// ====================================================
-function markStep(i){
-  doneSteps.add(i);
-  const steps=document.getElementById('progSteps');
-  if(!steps) return;
-  steps.innerHTML='';
-  for(let j=0;j<13;j++){
-    const s=document.createElement('div');
-    s.className='prog-step'+(doneSteps.has(j)?' done':'');
-    steps.appendChild(s);
-  }
-  document.getElementById('progCur').textContent=doneSteps.size;
-  document.getElementById('topFill').style.width=(doneSteps.size/13*100)+'%';
-}
-markStep(-1); // init
-
-// ====================================================
-// WEATHER
-// ====================================================
-function onCityInput(){
-  markStep(0);
-  clearTimeout(wxTimer);
-  wxTimer=setTimeout(fetchWeather,900);
-}
-async function fetchWeather(){
-  const city=document.getElementById('itinCity').value.trim();
-  if(!city||city.length<3) return;
-  const card=document.getElementById('weatherCard');
-  try{
-    const g=await fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(city)+'&count=1&language=en&format=json');
-    const gd=await g.json();
-    if(!gd.results?.length){card.className='weather-card';return;}
-    const {latitude:lat,longitude:lon,name,country}=gd.results[0];
-    const w=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode&timezone=auto&forecast_days=7`);
-    const wd=await w.json();
-    const code=wd.daily.weathercode?.[0]||0;
-    const maxT=wd.daily.temperature_2m_max||[];
-    const minT=wd.daily.temperature_2m_min||[];
-    const rain=wd.daily.precipitation_sum||[];
-    const emoji=code<3?'☀️':code<50?'⛅':code<70?'🌧':code<80?'⛈':'🌨';
-    const desc=code<3?'Clear':code<50?'Partly cloudy':code<70?'Rainy':code<80?'Stormy':'Snow';
-    const avgMax=Math.round(maxT.slice(0,3).reduce((a,b)=>a+b,0)/3);
-    const avgMin=Math.round(minT.slice(0,3).reduce((a,b)=>a+b,0)/3);
-    const totalRain=rain.slice(0,3).reduce((a,b)=>a+b,0).toFixed(1);
-    weatherData={city:name,country,avgMax,avgMin,desc,emoji,totalRain};
-    card.className='weather-card show';
-    card.innerHTML=`<div class="weather-ico">${emoji}</div><div><div class="weather-name">${name}, ${country}</div><div class="weather-info">${desc} · 3-day forecast</div><div class="weather-temps"><span class="weather-temp">🌡 ${avgMin}–${avgMax}°C</span><span class="weather-temp">💧 ${totalRain}mm</span></div></div>${totalRain>10?'<div class="weather-alert">☂ Pack umbrella</div>':avgMax>32?'<div class="weather-alert">🌞 Hot!</div>':avgMin<5?'<div class="weather-alert">🧥 Bring layers</div>':''}`;
-  }catch(e){card.className='weather-card';}
-}
-
-function syncDays(){
-  markStep(1);
-  const s=document.getElementById('startDate').value;
-  const e=document.getElementById('endDate').value;
-  if(!s||!e) return;
-  const d=Math.round((new Date(e)-new Date(s))/86400000)+1;
-  if(d>0&&d<=10){ numDays=d; document.getElementById('daysNum').textContent=numDays; document.getElementById('daysLbl').textContent=numDays===1?'day':'days'; }
-}
-
-// ====================================================
-// DAYS / OPTIONS / TAGS
-// ====================================================
-function chDays(d){
-  numDays=Math.max(1,Math.min(10,numDays+d));
-  const el=document.getElementById('daysNum');
-  el.textContent=numDays;
-  document.getElementById('daysLbl').textContent=numDays===1?'day':'days';
-  markStep(2);
-}
-function selOpt(el,key,val){
-  el.closest('.opt-grid').querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
-  el.classList.add('sel'); sel[key]=val;
-  const stepMap={dur:3,style:7,group:9};
-  if(stepMap[key]!=null) markStep(stepMap[key]);
-}
-function togOpt(el,key,val){
-  el.classList.toggle('sel');
-  if(el.classList.contains('sel')) sel.vibe.push(val);
-  else sel.vibe=sel.vibe.filter(v=>v!==val);
-  markStep(4);
-}
-function tagKey(e){
-  if(e.key==='Enter'||e.key===','){e.preventDefault();const v=e.target.value.trim().replace(/,$/,'');if(v)addTag(v);e.target.value='';}
-  else if(e.key==='Backspace'&&!e.target.value&&prefTags.length) removeTag(prefTags[prefTags.length-1]);
-}
-function addTag(t){
-  const tag=t.trim();if(!tag||prefTags.includes(tag))return;
-  prefTags.push(tag);renderTags();markStep(6);
-}
-function removeTag(t){prefTags=prefTags.filter(x=>x!==t);renderTags();}
-function renderTags(){
-  const wrap=document.getElementById('tagsInp').parentElement;
-  const inp=document.getElementById('tagsInp');
-  wrap.innerHTML='';
-  prefTags.forEach(t=>{const c=document.createElement('span');c.className='tag-chip';c.innerHTML=t+'<span class="tag-x" onclick="removeTag(\''+t+'\')">✕</span>';wrap.appendChild(c);});
-  wrap.appendChild(inp);
-}
-function updBudget(v){
-  budgetAmt=parseInt(v);
-  document.getElementById('budgetVal').textContent='$'+budgetAmt;
-  let d='Free';
-  if(budgetAmt>60) d='Budget';
-  if(budgetAmt>120) d='Mid-range';
-  if(budgetAmt>250) d='Premium';
-  if(budgetAmt>450) d='Luxury';
-  if(budgetAmt>700) d='Ultra Luxury';
-  document.getElementById('budgetDesc').textContent=d;
-  const pct=budgetAmt/999*100;
-  document.getElementById('budgetRange').style.background=`linear-gradient(to right,#9f67f7 0%,#06d6a0 ${pct}%,var(--surf3) ${pct}%)`;
-}
-updBudget(150);
-
-// ====================================================
-// MOOD BOARD
-// ====================================================
-const MOOD_VIBES=[['cozy','warm','intimate'],['vibrant','energetic','colorful'],['luxury','elegant','refined'],['adventure','outdoor','rugged'],['street food','local','casual'],['nightlife','moody','edgy'],['beach','tropical','relaxed'],['historical','cultural','artsy'],['minimalist','clean','modern'],['photogenic','scenic','beautiful']];
-function addMoodImgs(e){
-  Array.from(e.target.files).forEach(f=>{
-    if(f.size>8*1024*1024){toast('Keep images under 8MB','error');return;}
-    const r=new FileReader();
-    r.onload=ev=>{
-      const tags=MOOD_VIBES[Math.floor(Math.random()*MOOD_VIBES.length)];
-      moodImgs.push({dataUrl:ev.target.result,tags});
-      renderMood();markStep(10);toast('Photo added to mood board 🎨','success');
-    };
-    r.readAsDataURL(f);
-  });
-  e.target.value='';
-}
-function removeMoodImg(i){moodImgs.splice(i,1);renderMood();}
-function renderMood(){
-  const wrap=document.getElementById('moodWrap');
-  wrap.innerHTML='';
-  moodImgs.forEach((img,i)=>{
-    const d=document.createElement('div');d.className='mood-img-wrap';
-    d.innerHTML='<img class="mood-img" src="'+img.dataUrl+'"/><div class="mood-del" onclick="removeMoodImg('+i+')">✕</div>';
-    wrap.appendChild(d);
-  });
-  const add=document.createElement('div');add.className='mood-add';
-  add.innerHTML='<input type="file" accept="image/*" multiple onchange="addMoodImgs(event)"/><span>📸</span><div class="mood-add-lbl">'+(moodImgs.length?'Add more':'Add photos')+'</div>';
-  wrap.appendChild(add);
-  const hint=document.getElementById('moodHint');
-  if(hint) hint.style.display=moodImgs.length?'none':'block';
-  const tagWrap=document.getElementById('moodTags');
-  if(tagWrap){
-    const all=[...new Set(moodImgs.flatMap(i=>i.tags))].slice(0,8);
-    tagWrap.innerHTML=all.length?'<span style="font-size:0.66rem;color:var(--muted);margin-right:0.2rem;">✨ Vibe:</span>'+all.map(t=>'<span class="mood-tag">'+t+'</span>').join(''):'';
-  }
-}
-function getMoodCtx(){
-  if(!moodImgs.length) return '';
-  return 'Mood board vibes: '+[...new Set(moodImgs.flatMap(i=>i.tags))].join(', ')+'.';
-}
-
-// ====================================================
-// COMPARE TOGGLE
-// ====================================================
-function toggleCompare(){
-  compareMode=document.getElementById('compareToggle').checked;
-  document.getElementById('compareLabels').style.display=compareMode?'grid':'none';
-  document.getElementById('genBtn').textContent=compareMode?'⚡ Build Both Versions':'✨ Build My Itinerary';
-  markStep(12);
-}
-
-// ====================================================
-// CONFETTI
-// ====================================================
-function confetti(){
-  const wrap=document.createElement('div');
-  wrap.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:8000;overflow:hidden;';
-  document.body.appendChild(wrap);
-  const colors=['#7c3aed','#06d6a0','#f59e0b','#f472b6','#3b82f6','#ffffff'];
-  for(let i=0;i<50;i++){
-    const c=document.createElement('div');
-    c.style.cssText=`position:absolute;width:${Math.random()*7+3}px;height:${Math.random()*7+3}px;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      border-radius:${Math.random()>.5?'50%':'2px'};
-      left:${Math.random()*100}%;top:-10px;
-      animation:fall ${Math.random()*1.5+1.5}s ease-in ${Math.random()*.8}s forwards;
-      transform:rotate(${Math.random()*360}deg);`;
-    wrap.appendChild(c);
-  }
-  const style=document.createElement('style');
-  style.textContent='@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0;}}';
-  document.head.appendChild(style);
-  setTimeout(()=>{wrap.remove();},3000);
-}
-
-// ====================================================
-// GENERATE ITINERARY
-// ====================================================
-async function generate(isRegen=false){
-  const city=document.getElementById('itinCity').value.trim();
-  if(!city){toast('Please enter a destination!','error');return;}
-  curCity=city;
-  if(compareMode&&!isRegen){await generateCompare();return;}
-
-  const vibes=sel.vibe.length>0?sel.vibe.join(', '):'General sightseeing';
-  const prefs=prefTags.length>0?prefTags.join(', '):'None';
-  const nbhd=document.getElementById('nbhd').value.trim();
-  const moodCtx=getMoodCtx();
-  const btn=document.getElementById('genBtn');
-  btn.disabled=true;btn.textContent='Building...';
-
-  document.getElementById('itinResult').style.display='block';
-  document.getElementById('celebrateBox').style.display='none';
-  document.getElementById('compareView').style.display='none';
-  document.getElementById('normalView').style.display='block';
-  document.getElementById('summaryBar').innerHTML='';
-  document.getElementById('dayPanels').innerHTML='<div class="loading-box"><div class="loading-ring"></div><div class="loading-txt">Crafting '+numDays+' day'+(numDays>1?'s':'')+' in '+city+'...</div></div>';
-  document.getElementById('dayTabs').innerHTML='';
-  document.getElementById('itinResult').scrollIntoView({behavior:'smooth',block:'start'});
-  const used=isRegen?[]:genDays.flatMap(d=>(d.blocks||[]).map(b=>b.place));
-
-  try{
-    const res=await fetch('/api/chat',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',max_tokens:8000,
-        messages:[{role:'user',content:`Create a ${numDays}-day itinerary for "${city}".
-${nbhd?'Focus near: '+nbhd:''}
-Interests: ${vibes}
-Preferences: ${prefs}
-Transport: ${sel.style}
-Budget: $${budgetAmt}/day (${document.getElementById('budgetDesc').textContent})
-Group: ${sel.group}
-Duration per day: ${sel.dur}
-Randomize (no repeats): ${document.getElementById('randToggle').checked?'YES':'NO'}
-${used.length?'Never use: '+used.join(', '):''}
-${weatherData?'Weather: '+weatherData.desc+', '+weatherData.avgMin+'-'+weatherData.avgMax+'°C':''}
-${moodCtx}
-
-Return ONLY raw valid JSON:
-{"title":"e.g. 3 Days in Tokyo","totalEstCost":"$450","days":[{"dayNum":1,"theme":"e.g. Street Food & History","estDayCost":"$150","blocks":[{"time":"9:00 AM","place":"Real place name","type":"Breakfast","desc":"2 vivid sentences.","tip":"One insider tip","cost":"~$12","openTableSlug":"slug or empty","googleMapsQuery":"Place City Country","viatorQuery":"or empty","bookingQuery":"or empty"}]}]}
-
-Rules: 5-7 blocks/day. Real places in "${city}". Logical geographic flow.`}]
-      })
-    });
-    const data=await res.json();
-    const text=data.content?.find(b=>b.type==='text')?.text||'';
-    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
-    genDays=parsed.days||[];
-    curTitle=parsed.title||numDays+'-Day Itinerary';
-
-    // Celebrate
-    document.getElementById('celebrateBox').style.display='block';
-    document.getElementById('celebTitle').textContent=curTitle+' is ready! 🎉';
-    document.getElementById('celebSub').textContent=genDays.reduce((s,d)=>s+(d.blocks||[]).length,0)+' stops · '+numDays+' day'+(numDays>1?'s':'');
-    confetti();
-
-    document.getElementById('itinTitle').textContent=curTitle;
-    document.getElementById('itinSub').textContent=numDays+' day'+(numDays>1?'s':'')+' · '+city+' · $'+budgetAmt+'/day · '+sel.group;
-
-    // Summary
-    const totalB=genDays.reduce((s,d)=>s+(d.blocks||[]).length,0);
-    document.getElementById('summaryBar').innerHTML=
-      '<div class="sbar-item"><div class="sbar-lbl">Est. Cost</div><div class="sbar-val vw">'+(parsed.totalEstCost||'~$'+budgetAmt*numDays)+'</div></div>'+
-      '<div class="sbar-item"><div class="sbar-lbl">Stops</div><div class="sbar-val vp">'+totalB+'</div></div>'+
-      '<div class="sbar-item"><div class="sbar-lbl">Days</div><div class="sbar-val">'+numDays+'</div></div>'+
-      (weatherData?'<div class="sbar-item"><div class="sbar-lbl">Weather</div><div class="sbar-val" style="font-size:1.4rem;">'+weatherData.emoji+'</div></div>':'');
-
-    buildDayTabs();
-    doneSteps=new Set([...Array(13).keys()]);markStep(0);
-    toast('Itinerary ready!','success');
-  }catch(err){
-    document.getElementById('dayPanels').innerHTML='<div class="err-msg"><strong>Could not build itinerary</strong>'+err.message+'<br>Check ANTHROPIC_API_KEY in Vercel.</div>';
-    console.error(err);
-  }
-  btn.disabled=false;btn.textContent=compareMode?'⚡ Build Both Versions':'✨ Build My Itinerary';
-}
-
-function buildDayTabs(){
-  const tabs=document.getElementById('dayTabs'),panels=document.getElementById('dayPanels');
-  tabs.innerHTML='';panels.innerHTML='';
-  const incR=document.getElementById('resvToggle').checked;
-  const showM=document.getElementById('mapToggle').checked;
-  genDays.forEach((day,i)=>{
-    const t=document.createElement('button');
-    t.className='day-tab'+(i===0?' active':'');
-    t.textContent='Day '+day.dayNum+(day.theme?' · '+day.theme:'');
-    t.onclick=()=>{document.querySelectorAll('.day-tab').forEach((x,j)=>x.classList.toggle('active',j===i));document.querySelectorAll('.day-panel').forEach((x,j)=>x.classList.toggle('active',j===i));};
-    tabs.appendChild(t);
-    const p=document.createElement('div');
-    p.className='day-panel'+(i===0?' active':'');
-    p.id='dp-'+i;
-    p.innerHTML=buildDayHTML(day,i,incR,showM);
-    panels.appendChild(p);
-  });
-}
-
-function buildDayHTML(day,di,incR,showM){
-  const blocks=day.blocks||[];
-  let out='';
-  if(showM&&blocks.length){
-    const fq=encodeURIComponent(blocks[0].googleMapsQuery||blocks[0].place);
-    out+=`<div class="map-row"><button class="view-toggle active" onclick="setView('list','${di}',this)">📋 List</button><button class="view-toggle" onclick="setView('map','${di}',this)">🗺 Map</button></div>
-    <div class="map-box" id="mb-${di}"><iframe class="map-frame" loading="lazy" src="https://maps.google.com/maps?q=${fq}&output=embed" allowfullscreen></iframe><div class="map-pins">${blocks.map((b,i)=>'<div class="map-pin"><div class="pin-n">'+(i+1)+'</div>'+b.place+'</div>').join('')}</div></div>`;
-  }
-  if(day.estDayCost){
-    out+=`<div class="day-cost"><div><div class="day-cost-lbl">Estimated day spend</div><div class="day-cost-val">${day.estDayCost} per person</div></div><div style="display:flex;gap:0.35rem;flex-wrap:wrap;">${blocks.filter(b=>b.cost).map(b=>'<span style="font-size:0.67rem;color:var(--muted);background:rgba(255,255,255,0.04);padding:0.14rem 0.45rem;border-radius:4px;">'+b.place.split(' ')[0]+': '+b.cost+'</span>').join('')}</div></div>`;
-  }
-  out+='<div class="blocks-grid">'+blocks.map((b,bi)=>{
-    const key=di+'-'+bi;
-    const isV=visited.has(key);
-    return `<div class="tblock${isV?' opacity-40':''}" id="tb-${di}-${bi}">
-      <div class="tblock-hdr">
-        <div class="tblock-num">${bi+1}</div>
-        <div class="tblock-time">${b.time}</div>
-        <div class="tblock-place">${b.place}</div>
-        <div class="tblock-type">${b.type}</div>
-        ${b.cost?'<div class="tblock-cost">'+b.cost+'</div>':''}
-        <div class="tblock-actions">
-          <button class="taction${isV?' visited':''}" onclick="togVisited('${key}',this)" title="Mark visited">✓</button>
-          <button class="taction swap-btn" onclick="swapBlock(${di},${bi})">🎲</button>
+  {/* Step 1 - Destination */}
+  <div style={card}>
+    <div style={cardTitle}>01 · Where are you going?</div>
+    <div style={cardSub}>City, state, country, or zip code</div>
+    {weather && (
+      <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", background: `rgba(6,214,160,0.06)`, border: `1px solid rgba(6,214,160,0.15)`, borderRadius: 10, padding: "0.8rem 1rem", marginBottom: "0.8rem", flexWrap: "wrap" }}>
+        <span style={{ fontSize: "1.8rem" }}>{weather.emoji}</span>
+        <div>
+          <div style={{ fontWeight: 700, fontSize: "0.88rem", color: c.txt }}>{weather.name}, {weather.country}</div>
+          <div style={{ fontSize: "0.72rem", color: c.muted }}>{weather.desc} · {weather.lo}–{weather.hi}°C · {weather.rain}mm rain</div>
         </div>
       </div>
-      <div class="tblock-body">
-        <div class="tblock-desc">${b.desc}</div>
-        ${b.tip?'<div class="tblock-tip">💡 '+b.tip+'</div>':''}
-        <div style="margin-bottom:0.7rem;">
-          <button class="note-toggle" onclick="togNote('${key}',this)">📝 ${notes[key]?'Edit note':'Add note'}</button>
-          <textarea class="note-ta${notes[key]?' open':''}" id="note-${key}" placeholder="Confirmation numbers, tips..." onblur="saveNote('${key}')">${notes[key]||''}</textarea>
-
-```
-    </div>
-    <div class="star-row">
-      <div class="stars" id="stars-${key}">${[1,2,3,4,5].map(s=>'<span class="star'+(( ratings[key]||0)>=s?' on':'')+'" onclick="rate(\''+key+'\','+s+')">★</span>').join('')}</div>
-      <span class="star-lbl" id="sl-${key}">${ratings[key]?['','⭐ Poor','⭐⭐ Fair','⭐⭐⭐ Good','⭐⭐⭐⭐ Great','⭐⭐⭐⭐⭐ Amazing'][ratings[key]]:'Rate this stop'}</span>
-    </div>
-    ${incR?buildLinks(b,curCity):''}
+    )}
+    <input value={city} onChange={e => setCity(e.target.value)} placeholder="e.g. Tokyo, Japan · Paris · Austin TX" style={inputStyle} />
   </div>
-</div>`;
+
+  {/* Step 2 - Days */}
+  <div style={card}>
+    <div style={cardTitle}>02 · How many days?</div>
+    <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+      {[-1, 1].map(d => (
+        <button key={d} onClick={() => setDays(x => Math.max(1, Math.min(10, x + d)))} style={{ width: 40, height: 40, borderRadius: 10, border: `1px solid ${c.bdr2}`, background: c.surf2, color: c.txt, fontSize: "1.1rem", cursor: "pointer", WebkitTapHighlightColor: "transparent" }}>{d === -1 ? "−" : "+"}</button>
+      ))}
+      <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 900, fontSize: "2rem", color: c.txt }}>{days}</span>
+      <span style={{ fontSize: "0.8rem", color: c.muted }}>{days === 1 ? "day" : "days"}</span>
+    </div>
+  </div>
+
+  {/* Step 3 - Vibes */}
+  <div style={card}>
+    <div style={cardTitle}>03 · What's your vibe?</div>
+    <div style={cardSub}>Pick all that apply</div>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(130px,1fr))", gap: "0.42rem" }}>
+      {VIBE_OPTIONS.map(({ emoji, label }) => (
+        <div key={label} onClick={() => toggleVibe(label)} style={{
+          padding: "0.62rem 0.75rem", background: vibes.includes(label) ? "rgba(124,58,237,0.14)" : c.surf2,
+          border: `1px solid ${vibes.includes(label) ? "rgba(124,58,237,0.4)" : c.bdr}`,
+          borderRadius: 10, textAlign: "center", fontSize: "0.78rem", fontWeight: 500,
+          color: vibes.includes(label) ? D.p3 : c.muted, cursor: "pointer",
+          WebkitTapHighlightColor: "transparent", userSelect: "none",
+        }}>
+          {emoji} {label} {vibes.includes(label) ? "✓" : ""}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* Step 4 - Preferences */}
+  <div style={card}>
+    <div style={cardTitle}>04 · Tailor your experience</div>
+    <div style={cardSub}>Dietary needs, food types, accessibility</div>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", background: c.surf2, border: `1px solid ${c.bdr2}`, borderRadius: 10, padding: "0.6rem 0.8rem", minHeight: 44, alignItems: "center", cursor: "text" }} onClick={() => document.getElementById("tagInput")?.focus()}>
+      {tags.map(t => <Tag key={t} label={t} onRemove={() => setTags(p => p.filter(x => x !== t))} c={c} />)}
+      <input id="tagInput" value={tagInput} onChange={e => setTagInput(e.target.value)} onKeyDown={tagKeyDown} placeholder={tags.length ? "" : "Type and press Enter — e.g. vegan, rooftop..."} style={{ border: "none", outline: "none", background: "none", fontFamily: "'DM Sans',sans-serif", fontSize: "1rem", color: c.txt, flex: 1, minWidth: 80 }} />
+    </div>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", marginTop: "0.5rem" }}>
+      {TAG_SUGGESTIONS.map(t => (
+        <span key={t} onClick={() => addTag(t)} style={{ padding: "0.22rem 0.6rem", background: c.surf2, border: `1px solid ${c.bdr}`, borderRadius: 100, fontSize: "0.68rem", color: c.muted, cursor: "pointer", WebkitTapHighlightColor: "transparent" }}>{t}</span>
+      ))}
+    </div>
+  </div>
+
+  {/* Step 5 - Budget */}
+  <div style={card}>
+    <div style={cardTitle}>05 · Daily budget per person</div>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "0.8rem" }}>
+      <div>
+        <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 900, fontSize: "1.8rem", color: D.p3 }}>${budget}</div>
+        <div style={{ fontSize: "0.72rem", color: c.muted }}>{budgetLabel}</div>
+      </div>
+      <div style={{ fontSize: "0.68rem", color: c.muted2 }}>per person · per day</div>
+    </div>
+    <input type="range" min={0} max={999} value={budget} onChange={e => setBudget(Number(e.target.value))} style={{ width: "100%", accentColor: D.p2 }} />
+    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.62rem", color: c.muted2, marginTop: "0.4rem" }}>
+      <span>$0</span><span>$250</span><span>$500</span><span>$999</span>
+    </div>
+  </div>
+
+  {/* Step 6 - Group & Transport */}
+  <div style={card}>
+    <div style={cardTitle}>06 · Who's coming?</div>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(130px,1fr))", gap: "0.42rem", marginBottom: "1rem" }}>
+      {["🙋 Solo","👫 Couple","👯 Friends","👨‍👩‍👧 Family"].map(g => {
+        const val = g.split(" ").slice(1).join(" ");
+        return (
+          <div key={val} onClick={() => setGroup(val)} style={{ padding: "0.62rem 0.75rem", background: group === val ? "rgba(124,58,237,0.14)" : c.surf2, border: `1px solid ${group === val ? "rgba(124,58,237,0.4)" : c.bdr}`, borderRadius: 10, textAlign: "center", fontSize: "0.78rem", color: group === val ? D.p3 : c.muted, cursor: "pointer", WebkitTapHighlightColor: "transparent" }}>
+            {g} {group === val ? "✓" : ""}
+          </div>
+        );
+      })}
+    </div>
+    <div style={cardTitle}>Transport</div>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(130px,1fr))", gap: "0.42rem" }}>
+      {["🚶 Walking","🚇 Transit","🚕 Rideshare","🚗 Driving"].map(s => {
+        const val = s.split(" ").slice(1).join(" ");
+        return (
+          <div key={val} onClick={() => setStyle(val)} style={{ padding: "0.62rem 0.75rem", background: style === val ? "rgba(124,58,237,0.14)" : c.surf2, border: `1px solid ${style === val ? "rgba(124,58,237,0.4)" : c.bdr}`, borderRadius: 10, textAlign: "center", fontSize: "0.78rem", color: style === val ? D.p3 : c.muted, cursor: "pointer", WebkitTapHighlightColor: "transparent" }}>
+            {s} {style === val ? "✓" : ""}
+          </div>
+        );
+      })}
+    </div>
+  </div>
+
+  {/* Step 7 - Area + Settings */}
+  <div style={card}>
+    <div style={cardTitle}>07 · Settings</div>
+    <input value={nbhd} onChange={e => setNbhd(e.target.value)} placeholder="Specific area? e.g. Shibuya · Near Eiffel Tower" style={{ ...inputStyle, marginBottom: "0.9rem" }} />
+    {[["🎲 Randomize days", "No repeated places across any day", randomize, setRandomize],
+      ["🔗 Reservation links", "Maps, OpenTable, Viator, Booking.com", showResv, setShowResv]].map(([title, sub, val, setter]) => (
+      <div key={title} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.7rem 0.9rem", background: c.surf2, border: `1px solid ${c.bdr}`, borderRadius: 10, marginBottom: "0.5rem" }}>
+        <div>
+          <div style={{ fontSize: "0.8rem", fontWeight: 600, color: c.txt }}>{title}</div>
+          <div style={{ fontSize: "0.68rem", color: c.muted }}>{sub}</div>
+        </div>
+        <ToggleSwitch checked={val} onChange={setter} c={c} />
+      </div>
+    ))}
+  </div>
+
+  {/* Step 8 - Compare Mode */}
+  <div style={card}>
+    <div style={cardTitle}>08 · Compare Mode</div>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.7rem 0.9rem", background: `linear-gradient(135deg,rgba(245,158,11,0.05),rgba(124,58,237,0.04))`, border: `1px solid rgba(245,158,11,0.18)`, borderRadius: 10, marginBottom: compareMode ? "0.8rem" : 0 }}>
+      <div>
+        <span style={{ fontSize: "0.62rem", fontWeight: 700, padding: "0.15rem 0.5rem", borderRadius: 4, background: "rgba(245,158,11,0.1)", color: D.w1, border: `1px solid rgba(245,158,11,0.22)`, marginRight: "0.5rem" }}>NEW</span>
+        <span style={{ fontSize: "0.76rem", color: c.muted }}>Generate two versions side by side</span>
+      </div>
+      <ToggleSwitch checked={compareMode} onChange={setCompareMode} c={c} />
+    </div>
+    {compareMode && (
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem" }}>
+        <div>
+          <div style={{ fontSize: "0.68rem", color: c.muted, marginBottom: "0.3rem" }}>VERSION A</div>
+          <input value={lblA} onChange={e => setLblA(e.target.value)} placeholder="e.g. Budget · Relaxed" style={inputStyle} />
+        </div>
+        <div>
+          <div style={{ fontSize: "0.68rem", color: c.muted, marginBottom: "0.3rem" }}>VERSION B</div>
+          <input value={lblB} onChange={e => setLblB(e.target.value)} placeholder="e.g. Luxury · Packed" style={inputStyle} />
+        </div>
+      </div>
+    )}
+  </div>
+
+  {/* Generate Button */}
+  <button
+    onClick={loading ? undefined : generate}
+    style={{
+      width: "100%", padding: "1rem",
+      background: loading ? c.surf3 : `linear-gradient(135deg,${D.p1},${D.p2} 50%,${D.a1})`,
+      color: loading ? c.muted : "white",
+      fontFamily: "'DM Sans',sans-serif", fontSize: "0.97rem", fontWeight: 900,
+      border: "none", borderRadius: 14, cursor: loading ? "wait" : "pointer",
+      boxShadow: loading ? "none" : `0 10px 30px rgba(124,58,237,0.38)`,
+      letterSpacing: "-0.01em", marginBottom: "2rem",
+      WebkitTapHighlightColor: "transparent",
+      touchAction: "manipulation",
+    }}
+  >
+    {loading ? "Building your itinerary..." : compareMode ? "⚡ Build Both Versions" : "✨ Build My Itinerary"}
+  </button>
+
+  {/* COMPARE RESULT */}
+  {compareResult && (
+    <div>
+      <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 800, fontSize: "1.3rem", color: c.txt, marginBottom: "1rem" }}>🏆 Compare & Choose</div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+        {[["A", compareResult.pA, D.a2], ["B", compareResult.pB, D.p3]].map(([col, plan, accent]) => (
+          <div key={col} style={{ background: c.surf, border: `1px solid ${c.bdr2}`, borderRadius: 14, padding: "1rem", overflow: "hidden" }}>
+            <div style={{ fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: accent, padding: "0.15rem 0.48rem", borderRadius: 4, background: `${accent}15`, border: `1px solid ${accent}30`, display: "inline-block", marginBottom: "0.4rem" }}>Option {col}</div>
+            <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 800, fontSize: "0.9rem", color: c.txt, marginBottom: "0.2rem" }}>{plan.title}</div>
+            <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 800, fontSize: "1rem", color: D.w2, marginBottom: "0.8rem" }}>{plan.totalEstCost}</div>
+            {(plan.days || []).map(day => (
+              <div key={day.dayNum} style={{ marginBottom: "0.6rem" }}>
+                <div style={{ fontSize: "0.62rem", fontWeight: 700, color: c.muted, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "0.3rem" }}>Day {day.dayNum}{day.theme ? ` · ${day.theme}` : ""}</div>
+                {(day.blocks || []).map((b, i) => (
+                  <div key={i} style={{ background: c.surf2, border: `1px solid ${c.bdr}`, borderRadius: 8, padding: "0.55rem 0.7rem", marginBottom: "0.35rem" }}>
+                    <div style={{ fontSize: "0.6rem", fontWeight: 700, color: accent, textTransform: "uppercase", letterSpacing: "0.08em" }}>{b.time}</div>
+                    <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 700, fontSize: "0.82rem", color: c.txt }}>{b.place}</div>
+                    <div style={{ fontSize: "0.68rem", color: c.muted, lineHeight: 1.45, marginTop: "0.08rem" }}>{b.desc}</div>
+                    {b.cost && <div style={{ fontSize: "0.65rem", color: D.w2, fontWeight: 600, marginTop: "0.1rem" }}>{b.cost}</div>}
+                  </div>
+                ))}
+              </div>
+            ))}
+            <button onClick={() => pickCompare(plan)} style={{ width: "100%", padding: "0.65rem", background: `linear-gradient(135deg,${D.p1},${D.a1})`, color: "white", fontFamily: "'DM Sans',sans-serif", fontWeight: 700, fontSize: "0.8rem", border: "none", borderRadius: 9, cursor: "pointer", marginTop: "0.5rem", WebkitTapHighlightColor: "transparent" }}>
+              ✓ Choose This Version
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+
+  {/* NORMAL RESULT */}
+  {result && !compareResult && (
+    <div>
+      {/* Header */}
+      <div style={{ background: `linear-gradient(135deg,rgba(124,58,237,0.07),rgba(6,214,160,0.05))`, border: `1px solid rgba(124,58,237,0.18)`, borderRadius: 16, padding: "1.2rem", textAlign: "center", marginBottom: "1.2rem" }}>
+        <div style={{ fontSize: "1.8rem", marginBottom: "0.3rem" }}>🎉</div>
+        <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 900, fontSize: "1.2rem", color: c.txt }}>{result.title}</div>
+        <div style={{ fontSize: "0.78rem", color: c.muted }}>{(result.days || []).reduce((s, d) => s + (d.blocks || []).length, 0)} stops · {days} day{days > 1 ? "s" : ""}</div>
+      </div>
+
+      {/* Summary bar */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(130px,1fr))", gap: "0.5rem", marginBottom: "1.1rem" }}>
+        {[["Est. Cost", result.totalEstCost, D.w2], ["Stops", (result.days || []).reduce((s, d) => s + (d.blocks || []).length, 0), D.p3], ["Days", days, c.txt], weather ? ["Weather", weather.emoji, c.txt] : null].filter(Boolean).map(([lbl, val, clr]) => (
+          <div key={lbl} style={{ background: c.surf, border: `1px solid ${c.bdr}`, borderRadius: 12, padding: "0.8rem 0.9rem" }}>
+            <div style={{ fontSize: "0.62rem", color: c.muted, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: "0.2rem" }}>{lbl}</div>
+            <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 900, fontSize: lbl === "Weather" ? "1.4rem" : "1.05rem", color: clr }}>{val}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Action buttons */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", marginBottom: "1.1rem" }}>
+        {[["💾 Save", saveTrip, "rgba(6,214,160,0.07)", "rgba(6,214,160,0.2)", D.a2],
+          ["🎲 Regen", () => generate(), "rgba(124,58,237,0.07)", "rgba(124,58,237,0.2)", D.p3]].map(([label, fn, bg, border, clr]) => (
+          <button key={label} onClick={fn} style={{ padding: "0.45rem 0.9rem", background: bg, border: `1px solid ${border}`, borderRadius: 9, fontSize: "0.72rem", fontWeight: 700, color: clr, cursor: "pointer", fontFamily: "'DM Sans',sans-serif", WebkitTapHighlightColor: "transparent" }}>{label}</button>
+        ))}
+      </div>
+
+      {/* Day tabs */}
+      <div style={{ display: "flex", gap: "0.32rem", marginBottom: "1rem", overflowX: "auto", paddingBottom: 2, scrollbarWidth: "none" }}>
+        {(result.days || []).map((day, i) => (
+          <button key={i} onClick={() => setActiveDay(i)} style={{ padding: "0.45rem 0.9rem", whiteSpace: "nowrap", flexShrink: 0, background: activeDay === i ? "rgba(124,58,237,0.1)" : c.surf, border: `1px solid ${activeDay === i ? "rgba(124,58,237,0.32)" : c.bdr}`, borderRadius: 9, fontSize: "0.74rem", fontWeight: 600, color: activeDay === i ? D.p3 : c.muted, cursor: "pointer", fontFamily: "'DM Sans',sans-serif", WebkitTapHighlightColor: "transparent" }}>
+            Day {day.dayNum}{day.theme ? ` · ${day.theme}` : ""}
+          </button>
+        ))}
+      </div>
+
+      {/* Day blocks */}
+      {result.days?.[activeDay] && (
+        <div>
+          {result.days[activeDay].estDayCost && (
+            <div style={{ background: `linear-gradient(135deg,${c.surf},rgba(245,158,11,0.04))`, border: `1px solid rgba(245,158,11,0.14)`, borderRadius: 12, padding: "0.8rem 1rem", marginBottom: "0.85rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.4rem" }}>
+              <div style={{ fontSize: "0.68rem", color: c.muted }}>Estimated day spend</div>
+              <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 900, fontSize: "1rem", color: D.w2 }}>{result.days[activeDay].estDayCost} per person</div>
+            </div>
+          )}
+          <div style={{ display: "grid", gap: "0.72rem" }}>
+            {(result.days[activeDay].blocks || []).map((b, bi) => {
+              const key = `${activeDay}-${bi}`;
+              const isVisited = visited.has(key);
+              const myRating = ratings[key] || 0;
+              const t = (b.type || "").toLowerCase();
+              const links = [];
+              const mq = encodeURIComponent(b.googleMapsQuery || b.place + " " + city);
+              links.push({ label: "📍 Maps", href: `https://www.google.com/maps/search/${mq}`, cls: D.b1 });
+              if (t.includes("breakfast") || t.includes("lunch") || t.includes("dinner") || t.includes("cafe") || t.includes("restaurant") || t.includes("food") || t.includes("brunch"))
+                links.push({ label: "🍽 Reserve", href: `https://www.opentable.com/r/${b.place.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-")}`, cls: "#ff6b81" });
+              if (t.includes("visit") || t.includes("museum") || t.includes("tour") || t.includes("attraction") || t.includes("explore"))
+                links.push({ label: "🎟 Viator", href: `https://www.viator.com/search/${encodeURIComponent(b.place + " " + city)}`, cls: D.w1 });
+              if (t.includes("hotel") || t.includes("stay") || t.includes("check") || b.bookingQuery)
+                links.push({ label: "🏨 Booking", href: `https://www.booking.com/search.html?ss=${encodeURIComponent(b.bookingQuery || b.place + " " + city)}`, cls: D.p3 });
+
+              return (
+                <div key={bi} style={{ background: c.surf, border: `1px solid ${c.bdr}`, borderRadius: 14, overflow: "hidden", opacity: isVisited ? 0.45 : 1, transition: "opacity 0.2s" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.55rem", padding: "0.8rem 1rem 0.65rem", borderBottom: `1px solid ${c.bdr}`, flexWrap: "wrap" }}>
+                    <div style={{ width: 20, height: 20, borderRadius: 6, background: `linear-gradient(135deg,${D.p1},${D.a1})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.58rem", fontWeight: 700, color: "white", flexShrink: 0 }}>{bi + 1}</div>
+                    <div style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: D.p3, background: "rgba(124,58,237,0.08)", padding: "0.15rem 0.48rem", borderRadius: 5, border: `1px solid rgba(124,58,237,0.16)`, whiteSpace: "nowrap" }}>{b.time}</div>
+                    <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 800, fontSize: "0.93rem", flex: 1, color: c.txt }}>{b.place}</div>
+                    <div style={{ fontSize: "0.62rem", color: c.muted, background: "rgba(255,255,255,0.04)", padding: "0.14rem 0.45rem", borderRadius: 4, whiteSpace: "nowrap" }}>{b.type}</div>
+                    {b.cost && <div style={{ fontSize: "0.68rem", color: D.w2, fontWeight: 700 }}>{b.cost}</div>}
+                    <button onClick={() => setVisited(prev => { const n = new Set(prev); n.has(key) ? n.delete(key) : n.add(key); return n; })} style={{ width: 28, height: 28, borderRadius: 7, border: `1px solid ${isVisited ? "rgba(6,214,160,0.3)" : c.bdr}`, background: isVisited ? "rgba(6,214,160,0.1)" : "rgba(255,255,255,0.03)", color: isVisited ? D.a2 : c.muted, fontSize: "0.7rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", WebkitTapHighlightColor: "transparent" }}>✓</button>
+                  </div>
+                  <div style={{ padding: "0.8rem 1rem" }}>
+                    <div style={{ fontSize: "0.8rem", color: c.txt2, lineHeight: 1.62, marginBottom: "0.65rem", fontWeight: 300 }}>{b.desc}</div>
+                    {b.tip && <div style={{ fontSize: "0.73rem", color: D.a2, background: "rgba(6,214,160,0.05)", border: `1px solid rgba(6,214,160,0.13)`, padding: "0.32rem 0.62rem", borderRadius: 6, marginBottom: "0.7rem", display: "inline-block" }}>💡 {b.tip}</div>}
+                    {/* Stars */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.7rem" }}>
+                      {[1,2,3,4,5].map(s => (
+                        <span key={s} onClick={() => setRatings(p => ({ ...p, [key]: s }))} style={{ fontSize: "1.1rem", color: myRating >= s ? D.w1 : c.surf3, cursor: "pointer", WebkitTapHighlightColor: "transparent" }}>★</span>
+                      ))}
+                      <span style={{ fontSize: "0.68rem", color: c.muted }}>{myRating ? ["","⭐ Poor","⭐⭐ Fair","⭐⭐⭐ Good","⭐⭐⭐⭐ Great","⭐⭐⭐⭐⭐ Amazing"][myRating] : "Rate this stop"}</span>
+                    </div>
+                    {/* Note */}
+                    <div style={{ marginBottom: "0.75rem" }}>
+                      <textarea value={notes[key] || ""} onChange={e => setNotes(p => ({ ...p, [key]: e.target.value }))} placeholder="📝 Add a note — confirmation numbers, tips..." rows={2} style={{ width: "100%", background: c.surf2, border: `1px solid ${c.bdr}`, borderRadius: 8, padding: "0.55rem 0.75rem", fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", color: c.txt, outline: "none", resize: "vertical", WebkitAppearance: "none" }} />
+                    </div>
+                    {/* Booking links */}
+                    {showResv && (
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.32rem" }}>
+                        {links.map(({ label, href, cls }) => (
+                          <a key={label} href={href} target="_blank" rel="noopener" style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem", padding: "0.28rem 0.65rem", borderRadius: 7, fontSize: "0.68rem", fontWeight: 700, textDecoration: "none", border: `1px solid ${cls}30`, background: `${cls}10`, color: cls, WebkitTapHighlightColor: "transparent" }}>{label}</a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  )}
+</div>
 ```
 
-}).join(’’)+’</div>’;
-return out;
+);
 }
 
-function setView(view,di,btn){
-btn.closest(’.map-row’).querySelectorAll(’.view-toggle’).forEach(b=>b.classList.remove(‘active’));
-btn.classList.add(‘active’);
-const mb=document.getElementById(‘mb-’+di);
-const dp=document.getElementById(‘dp-’+di);
-if(mb) mb.classList.toggle(‘show’,view===‘map’);
-if(dp){const bg=dp.querySelector(’.blocks-grid’);if(bg) bg.style.display=view===‘map’?‘none’:’’;}
-}
+// ── BLOG PAGE ─────────────────────────────────────────────────────
+function BlogPage({ c, showToast }) {
+const [filter, setFilter] = useState(“all”);
+const [posts, setPosts] = useState(BLOG_POSTS);
+const [writeOpen, setWriteOpen] = useState(false);
+const [form, setForm] = useState({ title: “”, author: “”, body: “”, cat: “Eat” });
+const cities = [“all”, …new Set(posts.map(p => p.city))];
+const shown = filter === “all” ? posts : posts.filter(p => p.city === filter);
 
-function buildLinks(b,city){
-const t=(b.type||’’).toLowerCase();
-const p=encodeURIComponent(b.place);
-const c=encodeURIComponent(city);
-const mq=encodeURIComponent(b.googleMapsQuery||b.place+’ ‘+city);
-let links=[];
-links.push(’<a class="blink bl-maps" href="https://www.google.com/maps/search/'+mq+'" target="_blank" rel="noopener">📍 Maps</a>’);
-if(t.includes(‘breakfast’)||t.includes(‘lunch’)||t.includes(‘dinner’)||t.includes(‘food’)||t.includes(‘cafe’)||t.includes(‘restaurant’)||t.includes(‘brunch’)){
-const slug=b.openTableSlug||b.place.toLowerCase().replace(/[^a-z0-9]/g,’-’).replace(/-+/g,’-’);
-links.push(’<a class="blink bl-ot" href="https://www.opentable.com/r/'+slug+'" target="_blank" rel="noopener">🍽 Reserve</a>’);
-links.push(’<a class="blink bl-yelp" href="https://www.yelp.com/search?find_desc='+p+'&find_loc='+c+'" target="_blank" rel="noopener">⭐ Yelp</a>’);
-}
-if(t.includes(‘visit’)||t.includes(‘museum’)||t.includes(‘tour’)||t.includes(‘attraction’)||t.includes(‘explore’)||b.viatorQuery){
-const vq=encodeURIComponent(b.viatorQuery||b.place+’ ‘+city);
-links.push(’<a class="blink bl-viator" href="https://www.viator.com/search/'+vq+'" target="_blank" rel="noopener">🎟 Viator</a>’);
-}
-if(t.includes(‘hotel’)||t.includes(‘stay’)||t.includes(‘check’)||b.bookingQuery){
-const bq=encodeURIComponent(b.bookingQuery||b.place+’ ‘+city);
-const ci=document.getElementById(‘startDate’)?.value||’’;
-const co=document.getElementById(‘endDate’)?.value||’’;
-links.push(’<a class="blink bl-booking" href="https://www.booking.com/search.html?ss='+bq+(ci?'&checkin='+ci:'')+(co?'&checkout='+co:'')+'" target="_blank" rel="noopener">🏨 Booking</a>’);
-}
-return ‘<div class="blinks">’+links.join(’’)+’</div>’;
-}
-
-function togVisited(key,btn){
-if(visited.has(key)) visited.delete(key);
-else{visited.add(key);toast(‘Marked visited ✓’,‘success’);}
-btn.classList.toggle(‘visited’,visited.has(key));
-const parts=key.split(’-’);
-const el=document.getElementById(‘tb-’+parts[0]+’-’+parts[1]);
-if(el) el.style.opacity=visited.has(key)?‘0.45’:‘1’;
-}
-function togNote(key,btn){
-const ta=document.getElementById(‘note-’+key);
-const open=ta.classList.toggle(‘open’);
-if(open) ta.focus();
-btn.textContent=‘📝 ‘+(notes[key]||ta.value?‘Edit note’:‘Add note’);
-}
-function saveNote(key){const ta=document.getElementById(‘note-’+key);if(ta) notes[key]=ta.value.trim();}
-function rate(key,val){
-ratings[key]=val;
-const stars=document.querySelectorAll(’#stars-’+key+’ .star’);
-stars.forEach((s,i)=>s.classList.toggle(‘on’,i<val));
-const lbl=document.getElementById(‘sl-’+key);
-if(lbl) lbl.textContent=[’’,‘⭐ Poor’,‘⭐⭐ Fair’,‘⭐⭐⭐ Good’,‘⭐⭐⭐⭐ Great’,‘⭐⭐⭐⭐⭐ Amazing’][val];
-if(val===5) toast(‘Amazing! ⭐⭐⭐⭐⭐’,‘success’);
-}
-async function swapBlock(di,bi){
-const block=genDays[di]?.blocks[bi];if(!block)return;
-const btn=document.querySelector(’#tb-’+di+’-’+bi+’ .swap-btn’);
-if(btn){btn.disabled=true;btn.textContent=’…’;}
-const used=genDays.flatMap(d=>(d.blocks||[]).map(b=>b.place));
-try{
-const res=await fetch(’/api/chat’,{method:‘POST’,headers:{‘Content-Type’:‘application/json’},body:JSON.stringify({model:‘claude-sonnet-4-20250514’,max_tokens:500,messages:[{role:‘user’,content:‘One alternative ‘+block.type+’ in “’+curCity+’” at ‘+block.time+’, budget $’+budgetAmt+’/day, prefs: ‘+(prefTags.join(’, ‘)||‘None’)+’. Never use: ‘+used.join(’, ‘)+’. Return raw JSON only: {“place”:””,“type”:”’+block.type+’”,“desc”:“2 sentences”,“tip”:“tip”,“cost”:”~$X”,“openTableSlug”:””,“googleMapsQuery”:“place city”,“viatorQuery”:””,“bookingQuery”:””}’}]})});
-const data=await res.json();
-const nb=JSON.parse(data.content?.find(b=>b.type===‘text’)?.text.replace(/`json|`/g,’’).trim()||’{}’);
-nb.time=block.time;
-genDays[di].blocks[bi]=nb;
-const incR=document.getElementById(‘resvToggle’).checked;
-const temp=document.createElement(‘div’);temp.innerHTML=buildDayHTML(genDays[di],di,incR,false);
-const old=document.getElementById(‘tb-’+di+’-’+bi)?.closest(’.blocks-grid’);
-const nw=temp.querySelector(’.blocks-grid’);
-if(old&&nw) old.innerHTML=nw.innerHTML;
-toast(‘New suggestion found! ✨’,‘success’);
-}catch(err){toast(‘Could not swap — try again’,‘error’);}
-if(btn){btn.disabled=false;btn.textContent=‘🎲’;}
-}
-
-// ====================================================
-// COMPARE MODE
-// ====================================================
-async function generateCompare(){
-const city=document.getElementById(‘itinCity’).value.trim();
-const lA=document.getElementById(‘lblA’)?.value.trim()||‘Option A’;
-const lB=document.getElementById(‘lblB’)?.value.trim()||‘Option B’;
-const vibes=sel.vibe.length>0?sel.vibe.join(’, ‘):‘General sightseeing’;
-const prefs=prefTags.join(’, ’)||‘None’;
-const moodCtx=getMoodCtx();
-const btn=document.getElementById(‘genBtn’);
-btn.disabled=true;btn.textContent=‘Building both…’;
-
-document.getElementById(‘itinResult’).style.display=‘block’;
-document.getElementById(‘celebrateBox’).style.display=‘none’;
-document.getElementById(‘summaryBar’).innerHTML=’’;
-document.getElementById(‘compareView’).style.display=‘block’;
-document.getElementById(‘normalView’).style.display=‘none’;
-document.getElementById(‘compareView’).innerHTML=
-‘<div class="compare-layout"><div id="colA"><div class="compare-col-hdr"><span class="compare-col-tag ta">A</span><div class="compare-col-title">’+lA+’</div></div><div class="compare-loading"><div class="compare-loader"></div><div style="font-size:0.75rem;color:var(--muted)">Building ‘+lA+’…</div></div></div><div id="colB"><div class="compare-col-hdr"><span class="compare-col-tag tb">B</span><div class="compare-col-title">’+lB+’</div></div><div class="compare-loading"><div class="compare-loader"></div><div style="font-size:0.75rem;color:var(--muted)">Building ‘+lB+’…</div></div></div></div>’;
-document.getElementById(‘itinResult’).scrollIntoView({behavior:‘smooth’,block:‘start’});
-
-const build=async(label,budget,style)=>{
-const res=await fetch(’/api/chat’,{method:‘POST’,headers:{‘Content-Type’:‘application/json’},body:JSON.stringify({model:‘claude-sonnet-4-20250514’,max_tokens:4000,messages:[{role:‘user’,content:‘Create ‘+numDays+’-day trip for “’+city+’”. Label: “’+label+’”. Style: ‘+style+’. Budget: $’+budget+’/day. Interests: ‘+vibes+’. Group: ‘+sel.group+’. Prefs: ‘+prefs+’. ‘+moodCtx+’\nReturn raw JSON: {“title”:”…”,“totalEstCost”:”$X”,“days”:[{“dayNum”:1,“theme”:”…”,“estDayCost”:”$X”,“blocks”:[{“time”:“9AM”,“place”:“Name”,“type”:“Breakfast”,“desc”:“2 sentences”,“tip”:“tip”,“cost”:”~$X”,“googleMapsQuery”:“place city”,“openTableSlug”:””,“viatorQuery”:””,“bookingQuery”:””}]}]}\n5-6 blocks/day. Real places.’}]})});
-const d=await res.json();
-return JSON.parse(d.content?.find(b=>b.type===‘text’)?.text.replace(/`json|`/g,’’).trim()||’{}’);
+const submit = () => {
+if (!form.title || !form.author || !form.body) { showToast(“Fill in all fields”, “error”); return; }
+const emojis = { Eat: “🍽”, Drink: “🍸”, Explore: “🗺”, Stay: “🏨” };
+const init = form.author.split(” “).map(w => w[0]).join(””).slice(0, 2).toUpperCase();
+setPosts(p => [{ id: Date.now(), city: “Other”, cat: form.cat, emoji: emojis[form.cat] || “✍️”, title: form.title, author: form.author, init, date: new Date().toLocaleDateString(“en-US”, { month: “short”, day: “numeric”, year: “numeric” }), excerpt: form.body.slice(0, 160) }, …p]);
+setForm({ title: “”, author: “”, body: “”, cat: “Eat” });
+setWriteOpen(false);
+showToast(“Post published! 🎉”, “success”);
 };
 
-const bA=Math.round(budgetAmt*0.6), bB=Math.round(budgetAmt*1.4);
-try{
-const [pA,pB]=await Promise.all([build(lA,bA,‘Walking’),build(lB,bB,sel.style)]);
-planA=pA;planB=pB;
-const renderCol=(id,plan,label,tagCls)=>{
-const col=document.getElementById(id);
-const blocks=(plan.days||[]).flatMap(d=>d.blocks||[]);
-let h=’<div class="compare-col-hdr"><span class="compare-col-tag '+tagCls+'">’+( tagCls===‘ta’?‘A’:‘B’)+’</span><div class="compare-col-title">’+label+’</div><div class="compare-col-meta">’+blocks.length+’ stops · ‘+numDays+’ day’+(numDays>1?‘s’:’’)+’</div><div class="compare-col-cost">’+(plan.totalEstCost||’~$’+Math.round(budgetAmt*( tagCls===‘ta’?.6:1.4))*numDays)+’</div></div>’;
-(plan.days||[]).forEach(day=>{
-h+=’<div style="font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin:0.65rem 0 0.38rem;">Day ‘+day.dayNum+(day.theme?’ · ‘+day.theme:’’)+’</div>’;
-(day.blocks||[]).forEach(b=>{h+=’<div class="compare-mini"><div class="compare-mini-time">’+b.time+’</div><div class="compare-mini-place">’+b.place+’</div><div class="compare-mini-desc">’+b.desc+’</div>’+(b.cost?’<div class="compare-mini-cost">’+b.cost+’</div>’:’’)+’</div>’;});
-});
-h+=’<button class="compare-pick" onclick="pickPlan(\''+(tagCls==='ta'?'A':'B')+'\')">✓ Choose ‘+label+’</button>’;
-col.innerHTML=h;
+const inpStyle = { width: “100%”, background: c.surf2, border: `1px solid ${c.bdr2}`, borderRadius: 10, padding: “0.75rem 0.95rem”, fontFamily: “‘DM Sans’,sans-serif”, fontSize: “1rem”, color: c.txt, outline: “none”, WebkitAppearance: “none”, marginBottom: “0.75rem” };
+
+return (
+<div style={{ maxWidth: 1000, margin: “0 auto”, padding: “0 1rem 4rem” }}>
+<div style={{ marginBottom: “1.5rem” }}>
+<div style={{ fontSize: “0.68rem”, color: D.p3, letterSpacing: “0.14em”, textTransform: “uppercase”, marginBottom: “0.5rem” }}>✦ Community</div>
+<h2 style={{ fontFamily: “‘DM Sans’,sans-serif”, fontWeight: 900, fontSize: “clamp(1.8rem,5vw,2.4rem)”, letterSpacing: “-0.03em”, color: c.txt }}>
+Travel stories, <span style={{ background: `linear-gradient(135deg,${D.p2},${D.b1})`, WebkitBackgroundClip: “text”, WebkitTextFillColor: “transparent” }}>real people.</span>
+</h2>
+</div>
+<div style={{ display: “flex”, justifyContent: “space-between”, alignItems: “center”, flexWrap: “wrap”, gap: “0.7rem”, marginBottom: “1.5rem” }}>
+<div style={{ display: “flex”, gap: “0.32rem”, overflowX: “auto”, scrollbarWidth: “none”, paddingBottom: 2 }}>
+{cities.map(city => (
+<button key={city} onClick={() => setFilter(city)} style={{ padding: “0.26rem 0.68rem”, borderRadius: 100, fontSize: “0.7rem”, fontWeight: 600, cursor: “pointer”, border: `1px solid ${filter === city ? "rgba(6,214,160,0.28)" : c.bdr}`, background: filter === city ? “rgba(6,214,160,0.08)” : “rgba(255,255,255,0.02)”, color: filter === city ? D.a2 : c.muted, whiteSpace: “nowrap”, WebkitTapHighlightColor: “transparent”, fontFamily: “‘DM Sans’,sans-serif” }}>{city === “all” ? “All” : city}</button>
+))}
+</div>
+<button onClick={() => setWriteOpen(true)} style={{ padding: “0.55rem 1.1rem”, background: `linear-gradient(135deg,${D.p1},${D.p2})`, color: “white”, fontFamily: “‘DM Sans’,sans-serif”, fontSize: “0.75rem”, fontWeight: 700, border: “none”, borderRadius: 9, cursor: “pointer”, boxShadow: `0 4px 14px rgba(124,58,237,0.3)`, WebkitTapHighlightColor: “transparent” }}>+ Write Post</button>
+</div>
+<div style={{ display: “grid”, gridTemplateColumns: “repeat(auto-fill,minmax(270px,1fr))”, gap: “1rem” }}>
+{shown.map(p => (
+<div key={p.id} style={{ background: c.surf, border: `1px solid ${c.bdr}`, borderRadius: 14, overflow: “hidden” }}>
+<div style={{ height: 150, display: “flex”, alignItems: “center”, justifyContent: “center”, fontSize: “2.4rem”, background: `linear-gradient(135deg,${c.surf2},${c.surf3})` }}>{p.emoji}</div>
+<div style={{ padding: “1rem” }}>
+<div style={{ display: “flex”, gap: “0.3rem”, marginBottom: “0.6rem” }}>
+<span style={{ fontSize: “0.58rem”, fontWeight: 700, letterSpacing: “0.07em”, textTransform: “uppercase”, padding: “0.15rem 0.48rem”, borderRadius: 4, background: “rgba(59,130,246,0.09)”, color: D.b1, border: `1px solid rgba(59,130,246,0.18)` }}>{p.city}</span>
+<span style={{ fontSize: “0.58rem”, fontWeight: 700, letterSpacing: “0.07em”, textTransform: “uppercase”, padding: “0.15rem 0.48rem”, borderRadius: 4, background: “rgba(124,58,237,0.09)”, color: D.p3, border: `1px solid rgba(124,58,237,0.18)` }}>{p.cat}</span>
+</div>
+<div style={{ fontFamily: “‘DM Sans’,sans-serif”, fontWeight: 800, fontSize: “0.92rem”, letterSpacing: “-0.01em”, marginBottom: “0.35rem”, lineHeight: 1.2, color: c.txt }}>{p.title}</div>
+<div style={{ fontSize: “0.76rem”, color: c.muted, lineHeight: 1.55, fontWeight: 300, marginBottom: “0.8rem” }}>{p.excerpt}</div>
+<div style={{ display: “flex”, alignItems: “center”, justifyContent: “space-between”, paddingTop: “0.7rem”, borderTop: `1px solid ${c.bdr}` }}>
+<div style={{ display: “flex”, alignItems: “center”, gap: “0.38rem” }}>
+<div style={{ width: 22, height: 22, borderRadius: 6, background: `linear-gradient(135deg,${D.p1},${D.a1})`, display: “flex”, alignItems: “center”, justifyContent: “center”, fontSize: “0.58rem”, fontWeight: 700, color: “white” }}>{p.init}</div>
+<span style={{ fontSize: “0.7rem”, color: c.muted }}>{p.author}</span>
+</div>
+<span style={{ fontSize: “0.64rem”, color: c.muted2 }}>{p.date}</span>
+</div>
+</div>
+</div>
+))}
+</div>
+
+```
+  <Modal open={writeOpen} onClose={() => setWriteOpen(false)} title="Share a Place" c={c}>
+    <input value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} placeholder="Post title..." style={inpStyle} />
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.8rem", marginBottom: "0.75rem" }}>
+      <input value={form.author} onChange={e => setForm(p => ({ ...p, author: e.target.value }))} placeholder="Your name" style={{ ...inpStyle, marginBottom: 0 }} />
+      <select value={form.cat} onChange={e => setForm(p => ({ ...p, cat: e.target.value }))} style={{ ...inpStyle, marginBottom: 0, cursor: "pointer" }}>
+        <option value="Eat">🍽 Eat</option><option value="Drink">🍸 Drink</option><option value="Explore">🗺 Explore</option><option value="Stay">🏨 Stay</option>
+      </select>
+    </div>
+    <textarea value={form.body} onChange={e => setForm(p => ({ ...p, body: e.target.value }))} placeholder="Tell us about your experience..." rows={4} style={{ ...inpStyle, resize: "vertical", lineHeight: 1.6 }} />
+    <button onClick={submit} style={{ width: "100%", padding: "0.82rem", background: `linear-gradient(135deg,${D.p1},${D.p2})`, color: "white", fontFamily: "'DM Sans',sans-serif", fontSize: "0.86rem", fontWeight: 700, border: "none", borderRadius: 11, cursor: "pointer", WebkitTapHighlightColor: "transparent" }}>Publish Post →</button>
+  </Modal>
+</div>
+```
+
+);
+}
+
+// ── SAVED PAGE ────────────────────────────────────────────────────
+function SavedPage({ c, showToast }) {
+const [saved, setSaved] = useState(() => JSON.parse(localStorage.getItem(“wa_saved”) || “[]”));
+const del = id => { const n = saved.filter(t => t.id !== id); setSaved(n); localStorage.setItem(“wa_saved”, JSON.stringify(n)); showToast(“Deleted”, “info”); };
+
+if (!saved.length) return (
+<div style={{ maxWidth: 780, margin: “0 auto”, padding: “0 1rem 4rem”, textAlign: “center”, paddingTop: “2rem” }}>
+<div style={{ fontSize: “3rem”, marginBottom: “0.8rem” }}>🗺</div>
+<div style={{ fontFamily: “‘DM Sans’,sans-serif”, fontWeight: 800, fontSize: “1.1rem”, color: c.txt, marginBottom: “0.35rem” }}>No saved trips yet</div>
+<div style={{ fontSize: “0.8rem”, color: c.muted }}>Build an itinerary and hit Save!</div>
+</div>
+);
+
+return (
+<div style={{ maxWidth: 780, margin: “0 auto”, padding: “0 1rem 4rem” }}>
+<div style={{ marginBottom: “1.5rem” }}>
+<div style={{ fontSize: “0.68rem”, color: D.p3, letterSpacing: “0.14em”, textTransform: “uppercase”, marginBottom: “0.5rem” }}>✦ My Trips</div>
+<h2 style={{ fontFamily: “‘DM Sans’,sans-serif”, fontWeight: 900, fontSize: “clamp(1.8rem,5vw,2.2rem)”, letterSpacing: “-0.03em”, color: c.txt }}>Saved <span style={{ background: `linear-gradient(135deg,${D.p2},${D.a2})`, WebkitBackgroundClip: “text”, WebkitTextFillColor: “transparent” }}>Itineraries</span></h2>
+</div>
+<div style={{ display: “grid”, gridTemplateColumns: “repeat(auto-fill,minmax(240px,1fr))”, gap: “0.9rem” }}>
+{saved.map(t => (
+<div key={t.id} style={{ background: c.surf, border: `1px solid ${c.bdr}`, borderRadius: 14, padding: “1.1rem” }}>
+<div style={{ fontFamily: “‘DM Sans’,sans-serif”, fontWeight: 800, fontSize: “0.93rem”, marginBottom: “0.25rem”, color: c.txt }}>{t.title}</div>
+<div style={{ fontSize: “0.7rem”, color: c.muted, display: “flex”, flexWrap: “wrap”, gap: “0.5rem”, marginBottom: “0.65rem” }}>
+<span>📍 {t.city}</span><span>📅 {t.days}d</span><span>💰 ${t.budget}/day</span><span>👥 {t.group}</span>
+</div>
+<div style={{ display: “flex”, gap: “0.3rem” }}>
+<button onClick={() => del(t.id)} style={{ padding: “0.26rem 0.62rem”, borderRadius: 6, fontSize: “0.68rem”, fontWeight: 600, cursor: “pointer”, border: `1px solid rgba(244,63,94,0.18)`, background: “rgba(244,63,94,0.04)”, color: D.r1, fontFamily: “‘DM Sans’,sans-serif”, WebkitTapHighlightColor: “transparent” }}>🗑 Delete</button>
+</div>
+</div>
+))}
+</div>
+</div>
+);
+}
+
+// ── CONCIERGE CHAT ────────────────────────────────────────────────
+function Concierge({ c, city, days, budget, group }) {
+const [open, setOpen] = useState(false);
+const [msgs, setMsgs] = useState([]);
+const [input, setInput] = useState(””);
+const [busy, setBusy] = useState(false);
+const [badge, setBadge] = useState(false);
+const msgsRef = useRef(null);
+
+useEffect(() => { const t = setTimeout(() => { if (!open) setBadge(true); }, 4000); return () => clearTimeout(t); }, []);
+useEffect(() => { if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight; }, [msgs]);
+
+const toggleOpen = () => {
+setOpen(o => !o);
+setBadge(false);
+if (!open && msgs.length === 0) {
+const greeting = city ? `Hey! 👋 Planning a trip to **${city}**? Ask me anything — safety, food, packing, culture, transport!` : “Hey! 👋 I’m your AI travel concierge. Ask me anything about any destination!”;
+setMsgs([{ role: “ai”, text: greeting }]);
+}
 };
-const costA=parseInt((pA.totalEstCost||’’).replace(/\D/g,’’))||bA*numDays;
-const costB=parseInt((pB.totalEstCost||’’).replace(/\D/g,’’))||bB*numDays;
-document.getElementById(‘compareView’).innerHTML=’<div class="compare-winner"><span style="font-size:1.3rem">🏆</span><div class="compare-winner-txt"><strong>’+lA+’</strong> ~$’+costA+’ vs <strong>’+lB+’</strong> ~$’+costB+’ · Pick the one that feels right ↓</div></div><div class="compare-layout"><div id="colA"></div><div id="colB"></div></div>’;
-renderCol(‘colA’,pA,lA,‘ta’);
-renderCol(‘colB’,pB,lB,‘tb’);
-confetti();toast(‘Both versions ready! ✨’,‘success’);
-}catch(err){document.getElementById(‘compareView’).innerHTML=’<div class="err-msg"><strong>Error</strong>’+err.message+’</div>’;console.error(err);}
-btn.disabled=false;btn.textContent=‘⚡ Build Both Versions’;
-}
 
-function pickPlan(col){
-const plan=col===‘A’?planA:planB;
-if(!plan)return;
-genDays=plan.days||[];curTitle=plan.title||‘Your Itinerary’;
-document.getElementById(‘compareView’).style.display=‘none’;
-document.getElementById(‘normalView’).style.display=‘block’;
-document.getElementById(‘itinTitle’).textContent=curTitle;
-buildDayTabs();confetti();toast(‘Great choice! 🎉’,‘success’);
-}
-
-// ====================================================
-// EXTRAS: Packing, Phrases, Carbon
-// ====================================================
-async function openPacking(){
-document.getElementById(‘packContent’).innerHTML=’<div class="loading-box"><div class="loading-ring"></div><div class="loading-txt">Building your list…</div></div>’;
-openModal(‘packModal’);
-try{
-const res=await fetch(’/api/chat’,{method:‘POST’,headers:{‘Content-Type’:‘application/json’},body:JSON.stringify({model:‘claude-sonnet-4-20250514’,max_tokens:1200,messages:[{role:‘user’,content:‘Packing list for ‘+numDays+’-day trip to “’+curCity+’”. Budget $’+budgetAmt+’/day. Vibes: ‘+(sel.vibe.join(’,’)||‘General’)+’. Group: ‘+sel.group+’. Weather: ‘+(weatherData?weatherData.avgMin+’-’+weatherData.avgMax+‘°C, ‘+weatherData.desc:‘unknown’)+’.\nRaw JSON only: {“sections”:[{“title”:“Essentials”,“items”:[“Passport”]},{“title”:“Clothing”,“items”:[”…”]},{“title”:“Toiletries”,“items”:[”…”]},{“title”:“For ‘+curCity+’”,“items”:[”…”]}]}’}]})});
-const data=await res.json();
-const parsed=JSON.parse(data.content?.find(b=>b.type===‘text’)?.text.replace(/`json|`/g,’’).trim()||’{}’);
-let h=’’;
-(parsed.sections||[]).forEach(s=>{
-h+=’<div class="pack-section"><div class="pack-section-title">’+s.title+’</div><div class="pack-items">’;
-(s.items||[]).forEach((item,i)=>{const k=s.title+i;h+=’<div class="pack-item'+(packChecked[k]?' checked':'')+'" onclick="togPack(\''+k+'\')"><span class="pack-check">’+(packChecked[k]?‘✓’:‘○’)+’</span>’+item+’</div>’;});
-h+=’</div></div>’;
+const send = async () => {
+const msg = input.trim();
+if (!msg || busy) return;
+setInput(””);
+setMsgs(p => […p, { role: “user”, text: msg }]);
+setBusy(true);
+const tripCtx = city ? `\n\nTrip context: Planning ${days} days in ${city}, $${budget}/day, group: ${group}.` : “”;
+try {
+const res = await fetch(”/api/chat”, {
+method: “POST”, headers: { “Content-Type”: “application/json” },
+body: JSON.stringify({
+model: “claude-sonnet-4-20250514”, max_tokens: 400,
+system: “You are a friendly AI travel concierge. Keep answers concise (2-4 sentences), warm, practical. Use occasional travel emojis.” + tripCtx,
+messages: […msgs.filter(m => m.role !== “typing”), { role: “user”, content: msg }].map(m => ({ role: m.role === “ai” ? “assistant” : “user”, content: m.text })),
+}),
 });
-document.getElementById(‘packContent’).innerHTML=h||’<div class="err-msg">Could not generate list.</div>’;
-}catch(err){document.getElementById(‘packContent’).innerHTML=’<div class="err-msg"><strong>Error</strong>’+err.message+’</div>’;}
+const data = await res.json();
+const reply = data.content?.find(b => b.type === “text”)?.text || “Sorry, couldn’t connect!”;
+setMsgs(p => […p, { role: “ai”, text: reply }]);
+} catch {
+setMsgs(p => […p, { role: “ai”, text: “Hmm, trouble connecting. Try again! 🙏” }]);
 }
-function togPack(key){packChecked[key]=!packChecked[key];const el=document.getElementById(‘pack-’+key);document.querySelectorAll(’.pack-item’).forEach(el=>{});openPacking();}
+setBusy(false);
+};
 
-async function openPhrases(){
-document.getElementById(‘phrasesContent’).innerHTML=’<div class="loading-box"><div class="loading-ring"></div><div class="loading-txt">Loading phrases…</div></div>’;
-openModal(‘phrasesModal’);
-try{
-const res=await fetch(’/api/chat’,{method:‘POST’,headers:{‘Content-Type’:‘application/json’},body:JSON.stringify({model:‘claude-sonnet-4-20250514’,max_tokens:1000,messages:[{role:‘user’,content:‘12 essential travel phrases for “’+curCity+’”. Raw JSON: {“language”:“e.g. Japanese”,“phrases”:[{“local”:”…”,“romanized”:”…”,“meaning”:”…”,“context”:”…”}]}’}]})});
-const data=await res.json();
-const parsed=JSON.parse(data.content?.find(b=>b.type===‘text’)?.text.replace(/`json|`/g,’’).trim()||’{}’);
-let h=’<p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.9rem;">Useful ‘+( parsed.language||‘local’)+’ phrases for ‘+curCity+’:</p><div class="phrase-list">’;
-(parsed.phrases||[]).forEach(p=>{h+=’<div class="phrase-card"><div class="phrase-local">’+p.local+’</div>’+(p.romanized?’<div class="phrase-roman">’+p.romanized+’</div>’:’’)+’<div class="phrase-meaning">’+p.meaning+’</div>’+(p.context?’<div style="font-size:0.66rem;color:var(--muted2);margin-top:0.08rem;">’+p.context+’</div>’:’’)+’</div>’;});
-h+=’</div>’;
-document.getElementById(‘phrasesContent’).innerHTML=h;
-}catch(err){document.getElementById(‘phrasesContent’).innerHTML=’<div class="err-msg"><strong>Error</strong>’+err.message+’</div>’;}
+const formatMsg = text => {
+const parts = text.split(”**”);
+return parts.map((part, i) => i % 2 === 1 ? <strong key={i}>{part}</strong> : part);
+};
+
+return (
+<>
+{/* FAB */}
+<button
+onClick={toggleOpen}
+style={{ position: “fixed”, bottom: “1.5rem”, right: “1.5rem”, zIndex: 300, width: 54, height: 54, borderRadius: 16, background: `linear-gradient(135deg,${D.p1},${D.a1})`, border: “none”, cursor: “pointer”, display: “flex”, alignItems: “center”, justifyContent: “center”, fontSize: “1.4rem”, boxShadow: `0 8px 24px rgba(124,58,237,0.45)`, WebkitTapHighlightColor: “transparent”, touchAction: “manipulation” }}
+>
+🤖
+{badge && !open && <div style={{ position: “absolute”, top: -4, right: -4, width: 16, height: 16, background: D.r1, borderRadius: “50%”, border: `2px solid ${D.bg}`, display: “flex”, alignItems: “center”, justifyContent: “center”, fontSize: “0.55rem”, fontWeight: 700, color: “white” }}>1</div>}
+</button>
+
+```
+  {/* Chat window */}
+  {open && (
+    <div style={{ position: "fixed", bottom: "5rem", right: "1.5rem", zIndex: 300, width: 340, maxWidth: "calc(100vw - 2rem)", background: c.surf, border: `1px solid ${c.bdr2}`, borderRadius: 20, display: "flex", flexDirection: "column", maxHeight: 500, boxShadow: "0 20px 50px rgba(0,0,0,0.5)", overflow: "hidden" }}>
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", gap: "0.65rem", padding: "0.9rem 1.1rem", borderBottom: `1px solid ${c.bdr}`, background: `linear-gradient(135deg,rgba(124,58,237,0.07),rgba(6,214,160,0.04))`, flexShrink: 0 }}>
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg,${D.p1},${D.a1})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem", flexShrink: 0 }}>🤖</div>
+        <div>
+          <div style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 800, fontSize: "0.88rem", color: c.txt }}>Travel Concierge</div>
+          <div style={{ fontSize: "0.67rem", color: D.a2, display: "flex", alignItems: "center", gap: "0.25rem" }}>
+            <div style={{ width: 5, height: 5, background: D.a2, borderRadius: "50%", boxShadow: `0 0 5px ${D.a2}` }} />
+            Online · Ask me anything
+          </div>
+        </div>
+        <button onClick={toggleOpen} style={{ marginLeft: "auto", background: "rgba(255,255,255,0.05)", border: `1px solid ${c.bdr}`, width: 28, height: 28, borderRadius: 8, cursor: "pointer", color: c.muted, fontSize: "0.82rem", display: "flex", alignItems: "center", justifyContent: "center", WebkitTapHighlightColor: "transparent" }}>✕</button>
+      </div>
+
+      {/* Messages */}
+      <div ref={msgsRef} style={{ flex: 1, overflowY: "auto", padding: "0.9rem", display: "flex", flexDirection: "column", gap: "0.65rem" }}>
+        {msgs.map((m, i) => (
+          <div key={i} style={{ display: "flex", gap: "0.42rem", flexDirection: m.role === "user" ? "row-reverse" : "row" }}>
+            <div style={{ width: 26, height: 26, borderRadius: 8, background: m.role === "ai" ? `linear-gradient(135deg,${D.p1},${D.a1})` : c.surf3, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.72rem", flexShrink: 0, marginTop: 2 }}>{m.role === "ai" ? "🤖" : "👤"}</div>
+            <div style={{ padding: "0.6rem 0.85rem", borderRadius: m.role === "ai" ? "4px 12px 12px 12px" : "12px 4px 12px 12px", fontSize: "0.8rem", lineHeight: 1.52, maxWidth: "84%", background: m.role === "ai" ? c.surf2 : `linear-gradient(135deg,${D.p1},${D.p2})`, color: m.role === "ai" ? c.txt2 : "white", border: m.role === "ai" ? `1px solid ${c.bdr}` : "none" }}>
+              {formatMsg(m.text)}
+            </div>
+          </div>
+        ))}
+        {busy && (
+          <div style={{ display: "flex", gap: "0.42rem" }}>
+            <div style={{ width: 26, height: 26, borderRadius: 8, background: `linear-gradient(135deg,${D.p1},${D.a1})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.72rem" }}>🤖</div>
+            <div style={{ padding: "0.6rem 0.85rem", borderRadius: "4px 12px 12px 12px", background: c.surf2, border: `1px solid ${c.bdr}`, display: "flex", gap: 3, alignItems: "center" }}>
+              {[0,1,2].map(i => <div key={i} style={{ width: 5, height: 5, borderRadius: "50%", background: c.muted, animation: `bounce 1s ${i * 0.15}s ease-in-out infinite` }} />)}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Suggestions */}
+      {msgs.length <= 1 && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", padding: "0.55rem 0.9rem 0" }}>
+          {["Safety?","Packing?","Tipping?","Local food?","Transport?"].map(s => (
+            <button key={s} onClick={() => { setInput(s); }} style={{ padding: "0.26rem 0.65rem", background: "rgba(124,58,237,0.07)", border: `1px solid rgba(124,58,237,0.18)`, borderRadius: 100, fontSize: "0.67rem", color: D.p3, cursor: "pointer", WebkitTapHighlightColor: "transparent", fontFamily: "'DM Sans',sans-serif" }}>{s}</button>
+          ))}
+        </div>
+      )}
+
+      {/* Input */}
+      <div style={{ display: "flex", gap: "0.42rem", padding: "0.8rem 0.9rem", borderTop: `1px solid ${c.bdr}`, flexShrink: 0 }}>
+        <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()} placeholder="Ask anything about your trip..." style={{ flex: 1, background: c.surf2, border: `1px solid ${c.bdr2}`, borderRadius: 10, padding: "0.55rem 0.8rem", fontFamily: "'DM Sans',sans-serif", fontSize: "0.95rem", color: c.txt, outline: "none", WebkitAppearance: "none" }} />
+        <button onClick={send} disabled={busy} style={{ width: 36, height: 36, borderRadius: 10, flexShrink: 0, alignSelf: "flex-end", background: `linear-gradient(135deg,${D.p1},${D.p2})`, border: "none", cursor: busy ? "wait" : "pointer", color: "white", fontSize: "0.9rem", display: "flex", alignItems: "center", justifyContent: "center", opacity: busy ? 0.4 : 1, WebkitTapHighlightColor: "transparent" }}>➤</button>
+      </div>
+    </div>
+  )}
+  <style>{`@keyframes bounce{0%,80%,100%{transform:scale(0.5);opacity:0.4}40%{transform:scale(1);opacity:1}}`}</style>
+</>
+```
+
+);
 }
 
-function openCarbon(){
-const styleMap={‘Walking’:0,‘Public Transport’:1.2,‘Rideshare’:3.5,‘Driving’:4.8};
-const co2=((styleMap[sel.style]||1.2)*numDays+2.5).toFixed(1);
-const total=(parseFloat(co2)+numDays*1.8+numDays*2.1).toFixed(1);
-const trees=Math.ceil(parseFloat(total)/21);
-document.getElementById(‘carbonContent’).innerHTML=
-‘<p style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem;">Estimated carbon for your ‘+numDays+’-day trip to ‘+(curCity||‘your destination’)+’.</p>’+
-‘<div class="carbon-list">’+
-‘<div class="carbon-item"><span>🚶 Transport (’+sel.style+’)</span><span class="carbon-val">’+co2+’ kg</span></div>’+
-‘<div class="carbon-item"><span>🏨 Accommodation</span><span class="carbon-val">’+(numDays*2.1).toFixed(1)+’ kg</span></div>’+
-‘<div class="carbon-item"><span>🍽 Food & dining</span><span class="carbon-val">’+(numDays*1.8).toFixed(1)+’ kg</span></div>’+
-‘<div class="carbon-item" style="border-top:1px solid var(--bdr2);"><span style="font-weight:600">Total</span><span class="carbon-val" style="font-size:1rem">’+total+’ kg CO₂</span></div>’+
-‘</div>’+
-‘<div style="background:rgba(6,214,160,0.05);border:1px solid rgba(6,214,160,0.13);border-radius:10px;padding:0.85rem;margin-top:0.9rem;font-size:0.77rem;color:var(--muted);">🌱 Offset this trip by planting approximately <strong style="color:var(--a2)">’+trees+’ tree’+(trees>1?‘s’:’’)+’</strong>.</div>’+
-‘<a class="carbon-offset" href="https://www.goldstandard.org/take-action/offset-my-footprint" target="_blank" rel="noopener">🌍 Offset My Carbon →</a>’;
-openModal(‘carbonModal’);
-}
+// ── APP ───────────────────────────────────────────────────────────
+export default function App() {
+const { dark, toggle, c } = useTheme();
+const [page, setPage] = useState(“home”);
+const [toast, setToast] = useState({ msg: “”, type: “info” });
+const toastRef = useRef(null);
+const [city, setCity] = useState(””);
+const [days, setDays] = useState(1);
+const [budget, setBudget] = useState(150);
+const [group, setGroup] = useState(“Solo”);
 
-// ====================================================
-// SURPRISE ME
-// ====================================================
-const SURPRISE_CITIES=[‘Kyoto, Japan’,‘Porto, Portugal’,‘Marrakech, Morocco’,‘Buenos Aires, Argentina’,‘Copenhagen, Denmark’,‘Seoul, South Korea’,‘Cape Town, South Africa’,‘Dubrovnik, Croatia’,‘Medellín, Colombia’,‘Hanoi, Vietnam’,‘Reykjavik, Iceland’,‘Edinburgh, Scotland’,‘Tbilisi, Georgia’,‘Oaxaca, Mexico’,‘Chiang Mai, Thailand’];
-async function surpriseMe(){
-showPage(‘planner’);
-const city=SURPRISE_CITIES[Math.floor(Math.random()*SURPRISE_CITIES.length)];
-const days=Math.floor(Math.random()*3)+1;
-const budget=Math.floor(Math.random()*350)+50;
-document.getElementById(‘itinCity’).value=city;
-while(numDays<days) chDays(1);
-while(numDays>days) chDays(-1);
-updBudget(budget);document.getElementById(‘budgetRange’).value=budget;
-toast(‘🎲 How about ‘+days+’ day’+(days>1?‘s’:’’)+’ in ‘+city+’?’,‘info’);
-setTimeout(()=>generate(false),600);
-}
+const showToast = (msg, type = “info”) => {
+clearTimeout(toastRef.current);
+setToast({ msg, type });
+toastRef.current = setTimeout(() => setToast({ msg: “”, type: “info” }), 3200);
+};
 
-// ====================================================
-// SAVE / LOAD / DELETE TRIPS
-// ====================================================
-function saveTrip(){
-if(!genDays.length){toast(‘Generate an itinerary first!’,‘error’);return;}
-const saved=JSON.parse(localStorage.getItem(‘wa_saved’)||’[]’);
-saved.unshift({id:Date.now(),title:curTitle,city:curCity,days:numDays,budget:budgetAmt,group:sel.group,date:new Date().toLocaleDateString(‘en-US’,{month:‘short’,day:‘numeric’,year:‘numeric’}),data:genDays});
-localStorage.setItem(‘wa_saved’,JSON.stringify(saved.slice(0,20)));
-toast(‘Trip saved! 💾’,‘success’);
-}
-function renderSaved(){
-const grid=document.getElementById(‘savedGrid’);
-const saved=JSON.parse(localStorage.getItem(‘wa_saved’)||’[]’);
-if(!saved.length){grid.innerHTML=’<div class="empty-state"><div class="empty-icon">🗺</div><div class="empty-title">No saved trips yet</div><p style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem;">Build an itinerary and hit Save!</p><button class="btn-primary" style="margin-top:1rem;" onclick="showPage(\'planner\')">Start Planning</button></div>’;return;}
-grid.innerHTML=’’;
-saved.forEach(t=>{
-const c=document.createElement(‘div’);c.className=‘saved-card’;
-c.innerHTML=’<div class="saved-title">’+t.title+’</div><div class="saved-meta"><span>📍 ‘+t.city+’</span><span>📅 ‘+t.days+‘d</span><span>💰 $’+t.budget+’/day</span><span>👥 ‘+t.group+’</span></div><div class="saved-actions"><button class="saved-btn" onclick="loadTrip('+t.id+',event)">📂 Load</button><button class="saved-btn" onclick="openShareTrip(\''+encodeURIComponent(t.title)+'\',\''+encodeURIComponent(t.city)+'\',event)">🔗 Share</button><button class="saved-btn del" onclick="delTrip('+t.id+',event)">🗑</button></div>’;
-grid.appendChild(c);
-});
-}
-function loadTrip(id,e){if(e)e.stopPropagation();const saved=JSON.parse(localStorage.getItem(‘wa_saved’)||’[]’);const t=saved.find(x=>x.id===id);if(!t)return;genDays=t.data;curCity=t.city;curTitle=t.title;document.getElementById(‘itinCity’).value=t.city;document.getElementById(‘itinTitle’).textContent=t.title;document.getElementById(‘itinSub’).textContent=t.days+‘d · ‘+t.city;document.getElementById(‘itinResult’).style.display=‘block’;document.getElementById(‘celebrateBox’).style.display=‘none’;document.getElementById(‘compareView’).style.display=‘none’;document.getElementById(‘normalView’).style.display=‘block’;buildDayTabs();showPage(‘planner’);document.getElementById(‘itinResult’).scrollIntoView({behavior:‘smooth’,block:‘start’});toast(‘Trip loaded!’,‘success’);}
-function delTrip(id,e){if(e)e.stopPropagation();let saved=JSON.parse(localStorage.getItem(‘wa_saved’)||’[]’);saved=saved.filter(t=>t.id!==id);localStorage.setItem(‘wa_saved’,JSON.stringify(saved));renderSaved();toast(‘Deleted’,‘info’);}
-
-// ====================================================
-// SHARE / EMAIL
-// ====================================================
-function openShareTrip(title,city,e){if(e)e.stopPropagation();document.getElementById(‘shareLink’).value=location.origin+’?trip=’+title+’&city=’+city;openModal(‘shareModal’);}
-function openShare(){document.getElementById(‘shareLink’).value=location.origin+’?trip=’+encodeURIComponent(curTitle||‘My Trip’)+’&city=’+encodeURIComponent(curCity);openModal(‘shareModal’);}
-function copyLink(){navigator.clipboard.writeText(document.getElementById(‘shareLink’).value);toast(‘Link copied! 🔗’,‘success’);}
-function sToWA(){window.open(‘https://wa.me/?text=’+encodeURIComponent(‘Check out my trip! ‘+document.getElementById(‘shareLink’).value));}
-function sToTW(){window.open(‘https://twitter.com/intent/tweet?text=’+encodeURIComponent(“Just planned my trip with What’s Around? “+document.getElementById(‘shareLink’).value));}
-function sToFB(){window.open(‘https://www.facebook.com/sharer/sharer.php?u=’+encodeURIComponent(document.getElementById(‘shareLink’).value));}
-function sToIG(){copyLink();toast(‘Link copied — paste in your Instagram bio!’,‘info’);}
-function sendEmail(){const em=document.getElementById(‘emailTo’).value.trim();if(!em){toast(‘Enter your email’,‘error’);return;}let body=curTitle+’\n\n’;genDays.forEach(d=>{body+=’— Day ‘+d.dayNum+(d.theme?’ - ‘+d.theme:’’)+’ —\n’;(d.blocks||[]).forEach(b=>{body+=’\n’+b.time+’ · ‘+b.place+’ (’+b.type+’)\n’+b.desc+’\n’+(b.tip?‘Tip: ‘+b.tip+’\n’:’’)+(b.cost?‘Cost: ‘+b.cost+’\n’:’’);});body+=’\n’;});window.location.href=‘mailto:’+em+’?subject=’+encodeURIComponent(curTitle||‘My Itinerary’)+’&body=’+encodeURIComponent(body);closeModal(‘emailModal’);toast(‘Opening mail app…’,‘success’);}
-
-// ====================================================
-// AUTH
-// ====================================================
-function switchAuth(tab){document.querySelectorAll(’.auth-tab’).forEach(t=>t.classList.remove(‘active’));document.getElementById(‘atab-’+tab).classList.add(‘active’);document.getElementById(‘loginForm’).style.display=tab===‘login’?‘block’:‘none’;document.getElementById(‘signupForm’).style.display=tab===‘signup’?‘block’:‘none’;}
-function doAuth(type){
-if(type===‘login’){
-const em=document.getElementById(‘authEmail’).value.trim(),pw=document.getElementById(‘authPass’).value;
-if(!em||!pw){toast(‘Fill in all fields’,‘error’);return;}
-const users=JSON.parse(localStorage.getItem(‘wa_users’)||’{}’);
-if(!users[em]||users[em].pw!==pw){toast(‘Incorrect email or password’,‘error’);return;}
-curUser={email:em,name:users[em].name};updateNav();closeModal(‘authModal’);toast(‘Welcome back, ‘+curUser.name+’! 👋’,‘success’);
-}else{
-const name=document.getElementById(‘authName’).value.trim(),em=document.getElementById(‘authEmail2’).value.trim(),pw=document.getElementById(‘authPass2’).value;
-if(!name||!em||!pw){toast(‘Fill in all fields’,‘error’);return;}
-if(pw.length<6){toast(‘Password needs 6+ chars’,‘error’);return;}
-const users=JSON.parse(localStorage.getItem(‘wa_users’)||’{}’);
-if(users[em]){toast(‘Account already exists’,‘error’);return;}
-users[em]={name,pw};localStorage.setItem(‘wa_users’,JSON.stringify(users));
-curUser={email:em,name};updateNav();closeModal(‘authModal’);confetti();toast(‘Welcome, ‘+name+’! 🎉’,‘success’);
-}
-}
-function updateNav(){
-const a=document.getElementById(‘userArea’);
-if(curUser){const init=curUser.name.split(’ ‘).map(w=>w[0]).join(’’).slice(0,2).toUpperCase();a.innerHTML=’<div class="nav-avatar" onclick="signOut()" title="Sign out">’+init+’</div>’;}
-else a.innerHTML=’<button class="nav-sign-btn" onclick="openModal(\'authModal\')">Sign In</button>’;
-}
-function signOut(){curUser=null;updateNav();toast(‘Signed out’,‘info’);}
-
-// ====================================================
-// THEME TOGGLE
-// ====================================================
-function toggleTheme(){
-const html=document.documentElement;
-const current=html.getAttribute(‘data-theme’);
-const next=current===‘dark’?‘light’:‘dark’;
-html.setAttribute(‘data-theme’,next);
-document.getElementById(‘themeBtn’).textContent=next===‘dark’?‘🌙’:‘☀️’;
-localStorage.setItem(‘wa_theme’,next);
-toast(next===‘light’?‘☀️ Light mode’:‘🌙 Dark mode’,‘info’);
-}
-// Restore theme
-(function(){const t=localStorage.getItem(‘wa_theme’)||‘dark’;document.documentElement.setAttribute(‘data-theme’,t);const btn=document.getElementById(‘themeBtn’);if(btn) btn.textContent=t===‘dark’?‘🌙’:‘☀️’;})();
-
-// ====================================================
-// BLOG
-// ====================================================
-let blogPosts=[
-{id:1,title:“The tiny yakitori alley that changed my life”,author:“James T.”,init:“JT”,city:“Tokyo”,cat:“Eat”,date:“Mar 18 2026”,excerpt:“Tucked behind Shinjuku station, Omoide Yokocho is everything you want late-night Tokyo to be — smoke, skewers, and strangers becoming friends.”,emoji:“🍢”,photo:null},
-{id:2,title:“Paris wine bars vs tourist traps”,author:“Céline M.”,init:“CM”,city:“Paris”,cat:“Drink”,date:“Mar 12 2026”,excerpt:“After three visits I finally figured out how to find the real caves à vin. Hint: avoid anything with an English menu on the door.”,emoji:“🍷”,photo:null},
-{id:3,title:“48 hours in Barcelona’s El Born”,author:“Ravi K.”,init:“RK”,city:“Barcelona”,cat:“Explore”,date:“Mar 5 2026”,excerpt:“El Born is walkable, beautiful, and genuinely underrated next to the Gothic Quarter.”,emoji:“🏛”,photo:null},
-{id:4,title:“Bangkok street food: a beginner’s guide”,author:“Priya N.”,init:“PN”,city:“Bangkok”,cat:“Eat”,date:“Feb 28 2026”,excerpt:“I was nervous about street food on my first trip. By day three I was eating pad kra pao for breakfast.”,emoji:“🌶”,photo:null},
-{id:5,title:“The Lisbon viewpoints nobody talks about”,author:“Sofia A.”,init:“SA”,city:“Lisbon”,cat:“Explore”,date:“Feb 20 2026”,excerpt:“Everyone goes to Miradouro da Graça. Here are three I found by just walking uphill.”,emoji:“🌇”,photo:null},
-{id:6,title:“NYC coffee shops for remote work”,author:“Marcus L.”,init:“ML”,city:“New York”,cat:“Drink”,date:“Feb 14 2026”,excerpt:“I tested 22 coffee shops working remotely from NYC for a month. Here are the 5 worth your time.”,emoji:“☕”,photo:null}
+const navItems = [
+{ id: “home”, label: “Home” },
+{ id: “planner”, label: “Planner” },
+{ id: “saved”, label: “Saved” },
+{ id: “blog”, label: “Blog” },
 ];
-function renderBlog(city){
-const grid=document.getElementById(‘blogGrid’);grid.innerHTML=’’;
-const list=city===‘all’?blogPosts:blogPosts.filter(p=>p.city===city);
-if(!list.length){grid.innerHTML=’<div class="err-msg"><strong>No posts yet</strong>Be the first!</div>’;return;}
-list.forEach(p=>{
-const c=document.createElement(‘div’);c.className=‘blog-card’;
-c.innerHTML=(p.photo?’<img class="bc-img" src="'+p.photo+'" alt=""/>’:’<div class="bc-ph">’+p.emoji+’</div>’)+
-‘<div class="bc-body"><div class="bc-tags"><span class="bc-city">’+p.city+’</span><span class="bc-cat">’+p.cat+’</span></div><div class="bc-title">’+p.title+’</div><div class="bc-excerpt">’+p.excerpt+’</div><div class="bc-footer"><div class="bc-author"><div class="bc-av">’+p.init+’</div><span class="bc-name">’+p.author+’</span></div><span class="bc-date">’+p.date+’</span></div></div>’;
-grid.appendChild(c);
-});
-}
-function filterBlog(city,el){document.querySelectorAll(’#blogFilters .btag’).forEach(t=>t.classList.remove(‘active’));el.classList.add(‘active’);renderBlog(city);}
-function prevImg(e){const f=e.target.files[0];if(!f)return;if(f.size>5*1024*1024){toast(‘Max 5MB’,‘error’);return;}const r=new FileReader();r.onload=ev=>{photoData=ev.target.result;const p=document.getElementById(‘photoPreview’);p.src=photoData;p.style.display=‘block’;};r.readAsDataURL(f);}
-function togTag(el,tag){el.classList.toggle(‘sel’);if(el.classList.contains(‘sel’))selTags.push(tag);else selTags=selTags.filter(t=>t!==tag);}
-function submitPost(){
-const title=document.getElementById(‘postTitle’).value.trim();
-const author=document.getElementById(‘postAuthor’).value.trim();
-const body=document.getElementById(‘postBody’).value.trim();
-const cat=document.getElementById(‘postCat’).value;
-if(!title||!author||!body){toast(‘Fill in all fields’,‘error’);return;}
-if(hasBad(title)||hasBad(body)){toast(‘Remove inappropriate language’,‘error’);return;}
-const city=selTags[0]||‘Other’;
-const emojis={Eat:‘🍽’,Drink:‘🍸’,Explore:‘🗺’,Stay:‘🏨’};
-const init=author.split(’ ‘).map(w=>w[0]).join(’’).slice(0,2).toUpperCase();
-blogPosts.unshift({id:Date.now(),title,author,init,city,cat,date:new Date().toLocaleDateString(‘en-US’,{month:‘short’,day:‘numeric’,year:‘numeric’}),excerpt:body.slice(0,160)+(body.length>160?’…’:’’),emoji:emojis[cat]||‘✍️’,photo:photoData||null});
-closeModal(‘writeModal’);
-[‘postTitle’,‘postAuthor’,‘postBody’].forEach(id=>document.getElementById(id).value=’’);
-document.getElementById(‘profWarn’).style.display=‘none’;
-selTags=[];photoData=null;document.getElementById(‘photoPreview’).style.display=‘none’;
-document.querySelectorAll(’#tagPicker .tpick’).forEach(t=>t.classList.remove(‘sel’));
-const bf=document.getElementById(‘blogFilters’);
-if(city!==‘Other’&&![…bf.querySelectorAll(’.btag’)].some(t=>t.textContent===city)){const nt=document.createElement(‘span’);nt.className=‘btag’;nt.textContent=city;nt.onclick=function(){filterBlog(city,this);};bf.appendChild(nt);}
-renderBlog(‘all’);document.querySelectorAll(’#blogFilters .btag’).forEach((t,i)=>t.classList.toggle(‘active’,i===0));
-confetti();toast(‘Post published! 🎉’,‘success’);
-}
 
-// ====================================================
-// AI CONCIERGE CHAT
-// ====================================================
-function toggleChat(){
-chatOpen=!chatOpen;
-document.getElementById(‘chatWin’).classList.toggle(‘open’,chatOpen);
-document.getElementById(‘fabBadge’).classList.remove(‘show’);
-if(chatOpen&&chatHistory.length===0) initChat();
-if(chatOpen) setTimeout(()=>document.getElementById(‘chatInp’)?.focus(),100);
-}
-function initChat(){
-const city=curCity||document.getElementById(‘itinCity’)?.value?.trim()||’’;
-const msg=city
-? ‘Hey! 👋 I see you're planning a trip to **’+city+’**. Ask me anything — safety, packing, food, culture, transport, or anything else!’
-: ‘Hey! 👋 I'm your AI travel concierge. Ask me anything about any destination — safety, culture, food, packing, visas, transport, and more. Where are you heading?’;
-addMsg(‘ai’,msg);
-}
-function addMsg(role,text){
-const msgs=document.getElementById(‘chatMsgs’);if(!msgs)return;
-const div=document.createElement(‘div’);div.className=‘msg ‘+role;
-const isAI=role===‘ai’;
-let formatted=text;
-const parts=text.split(’**’);let f=’’;
-for(let i=0;i<parts.length;i++) f+=i%2===1?’<strong>’+parts[i]+’</strong>’:parts[i];
-formatted=f.split(’\n’).join(’<br>’);
-div.innerHTML=(isAI?’<div class="msg-av">🤖</div>’:’’)+’<div class="msg-bubble">’+formatted+’</div>’+(!isAI?’<div class="msg-av u">👤</div>’:’’);
-msgs.appendChild(div);
-msgs.scrollTop=msgs.scrollHeight;
-}
-function showTyping(){
-const msgs=document.getElementById(‘chatMsgs’);if(!msgs)return;
-const div=document.createElement(‘div’);div.className=‘msg ai’;div.id=‘typing’;
-div.innerHTML=’<div class="msg-av">🤖</div><div class="msg-bubble"><div class="typing"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span></div></div>’;
-msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
-}
-function removeTyping(){document.getElementById(‘typing’)?.remove();}
-function askChat(q){document.getElementById(‘chatInp’).value=q;sendChat();}
-function chatKey(e){if(e.key===‘Enter’&&!e.shiftKey){e.preventDefault();sendChat();}}
-function autoH(el){el.style.height=‘auto’;el.style.height=Math.min(el.scrollHeight,70)+‘px’;}
-async function sendChat(){
-const inp=document.getElementById(‘chatInp’);
-const msg=inp?.value?.trim();if(!msg||chatBusy)return;
-inp.value=’’;autoH(inp);
-addMsg(‘user’,msg);
-chatHistory.push({role:‘user’,content:msg});
-const sugs=document.getElementById(‘chatSugs’);if(sugs&&chatHistory.length>1) sugs.style.display=‘none’;
-chatBusy=true;
-const sendBtn=document.getElementById(‘chatSend’);if(sendBtn) sendBtn.disabled=true;
-showTyping();
-const city=curCity||document.getElementById(‘itinCity’)?.value?.trim()||’’;
-const tripCtx=city?’\n\nTrip context: User is planning a trip to ‘+city+’, ‘+numDays+’ day(s), $’+budgetAmt+’/day, group: ‘+sel.group+’.’:’’;
-try{
-const res=await fetch(’/api/chat’,{method:‘POST’,headers:{‘Content-Type’:‘application/json’},body:JSON.stringify({model:‘claude-sonnet-4-20250514’,max_tokens:400,system:‘You are a friendly, knowledgeable AI travel concierge. Help users plan trips, answer travel questions, give local tips, safety advice, cultural guidance, food recommendations, packing advice, transport tips. Keep answers concise (2-4 sentences), warm, and practical. Use occasional travel emojis.’+tripCtx,messages:chatHistory.slice(-8)})});
-const data=await res.json();
-const reply=data.content?.find(b=>b.type===‘text’)?.text||“Sorry, I couldn’t connect. Try again!”;
-removeTyping();addMsg(‘ai’,reply);chatHistory.push({role:‘assistant’,content:reply});
-}catch(err){removeTyping();addMsg(‘ai’,“Hmm, I had trouble connecting. Please try again! 🙏”);console.error(err);}
-chatBusy=false;if(sendBtn) sendBtn.disabled=false;
-}
-// Show badge after 4s
-setTimeout(()=>{if(!chatOpen) document.getElementById(‘fabBadge’).classList.add(‘show’);},4000);
+return (
+<div style={{ minHeight: “100vh”, background: c.bg, color: c.txt, fontFamily: “‘DM Sans’, system-ui, sans-serif” }}>
+<style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,900;1,9..40,300&display=swap'); *{box-sizing:border-box;margin:0;padding:0;} html{-webkit-text-size-adjust:100%;} body{-webkit-tap-highlight-color:transparent;touch-action:manipulation;} input,textarea,select{font-size:16px !important;} ::-webkit-scrollbar{width:3px;height:3px;} ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:2px;}`}</style>
 
-// Set default dates
-const td=new Date(),tm=new Date(td);tm.setDate(td.getDate()+1);
-document.getElementById(‘startDate’).value=td.toISOString().split(‘T’)[0];
-document.getElementById(‘endDate’).value=tm.toISOString().split(‘T’)[0];
-document.getElementById(‘itinCity’).addEventListener(‘keydown’,e=>{if(e.key===‘Enter’) generate(false);});
-</script>
+```
+  {/* Background */}
+  <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden" }}>
+    <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse 70% 50% at 15% 10%,rgba(124,58,237,${dark ? "0.18" : "0.07"}) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 85% 90%,rgba(6,214,160,${dark ? "0.1" : "0.05"}) 0%,transparent 60%)` }} />
+    <div style={{ position: "absolute", inset: 0, backgroundImage: `linear-gradient(${c.bdr} 1px,transparent 1px),linear-gradient(90deg,${c.bdr} 1px,transparent 1px)`, backgroundSize: "52px 52px", maskImage: "radial-gradient(ellipse 70% 60% at 50% 50%,black 0%,transparent 80%)" }} />
+  </div>
 
-</body>
-</html>
+  {/* NAV */}
+  <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 1.2rem", height: 54, background: dark ? "rgba(7,6,15,0.88)" : "rgba(244,242,255,0.92)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderBottom: `1px solid ${c.bdr}` }}>
+    <div onClick={() => setPage("home")} style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontFamily: "'DM Sans',sans-serif", fontWeight: 900, fontSize: "1rem", color: c.txt, cursor: "pointer", userSelect: "none" }}>
+      <div style={{ width: 28, height: 28, borderRadius: 8, background: `linear-gradient(135deg,${D.p1},${D.a1})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.85rem" }}>✦</div>
+      What's Around?
+    </div>
+    <div style={{ display: "flex", alignItems: "center", gap: "0.15rem", overflowX: "auto", scrollbarWidth: "none" }}>
+      {navItems.map(({ id, label }) => (
+        <button key={id} onClick={() => setPage(id)} style={{ padding: "0.42rem 0.8rem", background: page === id ? "rgba(124,58,237,0.1)" : "none", border: "none", borderRadius: 8, fontSize: "0.78rem", fontWeight: 600, color: page === id ? D.p3 : c.muted, cursor: "pointer", fontFamily: "'DM Sans',sans-serif", whiteSpace: "nowrap", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>{label}</button>
+      ))}
+      <button onClick={toggle} style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(124,58,237,0.1)", border: `1px solid ${c.bdr2}`, fontSize: "0.95rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "0.2rem", WebkitTapHighlightColor: "transparent", flexShrink: 0 }}>{dark ? "🌙" : "☀️"}</button>
+    </div>
+  </nav>
+
+  {/* PAGES */}
+  <div style={{ paddingTop: 54, position: "relative", zIndex: 1 }}>
+
+    {/* HOME */}
+    {page === "home" && (
+      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "4rem 1.5rem 3rem", textAlign: "center" }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: "0.45rem", padding: "0.35rem 0.9rem", border: `1px solid ${c.bdr2}`, borderRadius: 100, background: "rgba(124,58,237,0.06)", fontSize: "0.7rem", color: D.p3, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "1.8rem" }}>
+          <div style={{ width: 6, height: 6, background: D.a2, borderRadius: "50%", boxShadow: `0 0 6px ${D.a2}` }} />
+          Plan Any Destination · Instantly
+        </div>
+        <h1 style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 900, fontSize: "clamp(3rem,10vw,7rem)", lineHeight: 0.93, letterSpacing: "-0.04em", marginBottom: "1.4rem", color: c.txt }}>
+          Plan your<br />
+          <span style={{ background: `linear-gradient(135deg,${D.p2},${D.a2})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>perfect trip.</span>
+        </h1>
+        <p style={{ fontSize: "1rem", color: c.muted, maxWidth: 420, lineHeight: 1.7, fontWeight: 300, marginBottom: "2.2rem" }}>
+          Tell us where you're going and what you love — we'll build a personalised multi-day itinerary with real places, weather, costs, and booking links.
+        </p>
+        <div style={{ display: "flex", gap: "0.7rem", flexWrap: "wrap", justifyContent: "center", marginBottom: "2rem" }}>
+          <button onClick={() => setPage("planner")} style={{ padding: "0.9rem 2rem", background: `linear-gradient(135deg,${D.p1},${D.p2})`, color: "white", fontFamily: "'DM Sans',sans-serif", fontSize: "0.9rem", fontWeight: 700, border: "none", borderRadius: 14, cursor: "pointer", boxShadow: `0 6px 24px rgba(124,58,237,0.4)`, WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>✨ Start Planning</button>
+          <button onClick={() => { const city = SURPRISE_CITIES[Math.floor(Math.random() * SURPRISE_CITIES.length)]; setPage("planner"); showToast(`🎲 Try ${city}!`, "info"); }} style={{ padding: "0.9rem 1.8rem", background: "rgba(255,255,255,0.05)", color: c.txt2, fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 600, border: `1px solid ${c.bdr2}`, borderRadius: 14, cursor: "pointer", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>🎲 Surprise Me</button>
+          <button onClick={() => setPage("blog")} style={{ padding: "0.9rem 1.8rem", background: "transparent", color: c.muted, fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 600, border: `1px solid ${c.bdr}`, borderRadius: 14, cursor: "pointer", WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>Read Stories</button>
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", justifyContent: "center" }}>
+          {["🌤 Weather","💰 Costs","🎒 Packing","🗣 Phrases","🌱 Carbon","🗺 Map","⭐ Ratings","🔄 Compare","🤖 Concierge"].map(p => (
+            <span key={p} style={{ padding: "0.25rem 0.7rem", border: `1px solid ${c.bdr}`, borderRadius: 100, fontSize: "0.68rem", color: c.muted2, background: "rgba(255,255,255,0.02)" }}>{p}</span>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {page === "planner" && <PlannerPage c={c} showToast={showToast} />}
+    {page === "saved" && <SavedPage c={c} showToast={showToast} />}
+    {page === "blog" && <BlogPage c={c} showToast={showToast} />}
+  </div>
+
+  <Toast msg={toast.msg} type={toast.type} />
+  <Concierge c={c} city={city} days={days} budget={budget} group={group} />
+</div>
+```
+
+);
+}
