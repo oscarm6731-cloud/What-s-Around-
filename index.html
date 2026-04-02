@@ -4,1395 +4,621 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>What's Around? — Plan Your Perfect Trip</title>
-<meta name="theme-color" content="#7c3aed">
-<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=General+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<!-- Fallback if Clash Display unavailable -->
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>What's Around? — Plan Your Trip</title>
+<link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;What's Around?&quot;,&quot;short_name&quot;:&quot;WhatsAround&quot;,&quot;start_url&quot;:&quot;/&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;%2309090f&quot;,&quot;theme_color&quot;:&quot;%23e879f9&quot;}">
+<meta name="theme-color" content="#e879f9">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
-/* ============================================================
-   PSYCHOLOGY LAYER
-   - Variable Reward (dopamine): randomized confetti, surprise animations
-   - Progress Momentum (Zeigarnik effect): progress bar that remembers
-   - Peak-End Rule: euphoric moments at start + end of key flows
-   - Fitts's Law: large tap targets, centered CTAs
-   - Loss Aversion: "Your plan is waiting" messaging
-   - Social Proof: live activity indicators
-   - Endowment Effect: "Your itinerary" ownership language
-   - Aesthetic-Usability Effect: extreme visual polish = perceived ease
-   - Flow State: frictionless step transitions, no dead ends
-   - Reciprocity: give unexpected value (weather, phrases) unprompted
-   - Micro-interactions: every tap gives instant sensory feedback
-   - Scarcity signals: "limited" framing on special features
-============================================================ */
-
 :root{
-–bg:#06050d;
-–bg2:#0a0918;
-–surface:#100f1e;
-–surface2:#181628;
-–surface3:#201e32;
-–surface4:#28253e;
-–border:rgba(255,255,255,0.06);
-–border2:rgba(255,255,255,0.11);
-–border3:rgba(255,255,255,0.18);
-–text:#f0eeff;
-–text2:#c4c0e0;
-–muted:rgba(196,192,224,0.5);
-–muted2:rgba(196,192,224,0.28);
-
-/* Brand palette — warm violet + electric teal */
-–p1:#7c3aed;   /* primary violet */
-–p2:#9f67f7;   /* light violet */
-–p3:#c4a7fd;   /* pale violet */
-–a1:#06d6a0;   /* teal accent */
-–a2:#00f5c4;   /* electric teal */
-–a3:#38f5d4;   /* bright teal */
-–w1:#f59e0b;   /* amber */
-–w2:#fcd34d;   /* gold */
-–r1:#f43f5e;   /* rose */
-–b1:#3b82f6;   /* blue */
-
-–glow-p:0 0 40px rgba(124,58,237,0.35);
-–glow-a:0 0 40px rgba(6,214,160,0.3);
-–glow-w:0 0 30px rgba(245,158,11,0.3);
-
-–ease-spring:cubic-bezier(0.34,1.56,0.64,1);
-–ease-smooth:cubic-bezier(0.4,0,0.2,1);
-–ease-out:cubic-bezier(0,0,0.2,1);
+  --bg:#09090f;--surface:#111118;--surface2:#18181f;--surface3:#1f1f28;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:#ededf2;--muted:rgba(237,237,242,0.42);--muted2:rgba(237,237,242,0.22);
+  --accent:#6ee7b7;--accent2:#f472b6;--accent3:#60a5fa;
+  --gold:#fbbf24;--itin:#e879f9;--warn:#f87171;--green:#4ade80;
 }
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;}
-body{
-font-family:‘General Sans’,‘Instrument Sans’,sans-serif;
-background:var(–bg);
-color:var(–text);
-min-height:100vh;
-overflow-x:hidden;
-cursor:default;
-}
-
-/* ===================== BACKGROUND SYSTEM ===================== */
-.bg-wrap{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
-
-/* Deep space mesh gradient */
-.bg-mesh{
-position:absolute;inset:0;
-background:
-radial-gradient(ellipse 80% 60% at 20% 10%, rgba(124,58,237,0.18) 0%, transparent 55%),
-radial-gradient(ellipse 60% 80% at 80% 90%, rgba(6,214,160,0.12) 0%, transparent 55%),
-radial-gradient(ellipse 50% 50% at 50% 50%, rgba(59,130,246,0.07) 0%, transparent 60%),
-var(–bg);
-}
-
-/* Animated aurora */
-.aurora{
-position:absolute;inset:0;
-background:
-conic-gradient(from 180deg at 50% 120%, rgba(124,58,237,0.0) 0deg, rgba(124,58,237,0.08) 60deg, rgba(6,214,160,0.06) 120deg, rgba(59,130,246,0.05) 180deg, rgba(124,58,237,0.0) 360deg);
-animation:aurora-spin 25s linear infinite;
-opacity:0.7;
-}
-@keyframes aurora-spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-
-/* Floating particles */
-.particles{position:absolute;inset:0;}
-.particle{
-position:absolute;
-border-radius:50%;
-animation:float-particle linear infinite;
-opacity:0;
-}
-@keyframes float-particle{
-0%{transform:translateY(100vh) scale(0);opacity:0;}
-10%{opacity:1;}
-90%{opacity:0.6;}
-100%{transform:translateY(-20vh) scale(1.5);opacity:0;}
-}
-
-/* Grid lines */
-.bg-grid{
-position:absolute;inset:0;
-background-image:
-linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
-linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
-background-size:60px 60px;
-mask-image:radial-gradient(ellipse 80% 60% at 50% 50%, black 0%, transparent 80%);
-}
-
+html{scroll-behavior:smooth;}
+body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(130px);opacity:0.09;animation:drift 22s ease-in-out infinite;}
+.orb1{width:700px;height:700px;background:#e879f9;top:-250px;left:-150px;}
+.orb2{width:600px;height:600px;background:#60a5fa;bottom:-250px;right:-150px;animation-delay:-8s;}
+.orb3{width:450px;height:450px;background:#6ee7b7;top:45%;left:45%;animation-delay:-15s;}
+@keyframes drift{0%,100%{transform:translate(0,0)scale(1);}33%{transform:translate(50px,-40px)scale(1.06);}66%{transform:translate(-35px,50px)scale(0.94);}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.75);}}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
 .wrapper{position:relative;z-index:1;}
 
-/* ===================== NAV ===================== */
-nav{
-display:flex;justify-content:space-between;align-items:center;
-padding:0.9rem 2.5rem;
-position:fixed;top:0;left:0;right:0;z-index:400;
-background:rgba(6,5,13,0.72);
-backdrop-filter:blur(28px) saturate(180%);
-border-bottom:1px solid var(–border);
-transition:background 0.3s;
-}
-nav.scrolled{background:rgba(6,5,13,0.9);}
-
-.logo{
-font-family:‘Syne’,sans-serif;font-weight:800;font-size:1.15rem;
-letter-spacing:-0.03em;color:var(–text);
-display:flex;align-items:center;gap:0.55rem;cursor:pointer;
-transition:transform 0.2s var(–ease-spring);
-}
-.logo:hover{transform:scale(1.03);}
-
-/* Logo mark — animated gradient ring */
-.logo-mark{
-width:28px;height:28px;border-radius:8px;
-background:linear-gradient(135deg,var(–p1),var(–a1));
-display:flex;align-items:center;justify-content:center;
-font-size:0.8rem;box-shadow:var(–glow-p);
-animation:logo-pulse 3s ease-in-out infinite;
-flex-shrink:0;
-}
-@keyframes logo-pulse{
-0%,100%{box-shadow:0 0 12px rgba(124,58,237,0.4);}
-50%{box-shadow:0 0 28px rgba(124,58,237,0.7),0 0 50px rgba(6,214,160,0.3);}
-}
-
-.nav-links{display:flex;gap:0.15rem;align-items:center;}
-.nav-link{
-padding:0.42rem 0.88rem;font-size:0.78rem;color:var(–muted);
-background:none;border:none;cursor:pointer;
-transition:all 0.18s var(–ease-smooth);
-font-family:‘General Sans’,‘Instrument Sans’,sans-serif;
-border-radius:9px;white-space:nowrap;position:relative;
-}
-.nav-link::after{
-content:’’;position:absolute;bottom:4px;left:50%;transform:translateX(-50%) scaleX(0);
-width:16px;height:2px;border-radius:1px;
-background:linear-gradient(90deg,var(–p1),var(–a1));
-transition:transform 0.2s var(–ease-spring);
-}
+/* NAV */
+nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2.5rem;position:fixed;top:0;left:0;right:0;z-index:300;background:rgba(9,9,15,0.9);backdrop-filter:blur(24px);border-bottom:1px solid var(–border);}
+.logo{font-family:‘Syne’,sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-0.02em;color:var(–text);display:flex;align-items:center;gap:0.5rem;cursor:pointer;}
+.logo-dot{width:8px;height:8px;background:var(–itin);border-radius:50%;box-shadow:0 0 12px var(–itin);animation:pulse 2s ease-in-out infinite;flex-shrink:0;}
+.nav-links{display:flex;gap:0.15rem;align-items:center;flex-wrap:wrap;}
+.nav-link{padding:0.45rem 0.85rem;font-size:0.78rem;color:var(–muted);background:none;border:none;cursor:pointer;transition:all 0.2s;font-family:‘Instrument Sans’,sans-serif;border-radius:8px;white-space:nowrap;}
 .nav-link:hover{color:var(–text);background:rgba(255,255,255,0.05);}
-.nav-link.active{color:var(–p3);}
-.nav-link.active::after{transform:translateX(-50%) scaleX(1);}
-
-.nav-surprise{
-padding:0.42rem 1rem;
-background:linear-gradient(135deg,rgba(124,58,237,0.18),rgba(6,214,160,0.12));
-border:1px solid rgba(124,58,237,0.3);
-border-radius:9px;color:var(–p3);font-size:0.76rem;font-weight:600;
-font-family:‘Syne’,sans-serif;cursor:pointer;transition:all 0.2s;white-space:nowrap;
-}
-.nav-surprise:hover{
-background:linear-gradient(135deg,rgba(124,58,237,0.32),rgba(6,214,160,0.22));
-transform:translateY(-1px);box-shadow:var(–glow-p);
-}
-.nav-user-btn{
-padding:0.4rem 1rem;background:rgba(124,58,237,0.12);
-border:1px solid rgba(124,58,237,0.28);border-radius:9px;
-color:var(–p3);font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.2s;
-font-family:‘General Sans’,sans-serif;
-}
-.nav-user-btn:hover{background:rgba(124,58,237,0.22);}
-.nav-avatar{
-width:30px;height:30px;border-radius:9px;
-background:linear-gradient(135deg,var(–p1),var(–a1));
-display:flex;align-items:center;justify-content:center;
-font-size:0.68rem;font-weight:700;color:white;cursor:pointer;
-box-shadow:var(–glow-p);transition:transform 0.2s var(–ease-spring);
-}
-.nav-avatar:hover{transform:scale(1.08);}
+.nav-link.active{color:var(–itin);background:rgba(232,121,249,0.06);}
+.nav-user-btn{padding:0.42rem 0.95rem;background:rgba(232,121,249,0.1);border:1px solid rgba(232,121,249,0.25);border-radius:8px;color:var(–itin);font-size:0.76rem;font-weight:600;font-family:‘Instrument Sans’,sans-serif;cursor:pointer;transition:all 0.2s;}
+.nav-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(–itin),var(–accent3));display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:700;color:#09090f;cursor:pointer;border:2px solid rgba(232,121,249,0.3);}
+.surprise-btn{padding:0.42rem 0.95rem;background:linear-gradient(135deg,rgba(232,121,249,0.15),rgba(96,165,250,0.15));border:1px solid rgba(232,121,249,0.3);border-radius:8px;color:var(–text);font-size:0.76rem;font-weight:600;font-family:‘Instrument Sans’,sans-serif;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.surprise-btn:hover{background:linear-gradient(135deg,rgba(232,121,249,0.25),rgba(96,165,250,0.25));transform:scale(1.03);}
 
 /* PAGES */
 .page{display:none;}
 .page.active{display:block;}
 
-/* ===================== PROGRESS BAR (Zeigarnik Effect) ===================== */
-/* Shows partially-filled bar to trigger completion drive */
-.progress-bar-wrap{
-position:fixed;top:0;left:0;right:0;height:3px;z-index:500;
-background:rgba(255,255,255,0.05);
-}
-.progress-bar-fill{
-height:100%;width:0%;
-background:linear-gradient(90deg,var(–p1),var(–a1),var(–p2));
-transition:width 0.6s var(–ease-smooth);
-box-shadow:0 0 12px rgba(124,58,237,0.6);
-}
+/* TOAST */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(120px);background:var(–surface);border:1px solid var(–border2);border-radius:12px;padding:0.75rem 1.4rem;font-size:0.84rem;font-weight:500;z-index:9999;transition:transform 0.3s ease;white-space:nowrap;box-shadow:0 8px 30px rgba(0,0,0,0.5);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.success{border-color:rgba(110,231,183,0.4);color:var(–accent);}
+.toast.error{border-color:rgba(248,113,113,0.4);color:var(–warn);}
+.toast.info{border-color:rgba(232,121,249,0.4);color:var(–itin);}
 
-/* ===================== TOAST (Variable Reward) ===================== */
-/* Each toast is slightly different — creates anticipation */
-.toast{
-position:fixed;bottom:2.2rem;left:50%;
-transform:translateX(-50%) translateY(120px) scale(0.9);
-background:var(–surface2);
-border:1px solid var(–border2);
-border-radius:14px;
-padding:0.8rem 1.5rem;
-font-size:0.84rem;font-weight:500;
-z-index:9999;
-transition:transform 0.4s var(–ease-spring),opacity 0.3s;
-white-space:nowrap;
-box-shadow:0 12px 40px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.05);
-opacity:0;
-}
-.toast.show{transform:translateX(-50%) translateY(0) scale(1);opacity:1;}
-.toast.success{border-color:rgba(6,214,160,0.4);color:var(–a2);}
-.toast.error{border-color:rgba(244,63,94,0.4);color:#fb7185;}
-.toast.info{border-color:rgba(124,58,237,0.4);color:var(–p3);}
-.toast.reward{
-border-color:rgba(245,158,11,0.5);color:var(–w2);
-background:linear-gradient(135deg,var(–surface2),rgba(245,158,11,0.06));
-}
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:8rem 2rem 4rem;text-align:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:0.5rem;padding:0.4rem 1rem;border:1px solid var(–border);border-radius:100px;background:rgba(255,255,255,0.03);font-size:0.7rem;color:var(–muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2.5rem;animation:fadeDown 0.7s ease both;}
+.hero-badge-dot{width:6px;height:6px;background:var(–itin);border-radius:50%;box-shadow:0 0 8px var(–itin);}
+h1{font-family:‘Syne’,sans-serif;font-size:clamp(2.8rem,9vw,7rem);font-weight:800;line-height:0.95;letter-spacing:-0.04em;margin-bottom:1.5rem;animation:fadeDown 0.7s 0.1s ease both;}
+.grad{background:linear-gradient(135deg,var(–itin),var(–accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:1rem;color:var(–muted);max-width:460px;line-height:1.7;font-weight:300;margin-bottom:2.5rem;animation:fadeDown 0.7s 0.2s ease both;}
+.hero-cta{display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center;animation:fadeDown 0.7s 0.3s ease both;}
+.cta-primary{padding:0.9rem 2rem;background:linear-gradient(135deg,var(–itin),var(–accent3));color:white;font-family:‘Syne’,sans-serif;font-size:0.9rem;font-weight:700;border:none;border-radius:12px;cursor:pointer;transition:all 0.2s;}
+.cta-primary:hover{opacity:0.88;transform:translateY(-2px);}
+.cta-surprise{padding:0.9rem 2rem;background:rgba(255,255,255,0.05);color:var(–text);font-family:‘Syne’,sans-serif;font-size:0.9rem;font-weight:600;border:1px solid var(–border2);border-radius:12px;cursor:pointer;transition:all 0.2s;animation:bounce 2s ease-in-out infinite;}
+.cta-surprise:hover{background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.3);color:var(–itin);}
+.cta-blog{padding:0.9rem 2rem;background:rgba(255,255,255,0.04);color:var(–muted);font-family:‘Syne’,sans-serif;font-size:0.9rem;font-weight:600;border:1px solid var(–border);border-radius:12px;cursor:pointer;transition:all 0.2s;}
+.cta-blog:hover{background:rgba(255,255,255,0.08);color:var(–text);}
 
-/* ===================== CONFETTI (Variable Reward + Peak-End Rule) ===================== */
-.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden;}
-.confetti-piece{
-position:absolute;
-width:8px;height:8px;
-border-radius:2px;
-animation:confetti-fall 2s ease-in forwards;
-}
-@keyframes confetti-fall{
-0%{transform:translateY(-20px) rotate(0deg);opacity:1;}
-100%{transform:translateY(110vh) rotate(720deg);opacity:0;}
-}
-
-/* ===================== RIPPLE (Haptic-like Feedback) ===================== */
-.ripple-wrap{position:fixed;inset:0;pointer-events:none;z-index:9990;}
-.ripple{
-position:absolute;border-radius:50%;
-background:radial-gradient(circle, rgba(124,58,237,0.3) 0%, transparent 70%);
-transform:scale(0);animation:ripple-out 0.6s ease-out forwards;
-pointer-events:none;
-}
-@keyframes ripple-out{
-to{transform:scale(4);opacity:0;}
-}
-
-/* ===================== HERO ===================== */
-/* Peak-End Rule: make the first second unforgettable */
-.hero{
-min-height:100vh;
-display:flex;flex-direction:column;justify-content:center;align-items:center;
-padding:8rem 2rem 5rem;text-align:center;
-position:relative;
-}
-
-/* Floating destination cards — social proof + aspiration */
-.hero-floaters{
-position:absolute;inset:0;pointer-events:none;overflow:hidden;
-}
-.floater{
-position:absolute;
-background:var(–surface2);
-border:1px solid var(–border2);
-border-radius:14px;
-padding:0.6rem 0.9rem;
-font-size:0.75rem;
-color:var(–text2);
-backdrop-filter:blur(12px);
-animation:float-card 8s ease-in-out infinite;
-box-shadow:0 8px 24px rgba(0,0,0,0.3);
-white-space:nowrap;
-}
-.floater span{font-size:1rem;margin-right:0.3rem;}
-.floater.f1{top:20%;left:5%;animation-delay:0s;}
-.floater.f2{top:35%;right:4%;animation-delay:-2s;}
-.floater.f3{top:65%;left:3%;animation-delay:-4s;}
-.floater.f4{top:75%;right:5%;animation-delay:-6s;}
-.floater.f5{top:15%;right:12%;animation-delay:-1s;}
-@keyframes float-card{
-0%,100%{transform:translateY(0px) rotate(-1deg);}
-50%{transform:translateY(-14px) rotate(1deg);}
-}
-
-.hero-kicker{
-display:inline-flex;align-items:center;gap:0.5rem;
-padding:0.38rem 1rem;border:1px solid rgba(124,58,237,0.3);
-border-radius:100px;
-background:rgba(124,58,237,0.08);
-font-size:0.7rem;color:var(–p3);letter-spacing:0.12em;text-transform:uppercase;
-margin-bottom:2rem;
-animation:fadeDown 0.8s ease both;
-}
-.kicker-dot{
-width:6px;height:6px;background:var(–a2);border-radius:50%;
-box-shadow:0 0 8px var(–a2);
-animation:kicker-blink 1.4s ease-in-out infinite;
-}
-@keyframes kicker-blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
-
-/* Giant headline — Aesthetic-Usability Effect */
-.hero h1{
-font-family:‘Syne’,sans-serif;
-font-size:clamp(3.2rem,10vw,8rem);
-font-weight:800;line-height:0.92;letter-spacing:-0.05em;
-margin-bottom:1.6rem;
-animation:hero-reveal 1s ease both;
-}
-@keyframes hero-reveal{
-from{opacity:0;transform:translateY(30px) scale(0.97);}
-to{opacity:1;transform:translateY(0) scale(1);}
-}
-
-.hero h1 .line1{display:block;color:var(–text);}
-.hero h1 .line2{
-display:block;
-background:linear-gradient(135deg,var(–p2) 0%,var(–a2) 50%,var(–p3) 100%);
--webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-background-size:200% 200%;
-animation:grad-shift 4s ease-in-out infinite;
-}
-@keyframes grad-shift{
-0%,100%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-}
-
-.hero-sub{
-font-size:1.05rem;color:var(–muted);max-width:460px;line-height:1.72;
-font-weight:300;margin-bottom:2.8rem;
-animation:fadeDown 0.8s 0.2s ease both;
-}
-.hero-sub strong{color:var(–text2);font-weight:500;}
-
-/* CTA row — Fitts’s Law: huge buttons, high contrast */
-.hero-cta{
-display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center;
-animation:fadeDown 0.8s 0.3s ease both;
-}
-
-/* Primary CTA — draws the eye, pulses gently */
-.btn-primary{
-padding:1rem 2.2rem;
-background:linear-gradient(135deg,var(–p1),var(–p2));
-color:white;font-family:‘Syne’,sans-serif;font-size:0.92rem;font-weight:700;
-border:none;border-radius:14px;cursor:pointer;
-transition:all 0.22s var(–ease-spring);
-box-shadow:0 8px 28px rgba(124,58,237,0.4),0 0 0 1px rgba(255,255,255,0.1) inset;
-position:relative;overflow:hidden;
-}
-.btn-primary::before{
-content:’’;position:absolute;inset:0;
-background:linear-gradient(135deg,rgba(255,255,255,0.15),transparent);
-border-radius:inherit;
-}
-.btn-primary:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 16px 40px rgba(124,58,237,0.55),0 0 0 1px rgba(255,255,255,0.15) inset;}
-.btn-primary:active{transform:translateY(0) scale(0.98);}
-
-/* Surprise CTA — bounces to demand attention (Attentional bias) */
-.btn-surprise{
-padding:1rem 2rem;
-background:rgba(255,255,255,0.04);color:var(–text2);
-font-family:‘Syne’,sans-serif;font-size:0.92rem;font-weight:600;
-border:1px solid var(–border2);border-radius:14px;cursor:pointer;
-transition:all 0.22s var(–ease-spring);
-animation:btn-bounce 2.5s ease-in-out infinite;
-}
-@keyframes btn-bounce{
-0%,100%{transform:translateY(0);}
-40%{transform:translateY(-5px);}
-60%{transform:translateY(-3px);}
-}
-.btn-surprise:hover{
-background:rgba(124,58,237,0.1);border-color:rgba(124,58,237,0.3);
-color:var(–p3);box-shadow:var(–glow-p);
-animation:none;transform:translateY(-3px);
-}
-
-.btn-ghost{
-padding:1rem 2rem;background:transparent;color:var(–muted);
-font-family:‘General Sans’,sans-serif;font-size:0.9rem;font-weight:500;
-border:1px solid var(–border);border-radius:14px;cursor:pointer;
-transition:all 0.2s;
-}
-.btn-ghost:hover{color:var(–text);border-color:var(–border2);background:rgba(255,255,255,0.03);}
-
-/* Feature pills — Social proof through enumeration */
-.feature-pills{
-display:flex;flex-wrap:wrap;gap:0.45rem;justify-content:center;
-margin-top:2.5rem;
-animation:fadeDown 0.8s 0.4s ease both;
-}
-.fpill{
-padding:0.28rem 0.75rem;border:1px solid var(–border);border-radius:100px;
-font-size:0.7rem;color:var(–muted2);background:rgba(255,255,255,0.02);
-transition:all 0.2s;cursor:default;
-}
-.fpill:hover{border-color:var(–border2);color:var(–muted);background:rgba(255,255,255,0.04);}
-
-/* Live users counter — Social proof / FOMO */
-.live-counter{
-margin-top:1.8rem;
-display:inline-flex;align-items:center;gap:0.5rem;
-font-size:0.75rem;color:var(–muted);
-animation:fadeDown 0.8s 0.5s ease both;
-}
-.live-dot{width:6px;height:6px;background:var(–a2);border-radius:50%;box-shadow:0 0 8px var(–a2);animation:kicker-blink 1s ease-in-out infinite;}
-.live-count{font-weight:600;color:var(–text2);}
-
-/* Scroll hint */
-.scroll-hint{
-position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
-display:flex;flex-direction:column;align-items:center;gap:0.4rem;
-color:var(–muted2);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;
-animation:fadeDown 1s 1s ease both;
-}
-.scroll-arrow{animation:scroll-bounce 1.8s ease-in-out infinite;}
-@keyframes scroll-bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(5px);}}
-
-/* ===================== PLANNER PAGE ===================== */
-#planner-page{padding:5.5rem 2rem 5rem;}
-.planner-inner{max-width:820px;margin:0 auto;}
-
-/* Sticky progress indicator — Zeigarnik / Completion Drive */
-.planner-progress{
-position:sticky;top:70px;z-index:100;
-background:rgba(6,5,13,0.88);backdrop-filter:blur(20px);
-padding:0.9rem 1.2rem;border-radius:16px;border:1px solid var(–border);
-margin-bottom:1.8rem;
-display:flex;align-items:center;gap:1rem;
-box-shadow:0 8px 32px rgba(0,0,0,0.4);
-}
-.planner-prog-steps{display:flex;gap:0.3rem;flex:1;}
-.prog-step{
-height:4px;border-radius:2px;background:var(–surface3);flex:1;
-transition:background 0.4s ease,box-shadow 0.4s;
-position:relative;overflow:hidden;
-}
-.prog-step.done{background:linear-gradient(90deg,var(–p1),var(–a1));box-shadow:0 0 8px rgba(124,58,237,0.4);}
-.prog-step.active{background:rgba(124,58,237,0.4);animation:prog-pulse 1.5s ease-in-out infinite;}
-@keyframes prog-pulse{0%,100%{opacity:0.6;}50%{opacity:1;}}
-.prog-label{font-size:0.72rem;color:var(–muted);white-space:nowrap;}
-.prog-label span{color:var(–p3);font-weight:600;}
-
-.page-eyebrow{font-size:0.68rem;color:var(–p3);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.6rem;}
-.page-title{
-font-family:‘Syne’,sans-serif;font-size:clamp(1.8rem,4vw,2.6rem);
-font-weight:800;letter-spacing:-0.03em;line-height:1.05;margin-bottom:0.45rem;
-}
-.page-sub{font-size:0.88rem;color:var(–muted);max-width:480px;line-height:1.7;font-weight:300;margin-bottom:2rem;}
-
-/* STEP CARDS — tactile, depth, clear affordance */
-.steps-grid{display:grid;gap:0.9rem;}
-.step-card{
-background:var(–surface);
-border:1px solid var(–border);
-border-radius:18px;padding:1.4rem;
-transition:all 0.25s var(–ease-smooth);
-position:relative;overflow:hidden;
-}
-.step-card::before{
-content:’’;position:absolute;inset:0;border-radius:inherit;
-background:linear-gradient(135deg,rgba(124,58,237,0.04),transparent 60%);
-opacity:0;transition:opacity 0.3s;pointer-events:none;
-}
-.step-card:focus-within{
-border-color:rgba(124,58,237,0.3);
-box-shadow:0 0 0 4px rgba(124,58,237,0.06),0 8px 30px rgba(0,0,0,0.3);
-}
-.step-card:focus-within::before{opacity:1;}
-/* Completed step gets a subtle success glow */
-.step-card.completed{border-color:rgba(6,214,160,0.2);}
-.step-card.completed::before{background:linear-gradient(135deg,rgba(6,214,160,0.03),transparent);opacity:1;}
-
-.step-hdr{display:flex;align-items:center;gap:0.85rem;margin-bottom:1rem;}
-.step-num{
-width:28px;height:28px;border-radius:8px;
-background:var(–surface3);border:1px solid var(–border2);
-display:flex;align-items:center;justify-content:center;
-font-family:‘Syne’,sans-serif;font-size:0.72rem;font-weight:700;
-color:var(–muted);flex-shrink:0;transition:all 0.3s;
-}
-.step-card.completed .step-num{background:rgba(6,214,160,0.12);border-color:rgba(6,214,160,0.3);color:var(–a2);}
-.step-title{font-family:‘Syne’,sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:-0.01em;}
-.step-sub{font-size:0.72rem;color:var(–muted);margin-top:0.1rem;}
-
-/* Inputs — generous padding = perceived ease (Fitts’s Law) */
-.city-input,.nbhd-input,.itin-input{
-width:100%;
-background:var(–surface2);border:1px solid var(–border2);
-border-radius:12px;padding:0.85rem 1.1rem;
-font-family:‘General Sans’,‘Instrument Sans’,sans-serif;font-size:0.92rem;
-color:var(–text);outline:none;transition:all 0.22s;
-}
-.city-input:focus,.nbhd-input:focus,.itin-input:focus{
-border-color:rgba(124,58,237,0.5);
-box-shadow:0 0 0 4px rgba(124,58,237,0.08);
-background:var(–surface3);
-}
-.city-input::placeholder,.nbhd-input::placeholder,.itin-input::placeholder{color:var(–muted2);}
-
-/* Date inputs */
-.date-row{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;}
-.date-field label{display:block;font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(–muted);margin-bottom:0.35rem;}
-.date-input{
-width:100%;background:var(–surface2);border:1px solid var(–border2);
-border-radius:12px;padding:0.8rem 1rem;font-size:0.87rem;
-color:var(–text);outline:none;transition:all 0.22s;cursor:pointer;
-font-family:‘General Sans’,sans-serif;
-}
-.date-input:focus{border-color:rgba(124,58,237,0.5);box-shadow:0 0 0 4px rgba(124,58,237,0.08);}
-.date-input::-webkit-calendar-picker-indicator{filter:invert(0.4) sepia(1) hue-rotate(240deg);}
-
-/* OPTION BUTTONS — large, obvious, satisfying click */
-.opt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.45rem;}
-.opt{
-padding:0.65rem 0.85rem;
-background:var(–surface2);border:1px solid var(–border);
-border-radius:12px;font-size:0.79rem;color:var(–muted);
-cursor:pointer;transition:all 0.18s var(–ease-spring);
-text-align:center;line-height:1.3;
-font-family:‘General Sans’,sans-serif;
-position:relative;overflow:hidden;
-}
-.opt:hover{background:var(–surface3);color:var(–text);border-color:var(–border2);transform:translateY(-1px);}
-.opt:active{transform:scale(0.96);}
-.opt.sel{
-background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(6,214,160,0.08));
-border-color:rgba(124,58,237,0.45);color:var(–p3);
-box-shadow:0 0 0 3px rgba(124,58,237,0.1),0 4px 12px rgba(124,58,237,0.15);
-}
-/* Checkmark appears on selection */
-.opt.sel::after{
-content:‘✓’;position:absolute;top:4px;right:6px;
-font-size:0.6rem;color:var(–a2);font-weight:700;
-}
-
-/* DAYS COUNTER — satisfying number change */
-.days-row{display:flex;align-items:center;gap:1rem;}
-.days-counter{display:flex;align-items:center;gap:0.7rem;}
-.day-btn{
-width:36px;height:36px;border-radius:10px;
-border:1px solid var(–border2);background:var(–surface2);color:var(–text);
-font-size:1.1rem;cursor:pointer;
-transition:all 0.18s var(–ease-spring);
-display:flex;align-items:center;justify-content:center;
-}
-.day-btn:hover{border-color:rgba(124,58,237,0.4);color:var(–p3);transform:scale(1.08);}
-.day-btn:active{transform:scale(0.92);}
-.days-num{
-font-family:‘Syne’,sans-serif;font-size:2rem;font-weight:800;
-min-width:2.2rem;text-align:center;
-transition:transform 0.2s var(–ease-spring);
-}
-.days-num.bump{animation:num-bump 0.3s var(–ease-spring);}
-@keyframes num-bump{0%{transform:scale(1);}50%{transform:scale(1.3);}100%{transform:scale(1);}}
-.days-label{font-size:0.8rem;color:var(–muted);}
-
-/* BUDGET SLIDER — beautiful gradient fill */
-.slider-wrap{padding:0.25rem 0;}
-.slider-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1rem;}
-.slider-val{font-family:‘Syne’,sans-serif;font-size:2rem;font-weight:800;color:var(–p3);transition:color 0.3s;}
-.slider-desc{font-size:0.75rem;color:var(–muted);padding-bottom:0.25rem;}
-.slider-right{text-align:right;font-size:0.7rem;color:var(–muted2);}
-input[type=range]{
--webkit-appearance:none;appearance:none;
-width:100%;height:6px;border-radius:100px;
-background:var(–surface3);outline:none;cursor:pointer;
-}
-input[type=range]::-webkit-slider-thumb{
--webkit-appearance:none;width:22px;height:22px;border-radius:50%;
-background:linear-gradient(135deg,var(–p2),var(–a2));cursor:pointer;
-border:3px solid var(–bg);
-box-shadow:0 0 14px rgba(124,58,237,0.5),0 2px 8px rgba(0,0,0,0.4);
-transition:transform 0.15s var(–ease-spring);
-}
-input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2);}
-.slider-marks{display:flex;justify-content:space-between;margin-top:0.5rem;font-size:0.65rem;color:var(–muted2);}
-
-/* TAGS */
-.tags-wrap{
-display:flex;flex-wrap:wrap;gap:0.38rem;padding:0.6rem 0.85rem;
-background:var(–surface2);border:1px solid var(–border2);
-border-radius:12px;cursor:text;min-height:46px;align-items:center;
-transition:all 0.22s;
-}
-.tags-wrap:focus-within{border-color:rgba(124,58,237,0.4);box-shadow:0 0 0 4px rgba(124,58,237,0.07);}
-.tag-chip{
-display:inline-flex;align-items:center;gap:0.25rem;
-padding:0.2rem 0.58rem;
-background:rgba(124,58,237,0.14);border:1px solid rgba(124,58,237,0.3);
-border-radius:100px;font-size:0.72rem;color:var(–p3);
-animation:chip-pop 0.25s var(–ease-spring) both;
-}
-@keyframes chip-pop{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
-.tag-chip-x{cursor:pointer;opacity:0.5;font-size:0.78rem;transition:opacity 0.15s;}
-.tag-chip-x:hover{opacity:1;}
-.tags-input{border:none;outline:none;background:none;font-family:‘General Sans’,sans-serif;font-size:0.84rem;color:var(–text);flex:1;min-width:100px;}
-.tags-input::placeholder{color:var(–muted2);}
-.tag-suggestions{display:flex;flex-wrap:wrap;gap:0.32rem;margin-top:0.5rem;}
-.tag-sug{
-padding:0.22rem 0.6rem;background:var(–surface2);border:1px solid var(–border);
-border-radius:100px;font-size:0.7rem;color:var(–muted);cursor:pointer;
-transition:all 0.18s;font-family:‘General Sans’,sans-serif;
-}
-.tag-sug:hover{background:rgba(124,58,237,0.1);color:var(–p3);border-color:rgba(124,58,237,0.3);transform:translateY(-1px);}
-
-/* TOGGLES */
-.toggle-row{
-display:flex;align-items:center;justify-content:space-between;
-padding:0.75rem 0.95rem;
-background:var(–surface2);border:1px solid var(–border);border-radius:12px;
-transition:border-color 0.2s;
-}
-.toggle-row:hover{border-color:var(–border2);}
-.toggle-label{font-size:0.82rem;font-weight:500;}
-.toggle-sub{font-size:0.7rem;color:var(–muted);margin-top:0.08rem;}
-.toggle-switch{position:relative;width:42px;height:24px;flex-shrink:0;}
-.toggle-switch input{opacity:0;width:0;height:0;}
-.toggle-slider{
-position:absolute;inset:0;
-background:var(–surface3);border:1px solid var(–border2);
-border-radius:100px;cursor:pointer;transition:all 0.3s var(–ease-smooth);
-}
-.toggle-slider::before{
-content:’’;position:absolute;width:18px;height:18px;
-left:2px;top:2px;background:var(–muted);border-radius:50%;
-transition:all 0.3s var(–ease-spring);box-shadow:0 1px 4px rgba(0,0,0,0.3);
-}
-.toggle-switch input:checked+.toggle-slider{background:rgba(124,58,237,0.2);border-color:rgba(124,58,237,0.4);}
-.toggle-switch input:checked+.toggle-slider::before{transform:translateX(18px);background:var(–p2);box-shadow:0 0 8px rgba(124,58,237,0.5);}
+/* FEATURE PILLS on hero */
+.feature-pills{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-top:2rem;animation:fadeDown 0.7s 0.4s ease both;}
+.fpill{padding:0.3rem 0.8rem;border:1px solid var(–border);border-radius:100px;font-size:0.72rem;color:var(–muted2);background:rgba(255,255,255,0.02);}
 
 /* WEATHER BANNER */
-.weather-banner{
-background:linear-gradient(135deg,var(–surface2),rgba(6,214,160,0.04));
-border:1px solid rgba(6,214,160,0.15);border-radius:14px;
-padding:1rem 1.3rem;margin-bottom:1rem;
-display:none;animation:fadeUp 0.4s ease both;
-}
+.weather-banner{background:var(–surface);border:1px solid var(–border);border-radius:14px;padding:1.1rem 1.4rem;margin-bottom:1.2rem;display:none;animation:fadeUp 0.4s ease both;}
 .weather-banner.visible{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
-.weather-icon{font-size:2.2rem;}
-.weather-city{font-family:‘Syne’,sans-serif;font-size:0.95rem;font-weight:700;}
-.weather-desc{font-size:0.78rem;color:var(–muted);}
-.weather-temps{display:flex;gap:0.6rem;margin-top:0.35rem;flex-wrap:wrap;}
-.weather-temp{font-size:0.75rem;background:rgba(255,255,255,0.05);padding:0.18rem 0.55rem;border-radius:6px;}
-.weather-alert{font-size:0.72rem;color:var(–w2);background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);padding:0.28rem 0.65rem;border-radius:7px;margin-left:auto;}
+.weather-icon{font-size:2.2rem;flex-shrink:0;}
+.weather-info{}
+.weather-city{font-family:‘Syne’,sans-serif;font-size:1rem;font-weight:700;}
+.weather-desc{font-size:0.8rem;color:var(–muted);margin-top:0.1rem;}
+.weather-temps{display:flex;gap:0.7rem;margin-top:0.4rem;flex-wrap:wrap;}
+.weather-temp-item{font-size:0.78rem;background:rgba(255,255,255,0.04);padding:0.22rem 0.6rem;border-radius:6px;color:var(–text);}
+.weather-alert{font-size:0.75rem;color:var(–gold);background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);padding:0.3rem 0.7rem;border-radius:7px;margin-left:auto;}
 
-/* GENERATE BUTTON — the most important tap = must feel magical */
-.gen-btn-wrap{margin-top:1.4rem;}
-.gen-btn{
-width:100%;padding:1.1rem;
-background:linear-gradient(135deg,var(–p1) 0%,var(–p2) 50%,var(–a1) 100%);
-color:white;font-family:‘Syne’,sans-serif;font-size:1rem;font-weight:800;
-border:none;border-radius:16px;cursor:pointer;
-transition:all 0.25s var(–ease-spring);
-box-shadow:0 12px 36px rgba(124,58,237,0.4),0 0 0 1px rgba(255,255,255,0.1) inset;
-position:relative;overflow:hidden;letter-spacing:-0.01em;
-}
-.gen-btn::before{
-content:’’;position:absolute;inset:0;
-background:linear-gradient(135deg,rgba(255,255,255,0.12),transparent);
-}
-.gen-btn::after{
-content:’’;position:absolute;
-width:200%;height:200%;top:-50%;left:-200%;
-background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);
-transition:left 0.5s;
-}
-.gen-btn:hover{
-transform:translateY(-3px) scale(1.01);
-box-shadow:0 20px 50px rgba(124,58,237,0.55),0 0 0 1px rgba(255,255,255,0.15) inset;
-}
-.gen-btn:hover::after{left:200%;}
-.gen-btn:active{transform:translateY(0) scale(0.99);}
-.gen-btn:disabled{
-background:var(–surface3);color:var(–muted);cursor:wait;
-transform:none;box-shadow:none;
-}
-.gen-btn-loading{display:inline-flex;align-items:center;gap:0.5rem;}
-.gen-dots{display:inline-flex;gap:3px;}
-.gen-dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:gen-dot-bounce 1s ease-in-out infinite;}
-.gen-dot:nth-child(2){animation-delay:0.15s;}
-.gen-dot:nth-child(3){animation-delay:0.3s;}
-@keyframes gen-dot-bounce{0%,80%,100%{transform:scale(0.5);opacity:0.5;}40%{transform:scale(1);opacity:1;}}
+/* PLANNER */
+#planner-page{padding:6rem 2rem 5rem;}
+.planner-inner{max-width:960px;margin:0 auto;}
+.page-eyebrow{font-size:0.7rem;color:var(–itin);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.7rem;}
+.page-title{font-family:‘Syne’,sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-0.03em;line-height:1.05;margin-bottom:0.5rem;}
+.page-sub{font-size:0.88rem;color:var(–muted);max-width:500px;line-height:1.7;font-weight:300;margin-bottom:2rem;}
+.steps-grid{display:grid;gap:1rem;}
+.step-card{background:var(–surface);border:1px solid var(–border);border-radius:16px;padding:1.4rem;transition:border-color 0.2s;}
+.step-card:focus-within{border-color:rgba(232,121,249,0.2);}
+.step-hdr{display:flex;align-items:center;gap:0.85rem;margin-bottom:1rem;}
+.step-num{font-family:‘Syne’,sans-serif;font-size:1.6rem;font-weight:800;color:rgba(237,237,242,0.07);line-height:1;flex-shrink:0;min-width:2rem;}
+.step-title{font-family:‘Syne’,sans-serif;font-size:0.95rem;font-weight:700;}
+.step-sub{font-size:0.73rem;color:var(–muted);margin-top:0.1rem;}
+.city-input{width:100%;background:var(–surface2);border:1px solid var(–border);border-radius:10px;padding:0.75rem 1rem;font-family:‘Instrument Sans’,sans-serif;font-size:0.9rem;color:var(–text);outline:none;transition:border-color 0.2s;}
+.city-input:focus{border-color:rgba(232,121,249,0.4);}
+.city-input::placeholder{color:var(–muted2);}
 
-/* ===================== RESULTS ===================== */
+/* DATE PICKER ROW */
+.date-row{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;}
+.date-field label{display:block;font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(–muted);margin-bottom:0.35rem;}
+.date-input{width:100%;background:var(–surface2);border:1px solid var(–border);border-radius:10px;padding:0.72rem 1rem;font-family:‘Instrument Sans’,sans-serif;font-size:0.87rem;color:var(–text);outline:none;transition:border-color 0.2s;cursor:pointer;}
+.date-input:focus{border-color:rgba(232,121,249,0.4);}
+.date-input::-webkit-calendar-picker-indicator{filter:invert(0.5);}
+
+/* NEIGHBORHOOD INPUT */
+.nbhd-input{width:100%;background:var(–surface2);border:1px solid var(–border);border-radius:10px;padding:0.72rem 1rem;font-family:‘Instrument Sans’,sans-serif;font-size:0.87rem;color:var(–text);outline:none;transition:border-color 0.2s;margin-bottom:0.6rem;}
+.nbhd-input:focus{border-color:rgba(232,121,249,0.4);}
+.nbhd-input::placeholder{color:var(–muted2);}
+.nbhd-hint{font-size:0.72rem;color:var(–muted2);}
+
+/* OPTIONS */
+.opt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:0.48rem;}
+.opt{padding:0.6rem 0.8rem;background:rgba(255,255,255,0.03);border:1px solid var(–border);border-radius:9px;font-family:‘Instrument Sans’,sans-serif;font-size:0.77rem;color:var(–muted);cursor:pointer;transition:all 0.2s;text-align:center;line-height:1.3;}
+.opt:hover{background:rgba(255,255,255,0.07);color:var(–text);}
+.opt.sel{background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.38);color:var(–itin);}
+
+/* DAYS COUNTER */
+.days-row{display:flex;align-items:center;gap:1rem;}
+.days-counter{display:flex;align-items:center;gap:0.7rem;}
+.day-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(–border);background:var(–surface2);color:var(–text);font-size:1rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
+.day-btn:hover{border-color:rgba(232,121,249,0.4);color:var(–itin);}
+.days-num{font-family:‘Syne’,sans-serif;font-size:1.4rem;font-weight:800;min-width:1.7rem;text-align:center;}
+.days-label{font-size:0.78rem;color:var(–muted);}
+
+/* BUDGET SLIDER */
+.slider-wrap{padding:0.2rem 0;}
+.slider-labels{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;}
+.slider-val{font-family:‘Syne’,sans-serif;font-size:1.3rem;font-weight:800;color:var(–itin);}
+.slider-desc{font-size:0.73rem;color:var(–muted);}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:100px;background:var(–surface3);outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(–itin),var(–accent3));cursor:pointer;border:2px solid rgba(232,121,249,0.3);box-shadow:0 0 8px rgba(232,121,249,0.3);}
+.slider-track-labels{display:flex;justify-content:space-between;margin-top:0.45rem;font-size:0.68rem;color:var(–muted2);}
+
+/* TAGS */
+.tags-wrap{display:flex;flex-wrap:wrap;gap:0.38rem;padding:0.52rem 0.8rem;background:var(–surface2);border:1px solid var(–border);border-radius:10px;cursor:text;min-height:44px;align-items:center;transition:border-color 0.2s;}
+.tags-wrap:focus-within{border-color:rgba(232,121,249,0.4);}
+.tag-chip{display:inline-flex;align-items:center;gap:0.25rem;padding:0.18rem 0.55rem;background:rgba(232,121,249,0.12);border:1px solid rgba(232,121,249,0.26);border-radius:100px;font-size:0.71rem;color:var(–itin);}
+.tag-chip-x{cursor:pointer;opacity:0.6;font-size:0.75rem;}
+.tag-chip-x:hover{opacity:1;}
+.tags-input{border:none;outline:none;background:none;font-family:‘Instrument Sans’,sans-serif;font-size:0.83rem;color:var(–text);flex:1;min-width:100px;}
+.tags-input::placeholder{color:var(–muted2);}
+.tag-suggestions{display:flex;flex-wrap:wrap;gap:0.32rem;margin-top:0.52rem;}
+.tag-sug{padding:0.22rem 0.6rem;background:rgba(255,255,255,0.03);border:1px solid var(–border);border-radius:100px;font-size:0.7rem;color:var(–muted);cursor:pointer;transition:all 0.2s;}
+.tag-sug:hover{background:rgba(232,121,249,0.08);color:var(–itin);border-color:rgba(232,121,249,0.22);}
+
+/* TOGGLE */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.7rem 0.9rem;background:var(–surface2);border:1px solid var(–border);border-radius:9px;}
+.toggle-label{font-size:0.81rem;font-weight:500;}
+.toggle-sub{font-size:0.7rem;color:var(–muted);margin-top:0.08rem;}
+.toggle-switch{position:relative;width:40px;height:22px;flex-shrink:0;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:var(–surface3);border-radius:100px;cursor:pointer;transition:0.3s;border:1px solid var(–border);}
+.toggle-slider::before{content:’’;position:absolute;width:16px;height:16px;left:2px;top:2px;background:var(–muted);border-radius:50%;transition:0.3s;}
+.toggle-switch input:checked+.toggle-slider{background:rgba(232,121,249,0.18);border-color:rgba(232,121,249,0.4);}
+.toggle-switch input:checked+.toggle-slider::before{transform:translateX(18px);background:var(–itin);}
+
+/* GEN BTN */
+.gen-btn{width:100%;padding:1rem;background:linear-gradient(135deg,var(–itin),var(–accent3));color:white;font-family:‘Syne’,sans-serif;font-size:0.97rem;font-weight:800;border:none;border-radius:13px;cursor:pointer;transition:all 0.2s;margin-top:1.3rem;}
+.gen-btn:hover{opacity:0.88;transform:translateY(-2px);box-shadow:0 12px 40px rgba(232,121,249,0.25);}
+.gen-btn:disabled{opacity:0.32;cursor:wait;transform:none;box-shadow:none;}
+
+/* RESULTS */
 #itinResult{display:none;margin-top:2.5rem;}
-
-/* Success moment — Peak-End Rule */
-.itin-celebrate{
-text-align:center;padding:1.5rem;
-background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(6,214,160,0.06));
-border:1px solid rgba(124,58,237,0.2);border-radius:18px;
-margin-bottom:1.5rem;animation:celebrate-in 0.6s var(–ease-spring) both;
-}
-@keyframes celebrate-in{from{transform:scale(0.9);opacity:0;}to{transform:scale(1);opacity:1;}}
-.celebrate-emoji{font-size:2rem;margin-bottom:0.4rem;}
-.celebrate-title{font-family:‘Syne’,sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.2rem;}
-.celebrate-sub{font-size:0.8rem;color:var(–muted);}
-
 .itin-result-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:0.8rem;}
 .itin-result-title{font-family:‘Syne’,sans-serif;font-size:1.7rem;font-weight:800;letter-spacing:-0.03em;line-height:1.1;}
-.itin-result-sub{font-size:0.77rem;color:var(–muted);margin-top:0.22rem;}
-.result-actions{display:flex;gap:0.38rem;flex-wrap:wrap;}
-.action-btn{
-padding:0.5rem 0.9rem;background:var(–surface);border:1px solid var(–border2);
-border-radius:10px;font-family:‘Syne’,sans-serif;font-size:0.72rem;font-weight:700;
-color:var(–text2);cursor:pointer;transition:all 0.18s var(–ease-spring);white-space:nowrap;
-}
-.action-btn:hover{border-color:rgba(124,58,237,0.35);color:var(–p3);transform:translateY(-1px);}
-.action-btn:active{transform:scale(0.97);}
-.action-btn.regen{background:rgba(124,58,237,0.08);border-color:rgba(124,58,237,0.25);color:var(–p3);}
-.action-btn.save-btn{background:rgba(6,214,160,0.07);border-color:rgba(6,214,160,0.22);color:var(–a2);}
+.itin-result-sub{font-size:0.78rem;color:var(–muted);margin-top:0.25rem;}
+.result-actions{display:flex;gap:0.4rem;flex-wrap:wrap;}
+.action-btn{padding:0.5rem 0.9rem;background:var(–surface);border:1px solid var(–border2);border-radius:9px;font-family:‘Syne’,sans-serif;font-size:0.72rem;font-weight:700;color:var(–text);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.action-btn:hover{border-color:rgba(232,121,249,0.35);color:var(–itin);}
+.action-btn.regen{background:rgba(232,121,249,0.08);border-color:rgba(232,121,249,0.22);color:var(–itin);}
+.action-btn.save-btn{background:rgba(110,231,183,0.07);border-color:rgba(110,231,183,0.22);color:var(–accent);}
 
-/* TRIP SUMMARY — visual reward for completing setup */
-.trip-summary-bar{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.55rem;margin-bottom:1.4rem;}
-.tsb-item{
-background:var(–surface);border:1px solid var(–border);border-radius:14px;
-padding:0.9rem 1rem;transition:all 0.2s;
-}
-.tsb-item:hover{border-color:var(–border2);transform:translateY(-1px);}
-.tsb-label{font-size:0.65rem;color:var(–muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.22rem;}
-.tsb-val{font-family:‘Syne’,sans-serif;font-size:1.15rem;font-weight:800;}
-.tsb-val.v-p{color:var(–p3);}
-.tsb-val.v-a{color:var(–a2);}
-.tsb-val.v-w{color:var(–w2);}
+/* TRIP EXTRAS — carbon + cost summary bar */
+.trip-summary-bar{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.6rem;margin-bottom:1.5rem;}
+.tsb-item{background:var(–surface);border:1px solid var(–border);border-radius:12px;padding:0.9rem 1rem;}
+.tsb-label{font-size:0.68rem;color:var(–muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.25rem;}
+.tsb-val{font-family:‘Syne’,sans-serif;font-size:1.2rem;font-weight:800;color:var(–text);}
+.tsb-val.green{color:var(–green);}
+.tsb-val.gold{color:var(–gold);}
+.tsb-val.itin{color:var(–itin);}
 
-/* DAY TABS — satisfying active state */
-.day-tabs{display:flex;gap:0.35rem;margin-bottom:1.1rem;flex-wrap:wrap;}
-.day-tab{
-padding:0.48rem 1rem;background:var(–surface);border:1px solid var(–border);
-border-radius:10px;font-size:0.77rem;font-weight:500;color:var(–muted);
-cursor:pointer;transition:all 0.18s var(–ease-spring);
-font-family:‘General Sans’,sans-serif;
-}
-.day-tab:hover{color:var(–text);border-color:var(–border2);}
-.day-tab.active{
-background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(6,214,160,0.08));
-border-color:rgba(124,58,237,0.35);color:var(–p3);
-box-shadow:0 0 0 3px rgba(124,58,237,0.08);
-}
-.day-panel{display:none;animation:fadeUp 0.32s ease both;}
+/* DAY TABS */
+.day-tabs{display:flex;gap:0.35rem;margin-bottom:1.2rem;flex-wrap:wrap;}
+.day-tab{padding:0.45rem 0.95rem;background:var(–surface);border:1px solid var(–border);border-radius:9px;font-family:‘Instrument Sans’,sans-serif;font-size:0.76rem;font-weight:500;color:var(–muted);cursor:pointer;transition:all 0.2s;}
+.day-tab.active{background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.32);color:var(–itin);}
+.day-tab:hover{color:var(–text);}
+.day-panel{display:none;animation:fadeUp 0.3s ease both;}
 .day-panel.active{display:block;}
 
 /* DAY COST BAR */
-.day-cost-bar{
-background:linear-gradient(135deg,var(–surface),rgba(245,158,11,0.04));
-border:1px solid rgba(245,158,11,0.15);border-radius:12px;
-padding:0.85rem 1.1rem;margin-bottom:0.9rem;
-display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;
-}
-.dcb-label{font-size:0.7rem;color:var(–muted);}
-.dcb-total{font-family:‘Syne’,sans-serif;font-size:1rem;font-weight:800;color:var(–w2);}
-.dcb-breakdown{display:flex;gap:0.4rem;flex-wrap:wrap;}
-.dcb-item{font-size:0.68rem;color:var(–muted);background:rgba(255,255,255,0.04);padding:0.16rem 0.48rem;border-radius:5px;}
+.day-cost-bar{background:var(–surface);border:1px solid var(–border);border-radius:12px;padding:0.9rem 1.1rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;}
+.dcb-label{font-size:0.72rem;color:var(–muted);}
+.dcb-total{font-family:‘Syne’,sans-serif;font-size:1.1rem;font-weight:800;color:var(–gold);}
+.dcb-breakdown{display:flex;gap:0.5rem;flex-wrap:wrap;}
+.dcb-item{font-size:0.7rem;color:var(–muted);background:rgba(255,255,255,0.04);padding:0.18rem 0.5rem;border-radius:5px;}
 
 /* MAP */
-.map-toggle-row{display:flex;gap:0.35rem;margin-bottom:0.9rem;}
-.view-toggle{
-padding:0.38rem 0.85rem;background:var(–surface);border:1px solid var(–border);
-border-radius:8px;font-size:0.73rem;font-weight:600;color:var(–muted);
-cursor:pointer;font-family:‘General Sans’,sans-serif;transition:all 0.18s;
-}
-.view-toggle.active{background:rgba(124,58,237,0.1);border-color:rgba(124,58,237,0.3);color:var(–p3);}
-.view-toggle:hover{color:var(–text);}
-.map-container{
-background:var(–surface);border:1px solid var(–border);
-border-radius:14px;overflow:hidden;margin-bottom:0.9rem;display:none;
-}
+.map-toggle-row{display:flex;gap:0.4rem;margin-bottom:0.9rem;}
+.view-toggle{padding:0.38rem 0.85rem;background:var(–surface);border:1px solid var(–border);border-radius:7px;font-size:0.73rem;font-weight:600;color:var(–muted);cursor:pointer;font-family:‘Instrument Sans’,sans-serif;transition:all 0.2s;}
+.view-toggle.active{background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.28);color:var(–itin);}
+.map-container{background:var(–surface);border:1px solid var(–border);border-radius:13px;overflow:hidden;margin-bottom:1rem;display:none;}
 .map-container.visible{display:block;}
-.map-iframe{width:100%;height:360px;border:none;display:block;}
-.map-pins{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:0.4rem;padding:0.85rem;}
-.map-pin-item{display:flex;align-items:center;gap:0.42rem;padding:0.42rem 0.6rem;background:var(–surface2);border-radius:8px;font-size:0.75rem;}
-.pin-num{width:20px;height:20px;background:linear-gradient(135deg,var(–p1),var(–a1));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:700;color:white;flex-shrink:0;}
+.map-iframe{width:100%;height:380px;border:none;display:block;}
+.map-pins{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.45rem;padding:0.9rem;}
+.map-pin-item{display:flex;align-items:center;gap:0.45rem;padding:0.45rem 0.65rem;background:var(–surface2);border-radius:7px;font-size:0.76rem;}
+.pin-num{width:20px;height:20px;background:linear-gradient(135deg,var(–itin),var(–accent3));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:700;color:white;flex-shrink:0;}
 .pin-name{color:var(–text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
-/* LOADING STATE — anticipation, not frustration */
-.itin-loading{text-align:center;padding:3.5rem 2rem;}
-.itin-loader-wrap{
-width:60px;height:60px;margin:0 auto 1.5rem;position:relative;
-}
-.itin-loader-ring{
-width:100%;height:100%;border-radius:50%;
-border:3px solid var(–surface3);
-border-top-color:var(–p2);
-border-right-color:var(–a2);
-animation:spin 1s linear infinite;
-}
-.itin-loader-dot{
-position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-width:12px;height:12px;background:linear-gradient(135deg,var(–p1),var(–a1));
-border-radius:50%;box-shadow:var(–glow-p);
-animation:loader-pulse 1s ease-in-out infinite;
-}
-@keyframes loader-pulse{0%,100%{transform:translate(-50%,-50%) scale(0.8);}50%{transform:translate(-50%,-50%) scale(1.2);}}
-.loading-txt{font-size:0.82rem;color:var(–muted);}
-.loading-subtitle{font-size:0.72rem;color:var(–muted2);margin-top:0.3rem;}
+/* LOADING */
+.itin-loading{text-align:center;padding:3rem 2rem;}
+.itin-loader{width:38px;height:38px;border:2px solid var(–border);border-top-color:var(–itin);border-radius:50%;animation:spin 0.85s linear infinite;margin:0 auto 1rem;}
+.loading-txt{font-size:0.8rem;color:var(–muted);}
 
-/* TIME BLOCKS — the core repeat interaction, must feel great */
-.day-blocks{display:grid;gap:0.75rem;}
-.time-block{
-background:var(–surface);border:1px solid var(–border);border-radius:16px;
-overflow:hidden;transition:all 0.22s var(–ease-smooth);
-position:relative;
-}
-.time-block::before{
-content:’’;position:absolute;left:0;top:0;bottom:0;width:3px;
-background:linear-gradient(180deg,var(–p1),var(–a1));
-opacity:0;transition:opacity 0.2s;border-radius:0 0 0 0;
-}
-.time-block:hover{border-color:var(–border2);box-shadow:0 8px 28px rgba(0,0,0,0.35);transform:translateY(-2px);}
-.time-block:hover::before{opacity:1;}
-.time-block.visited{opacity:0.42;border-style:dashed;}
-.time-block.visited::before{background:linear-gradient(180deg,var(–a1),var(–a2));}
-
-.tb-header{
-display:flex;align-items:center;gap:0.6rem;
-padding:0.85rem 1.1rem 0.65rem;
-border-bottom:1px solid var(–border);flex-wrap:wrap;
-}
-.tb-num{
-width:22px;height:22px;border-radius:7px;
-background:linear-gradient(135deg,var(–p1),var(–a1));
-display:flex;align-items:center;justify-content:center;
-font-size:0.6rem;font-weight:700;color:white;flex-shrink:0;
-box-shadow:0 2px 8px rgba(124,58,237,0.35);
-}
-.tb-time{
-font-family:‘Syne’,sans-serif;font-size:0.68rem;font-weight:700;
-letter-spacing:0.1em;text-transform:uppercase;color:var(–p3);
-background:rgba(124,58,237,0.08);padding:0.18rem 0.55rem;
-border-radius:6px;border:1px solid rgba(124,58,237,0.18);white-space:nowrap;
-}
+/* TIME BLOCKS */
+.day-blocks{display:grid;gap:0.8rem;}
+.time-block{background:var(–surface);border:1px solid var(–border);border-radius:14px;overflow:hidden;transition:border-color 0.2s;}
+.time-block.visited{opacity:0.45;border-style:dashed;}
+.time-block:hover{border-color:var(–border2);}
+.tb-header{display:flex;align-items:center;gap:0.65rem;padding:0.85rem 1rem 0.65rem;border-bottom:1px solid var(–border);flex-wrap:wrap;}
+.tb-num{width:20px;height:20px;background:linear-gradient(135deg,var(–itin),var(–accent3));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:700;color:white;flex-shrink:0;}
+.tb-time{font-family:‘Syne’,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(–itin);white-space:nowrap;background:rgba(232,121,249,0.07);padding:0.18rem 0.5rem;border-radius:5px;border:1px solid rgba(232,121,249,0.16);}
 .tb-place{font-family:‘Syne’,sans-serif;font-size:0.97rem;font-weight:700;letter-spacing:-0.02em;flex:1;}
-.tb-type{font-size:0.65rem;color:var(–muted);background:rgba(255,255,255,0.04);padding:0.16rem 0.5rem;border-radius:5px;white-space:nowrap;}
-.tb-cost{font-size:0.7rem;color:var(–w2);font-weight:600;white-space:nowrap;}
-.tb-actions{display:flex;gap:0.28rem;margin-left:auto;}
-.tb-icon-btn{
-width:28px;height:28px;border-radius:8px;
-border:1px solid var(–border);background:rgba(255,255,255,0.03);
-color:var(–muted);font-size:0.72rem;cursor:pointer;
-transition:all 0.18s var(–ease-spring);
-display:flex;align-items:center;justify-content:center;
-}
-.tb-icon-btn:hover{background:rgba(255,255,255,0.08);color:var(–text);transform:scale(1.1);}
-.tb-icon-btn:active{transform:scale(0.9);}
-.tb-icon-btn.active{background:rgba(6,214,160,0.12);border-color:rgba(6,214,160,0.3);color:var(–a2);}
-
-.tb-body{padding:0.85rem 1.1rem;}
-.tb-desc{font-size:0.83rem;color:var(–text2);line-height:1.65;margin-bottom:0.7rem;font-weight:300;}
-.tb-tip{
-font-size:0.75rem;color:var(–a2);
-background:rgba(6,214,160,0.06);border:1px solid rgba(6,214,160,0.15);
-padding:0.35rem 0.68rem;border-radius:7px;
-margin-bottom:0.75rem;display:inline-block;
-}
+.tb-type{font-size:0.65rem;color:var(–muted);background:rgba(255,255,255,0.04);padding:0.16rem 0.48rem;border-radius:5px;white-space:nowrap;}
+.tb-cost{font-size:0.7rem;color:var(–gold);font-weight:600;white-space:nowrap;}
+.tb-actions{display:flex;gap:0.3rem;margin-left:auto;}
+.tb-icon-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(–border);background:rgba(255,255,255,0.03);color:var(–muted);font-size:0.75rem;cursor:pointer;transition:all 0.18s;display:flex;align-items:center;justify-content:center;}
+.tb-icon-btn:hover{background:rgba(255,255,255,0.08);color:var(–text);}
+.tb-icon-btn.visited-btn.active{background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:var(–green);}
+.tb-body{padding:0.85rem 1rem;}
+.tb-desc{font-size:0.82rem;color:var(–muted);line-height:1.62;margin-bottom:0.7rem;}
+.tb-tip{font-size:0.75rem;color:var(–accent);background:rgba(110,231,183,0.05);border:1px solid rgba(110,231,183,0.13);padding:0.35rem 0.65rem;border-radius:6px;margin-bottom:0.75rem;display:inline-block;}
 
 /* NOTES */
-.notes-section{margin-bottom:0.8rem;}
-.notes-toggle{
-display:flex;align-items:center;gap:0.38rem;font-size:0.71rem;
-color:var(–muted);cursor:pointer;margin-bottom:0.28rem;
-background:none;border:none;font-family:‘General Sans’,sans-serif;
-transition:color 0.15s;
-}
-.notes-toggle:hover{color:var(–text2);}
-.notes-textarea{
-display:none;width:100%;
-background:var(–surface2);border:1px solid var(–border);border-radius:10px;
-padding:0.6rem 0.8rem;font-family:‘General Sans’,sans-serif;font-size:0.8rem;
-color:var(–text);outline:none;resize:vertical;min-height:65px;line-height:1.55;
-transition:all 0.22s;
-}
+.notes-section{margin-bottom:0.85rem;}
+.notes-toggle{display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:var(–muted);cursor:pointer;margin-bottom:0.3rem;background:none;border:none;font-family:‘Instrument Sans’,sans-serif;transition:color 0.15s;}
+.notes-toggle:hover{color:var(–text);}
+.notes-textarea{display:none;width:100%;background:var(–surface2);border:1px solid var(–border);border-radius:8px;padding:0.6rem 0.8rem;font-family:‘Instrument Sans’,sans-serif;font-size:0.8rem;color:var(–text);outline:none;resize:vertical;min-height:65px;line-height:1.5;transition:border-color 0.2s;}
 .notes-textarea.open{display:block;animation:fadeUp 0.2s ease both;}
-.notes-textarea:focus{border-color:rgba(124,58,237,0.35);box-shadow:0 0 0 3px rgba(124,58,237,0.07);}
+.notes-textarea:focus{border-color:rgba(232,121,249,0.3);}
 .notes-textarea::placeholder{color:var(–muted2);}
 
-/* STAR RATING — satisfying visual response */
-.rating-row{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.78rem;flex-wrap:wrap;}
-.star-rating{display:flex;gap:2px;}
-.star-btn{
-font-size:1.1rem;cursor:pointer;color:var(–surface4);
-transition:all 0.12s var(–ease-spring);background:none;border:none;padding:0;
-}
-.star-btn:hover{transform:scale(1.3);}
-.star-btn.filled{color:var(–w1);}
-.star-btn.filled.just-rated{animation:star-pop 0.4s var(–ease-spring);}
-@keyframes star-pop{0%{transform:scale(1);}50%{transform:scale(1.5);}100%{transform:scale(1);}}
+/* RATING */
+.rating-row{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.8rem;flex-wrap:wrap;}
+.star-rating{display:flex;gap:1px;}
+.star-btn{font-size:1rem;cursor:pointer;color:var(–muted2);transition:color 0.12s;background:none;border:none;padding:0;}
+.star-btn.filled,.star-btn:hover{color:var(–gold);}
 .rating-label{font-size:0.7rem;color:var(–muted);}
 
-/* RESERVATION LINKS */
-.tb-footer{display:flex;gap:0.38rem;flex-wrap:wrap;align-items:center;}
-.res-btn{
-display:inline-flex;align-items:center;gap:0.28rem;
-padding:0.38rem 0.72rem;border-radius:8px;
-font-size:0.7rem;font-weight:600;cursor:pointer;
-transition:all 0.18s var(–ease-spring);
-text-decoration:none;border:1px solid;
-font-family:‘General Sans’,sans-serif;
-}
-.res-btn:hover{transform:translateY(-1px);}
-.res-btn:active{transform:scale(0.96);}
-.res-btn-maps{color:var(–b1);background:rgba(59,130,246,0.07);border-color:rgba(59,130,246,0.2);}
-.res-btn-maps:hover{background:rgba(59,130,246,0.14);}
-.res-btn-opentable{color:#ff6b81;background:rgba(255,107,129,0.07);border-color:rgba(255,107,129,0.22);}
-.res-btn-opentable:hover{background:rgba(255,107,129,0.14);}
-.res-btn-viator{color:var(–w1);background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.22);}
-.res-btn-viator:hover{background:rgba(245,158,11,0.14);}
-.res-btn-booking{color:var(–p3);background:rgba(124,58,237,0.07);border-color:rgba(124,58,237,0.2);}
-.res-btn-booking:hover{background:rgba(124,58,237,0.14);}
-.res-btn-yelp{color:#ff6b81;background:rgba(255,107,129,0.07);border-color:rgba(255,107,129,0.18);}
-.res-btn-yelp:hover{background:rgba(255,107,129,0.14);}
-.regen-block-btn{
-display:inline-flex;align-items:center;gap:0.28rem;
-padding:0.35rem 0.7rem;background:rgba(124,58,237,0.07);
-border:1px solid rgba(124,58,237,0.18);border-radius:8px;
-font-size:0.68rem;font-weight:600;color:var(–p3);cursor:pointer;
-transition:all 0.18s;margin-left:auto;font-family:‘General Sans’,sans-serif;
-}
-.regen-block-btn:hover{background:rgba(124,58,237,0.14);}
-.regen-block-btn:disabled{opacity:0.35;cursor:wait;}
+/* FOOTER LINKS */
+.tb-footer{display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center;}
+.res-btn{display:inline-flex;align-items:center;gap:0.28rem;padding:0.37rem 0.75rem;border-radius:7px;font-size:0.7rem;font-weight:600;font-family:‘Instrument Sans’,sans-serif;cursor:pointer;transition:all 0.18s;text-decoration:none;border:1px solid;}
+.res-btn-maps{color:var(–accent3);background:rgba(96,165,250,0.07);border-color:rgba(96,165,250,0.18);}
+.res-btn-maps:hover{background:rgba(96,165,250,0.14);}
+.res-btn-opentable{color:#ff6b6b;background:rgba(255,107,107,0.07);border-color:rgba(255,107,107,0.22);}
+.res-btn-opentable:hover{background:rgba(255,107,107,0.13);}
+.res-btn-viator{color:#ff9500;background:rgba(255,149,0,0.07);border-color:rgba(255,149,0,0.22);}
+.res-btn-viator:hover{background:rgba(255,149,0,0.14);}
+.res-btn-booking{color:#7eb3ff;background:rgba(126,179,255,0.07);border-color:rgba(126,179,255,0.18);}
+.res-btn-booking:hover{background:rgba(126,179,255,0.14);}
+.res-btn-yelp{color:#ff6b6b;background:rgba(255,107,107,0.07);border-color:rgba(255,107,107,0.18);}
+.res-btn-yelp:hover{background:rgba(255,107,107,0.13);}
+.regen-block-btn{display:inline-flex;align-items:center;gap:0.28rem;padding:0.35rem 0.72rem;background:rgba(232,121,249,0.06);border:1px solid rgba(232,121,249,0.16);border-radius:7px;font-size:0.68rem;font-weight:600;font-family:‘Instrument Sans’,sans-serif;color:var(–itin);cursor:pointer;transition:all 0.18s;margin-left:auto;}
+.regen-block-btn:hover{background:rgba(232,121,249,0.12);}
+.regen-block-btn:disabled{opacity:0.38;cursor:wait;}
 
-/* ===================== SIDE MODALS ===================== */
-.side-modal-wrap{
-display:none;position:fixed;inset:0;
-background:rgba(0,0,0,0.75);z-index:500;backdrop-filter:blur(12px);
-align-items:center;justify-content:center;padding:1.5rem;
-}
+/* PACKING / LANGUAGE / CARBON modals */
+.side-modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:500;backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:1.5rem;}
 .side-modal-wrap.open{display:flex;animation:fadeIn 0.2s ease;}
-.side-modal{
-background:var(–surface);border:1px solid var(–border2);
-border-radius:22px;padding:2rem;width:100%;max-width:540px;
-max-height:88vh;overflow-y:auto;animation:slideUp 0.32s var(–ease-spring);
-}
-.sm-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.3rem;}
+.side-modal{background:var(–surface);border:1px solid var(–border2);border-radius:20px;padding:2rem;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;animation:slideUp 0.3s ease;}
+.sm-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.4rem;}
 .sm-title{font-family:‘Syne’,sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:-0.02em;}
-.close-btn{
-background:rgba(255,255,255,0.05);border:1px solid var(–border);
-width:30px;height:30px;border-radius:8px;cursor:pointer;color:var(–muted);
-font-size:0.88rem;display:flex;align-items:center;justify-content:center;
-transition:all 0.18s var(–ease-spring);
-}
-.close-btn:hover{color:var(–text);background:rgba(255,255,255,0.1);transform:scale(1.08);}
-.close-btn:active{transform:scale(0.92);}
+.close-btn{background:rgba(255,255,255,0.05);border:1px solid var(–border);width:30px;height:30px;border-radius:7px;cursor:pointer;color:var(–muted);font-size:0.9rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.close-btn:hover{color:var(–text);}
 
 /* PACKING LIST */
 .pack-section{margin-bottom:1.2rem;}
-.pack-section-title{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(–p3);margin-bottom:0.55rem;}
-.pack-items{display:flex;flex-wrap:wrap;gap:0.38rem;}
-.pack-item{
-display:flex;align-items:center;gap:0.38rem;
-padding:0.32rem 0.7rem;background:var(–surface2);
-border:1px solid var(–border);border-radius:8px;
-font-size:0.78rem;cursor:pointer;transition:all 0.18s;
-font-family:‘General Sans’,sans-serif;
-}
-.pack-item:hover{border-color:var(–border2);transform:translateY(-1px);}
-.pack-item.checked{background:rgba(6,214,160,0.07);border-color:rgba(6,214,160,0.25);color:var(–a2);text-decoration:line-through;opacity:0.65;}
-.pack-check{font-size:0.75rem;transition:transform 0.2s var(–ease-spring);}
-.pack-item.checked .pack-check{animation:check-bounce 0.3s var(–ease-spring);}
-@keyframes check-bounce{0%{transform:scale(1);}50%{transform:scale(1.5);}100%{transform:scale(1);}}
+.pack-section-title{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(–itin);margin-bottom:0.6rem;}
+.pack-items{display:flex;flex-wrap:wrap;gap:0.4rem;}
+.pack-item{display:flex;align-items:center;gap:0.4rem;padding:0.35rem 0.7rem;background:var(–surface2);border:1px solid var(–border);border-radius:8px;font-size:0.78rem;cursor:pointer;transition:all 0.2s;}
+.pack-item.checked{background:rgba(110,231,183,0.08);border-color:rgba(110,231,183,0.25);color:var(–accent);text-decoration:line-through;opacity:0.7;}
+.pack-check{font-size:0.75rem;}
 
 /* LANGUAGE CARDS */
 .phrase-grid{display:grid;gap:0.5rem;}
-.phrase-card{
-background:var(–surface2);border:1px solid var(–border);border-radius:12px;padding:0.85rem;
-transition:all 0.18s;cursor:pointer;
-}
-.phrase-card:hover{border-color:var(–border2);transform:translateY(-1px);}
-.phrase-local{font-family:‘Syne’,sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.15rem;}
-.phrase-roman{font-size:0.74rem;color:var(–p3);font-style:italic;margin-bottom:0.12rem;}
-.phrase-meaning{font-size:0.77rem;color:var(–muted);}
-.phrase-context{font-size:0.68rem;color:var(–muted2);margin-top:0.1rem;}
+.phrase-card{background:var(–surface2);border:1px solid var(–border);border-radius:10px;padding:0.8rem;}
+.phrase-local{font-family:‘Syne’,sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.2rem;}
+.phrase-roman{font-size:0.75rem;color:var(–itin);font-style:italic;margin-bottom:0.15rem;}
+.phrase-meaning{font-size:0.78rem;color:var(–muted);}
 
 /* CARBON */
-.carbon-breakdown{display:grid;gap:0.45rem;}
-.carbon-item{display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.9rem;background:var(–surface2);border:1px solid var(–border);border-radius:10px;}
+.carbon-breakdown{display:grid;gap:0.5rem;}
+.carbon-item{display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.85rem;background:var(–surface2);border:1px solid var(–border);border-radius:9px;}
 .carbon-label{font-size:0.82rem;}
-.carbon-val{font-family:‘Syne’,sans-serif;font-size:0.88rem;font-weight:700;color:var(–a2);}
-.carbon-offset-link{display:flex;align-items:center;justify-content:center;gap:0.4rem;width:100%;padding:0.78rem;background:rgba(6,214,160,0.08);border:1px solid rgba(6,214,160,0.22);border-radius:11px;font-family:‘Syne’,sans-serif;font-size:0.82rem;font-weight:700;color:var(–a2);cursor:pointer;margin-top:1rem;text-decoration:none;transition:all 0.2s;}
-.carbon-offset-link:hover{background:rgba(6,214,160,0.16);}
+.carbon-val{font-family:‘Syne’,sans-serif;font-size:0.88rem;font-weight:700;color:var(–green);}
+.carbon-offset-btn{width:100%;padding:0.75rem;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.25);border-radius:10px;font-family:‘Syne’,sans-serif;font-size:0.82rem;font-weight:700;color:var(–green);cursor:pointer;margin-top:1rem;transition:all 0.2s;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:0.4rem;}
+.carbon-offset-btn:hover{background:rgba(74,222,128,0.18);}
 
-/* SHARE / EMAIL modals */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:1.5rem;}
-.modal-overlay.open{display:flex;animation:fadeIn 0.2s ease;}
-.modal-box{background:var(–surface);border:1px solid var(–border2);border-radius:22px;padding:2rem;width:100%;max-width:460px;animation:slideUp 0.32s var(–ease-spring);}
-.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.4rem;}
-.modal-ttl{font-family:‘Syne’,sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:-0.02em;}
-.share-link-box{display:flex;gap:0.42rem;margin-bottom:1.1rem;}
-.share-link-input{flex:1;background:var(–surface2);border:1px solid var(–border2);border-radius:10px;padding:0.65rem 0.9rem;font-size:0.78rem;color:var(–muted);outline:none;font-family:‘General Sans’,sans-serif;}
-.copy-btn{padding:0.65rem 0.9rem;background:rgba(6,214,160,0.1);border:1px solid rgba(6,214,160,0.25);border-radius:10px;font-family:‘Syne’,sans-serif;font-size:0.75rem;font-weight:700;color:var(–a2);cursor:pointer;white-space:nowrap;transition:all 0.18s;}
-.copy-btn:hover{background:rgba(6,214,160,0.18);}
-.share-platforms{display:grid;grid-template-columns:1fr 1fr;gap:0.42rem;}
-.share-platform-btn{padding:0.65rem;background:var(–surface2);border:1px solid var(–border);border-radius:10px;font-size:0.78rem;font-weight:600;color:var(–text2);cursor:pointer;transition:all 0.18s var(–ease-spring);text-align:center;font-family:‘General Sans’,sans-serif;}
-.share-platform-btn:hover{background:var(–surface3);border-color:var(–border2);transform:translateY(-1px);}
+/* SHARE / EMAIL */
+.share-modal-wrap,.email-modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:500;backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:1.5rem;}
+.share-modal-wrap.open,.email-modal-wrap.open{display:flex;animation:fadeIn 0.2s ease;}
+.share-modal,.email-modal{background:var(–surface);border:1px solid var(–border2);border-radius:20px;padding:2rem;width:100%;max-width:460px;animation:slideUp 0.3s ease;}
+.share-link-box{display:flex;gap:0.45rem;margin-bottom:1.1rem;}
+.share-link-input{flex:1;background:var(–surface2);border:1px solid var(–border);border-radius:8px;padding:0.6rem 0.85rem;font-family:‘Instrument Sans’,sans-serif;font-size:0.78rem;color:var(–muted);outline:none;}
+.copy-btn{padding:0.6rem 0.9rem;background:rgba(110,231,183,0.1);border:1px solid rgba(110,231,183,0.22);border-radius:8px;font-family:‘Syne’,sans-serif;font-size:0.75rem;font-weight:700;color:var(–accent);cursor:pointer;white-space:nowrap;transition:all 0.2s;}
+.copy-btn:hover{background:rgba(110,231,183,0.18);}
+.share-platforms{display:grid;grid-template-columns:1fr 1fr;gap:0.45rem;}
+.share-platform-btn{padding:0.65rem;background:var(–surface2);border:1px solid var(–border);border-radius:9px;font-family:‘Instrument Sans’,sans-serif;font-size:0.78rem;font-weight:600;color:var(–text);cursor:pointer;transition:all 0.2s;text-align:center;}
+.share-platform-btn:hover{background:var(–surface3);border-color:var(–border2);}
 
-/* AUTH MODAL */
-.auth-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:600;backdrop-filter:blur(16px);align-items:center;justify-content:center;padding:1.5rem;}
-.auth-overlay.open{display:flex;animation:fadeIn 0.2s ease;}
-.auth-box{background:var(–surface);border:1px solid var(–border2);border-radius:22px;padding:2rem;width:100%;max-width:400px;animation:slideUp 0.32s var(–ease-spring);position:relative;}
-.auth-title{font-family:‘Syne’,sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.22rem;}
+/* AUTH */
+.auth-modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:600;backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:1.5rem;}
+.auth-modal-wrap.open{display:flex;animation:fadeIn 0.2s ease;}
+.auth-modal{background:var(–surface);border:1px solid var(–border2);border-radius:20px;padding:2rem;width:100%;max-width:400px;animation:slideUp 0.3s ease;position:relative;}
+.auth-title{font-family:‘Syne’,sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.25rem;}
 .auth-sub{font-size:0.8rem;color:var(–muted);margin-bottom:1.4rem;}
 .auth-tabs{display:flex;gap:0;margin-bottom:1.3rem;border-bottom:1px solid var(–border);}
-.auth-tab{padding:0.45rem 0.9rem;font-size:0.8rem;font-weight:600;color:var(–muted);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;font-family:‘General Sans’,sans-serif;}
-.auth-tab.active{color:var(–p3);border-bottom-color:var(–p2);}
-.auth-input{width:100%;background:var(–surface2);border:1px solid var(–border2);border-radius:10px;padding:0.75rem 1rem;font-family:‘General Sans’,sans-serif;font-size:0.87rem;color:var(–text);outline:none;transition:all 0.2s;margin-bottom:0.7rem;}
-.auth-input:focus{border-color:rgba(124,58,237,0.45);box-shadow:0 0 0 4px rgba(124,58,237,0.07);}
-.auth-btn{width:100%;padding:0.85rem;background:linear-gradient(135deg,var(–p1),var(–p2));color:white;font-family:‘Syne’,sans-serif;font-size:0.87rem;font-weight:700;border:none;border-radius:12px;cursor:pointer;transition:all 0.22s var(–ease-spring);box-shadow:0 6px 20px rgba(124,58,237,0.35);}
-.auth-btn:hover{opacity:0.88;transform:translateY(-1px);}
+.auth-tab{padding:0.45rem 0.9rem;font-family:‘Instrument Sans’,sans-serif;font-size:0.8rem;font-weight:600;color:var(–muted);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
+.auth-tab.active{color:var(–itin);border-bottom-color:var(–itin);}
+.auth-input{width:100%;background:var(–surface2);border:1px solid var(–border);border-radius:9px;padding:0.72rem 0.95rem;font-family:‘Instrument Sans’,sans-serif;font-size:0.86rem;color:var(–text);outline:none;transition:border-color 0.2s;margin-bottom:0.7rem;}
+.auth-input:focus{border-color:rgba(232,121,249,0.4);}
+.auth-btn{width:100%;padding:0.82rem;background:linear-gradient(135deg,var(–itin),var(–accent3));color:white;font-family:‘Syne’,sans-serif;font-size:0.86rem;font-weight:700;border:none;border-radius:11px;cursor:pointer;transition:all 0.2s;}
+.auth-btn:hover{opacity:0.88;}
 
-/* SAVED PAGE */
-#saved-page{padding:5.5rem 2rem 5rem;}
-.saved-inner{max-width:820px;margin:0 auto;}
-.saved-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;margin-top:1.4rem;}
-.saved-card{background:var(–surface);border:1px solid var(–border);border-radius:16px;padding:1.2rem;transition:all 0.22s var(–ease-spring);cursor:pointer;position:relative;overflow:hidden;}
-.saved-card::before{content:’’;position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,58,237,0.04),transparent);opacity:0;transition:opacity 0.2s;}
-.saved-card:hover{border-color:rgba(124,58,237,0.3);transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,0.4);}
-.saved-card:hover::before{opacity:1;}
-.saved-card-title{font-family:‘Syne’,sans-serif;font-size:0.97rem;font-weight:700;margin-bottom:0.26rem;letter-spacing:-0.01em;}
-.saved-card-meta{font-size:0.72rem;color:var(–muted);display:flex;gap:0.55rem;flex-wrap:wrap;margin-bottom:0.7rem;}
-.saved-card-actions{display:flex;gap:0.32rem;}
-.sc-btn{padding:0.28rem 0.65rem;border-radius:7px;font-size:0.7rem;font-weight:600;cursor:pointer;transition:all 0.18s;border:1px solid var(–border);background:rgba(255,255,255,0.03);color:var(–muted);font-family:‘General Sans’,sans-serif;}
-.sc-btn:hover{color:var(–text);border-color:var(–border2);}
-.sc-btn.del{color:#fb7185;border-color:rgba(244,63,94,0.18);}
-.sc-btn.del:hover{background:rgba(244,63,94,0.08);}
+/* SAVED */
+#saved-page{padding:6rem 2rem 5rem;}
+.saved-inner{max-width:960px;margin:0 auto;}
+.saved-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-top:1.4rem;}
+.saved-card{background:var(–surface);border:1px solid var(–border);border-radius:14px;padding:1.2rem;transition:all 0.2s;cursor:pointer;}
+.saved-card:hover{border-color:rgba(232,121,249,0.28);transform:translateY(-3px);box-shadow:0 10px 35px rgba(0,0,0,0.3);}
+.saved-card-title{font-family:‘Syne’,sans-serif;font-size:0.97rem;font-weight:700;margin-bottom:0.28rem;letter-spacing:-0.01em;}
+.saved-card-meta{font-size:0.72rem;color:var(–muted);display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.7rem;}
+.saved-card-actions{display:flex;gap:0.35rem;}
+.sc-btn{padding:0.28rem 0.68rem;border-radius:6px;font-size:0.7rem;font-weight:600;font-family:‘Instrument Sans’,sans-serif;cursor:pointer;transition:all 0.2s;border:1px solid var(–border);background:rgba(255,255,255,0.03);color:var(–muted);}
+.sc-btn:hover{color:var(–text);}
+.sc-btn.del{color:var(–warn);border-color:rgba(248,113,113,0.18);}
+.sc-btn.del:hover{background:rgba(248,113,113,0.08);}
 .empty-state{text-align:center;padding:3.5rem 2rem;color:var(–muted);grid-column:1/-1;}
-.empty-icon{font-size:3rem;margin-bottom:0.9rem;}
-.empty-title{font-family:‘Syne’,sans-serif;font-size:1.1rem;font-weight:700;color:var(–text);margin-bottom:0.32rem;}
+.empty-icon{font-size:2.8rem;margin-bottom:0.9rem;}
+.empty-title{font-family:‘Syne’,sans-serif;font-size:1.1rem;font-weight:700;color:var(–text);margin-bottom:0.35rem;}
 
-/* BLOG PAGE */
-#blog-page{padding:5.5rem 2rem 5rem;}
+/* BLOG */
+#blog-page{padding:6rem 2rem 5rem;}
 .blog-inner{max-width:1100px;margin:0 auto;}
 .blog-toolbar{display:flex;gap:0.5rem;margin-bottom:1.8rem;flex-wrap:wrap;align-items:center;justify-content:space-between;}
 .blog-filters{display:flex;gap:0.38rem;flex-wrap:wrap;align-items:center;}
-.btag{display:inline-block;padding:0.27rem 0.7rem;border-radius:100px;font-size:0.7rem;font-weight:500;cursor:pointer;transition:all 0.18s;border:1px solid var(–border);background:rgba(255,255,255,0.02);color:var(–muted);font-family:‘General Sans’,sans-serif;}
-.btag:hover,.btag.active{background:rgba(6,214,160,0.08);border-color:rgba(6,214,160,0.28);color:var(–a2);}
-.write-btn{padding:0.55rem 1.1rem;background:linear-gradient(135deg,var(–p1),var(–p2));color:white;font-family:‘Syne’,sans-serif;font-size:0.75rem;font-weight:700;border:none;border-radius:9px;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 14px rgba(124,58,237,0.3);}
-.write-btn:hover{opacity:0.88;transform:translateY(-1px);}
+.btag{display:inline-block;padding:0.26rem 0.68rem;border-radius:100px;font-size:0.7rem;font-weight:500;cursor:pointer;transition:all 0.2s;border:1px solid var(–border);background:rgba(255,255,255,0.03);color:var(–muted);}
+.btag:hover,.btag.active{background:rgba(110,231,183,0.09);border-color:rgba(110,231,183,0.28);color:var(–accent);}
+.write-btn{padding:0.58rem 1.1rem;background:var(–accent);color:#09090f;font-family:‘Syne’,sans-serif;font-size:0.75rem;font-weight:700;border:none;border-radius:8px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.write-btn:hover{background:#a7f3d0;}
 .blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.1rem;}
-.blog-card{background:var(–surface);border:1px solid var(–border);border-radius:16px;overflow:hidden;transition:all 0.22s var(–ease-spring);}
-.blog-card:hover{transform:translateY(-4px);border-color:var(–border2);box-shadow:0 16px 44px rgba(0,0,0,0.4);}
+.blog-card{background:var(–surface);border:1px solid var(–border);border-radius:15px;overflow:hidden;transition:transform 0.22s,border-color 0.22s,box-shadow 0.22s;}
+.blog-card:hover{transform:translateY(-3px);border-color:var(–border2);box-shadow:0 15px 45px rgba(0,0,0,0.38);}
 .bc-img-ph{width:100%;height:155px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:linear-gradient(135deg,var(–surface2),var(–surface3));}
 .bc-img{width:100%;height:155px;object-fit:cover;display:block;}
 .bc-body{padding:1.1rem;}
-.bc-tags{display:flex;gap:0.35rem;flex-wrap:wrap;margin-bottom:0.62rem;}
-.bc-city{font-size:0.6rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;padding:0.17rem 0.5rem;border-radius:5px;background:rgba(59,130,246,0.1);color:var(–b1);border:1px solid rgba(59,130,246,0.2);}
-.bc-cat{font-size:0.6rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;padding:0.17rem 0.5rem;border-radius:5px;background:rgba(124,58,237,0.1);color:var(–p3);border:1px solid rgba(124,58,237,0.2);}
-.bc-title{font-family:‘Syne’,sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.36rem;line-height:1.22;}
-.bc-excerpt{font-size:0.78rem;color:var(–muted);line-height:1.6;font-weight:300;margin-bottom:0.85rem;}
+.bc-tags{display:flex;gap:0.35rem;flex-wrap:wrap;margin-bottom:0.65rem;}
+.bc-city{font-size:0.6rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;padding:0.18rem 0.5rem;border-radius:5px;background:rgba(96,165,250,0.09);color:var(–accent3);border:1px solid rgba(96,165,250,0.18);}
+.bc-cat{font-size:0.6rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;padding:0.18rem 0.5rem;border-radius:5px;background:rgba(167,139,250,0.09);color:#a78bfa;border:1px solid rgba(167,139,250,0.18);}
+.bc-title{font-family:‘Syne’,sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.38rem;line-height:1.22;}
+.bc-excerpt{font-size:0.79rem;color:var(–muted);line-height:1.58;font-weight:300;margin-bottom:0.85rem;}
 .bc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:0.75rem;border-top:1px solid var(–border);}
 .bc-author{display:flex;align-items:center;gap:0.4rem;}
-.avatar{width:22px;height:22px;border-radius:7px;background:linear-gradient(135deg,var(–p1),var(–a1));display:flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:700;color:white;flex-shrink:0;}
+.avatar{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(–itin),var(–accent3));display:flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:700;color:#09090f;flex-shrink:0;}
 .author-name{font-size:0.7rem;color:var(–muted);}
 .bc-date{font-size:0.65rem;color:var(–muted2);}
 
 /* WRITE MODAL */
-.woverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:1.5rem;}
+.woverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:500;backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:1.5rem;}
 .woverlay.open{display:flex;animation:fadeIn 0.2s ease;}
-.write-modal{background:var(–surface);border:1px solid var(–border2);border-radius:20px;padding:1.8rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;animation:slideUp 0.32s var(–ease-spring);}
+.write-modal{background:var(–surface);border:1px solid var(–border2);border-radius:18px;padding:1.8rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;animation:slideUp 0.3s ease;}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;}
+.modal-ttl{font-family:‘Syne’,sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:-0.02em;}
 .fg{margin-bottom:1.1rem;}
 .fl2{display:block;font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(–muted);margin-bottom:0.38rem;}
-.fi,.fta,.fsel{width:100%;background:var(–surface2);border:1px solid var(–border2);border-radius:10px;padding:0.7rem 0.95rem;font-family:‘General Sans’,sans-serif;font-size:0.85rem;color:var(–text);outline:none;transition:all 0.2s;}
-.fi:focus,.fta:focus,.fsel:focus{border-color:rgba(6,214,160,0.35);box-shadow:0 0 0 3px rgba(6,214,160,0.07);}
+.fi,.fta,.fsel{width:100%;background:var(–surface2);border:1px solid var(–border);border-radius:9px;padding:0.68rem 0.95rem;font-family:‘Instrument Sans’,sans-serif;font-size:0.85rem;color:var(–text);outline:none;transition:border-color 0.2s;}
+.fi:focus,.fta:focus,.fsel:focus{border-color:rgba(110,231,183,0.32);}
 .fta{resize:vertical;min-height:90px;line-height:1.6;}
-.fsel{cursor:pointer;appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’%3E%3Cpath d=‘M1 1l5 5 5-5’ stroke=‘rgba(196,192,224,0.4)’ stroke-width=‘1.5’ fill=‘none’/%3E%3C/svg%3E”);background-repeat:no-repeat;background-position:right 1rem center;}
+.fsel{cursor:pointer;appearance:none;background-image:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’%3E%3Cpath d=‘M1 1l5 5 5-5’ stroke=‘rgba(237,237,242,0.4)’ stroke-width=‘1.5’ fill=‘none’/%3E%3C/svg%3E”);background-repeat:no-repeat;background-position:right 1rem center;}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;}
 .tpick-wrap{display:flex;flex-wrap:wrap;gap:0.35rem;}
-.tpick{padding:0.25rem 0.65rem;border:1px solid var(–border);border-radius:100px;font-size:0.7rem;cursor:pointer;transition:all 0.18s;background:rgba(255,255,255,0.03);color:var(–muted);font-family:‘General Sans’,sans-serif;}
-.tpick.sel{background:rgba(6,214,160,0.1);border-color:rgba(6,214,160,0.3);color:var(–a2);}
-.upload-area{border:2px dashed var(–border);border-radius:12px;padding:1.1rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
-.upload-area:hover{border-color:rgba(6,214,160,0.3);background:rgba(6,214,160,0.02);}
+.tpick{padding:0.25rem 0.65rem;border:1px solid var(–border);border-radius:100px;font-size:0.7rem;cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.03);color:var(–muted);font-family:‘Instrument Sans’,sans-serif;}
+.tpick.sel{background:rgba(110,231,183,0.09);border-color:rgba(110,231,183,0.28);color:var(–accent);}
+.upload-area{border:2px dashed var(–border);border-radius:10px;padding:1.1rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
+.upload-area:hover{border-color:rgba(110,231,183,0.28);}
 .upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
 .upload-txt{font-size:0.78rem;color:var(–muted);}
 .upload-hint{font-size:0.64rem;color:var(–muted2);margin-top:0.2rem;}
 .img-preview{width:100%;height:130px;object-fit:cover;border-radius:8px;margin-top:0.6rem;display:none;}
-.prof-warn{display:none;background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.28);border-radius:8px;padding:0.48rem 0.82rem;font-size:0.75rem;color:#fb7185;margin-top:0.35rem;}
-.sub-btn{width:100%;padding:0.82rem;background:linear-gradient(135deg,var(–p1),var(–p2));color:white;font-family:‘Syne’,sans-serif;font-size:0.84rem;font-weight:700;border:none;border-radius:11px;cursor:pointer;transition:all 0.22s;box-shadow:0 6px 20px rgba(124,58,237,0.3);margin-top:0.38rem;}
-.sub-btn:hover{opacity:0.88;transform:translateY(-1px);}
-
+.prof-warn{display:none;background:rgba(248,113,113,0.09);border:1px solid rgba(248,113,113,0.28);border-radius:7px;padding:0.48rem 0.82rem;font-size:0.75rem;color:#fca5a5;margin-top:0.35rem;}
+.sub-btn{width:100%;padding:0.8rem;background:var(–accent);color:#09090f;font-family:‘Syne’,sans-serif;font-size:0.84rem;font-weight:700;border:none;border-radius:11px;cursor:pointer;transition:all 0.2s;margin-top:0.38rem;}
+.sub-btn:hover{background:#a7f3d0;}
 .err-msg{text-align:center;padding:2.5rem 2rem;color:var(–muted);font-size:0.84rem;}
 .err-msg strong{color:var(–text);display:block;margin-bottom:0.38rem;font-family:‘Syne’,sans-serif;}
 
-footer{border-top:1px solid var(–border);padding:1.6rem;text-align:center;font-size:0.7rem;color:var(–muted2);}
-
-/* SHARED ANIMATIONS */
-@keyframes fadeDown{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-@keyframes slideUp{from{opacity:0;transform:translateY(32px);}to{opacity:1;transform:translateY(0);}}
-@keyframes spin{to{transform:rotate(360deg);}}
+footer{border-top:1px solid var(–border);padding:1.6rem;text-align:center;font-size:0.71rem;color:var(–muted2);}
 
 @media(max-width:700px){
-nav{padding:0.85rem 1.2rem;}
-.nav-link{padding:0.38rem 0.6rem;font-size:0.72rem;}
-h1{font-size:2.8rem;}
-.hero-floaters{display:none;}
-#planner-page,#blog-page,#saved-page{padding-left:1.2rem;padding-right:1.2rem;}
+nav{padding:0.9rem 1.1rem;}
+.nav-link{padding:0.38rem 0.58rem;font-size:0.72rem;}
+h1{font-size:2.5rem;}
+#planner-page,#blog-page,#saved-page{padding-left:1.1rem;padding-right:1.1rem;}
 .opt-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));}
 .frow,.date-row{grid-template-columns:1fr;}
 .blog-grid,.saved-grid{grid-template-columns:1fr;}
 .result-actions{gap:0.3rem;}
 .action-btn{font-size:0.68rem;padding:0.42rem 0.75rem;}
 .trip-summary-bar{grid-template-columns:1fr 1fr;}
-.planner-progress{top:58px;}
 }
 </style>
 
 </head>
 <body>
-
-<!-- Background -->
-
-<div class="bg-wrap">
-  <div class="bg-mesh"></div>
-  <div class="aurora"></div>
-  <div class="bg-grid"></div>
-  <div class="particles" id="particles"></div>
-</div>
-
-<!-- Top progress bar -->
-
-<div class="progress-bar-wrap"><div class="progress-bar-fill" id="topProgress"></div></div>
-
-<!-- Confetti container -->
-
-<div class="confetti-wrap" id="confettiWrap"></div>
-<div class="ripple-wrap" id="rippleWrap"></div>
-
+<div class="bg-orbs"><div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div></div>
 <div class="wrapper">
-<nav id="mainNav">
-  <div class="logo" onclick="showPage('home');ripple(event)">
-    <div class="logo-mark">✦</div>
-    What's Around?
-  </div>
+
+<nav>
+  <div class="logo" onclick="showPage('home')"><span class="logo-dot"></span>What's Around?</div>
   <div class="nav-links">
-    <button class="nav-link active" id="nav-home" onclick="showPage('home');ripple(event)">Home</button>
-    <button class="nav-link" id="nav-planner" onclick="showPage('planner');ripple(event)">Planner</button>
-    <button class="nav-link" id="nav-saved" onclick="showPage('saved');ripple(event)">Saved</button>
-    <button class="nav-link" id="nav-blog" onclick="showPage('blog');ripple(event)">Blog</button>
-    <button class="nav-surprise" onclick="surpriseMe();ripple(event)">🎲 Surprise Me</button>
+    <button class="nav-link active" id="nav-home" onclick="showPage('home')">Home</button>
+    <button class="nav-link" id="nav-planner" onclick="showPage('planner')">Planner</button>
+    <button class="nav-link" id="nav-saved" onclick="showPage('saved')">Saved</button>
+    <button class="nav-link" id="nav-blog" onclick="showPage('blog')">Blog</button>
+    <button class="surprise-btn" onclick="surpriseMe()">🎲 Surprise Me</button>
     <div id="navUserArea"><button class="nav-user-btn" onclick="openAuth('login')">Sign In</button></div>
   </div>
 </nav>
 
-<!-- HOME PAGE -->
+<!-- HOME -->
 
 <div class="page active" id="home-page">
   <div class="hero">
-    <!-- Floating destination cards — creates aspiration and social proof -->
-    <div class="hero-floaters">
-      <div class="floater f1"><span>🗼</span>Tokyo · 3 days planned</div>
-      <div class="floater f2"><span>🌊</span>Bali · Just explored</div>
-      <div class="floater f3"><span>🏔</span>Swiss Alps · 2 days</div>
-      <div class="floater f4"><span>🌆</span>NYC · Weekend getaway</div>
-      <div class="floater f5"><span>🍷</span>Paris · 5 days</div>
+    <div class="hero-badge"><span class="hero-badge-dot"></span>AI Trip Planner</div>
+    <h1>Plan your<br><span class="grad">perfect trip.</span></h1>
+    <p class="hero-sub">Multi-day itineraries with real places, reservation links, weather, cost estimates, packing lists, and local phrases — all in one tap.</p>
+    <div class="hero-cta">
+      <button class="cta-primary" onclick="showPage('planner')">✨ Start Planning</button>
+      <button class="cta-surprise" onclick="surpriseMe()">🎲 Surprise Me!</button>
+      <button class="cta-blog" onclick="showPage('blog')">Read Stories</button>
     </div>
-
-```
-<div class="hero-kicker"><span class="kicker-dot"></span>Plan Any Destination · Instantly</div>
-
-<h1>
-  <span class="line1">Plan your</span>
-  <span class="line2">perfect trip.</span>
-</h1>
-
-<p class="hero-sub">
-  Tell us where you're going and what you love.<br>
-  We'll build a <strong>full day-by-day itinerary</strong> with real places,<br>
-  weather, costs, reservation links, and more.
-</p>
-
-<div class="hero-cta">
-  <button class="btn-primary" onclick="showPage('planner');ripple(event);updateProgress(1)">✨ Start Planning Free</button>
-  <button class="btn-surprise" onclick="surpriseMe();ripple(event)">🎲 Surprise Me!</button>
-  <button class="btn-ghost" onclick="showPage('blog');ripple(event)">Read Stories</button>
-</div>
-
-<div class="feature-pills">
-  <span class="fpill">🌤 Live Weather</span>
-  <span class="fpill">💰 Cost Estimator</span>
-  <span class="fpill">🎒 Packing List</span>
-  <span class="fpill">🗣 Local Phrases</span>
-  <span class="fpill">🌱 Carbon Footprint</span>
-  <span class="fpill">🗺 Map View</span>
-  <span class="fpill">⭐ Ratings</span>
-  <span class="fpill">📝 Notes</span>
-  <span class="fpill">💾 Save Trips</span>
-  <span class="fpill">🔗 Share</span>
-</div>
-
-
-
-<div class="scroll-hint">
-  <span>Scroll to plan</span>
-  <span class="scroll-arrow">↓</span>
-</div>
-```
-
+    <div class="feature-pills">
+      <span class="fpill">🌤 Weather Forecast</span>
+      <span class="fpill">💰 Cost Estimator</span>
+      <span class="fpill">🎒 Packing List</span>
+      <span class="fpill">🗣 Local Phrases</span>
+      <span class="fpill">🌱 Carbon Footprint</span>
+      <span class="fpill">🗺 Map View</span>
+      <span class="fpill">⭐ Ratings</span>
+      <span class="fpill">📝 Notes</span>
+    </div>
   </div>
 </div>
 
-<!-- PLANNER PAGE -->
+<!-- PLANNER -->
 
 <div class="page" id="planner-page">
   <div class="planner-inner">
+    <div class="page-eyebrow">✦ Trip Planner</div>
+    <h2 class="page-title">Build your<br><span class="grad">itinerary.</span></h2>
+    <p class="page-sub">Tell us everything and we'll plan it perfectly.</p>
 
 ```
-<!-- Sticky progress — Zeigarnik Effect drives completion -->
-<div class="planner-progress" id="plannerProgress">
-  <div class="planner-prog-steps" id="progSteps"></div>
-  <div class="prog-label">Step <span id="progCurrent">1</span> of <span id="progTotal">11</span></div>
-</div>
+<div class="steps-grid">
 
-<div class="page-eyebrow">✦ Your Trip Planner</div>
-<h2 class="page-title">Build your<br><span style="background:linear-gradient(135deg,var(--p2),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">itinerary.</span></h2>
-<p class="page-sub">Fill in the details below. The more you tell us, the more personalised your itinerary will be.</p>
-
-<div class="steps-grid" id="stepsGrid">
-
-  <div class="step-card" id="sc-0">
-    <div class="step-hdr"><div class="step-num" id="sn-0">01</div><div><div class="step-title">Where are you going?</div><div class="step-sub">City, state, country, or zip code</div></div></div>
-    <input class="city-input" id="itinCity" placeholder="e.g. Tokyo, Japan · Austin, TX · Paris, France" oninput="debouncedWeather();markStep(0)"/>
+  <div class="step-card">
+    <div class="step-hdr"><div class="step-num">01</div><div><div class="step-title">Where are you going?</div><div class="step-sub">City, state, country, or zip code</div></div></div>
+    <input class="city-input" id="itinCity" placeholder="e.g. Tokyo, Japan · Austin, TX · 90210" oninput="debouncedWeather()"/>
   </div>
 
-  <div class="step-card" id="sc-1">
-    <div class="step-hdr"><div class="step-num" id="sn-1">02</div><div><div class="step-title">When are you going?</div><div class="step-sub">We'll factor in seasonal weather and events</div></div></div>
+  <div class="step-card">
+    <div class="step-hdr"><div class="step-num">02</div><div><div class="step-title">When are you going?</div><div class="step-sub">Helps tailor weather-aware recommendations</div></div></div>
     <div id="weatherBanner" class="weather-banner"></div>
     <div class="date-row">
-      <div class="date-field"><label>Start Date</label><input class="date-input" type="date" id="startDate" onchange="syncDaysFromDates();markStep(1)"/></div>
-      <div class="date-field"><label>End Date</label><input class="date-input" type="date" id="endDate" onchange="syncDaysFromDates();markStep(1)"/></div>
+      <div class="date-field"><label>Start Date</label><input class="date-input" type="date" id="startDate"/></div>
+      <div class="date-field"><label>End Date</label><input class="date-input" type="date" id="endDate" onchange="syncDaysFromDates()"/></div>
     </div>
   </div>
 
-  <div class="step-card" id="sc-2">
-    <div class="step-hdr"><div class="step-num" id="sn-2">03</div><div><div class="step-title">How many days?</div><div class="step-sub">Auto-syncs from your dates, or adjust manually</div></div></div>
+  <div class="step-card">
+    <div class="step-hdr"><div class="step-num">03</div><div><div class="step-title">How many days?</div><div class="step-sub">Auto-set from dates, or adjust manually</div></div></div>
     <div class="days-row">
       <div class="days-counter">
-        <button class="day-btn" onclick="changeDays(-1);ripple(event)">−</button>
+        <button class="day-btn" onclick="changeDays(-1)">−</button>
         <div class="days-num" id="daysNum">1</div>
-        <button class="day-btn" onclick="changeDays(1);ripple(event)">+</button>
+        <button class="day-btn" onclick="changeDays(1)">+</button>
       </div>
       <div class="days-label" id="daysLabel">1 day</div>
     </div>
   </div>
 
-  <div class="step-card" id="sc-3">
-    <div class="step-hdr"><div class="step-num" id="sn-3">04</div><div><div class="step-title">Daily duration</div><div class="step-sub">How long each day runs</div></div></div>
+  <div class="step-card">
+    <div class="step-hdr"><div class="step-num">04</div><div><div class="step-title">Daily duration</div><div class="step-sub">How long each day runs</div></div></div>
     <div class="opt-grid">
-      <div class="opt" onclick="selectOpt(this,'duration','Half day (4hrs)');markStep(3);ripple(event)">Half Day</div>
-      <div class="opt sel" onclick="selectOpt(this,'duration','Full day (8hrs)');markStep(3);ripple(event)">Full Day</div>
-      <div class="opt" onclick="selectOpt(this,'duration','Day + Evening (12hrs)');markStep(3);ripple(event)">Day + Evening</div>
+      <div class="opt" onclick="selectOpt(this,'duration','Half day (4hrs)')">Half Day</div>
+      <div class="opt sel" onclick="selectOpt(this,'duration','Full day (8hrs)')">Full Day</div>
+      <div class="opt" onclick="selectOpt(this,'duration','Day + Evening (12hrs)')">Day + Evening</div>
     </div>
   </div>
 
-  <div class="step-card" id="sc-4">
-    <div class="step-hdr"><div class="step-num" id="sn-4">05</div><div><div class="step-title">What's your vibe?</div><div class="step-sub">Pick all that apply — we'll weave them all in</div></div></div>
+  <div class="step-card">
+    <div class="step-hdr"><div class="step-num">05</div><div><div class="step-title">What's your vibe?</div><div class="step-sub">Pick all that apply</div></div></div>
     <div class="opt-grid">
-      <div class="opt" onclick="toggleOpt(this,'vibe','Culture & History');markStep(4);ripple(event)">🏛 Culture</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Food & Drink');markStep(4);ripple(event)">🍽 Food</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Nature & Outdoors');markStep(4);ripple(event)">🌿 Nature</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Shopping');markStep(4);ripple(event)">🛍 Shopping</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Nightlife');markStep(4);ripple(event)">🌙 Nightlife</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Art & Design');markStep(4);ripple(event)">🎨 Art</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Relaxation');markStep(4);ripple(event)">🧘 Wellness</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Hidden Gems');markStep(4);ripple(event)">💎 Hidden Gems</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Adventure');markStep(4);ripple(event)">🏄 Adventure</div>
-      <div class="opt" onclick="toggleOpt(this,'vibe','Photography');markStep(4);ripple(event)">📸 Photography</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Culture & History')">🏛 Culture</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Food & Drink')">🍽 Food</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Nature & Outdoors')">🌿 Nature</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Shopping')">🛍 Shopping</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Nightlife')">🌙 Nightlife</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Art & Design')">🎨 Art</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Relaxation')">🧘 Wellness</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Hidden Gems')">💎 Hidden Gems</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Adventure')">🏄 Adventure</div>
+      <div class="opt" onclick="toggleOpt(this,'vibe','Photography')">📸 Photography</div>
     </div>
   </div>
 
-  <div class="step-card" id="sc-5">
-    <div class="step-hdr"><div class="step-num" id="sn-5">06</div><div><div class="step-title">Stay in a specific area?</div><div class="step-sub">Optional — keeps stops geographically close</div></div></div>
-    <input class="nbhd-input itin-input" id="neighborhoodInput" placeholder="e.g. Shibuya · Near the Eiffel Tower · Beachfront" oninput="markStep(5)"/>
-    <div style="font-size:0.7rem;color:var(--muted2);margin-top:0.4rem;">Leave blank to cover the whole destination</div>
+  <div class="step-card">
+    <div class="step-hdr"><div class="step-num">06</div><div><div class="step-title">Stay in a specific area?</div><div class="step-sub">Optional — keeps stops geographically tight</div></div></div>
+    <input class="nbhd-input" id="neighborhoodInput" placeholder="e.g. Shibuya · Downtown · Near the Eiffel Tower · Beachfront"/>
+    <div class="nbhd-hint">Leave blank to cover the whole city</div>
   </div>
 
-  <div class="step-card" id="sc-6">
-    <div class="step-hdr"><div class="step-num" id="sn-6">07</div><div><div class="step-title">Tailor your experience</div><div class="step-sub">Dietary needs, food types, accessibility, anything</div></div></div>
+  <div class="step-card">
+    <div class="step-hdr"><div class="step-num">07</div><div><div class="step-title">Tailor your experience</div><div class="step-sub">Dietary needs, food types, accessibility, anything specific</div></div></div>
     <div class="tags-wrap" id="tagsWrap" onclick="document.getElementById('tagsInput').focus()">
-      <input class="tags-input" id="tagsInput" placeholder="Type and press Enter — e.g. vegan, coffee, rooftop, wheelchair..." onkeydown="handleTagInput(event)"/>
+      <input class="tags-input" id="tagsInput" placeholder="Type and press Enter — e.g. vegan, coffee, rooftop..." onkeydown="handleTagInput(event)"/>
     </div>
     <div class="tag-suggestions">
-      <span class="tag-sug" onclick="addTag('Vegan');ripple(event)">Vegan</span>
-      <span class="tag-sug" onclick="addTag('Vegetarian');ripple(event)">Vegetarian</span>
-      <span class="tag-sug" onclick="addTag('Gluten Free');ripple(event)">Gluten Free</span>
-      <span class="tag-sug" onclick="addTag('Halal');ripple(event)">Halal</span>
-      <span class="tag-sug" onclick="addTag('No Spicy');ripple(event)">No Spicy</span>
-      <span class="tag-sug" onclick="addTag('Ramen');ripple(event)">Ramen</span>
-      <span class="tag-sug" onclick="addTag('Coffee');ripple(event)">Coffee</span>
-      <span class="tag-sug" onclick="addTag('Rooftop Bars');ripple(event)">Rooftop Bars</span>
-      <span class="tag-sug" onclick="addTag('Pet Friendly');ripple(event)">Pet Friendly</span>
-      <span class="tag-sug" onclick="addTag('Wheelchair Accessible');ripple(event)">Wheelchair</span>
-      <span class="tag-sug" onclick="addTag('Kid Friendly');ripple(event)">Kid Friendly</span>
-      <span class="tag-sug" onclick="addTag('Late Night');ripple(event)">Late Night</span>
+      <span class="tag-sug" onclick="addTag('Vegan')">Vegan</span>
+      <span class="tag-sug" onclick="addTag('Vegetarian')">Vegetarian</span>
+      <span class="tag-sug" onclick="addTag('Gluten Free')">Gluten Free</span>
+      <span class="tag-sug" onclick="addTag('Halal')">Halal</span>
+      <span class="tag-sug" onclick="addTag('Kosher')">Kosher</span>
+      <span class="tag-sug" onclick="addTag('No Spicy')">No Spicy</span>
+      <span class="tag-sug" onclick="addTag('Seafood')">Seafood</span>
+      <span class="tag-sug" onclick="addTag('Ramen')">Ramen</span>
+      <span class="tag-sug" onclick="addTag('Coffee Shops')">Coffee Shops</span>
+      <span class="tag-sug" onclick="addTag('Rooftop Bars')">Rooftop Bars</span>
+      <span class="tag-sug" onclick="addTag('Pet Friendly')">Pet Friendly</span>
+      <span class="tag-sug" onclick="addTag('Wheelchair Accessible')">Wheelchair Accessible</span>
+      <span class="tag-sug" onclick="addTag('Kid Friendly')">Kid Friendly</span>
+      <span class="tag-sug" onclick="addTag('Late Night')">Late Night</span>
+      <span class="tag-sug" onclick="addTag('Outdoor Seating')">Outdoor Seating</span>
     </div>
   </div>
 
-  <div class="step-card" id="sc-7">
-    <div class="step-hdr"><div class="step-num" id="sn-7">08</div><div><div class="step-title">How are you getting around?</div><div class="step-sub">Affects how spread-out recommendations will be</div></div></div>
+  <div class="step-card">
+    <div class="step-hdr"><div class="step-num">08</div><div><div class="step-title">Transport</div><div class="step-sub">How you're getting around</div></div></div>
     <div class="opt-grid">
-      <div class="opt sel" onclick="selectOpt(this,'style','Walking');markStep(7);ripple(event)">🚶 Walking</div>
-      <div class="opt" onclick="selectOpt(this,'style','Public Transport');markStep(7);ripple(event)">🚇 Transit</div>
-      <div class="opt" onclick="selectOpt(this,'style','Taxi / Rideshare');markStep(7);ripple(event)">🚕 Rideshare</div>
-      <div class="opt" onclick="selectOpt(this,'style','Driving');markStep(7);ripple(event)">🚗 Driving</div>
+      <div class="opt sel" onclick="selectOpt(this,'style','Walking')">🚶 Walking</div>
+      <div class="opt" onclick="selectOpt(this,'style','Public Transport')">🚇 Transit</div>
+      <div class="opt" onclick="selectOpt(this,'style','Taxi / Rideshare')">🚕 Rideshare</div>
+      <div class="opt" onclick="selectOpt(this,'style','Driving')">🚗 Driving</div>
     </div>
   </div>
 
-  <div class="step-card" id="sc-8">
-    <div class="step-hdr"><div class="step-num" id="sn-8">09</div><div><div class="step-title">Daily budget per person</div><div class="step-sub">Drag to set — we'll match places to your range</div></div></div>
+  <div class="step-card">
+    <div class="step-hdr"><div class="step-num">09</div><div><div class="step-title">Daily budget per person</div><div class="step-sub">Drag to set your spending comfort zone</div></div></div>
     <div class="slider-wrap">
-      <div class="slider-top">
+      <div class="slider-labels">
         <div><div class="slider-val" id="budgetVal">$150</div><div class="slider-desc" id="budgetDesc">Mid-range</div></div>
-        <div class="slider-right">per person · per day</div>
+        <div style="text-align:right;font-size:0.72rem;color:var(--muted);">per person · per day</div>
       </div>
-      <input type="range" id="budgetSlider" min="0" max="999" value="150" step="1" oninput="updateBudget(this.value);markStep(8)"/>
-      <div class="slider-marks"><span>$0 Free</span><span>$250</span><span>$500</span><span>$999 Luxury</span></div>
+      <input type="range" id="budgetSlider" min="0" max="999" value="150" step="1" oninput="updateBudget(this.value)"/>
+      <div class="slider-track-labels"><span>$0</span><span>$250</span><span>$500</span><span>$999</span></div>
     </div>
   </div>
 
-  <div class="step-card" id="sc-9">
-    <div class="step-hdr"><div class="step-num" id="sn-9">10</div><div><div class="step-title">Who's coming?</div><div class="step-sub">Personalises activity and dining suggestions</div></div></div>
+  <div class="step-card">
+    <div class="step-hdr"><div class="step-num">10</div><div><div class="step-title">Who's coming?</div></div></div>
     <div class="opt-grid">
-      <div class="opt sel" onclick="selectOpt(this,'group','Solo');markStep(9);ripple(event)">🙋 Solo</div>
-      <div class="opt" onclick="selectOpt(this,'group','Couple');markStep(9);ripple(event)">👫 Couple</div>
-      <div class="opt" onclick="selectOpt(this,'group','Friends');markStep(9);ripple(event)">👯 Friends</div>
-      <div class="opt" onclick="selectOpt(this,'group','Family with kids');markStep(9);ripple(event)">👨‍👩‍👧 Family</div>
+      <div class="opt sel" onclick="selectOpt(this,'group','Solo')">🙋 Solo</div>
+      <div class="opt" onclick="selectOpt(this,'group','Couple')">👫 Couple</div>
+      <div class="opt" onclick="selectOpt(this,'group','Friends')">👯 Friends</div>
+      <div class="opt" onclick="selectOpt(this,'group','Family with kids')">👨‍👩‍👧 Family</div>
     </div>
   </div>
 
-  <div class="step-card" id="sc-10">
-    <div class="step-hdr"><div class="step-num" id="sn-10">11</div><div><div class="step-title">Final settings</div></div></div>
-    <div style="display:grid;gap:0.5rem;">
-      <div class="toggle-row"><div><div class="toggle-label">🎲 Randomize days</div><div class="toggle-sub">Every day gets completely different places — no repeats</div></div><label class="toggle-switch"><input type="checkbox" id="randomizeToggle" checked/><span class="toggle-slider"></span></label></div>
-      <div class="toggle-row"><div><div class="toggle-label">🔗 Reservation links</div><div class="toggle-sub">OpenTable, Viator, Booking.com, Yelp, Maps</div></div><label class="toggle-switch"><input type="checkbox" id="resvToggle" checked/><span class="toggle-slider"></span></label></div>
-      <div class="toggle-row"><div><div class="toggle-label">🗺 Map view</div><div class="toggle-sub">See all stops on an interactive map per day</div></div><label class="toggle-switch"><input type="checkbox" id="mapToggle" checked/><span class="toggle-slider"></span></label></div>
+  <div class="step-card">
+    <div class="step-hdr"><div class="step-num">11</div><div><div class="step-title">Settings</div></div></div>
+    <div style="display:grid;gap:0.55rem;">
+      <div class="toggle-row"><div><div class="toggle-label">🎲 Randomize days</div><div class="toggle-sub">No repeated places across any day</div></div><label class="toggle-switch"><input type="checkbox" id="randomizeToggle" checked/><span class="toggle-slider"></span></label></div>
+      <div class="toggle-row"><div><div class="toggle-label">🔗 Reservation links</div><div class="toggle-sub">OpenTable, Viator, Booking.com, Yelp</div></div><label class="toggle-switch"><input type="checkbox" id="resvToggle" checked/><span class="toggle-slider"></span></label></div>
+      <div class="toggle-row"><div><div class="toggle-label">🗺 Map view per day</div><div class="toggle-sub">Interactive map of all stops</div></div><label class="toggle-switch"><input type="checkbox" id="mapToggle" checked/><span class="toggle-slider"></span></label></div>
     </div>
   </div>
 
-</div><!-- end steps grid -->
-
-<div class="gen-btn-wrap">
-  <button class="gen-btn" id="genBtn" onclick="generateItinerary(false);ripple(event)">
-    ✨ Build My Itinerary
-  </button>
 </div>
+
+<button class="gen-btn" id="genBtn" onclick="generateItinerary(false)">✨ Build My Itinerary</button>
 
 <!-- RESULTS -->
 <div id="itinResult">
-  <div class="itin-celebrate" id="celebrateBlock" style="display:none;">
-    <div class="celebrate-emoji">🎉</div>
-    <div class="celebrate-title" id="celebrateTitle">Your itinerary is ready!</div>
-    <div class="celebrate-sub" id="celebrateSub"></div>
-  </div>
-
   <div class="itin-result-hdr">
     <div>
       <div class="itin-result-title" id="itinTitle">Your Itinerary</div>
       <div class="itin-result-sub" id="itinSub"></div>
     </div>
     <div class="result-actions">
-      <button class="action-btn regen" onclick="generateItinerary(true);ripple(event)">🎲 Regenerate</button>
-      <button class="action-btn save-btn" onclick="saveTrip();ripple(event)">💾 Save</button>
-      <button class="action-btn" onclick="openShare();ripple(event)">🔗 Share</button>
-      <button class="action-btn" onclick="openEmail();ripple(event)">📧 Email</button>
-      <button class="action-btn" onclick="openPacking();ripple(event)">🎒 Pack</button>
-      <button class="action-btn" onclick="openLanguage();ripple(event)">🗣 Phrases</button>
-      <button class="action-btn" onclick="openCarbon();ripple(event)">🌱 Carbon</button>
+      <button class="action-btn regen" onclick="generateItinerary(true)">🎲 Regenerate</button>
+      <button class="action-btn save-btn" onclick="saveTrip()">💾 Save</button>
+      <button class="action-btn" onclick="openShare()">🔗 Share</button>
+      <button class="action-btn" onclick="openEmail()">📧 Email</button>
+      <button class="action-btn" onclick="openPacking()">🎒 Packing</button>
+      <button class="action-btn" onclick="openLanguage()">🗣 Phrases</button>
+      <button class="action-btn" onclick="openCarbon()">🌱 Carbon</button>
       <button class="action-btn" onclick="window.print()">🖨 Print</button>
     </div>
   </div>
 
+  <!-- TRIP SUMMARY BAR -->
   <div class="trip-summary-bar" id="tripSummaryBar"></div>
+
   <div class="day-tabs" id="dayTabs"></div>
   <div id="dayPanels"></div>
 </div>
@@ -1406,8 +632,8 @@ h1{font-size:2.8rem;}
 <div class="page" id="saved-page">
   <div class="saved-inner">
     <div class="page-eyebrow">✦ My Trips</div>
-    <h2 class="page-title" style="font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.4rem;">Saved <span style="background:linear-gradient(135deg,var(--p2),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Itineraries</span></h2>
-    <p class="page-sub" style="font-size:0.85rem;color:var(--muted);">Your saved trip plans, ready whenever you are.</p>
+    <h2 class="page-title" style="font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.4rem;">Saved <span class="grad">Itineraries</span></h2>
+    <p class="page-sub" style="font-size:0.85rem;color:var(--muted);">Your saved trip plans, ready to revisit anytime.</p>
     <div class="saved-grid" id="savedGrid"></div>
   </div>
 </div>
@@ -1418,8 +644,8 @@ h1{font-size:2.8rem;}
   <div class="blog-inner">
     <div style="margin-bottom:1.8rem;">
       <div class="page-eyebrow">✦ Community</div>
-      <h2 style="font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.4rem;">Travel stories,<br><span style="background:linear-gradient(135deg,var(--p2),var(--b1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">from real people.</span></h2>
-      <p style="font-size:0.85rem;color:var(--muted);">Share the spots you love. Real experiences and hidden gems.</p>
+      <h2 class="page-title" style="font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.4rem;">Travel stories,<br><span style="background:linear-gradient(135deg,#f472b6,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">from real people.</span></h2>
+      <p class="page-sub" style="font-size:0.85rem;color:var(--muted);">Share the spots you love. Real experiences and hidden gems.</p>
     </div>
     <div class="blog-toolbar">
       <div class="blog-filters" id="blogFilters">
@@ -1432,151 +658,136 @@ h1{font-size:2.8rem;}
         <span class="btag" onclick="filterBlog('Lisbon',this)">Lisbon</span>
         <span class="btag" onclick="filterBlog('Sydney',this)">Sydney</span>
       </div>
-      <button class="write-btn" onclick="openWrite();ripple(event)">+ Write a Post</button>
+      <button class="write-btn" onclick="openWrite()">+ Write a Post</button>
     </div>
     <div class="blog-grid" id="blogGrid"></div>
   </div>
 </div>
 
-<footer>© 2026 What's Around? · Plan every destination · Made with obsession</footer>
+<footer>© 2026 What's Around? · Plan every destination</footer>
 </div>
 
 <!-- PACKING MODAL -->
 
-<div class="side-modal-wrap" id="packingModal" onclick="closeSideOut('packingModal',event)"><div class="side-modal"><div class="sm-hdr"><div class="sm-title">🎒 Packing List</div><button class="close-btn" onclick="closeSideModal('packingModal')">✕</button></div><div id="packingContent"></div></div></div>
+<div class="side-modal-wrap" id="packingModal" onclick="closeSideOut('packingModal',event)">
+  <div class="side-modal">
+    <div class="sm-hdr"><div class="sm-title">🎒 Packing List</div><button class="close-btn" onclick="closeSideModal('packingModal')">✕</button></div>
+    <div id="packingContent"></div>
+  </div>
+</div>
+
 <!-- LANGUAGE MODAL -->
-<div class="side-modal-wrap" id="languageModal" onclick="closeSideOut('languageModal',event)"><div class="side-modal"><div class="sm-hdr"><div class="sm-title">🗣 Local Phrases</div><button class="close-btn" onclick="closeSideModal('languageModal')">✕</button></div><div id="languageContent"></div></div></div>
+
+<div class="side-modal-wrap" id="languageModal" onclick="closeSideOut('languageModal',event)">
+  <div class="side-modal">
+    <div class="sm-hdr"><div class="sm-title">🗣 Local Phrases</div><button class="close-btn" onclick="closeSideModal('languageModal')">✕</button></div>
+    <div id="languageContent"></div>
+  </div>
+</div>
+
 <!-- CARBON MODAL -->
-<div class="side-modal-wrap" id="carbonModal" onclick="closeSideOut('carbonModal',event)"><div class="side-modal"><div class="sm-hdr"><div class="sm-title">🌱 Carbon Footprint</div><button class="close-btn" onclick="closeSideModal('carbonModal')">✕</button></div><div id="carbonContent"></div></div></div>
+
+<div class="side-modal-wrap" id="carbonModal" onclick="closeSideOut('carbonModal',event)">
+  <div class="side-modal">
+    <div class="sm-hdr"><div class="sm-title">🌱 Carbon Footprint</div><button class="close-btn" onclick="closeSideModal('carbonModal')">✕</button></div>
+    <div id="carbonContent"></div>
+  </div>
+</div>
+
 <!-- SHARE MODAL -->
-<div class="modal-overlay" id="shareModal" onclick="closeModalOut('shareModal',event)"><div class="modal-box"><div class="modal-hdr"><div class="modal-ttl">🔗 Share Your Trip</div><button class="close-btn" onclick="closeModal('shareModal')">✕</button></div><p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">Copy the link or share directly.</p><div class="share-link-box"><input class="share-link-input" id="shareLinkInput" readonly/><button class="copy-btn" onclick="copyShareLink()">Copy</button></div><div class="share-platforms"><button class="share-platform-btn" onclick="shareToWhatsApp()">💬 WhatsApp</button><button class="share-platform-btn" onclick="shareToTwitter()">𝕏 Twitter</button><button class="share-platform-btn" onclick="shareToFacebook()">👥 Facebook</button><button class="share-platform-btn" onclick="shareToInstagram()">📸 Instagram</button></div></div></div>
+
+<div class="share-modal-wrap" id="shareModal" onclick="closeShareOut(event)">
+  <div class="share-modal">
+    <div class="modal-hdr"><div class="modal-ttl">🔗 Share Your Trip</div><button class="close-btn" onclick="closeShare()">✕</button></div>
+    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">Copy the link or share to your platform.</p>
+    <div class="share-link-box"><input class="share-link-input" id="shareLinkInput" readonly/><button class="copy-btn" onclick="copyShareLink()">Copy</button></div>
+    <div class="share-platforms">
+      <button class="share-platform-btn" onclick="shareToWhatsApp()">💬 WhatsApp</button>
+      <button class="share-platform-btn" onclick="shareToTwitter()">𝕏 Twitter</button>
+      <button class="share-platform-btn" onclick="shareToFacebook()">👥 Facebook</button>
+      <button class="share-platform-btn" onclick="shareToInstagram()">📸 Instagram</button>
+    </div>
+  </div>
+</div>
+
 <!-- EMAIL MODAL -->
-<div class="modal-overlay" id="emailModal" onclick="closeModalOut('emailModal',event)"><div class="modal-box"><div class="modal-hdr"><div class="modal-ttl">📧 Email Itinerary</div><button class="close-btn" onclick="closeModal('emailModal')">✕</button></div><p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">Opens your mail app with the full plan.</p><input class="auth-input" id="emailInput" type="email" placeholder="your@email.com"/><button class="auth-btn" onclick="sendEmail()">Send Itinerary →</button></div></div>
+
+<div class="email-modal-wrap" id="emailModal" onclick="closeEmailOut(event)">
+  <div class="email-modal">
+    <div class="modal-hdr"><div class="modal-ttl">📧 Email Itinerary</div><button class="close-btn" onclick="closeEmail()">✕</button></div>
+    <p style="font-size:0.81rem;color:var(--muted);margin-bottom:1rem;">We'll open your mail app with the full plan ready to send.</p>
+    <input class="auth-input" id="emailInput" type="email" placeholder="your@email.com"/>
+    <button class="auth-btn" onclick="sendEmail()">Send Itinerary →</button>
+  </div>
+</div>
+
 <!-- AUTH MODAL -->
-<div class="auth-overlay" id="authModal" onclick="closeAuthOut(event)"><div class="auth-box"><button class="close-btn" style="position:absolute;top:1rem;right:1rem;" onclick="closeAuth()">✕</button><div class="auth-title">Welcome 👋</div><div class="auth-sub">Sign in to save and sync your itineraries.</div><div class="auth-tabs"><button class="auth-tab active" id="atab-login" onclick="switchAuthTab('login')">Sign In</button><button class="auth-tab" id="atab-signup" onclick="switchAuthTab('signup')">Sign Up</button></div><div id="auth-login-form"><input class="auth-input" id="authEmail" type="email" placeholder="Email"/><input class="auth-input" id="authPass" type="password" placeholder="Password"/><button class="auth-btn" onclick="doAuth('login')">Sign In →</button></div><div id="auth-signup-form" style="display:none;"><input class="auth-input" id="authNameNew" type="text" placeholder="Your name"/><input class="auth-input" id="authEmailNew" type="email" placeholder="Email"/><input class="auth-input" id="authPassNew" type="password" placeholder="Password (min 6 chars)"/><button class="auth-btn" onclick="doAuth('signup')">Create Account →</button></div></div></div>
+
+<div class="auth-modal-wrap" id="authModal" onclick="closeAuthOut(event)">
+  <div class="auth-modal">
+    <button class="close-btn" style="position:absolute;top:1.1rem;right:1.1rem;" onclick="closeAuth()">✕</button>
+    <div class="auth-title">Welcome 👋</div>
+    <div class="auth-sub">Sign in to save and sync your itineraries.</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="atab-login" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab" id="atab-signup" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="auth-login-form">
+      <input class="auth-input" id="authEmail" type="email" placeholder="Email"/>
+      <input class="auth-input" id="authPass" type="password" placeholder="Password"/>
+      <button class="auth-btn" onclick="doAuth('login')">Sign In →</button>
+    </div>
+    <div id="auth-signup-form" style="display:none;">
+      <input class="auth-input" id="authNameNew" type="text" placeholder="Your name"/>
+      <input class="auth-input" id="authEmailNew" type="email" placeholder="Email"/>
+      <input class="auth-input" id="authPassNew" type="password" placeholder="Password (min 6 chars)"/>
+      <button class="auth-btn" onclick="doAuth('signup')">Create Account →</button>
+    </div>
+  </div>
+</div>
+
 <!-- WRITE MODAL -->
-<div class="woverlay" id="writeOverlay" onclick="closeWriteOut(event)"><div class="write-modal"><div class="modal-hdr"><div class="modal-ttl">Share a Place</div><button class="close-btn" onclick="closeWrite()">✕</button></div><div class="fg"><label class="fl2">Post Title</label><input class="fi" id="postTitle" placeholder="e.g. The best hidden ramen in Tokyo..."/></div><div class="frow"><div class="fg"><label class="fl2">Your Name</label><input class="fi" id="postAuthor" placeholder="e.g. Maria S."/></div><div class="fg"><label class="fl2">Category</label><select class="fsel" id="postCat"><option value="Eat">🍽 Eat</option><option value="Drink">🍸 Drink</option><option value="Explore">🗺 Explore</option><option value="Stay">🏨 Stay</option></select></div></div><div class="fg"><label class="fl2">Your Experience</label><textarea class="fta" id="postBody" placeholder="Tell us about your experience..." oninput="checkProf(this)"></textarea><div class="prof-warn" id="profWarn">⚠️ Keep it friendly!</div></div><div class="fg"><label class="fl2">Add a Photo</label><div class="upload-area"><input type="file" accept="image/*" id="photoInput" onchange="previewImg(event)"/><div class="upload-txt">📷 Tap to upload</div><div class="upload-hint">JPG, PNG, WEBP · Max 5MB</div></div><img class="img-preview" id="photoPreview" alt=""/></div><div class="fg"><label class="fl2">City Tags</label><div class="tpick-wrap" id="tagPicker"><span class="tpick" onclick="toggleTag(this,'Tokyo')">Tokyo</span><span class="tpick" onclick="toggleTag(this,'Paris')">Paris</span><span class="tpick" onclick="toggleTag(this,'New York')">New York</span><span class="tpick" onclick="toggleTag(this,'Barcelona')">Barcelona</span><span class="tpick" onclick="toggleTag(this,'Bangkok')">Bangkok</span><span class="tpick" onclick="toggleTag(this,'Lisbon')">Lisbon</span><span class="tpick" onclick="toggleTag(this,'Sydney')">Sydney</span><span class="tpick" onclick="toggleTag(this,'Other')">Other</span></div></div><button class="sub-btn" onclick="submitPost()">Publish Post →</button></div></div>
+
+<div class="woverlay" id="writeOverlay" onclick="closeWriteOut(event)">
+  <div class="write-modal">
+    <div class="modal-hdr"><div class="modal-ttl">Share a Place</div><button class="close-btn" onclick="closeWrite()">✕</button></div>
+    <div class="fg"><label class="fl2">Post Title</label><input class="fi" id="postTitle" placeholder="e.g. The best hidden ramen in Tokyo..."/></div>
+    <div class="frow">
+      <div class="fg"><label class="fl2">Your Name</label><input class="fi" id="postAuthor" placeholder="e.g. Maria S."/></div>
+      <div class="fg"><label class="fl2">Category</label><select class="fsel" id="postCat"><option value="Eat">🍽 Eat</option><option value="Drink">🍸 Drink</option><option value="Explore">🗺 Explore</option><option value="Stay">🏨 Stay</option></select></div>
+    </div>
+    <div class="fg"><label class="fl2">Your Experience</label><textarea class="fta" id="postBody" placeholder="Tell us about your experience..." oninput="checkProf(this)"></textarea><div class="prof-warn" id="profWarn">⚠️ Keep it friendly!</div></div>
+    <div class="fg"><label class="fl2">Add a Photo</label><div class="upload-area"><input type="file" accept="image/*" id="photoInput" onchange="previewImg(event)"/><div class="upload-txt">📷 Tap to upload</div><div class="upload-hint">JPG, PNG, WEBP · Max 5MB</div></div><img class="img-preview" id="photoPreview" alt=""/></div>
+    <div class="fg"><label class="fl2">City Tags</label><div class="tpick-wrap" id="tagPicker"><span class="tpick" onclick="toggleTag(this,'Tokyo')">Tokyo</span><span class="tpick" onclick="toggleTag(this,'Paris')">Paris</span><span class="tpick" onclick="toggleTag(this,'New York')">New York</span><span class="tpick" onclick="toggleTag(this,'Barcelona')">Barcelona</span><span class="tpick" onclick="toggleTag(this,'Bangkok')">Bangkok</span><span class="tpick" onclick="toggleTag(this,'Lisbon')">Lisbon</span><span class="tpick" onclick="toggleTag(this,'Sydney')">Sydney</span><span class="tpick" onclick="toggleTag(this,'Other')">Other</span></div></div>
+    <button class="sub-btn" onclick="submitPost()">Publish Post →</button>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ============================================================
-// PSYCHOLOGY ENGINE
-// ============================================================
-
-// 1. PARTICLES — subtle ambient life (Flow State)
-(function initParticles(){
-  const wrap=document.getElementById('particles');
-  const colors=['#7c3aed','#06d6a0','#3b82f6','#f59e0b','#f472b6'];
-  for(let i=0;i<18;i++){
-    const p=document.createElement('div');
-    p.className='particle';
-    const size=Math.random()*4+1;
-    p.style.cssText=`
-      width:${size}px;height:${size}px;
-      left:${Math.random()*100}%;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      animation-duration:${Math.random()*15+10}s;
-      animation-delay:-${Math.random()*20}s;
-      opacity:0;
-    `;
-    wrap.appendChild(p);
-  }
-})();
-
-
-
-// 3. SCROLL NAV EFFECT
-window.addEventListener('scroll',()=>{
-  document.getElementById('mainNav')?.classList.toggle('scrolled',window.scrollY>30);
-});
-
-// 4. PROGRESS BAR (Zeigarnik Effect)
-const TOTAL_STEPS=11;
-let completedSteps=new Set([3,7,9]); // pre-complete obvious ones
-function updateProgress(n){
-  completedSteps.add(n);
-  renderProgress();
-}
-function markStep(idx){
-  completedSteps.add(idx);
-  renderProgress();
-}
-function renderProgress(){
-  const steps=document.getElementById('progSteps');
-  if(!steps) return;
-  steps.innerHTML='';
-  for(let i=0;i<TOTAL_STEPS;i++){
-    const s=document.createElement('div');
-    s.className='prog-step'+(completedSteps.has(i)?' done':'');
-    steps.appendChild(s);
-  }
-  document.getElementById('progCurrent').textContent=completedSteps.size;
-  document.getElementById('topProgress').style.width=(completedSteps.size/TOTAL_STEPS*100)+'%';
-}
-renderProgress();
-
-// 5. RIPPLE EFFECT (Haptic-like feedback)
-function ripple(e){
-  const wrap=document.getElementById('rippleWrap');
-  const r=document.createElement('div');
-  r.className='ripple';
-  const size=80;
-  r.style.cssText=`width:${size}px;height:${size}px;left:${e.clientX-size/2}px;top:${e.clientY-size/2}px;`;
-  wrap.appendChild(r);
-  setTimeout(()=>r.remove(),700);
-}
-
-// 6. CONFETTI (Variable Reward — only on big moments)
-function fireConfetti(){
-  const wrap=document.getElementById('confettiWrap');
-  const colors=['#7c3aed','#06d6a0','#f59e0b','#f472b6','#3b82f6','#ffffff'];
-  for(let i=0;i<60;i++){
-    const c=document.createElement('div');
-    c.className='confetti-piece';
-    c.style.cssText=`
-      left:${Math.random()*100}%;
-      top:-10px;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      width:${Math.random()*8+4}px;
-      height:${Math.random()*8+4}px;
-      border-radius:${Math.random()>0.5?'50%':'2px'};
-      animation-delay:${Math.random()*0.8}s;
-      animation-duration:${Math.random()*1+1.5}s;
-      transform:rotate(${Math.random()*360}deg);
-    `;
-    wrap.appendChild(c);
-  }
-  setTimeout(()=>{wrap.innerHTML='';},3000);
-}
-
-// 7. TOAST (Variable reward — slightly different each time)
-const toastEmojis={success:['✓','🎉','✨','👌','🙌'],error:['⚠️','❌'],info:['💡','✦','→']};
-function showToast(msg,type='info'){
-  const t=document.getElementById('toast');
-  const emojis=toastEmojis[type]||toastEmojis.info;
-  const emoji=emojis[Math.floor(Math.random()*emojis.length)];
-  t.textContent=`${emoji} ${msg}`;
-  t.className=`toast ${type}`;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3400);
-}
-
-// ============================================================
-// STATE
-// ============================================================
+// ============ STATE ============
 let numDays=1,budgetAmt=150;
 let itinSel={duration:'Full day (8hrs)',style:'Walking',group:'Solo',vibe:[]};
 let prefTags=[],selTags=[],photoData=null;
 let generatedDays=[],currentCity='',currentItinTitle='';
-let currentUser=null,ratings={},notes={},visitedBlocks=new Set(),packChecked={};
-let weatherData=null,weatherDebounce=null;
+let currentUser=null,ratings={},notes={},visitedBlocks=new Set();
+let weatherData=null,packChecked={};
+let weatherDebounce=null;
 
 const BAD=['fuck','shit','bitch','bastard','cunt','dick','piss','cock','crap','asshole','bullshit','motherfucker','faggot','whore','slut'];
 function hasBad(t){const l=t.toLowerCase().replace(/[^a-z\s]/g,'');return BAD.some(w=>l.split(/\s+/).includes(w));}
 function checkProf(el){document.getElementById('profWarn').style.display=hasBad(el.value)?'block':'none';}
 
-// NAV
+// ============ TOAST ============
+function showToast(msg,type='info'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className=`toast ${type}`;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+// ============ NAV ============
 function showPage(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));
@@ -1584,31 +795,35 @@ function showPage(p){
   document.getElementById('nav-'+p)?.classList.add('active');
   if(p==='blog') renderBlog('all');
   if(p==='saved') renderSaved();
-  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// SURPRISE ME
-const SURPRISE_CITIES=['Kyoto, Japan','Porto, Portugal','Marrakech, Morocco','Buenos Aires, Argentina','Copenhagen, Denmark','Seoul, South Korea','Cape Town, South Africa','Dubrovnik, Croatia','Medellín, Colombia','Hanoi, Vietnam','Reykjavik, Iceland','Havana, Cuba','Edinburgh, Scotland','Tbilisi, Georgia','Chiang Mai, Thailand','Oaxaca, Mexico'];
+// ============ SURPRISE ME ============
+const SURPRISE_CITIES=['Kyoto, Japan','Porto, Portugal','Marrakech, Morocco','Buenos Aires, Argentina','Copenhagen, Denmark','Seoul, South Korea','Cape Town, South Africa','Dubrovnik, Croatia','Medellín, Colombia','Hanoi, Vietnam','Reykjavik, Iceland','Havana, Cuba','Edinburgh, Scotland','Cartagena, Colombia','Tbilisi, Georgia','Valletta, Malta'];
+const SURPRISE_VIBES=[['Food & Drink','Culture & History'],['Art & Design','Hidden Gems'],['Nature & Outdoors','Photography'],['Nightlife','Food & Drink'],['Relaxation','Art & Design']];
 async function surpriseMe(){
   showPage('planner');
   const city=SURPRISE_CITIES[Math.floor(Math.random()*SURPRISE_CITIES.length)];
-  const vibeOptions=[['Food & Drink','Culture & History'],['Art & Design','Hidden Gems'],['Nature & Outdoors','Photography'],['Nightlife','Food & Drink'],['Relaxation','Art & Design']];
-  const vibes=vibeOptions[Math.floor(Math.random()*vibeOptions.length)];
+  const vibe=SURPRISE_VIBES[Math.floor(Math.random()*SURPRISE_VIBES.length)];
   const days=Math.floor(Math.random()*3)+1;
-  const budget=Math.floor(Math.random()*350)+50;
+  const budget=Math.floor(Math.random()*400)+50;
   document.getElementById('itinCity').value=city;
-  while(numDays<days) changeDays(1);
-  while(numDays>days) changeDays(-1);
+  changeDays(days-numDays);
   updateBudget(budget);
   document.getElementById('budgetSlider').value=budget;
-  itinSel.vibe=[];
-  document.querySelectorAll('.opt-grid .opt').forEach(o=>o.classList.remove('sel'));
+  itinSel.vibe=vibe;
+  document.querySelectorAll('.opt').forEach(o=>{
+    if(vibe.some(v=>o.textContent.includes(v.split(' ')[0]))) o.classList.add('sel');
+    else if([...o.closest('.opt-grid').querySelectorAll('.opt')].includes(o)&&o.closest('.step-card').querySelector('.step-title')?.textContent.includes('vibe')) o.classList.remove('sel');
+  });
   showToast(`🎲 How about ${days} day${days>1?'s':''} in ${city}?`,'info');
-  setTimeout(()=>generateItinerary(false),600);
+  setTimeout(()=>generateItinerary(false),800);
 }
 
-// WEATHER
-function debouncedWeather(){clearTimeout(weatherDebounce);weatherDebounce=setTimeout(fetchWeather,900);}
+// ============ WEATHER ============
+function debouncedWeather(){
+  clearTimeout(weatherDebounce);
+  weatherDebounce=setTimeout(fetchWeather,900);
+}
 async function fetchWeather(){
   const city=document.getElementById('itinCity').value.trim();
   if(!city||city.length<3) return;
@@ -1636,48 +851,52 @@ async function fetchWeather(){
       <div class="weather-icon">${emoji}</div>
       <div class="weather-info">
         <div class="weather-city">${name}, ${country}</div>
-        <div class="weather-desc">${desc} · Next 3 days</div>
+        <div class="weather-desc">${desc} · Next 3 days forecast</div>
         <div class="weather-temps">
-          <span class="weather-temp">🌡 ${avgMin}°C – ${avgMax}°C</span>
-          <span class="weather-temp">💧 ${totalRain}mm rain</span>
+          <span class="weather-temp-item">🌡 ${avgMin}°C – ${avgMax}°C</span>
+          <span class="weather-temp-item">💧 ${totalRain}mm rain</span>
         </div>
       </div>
-      ${totalRain>10?'<div class="weather-alert">☂ Pack an umbrella!</div>':avgMax>32?'<div class="weather-alert">🌞 Pack sun protection</div>':avgMin<5?'<div class="weather-alert">🧥 Bring warm layers</div>':''}`;
+      ${totalRain>10?'<div class="weather-alert">☂ Pack an umbrella!</div>':avgMax>32?'<div class="weather-alert">🌞 It\'ll be hot!</div>':avgMin<5?'<div class="weather-alert">🧥 Bring warm layers</div>':''}`;
   }catch(e){banner.className='weather-banner';}
 }
 
+// ============ DATES → DAYS ============
 function syncDaysFromDates(){
   const s=document.getElementById('startDate').value;
   const e=document.getElementById('endDate').value;
   if(!s||!e) return;
-  const diff=Math.round((new Date(e)-new Date(s))/(864e5))+1;
-  if(diff>0&&diff<=10){numDays=diff;document.getElementById('daysNum').textContent=numDays;document.getElementById('daysLabel').textContent=numDays===1?'1 day':numDays+' days';}
+  const diff=Math.round((new Date(e)-new Date(s))/(1000*60*60*24))+1;
+  if(diff>0&&diff<=10){
+    numDays=diff;
+    document.getElementById('daysNum').textContent=numDays;
+    document.getElementById('daysLabel').textContent=numDays===1?'1 day':numDays+' days';
+  }
 }
 
+// ============ BUDGET ============
 function updateBudget(v){
   budgetAmt=parseInt(v);
   document.getElementById('budgetVal').textContent='$'+budgetAmt;
-  let d='Free & frugal';
-  if(budgetAmt>60) d='Budget friendly';
-  if(budgetAmt>120) d='Mid-range';
-  if(budgetAmt>250) d='Premium';
-  if(budgetAmt>450) d='Luxury';
+  let d='Budget friendly';
+  if(budgetAmt>80) d='Mid-range';
+  if(budgetAmt>200) d='Premium';
+  if(budgetAmt>400) d='Luxury';
   if(budgetAmt>700) d='Ultra Luxury';
   document.getElementById('budgetDesc').textContent=d;
   const pct=(budgetAmt/999)*100;
-  document.getElementById('budgetSlider').style.background=`linear-gradient(to right,#9f67f7 0%,#06d6a0 ${pct}%,#28253e ${pct}%)`;
+  document.getElementById('budgetSlider').style.background=`linear-gradient(to right, #e879f9 0%, #60a5fa ${pct}%, #1f1f28 ${pct}%)`;
 }
 updateBudget(150);
 
+// ============ DAYS ============
 function changeDays(d){
   numDays=Math.max(1,Math.min(10,numDays+d));
-  const el=document.getElementById('daysNum');
-  el.textContent=numDays;el.classList.add('bump');
-  setTimeout(()=>el.classList.remove('bump'),350);
+  document.getElementById('daysNum').textContent=numDays;
   document.getElementById('daysLabel').textContent=numDays===1?'1 day':numDays+' days';
-  markStep(2);
 }
 
+// ============ OPTIONS ============
 function selectOpt(el,key,val){
   el.closest('.opt-grid').querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
   el.classList.add('sel');itinSel[key]=val;
@@ -1688,14 +907,12 @@ function toggleOpt(el,key,val){
   else itinSel.vibe=itinSel.vibe.filter(v=>v!==val);
 }
 
+// ============ TAGS ============
 function handleTagInput(e){
   if(e.key==='Enter'||e.key===','){e.preventDefault();const v=e.target.value.trim().replace(/,$/,'');if(v)addTag(v);e.target.value='';}
-  else if(e.key==='Backspace'&&!e.target.value&&prefTags.length) removeTag(prefTags[prefTags.length-1]);
+  else if(e.key==='Backspace'&&!e.target.value&&prefTags.length){removeTag(prefTags[prefTags.length-1]);}
 }
-function addTag(tag){
-  const t=tag.trim();if(!t||prefTags.includes(t))return;
-  prefTags.push(t);renderTags();markStep(6);
-}
+function addTag(tag){const t=tag.trim();if(!t||prefTags.includes(t))return;prefTags.push(t);renderTags();}
 function removeTag(tag){prefTags=prefTags.filter(t=>t!==tag);renderTags();}
 function renderTags(){
   const wrap=document.getElementById('tagsWrap'),input=document.getElementById('tagsInput');
@@ -1704,7 +921,7 @@ function renderTags(){
   wrap.appendChild(input);
 }
 
-// GENERATE — the core loop, must end with celebration (Peak-End Rule)
+// ============ GENERATE ============
 async function generateItinerary(isRegen=false){
   const city=document.getElementById('itinCity').value.trim();
   if(!city){showToast('Please enter a destination!','error');return;}
@@ -1715,15 +932,17 @@ async function generateItinerary(isRegen=false){
   const vibes=itinSel.vibe.length>0?itinSel.vibe.join(', '):'General sightseeing';
   const prefs=prefTags.length>0?prefTags.join(', '):'None';
   const nbhd=document.getElementById('neighborhoodInput').value.trim();
+  const startDate=document.getElementById('startDate').value;
   const btn=document.getElementById('genBtn');
-  btn.disabled=true;
-  btn.innerHTML=`<span class="gen-btn-loading">Building <span class="gen-dots"><span class="gen-dot"></span><span class="gen-dot"></span><span class="gen-dot"></span></span></span>`;
-  document.getElementById('itinResult').style.display='block';
-  document.getElementById('celebrateBlock').style.display='none';
-  document.getElementById('dayPanels').innerHTML=`<div class="itin-loading"><div class="itin-loader-wrap"><div class="itin-loader-ring"></div><div class="itin-loader-dot"></div></div><div class="loading-txt">Crafting ${numDays} perfect day${numDays>1?'s':''} in ${city}...</div><div class="loading-subtitle">Finding the best real places just for you</div></div>`;
-  document.getElementById('dayTabs').innerHTML='';
+  btn.disabled=true;btn.textContent=isRegen?'Regenerating...':'Building your itinerary...';
+  const result=document.getElementById('itinResult');
+  const panels=document.getElementById('dayPanels');
+  const tabs=document.getElementById('dayTabs');
+  result.style.display='block';
+  panels.innerHTML=`<div class="itin-loading"><div class="itin-loader"></div><div class="loading-txt">Crafting ${numDays} perfect day${numDays>1?'s':''} in ${city}...</div></div>`;
+  tabs.innerHTML='';
   document.getElementById('tripSummaryBar').innerHTML='';
-  document.getElementById('itinResult').scrollIntoView({behavior:'smooth',block:'start'});
+  result.scrollIntoView({behavior:'smooth',block:'start'});
   const usedPlaces=isRegen?[]:generatedDays.flatMap(d=>(d.blocks||[]).map(b=>b.place));
   visitedBlocks=new Set();
 
@@ -1733,23 +952,24 @@ async function generateItinerary(isRegen=false){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
-        max_tokens:8000,
+        max_tokens:4000,
         messages:[{role:'user',content:`Create a ${numDays}-day travel itinerary for "${city}".
-${nbhd?`Focus on/near: ${nbhd}`:''}
+${nbhd?`Stay within or near: ${nbhd}`:''}
+${startDate?`Travel dates starting: ${startDate}`:''}
 Interests: ${vibes}
-Preferences: ${prefs}
+Preferences/dietary: ${prefs}
 Transport: ${itinSel.style}
-Budget: $${budgetAmt}/day (${document.getElementById('budgetDesc').textContent})
+Daily budget: $${budgetAmt} (${document.getElementById('budgetDesc').textContent})
 Group: ${itinSel.group}
-Duration: ${itinSel.duration}
-Randomize: ${randomize?'YES':'NO'}
+Duration per day: ${itinSel.duration}
+Randomize (no repeats): ${randomize?'YES':'NO'}
 ${usedPlaces.length?`Never use: ${usedPlaces.join(', ')}`:''}
-${weatherData?`Weather: ${weatherData.desc}, ${weatherData.avgMin}-${weatherData.avgMax}°C`:''}
+${weatherData?`Weather context: ${weatherData.desc}, ${weatherData.avgMin}-${weatherData.avgMax}°C`:''}
 
 Return ONLY raw valid JSON:
-{"title":"e.g. 3 Days in Tokyo","totalEstCost":"e.g. $450","days":[{"dayNum":1,"theme":"e.g. Old City & Street Food","estDayCost":"e.g. $150","blocks":[{"time":"9:00 AM","place":"Real name","type":"Breakfast","desc":"2 vivid sentences","tip":"One insider tip","cost":"~$12","openTableSlug":"slug or empty","googleMapsQuery":"Place City Country","viatorQuery":"or empty","bookingQuery":"or empty"}]}]}
+{"title":"e.g. 3 Days in Tokyo","totalEstCost":"e.g. $450","days":[{"dayNum":1,"theme":"e.g. Old City Wonders","estDayCost":"e.g. $150","blocks":[{"time":"9:00 AM","place":"Real place name","type":"Breakfast","desc":"2 vivid sentences.","tip":"One insider tip","cost":"~$12","openTableSlug":"slug or empty","googleMapsQuery":"Place City Country","viatorQuery":"or empty","bookingQuery":"or empty"}]}]}
 
-Rules: 5-8 blocks/day. Real places. Logical geography.`}]
+Rules: 5-8 blocks/day. Real places in ${city}${nbhd?` near ${nbhd}`:''}.`}]
       })
     });
     const data=await res.json();
@@ -1758,12 +978,6 @@ Rules: 5-8 blocks/day. Real places. Logical geography.`}]
     generatedDays=parsed.days||[];
     currentItinTitle=parsed.title||`${numDays}-Day Itinerary`;
 
-    // CELEBRATION MOMENT (Peak-End Rule — this is the "peak")
-    document.getElementById('celebrateBlock').style.display='block';
-    document.getElementById('celebrateTitle').textContent=`Your ${currentItinTitle} is ready! 🎉`;
-    document.getElementById('celebrateSub').textContent=`${generatedDays.reduce((s,d)=>s+(d.blocks||[]).length,0)} stops across ${numDays} day${numDays>1?'s':''} · Powered by AI`;
-    fireConfetti();
-
     document.getElementById('itinTitle').textContent=currentItinTitle;
     document.getElementById('itinSub').textContent=`${numDays} day${numDays>1?'s':''} · ${city} · $${budgetAmt}/day · ${itinSel.group}`;
 
@@ -1771,37 +985,32 @@ Rules: 5-8 blocks/day. Real places. Logical geography.`}]
     const totalBlocks=generatedDays.reduce((s,d)=>s+(d.blocks||[]).length,0);
     const co2=calcCarbon(itinSel.style,numDays);
     document.getElementById('tripSummaryBar').innerHTML=`
-      <div class="tsb-item"><div class="tsb-label">Est. Total Cost</div><div class="tsb-val v-w">${parsed.totalEstCost||'~$'+budgetAmt*numDays}</div></div>
-      <div class="tsb-item"><div class="tsb-label">Stops Planned</div><div class="tsb-val v-p">${totalBlocks}</div></div>
-      <div class="tsb-item"><div class="tsb-label">Carbon Est.</div><div class="tsb-val v-a">${co2}kg CO₂</div></div>
+      <div class="tsb-item"><div class="tsb-label">Est. Total Cost</div><div class="tsb-val gold">${parsed.totalEstCost||'~$'+budgetAmt*numDays}</div></div>
+      <div class="tsb-item"><div class="tsb-label">Stops Planned</div><div class="tsb-val itin">${totalBlocks}</div></div>
+      <div class="tsb-item"><div class="tsb-label">Carbon Est.</div><div class="tsb-val green">${co2}kg CO₂</div></div>
       <div class="tsb-item"><div class="tsb-label">Days</div><div class="tsb-val">${numDays}</div></div>
-      ${weatherData?`<div class="tsb-item"><div class="tsb-label">Weather</div><div class="tsb-val" style="font-size:1.5rem;">${weatherData.emoji}</div></div>`:''}`;
+      ${weatherData?`<div class="tsb-item"><div class="tsb-label">Weather</div><div class="tsb-val" style="font-size:1.4rem;">${weatherData.emoji}</div></div>`:''}`;
 
-    const tabs=document.getElementById('dayTabs'),panels=document.getElementById('dayPanels');
+    // Build tabs and panels
     tabs.innerHTML='';panels.innerHTML='';
     generatedDays.forEach((day,i)=>{
       const tab=document.createElement('button');
       tab.className='day-tab'+(i===0?' active':'');
       tab.textContent=`Day ${day.dayNum}${day.theme?' · '+day.theme:''}`;
-      tab.onclick=()=>switchDayTab(i);tabs.appendChild(tab);
+      tab.onclick=()=>switchDayTab(i);
+      tabs.appendChild(tab);
       const panel=document.createElement('div');
       panel.className='day-panel'+(i===0?' active':'');
       panel.id='day-panel-'+i;
       panel.innerHTML=buildDayHTML(day,i,includeResv,showMap);
       panels.appendChild(panel);
     });
-
-    // Mark all steps complete at the end
-    for(let i=0;i<TOTAL_STEPS;i++) completedSteps.add(i);
-    renderProgress();
-    showToast('Your itinerary is ready!','success');
-
+    showToast('Itinerary ready! 🎉','success');
   }catch(err){
-    document.getElementById('dayPanels').innerHTML=`<div class="err-msg"><strong>Could not build itinerary</strong>${err.message}<br>Check ANTHROPIC_API_KEY in Vercel environment variables.</div>`;
+    panels.innerHTML=`<div class="err-msg"><strong>Could not build itinerary</strong>${err.message}<br>Check ANTHROPIC_API_KEY in Vercel environment variables.</div>`;
     console.error(err);
   }
-  btn.disabled=false;
-  btn.innerHTML='✨ Build My Itinerary';
+  btn.disabled=false;btn.textContent='✨ Build My Itinerary';
 }
 
 function switchDayTab(idx){
@@ -1824,12 +1033,16 @@ function buildDayHTML(day,dayIdx,includeResv,showMap){
         <div class="map-pins">${blocks.map((b,i)=>`<div class="map-pin-item"><div class="pin-num">${i+1}</div><div class="pin-name">${b.place}</div></div>`).join('')}</div>
       </div>`;
   }
-  const dayCostBar=day.estDayCost?`<div class="day-cost-bar"><div><div class="dcb-label">Estimated day spend</div><div class="dcb-total">${day.estDayCost} per person</div></div><div class="dcb-breakdown">${blocks.filter(b=>b.cost).map(b=>`<span class="dcb-item">${b.place.split(' ')[0]}: ${b.cost}</span>`).join('')}</div></div>`:'';
+  const dayCostBar=day.estDayCost?`
+    <div class="day-cost-bar">
+      <div><div class="dcb-label">Estimated day cost</div><div class="dcb-total">${day.estDayCost} per person</div></div>
+      <div class="dcb-breakdown">${blocks.filter(b=>b.cost).map(b=>`<span class="dcb-item">${b.place.split(' ')[0]}: ${b.cost}</span>`).join('')}</div>
+    </div>`:'';
   const blocksHTML=blocks.map((b,bi)=>{
     const key=`${dayIdx}-${bi}`;
-    const isV=visitedBlocks.has(key);
+    const isVisited=visitedBlocks.has(key);
     return `
-    <div class="time-block${isV?' visited':''}" id="block-${dayIdx}-${bi}">
+    <div class="time-block${isVisited?' visited':''}" id="block-${dayIdx}-${bi}">
       <div class="tb-header">
         <div class="tb-num">${bi+1}</div>
         <div class="tb-time">${b.time}</div>
@@ -1837,8 +1050,8 @@ function buildDayHTML(day,dayIdx,includeResv,showMap){
         <div class="tb-type">${b.type}</div>
         ${b.cost?`<div class="tb-cost">${b.cost}</div>`:''}
         <div class="tb-actions">
-          <button class="tb-icon-btn${isV?' active':''}" onclick="toggleVisited('${key}',this)" title="Mark visited">✓</button>
-          <button class="tb-icon-btn regen-block-btn" style="width:auto;padding:0 0.5rem;font-size:0.67rem;" onclick="regenBlock(${dayIdx},${bi});ripple(event)">🎲</button>
+          <button class="tb-icon-btn visited-btn${isVisited?' active':''}" onclick="toggleVisited('${key}',this)" title="Mark as visited">✓</button>
+          <button class="tb-icon-btn regen-block-btn" onclick="regenBlock(${dayIdx},${bi})" style="width:auto;padding:0 0.5rem;font-size:0.68rem;">🎲</button>
         </div>
       </div>
       <div class="tb-body">
@@ -1846,13 +1059,13 @@ function buildDayHTML(day,dayIdx,includeResv,showMap){
         ${b.tip?`<div class="tb-tip">💡 ${b.tip}</div>`:''}
         <div class="notes-section">
           <button class="notes-toggle" onclick="toggleNotes('${key}',this)">📝 ${notes[key]?'Edit note':'Add a note'}</button>
-          <textarea class="notes-textarea${notes[key]?' open':''}" id="note-${key}" placeholder="Confirmation numbers, tips, anything..." onblur="saveNote('${key}')">${notes[key]||''}</textarea>
+          <textarea class="notes-textarea${notes[key]?' open':''}" id="note-${key}" placeholder="Add your own notes, confirmation numbers, tips..." onblur="saveNote('${key}')">${notes[key]||''}</textarea>
 
 ```
     </div>
     <div class="rating-row">
       <div class="star-rating" id="stars-${key}">
-        ${[1,2,3,4,5].map(s=>`<button class="star-btn${(ratings[key]||0)>=s?' filled':''}" onclick="rateBlock('${key}',${s});ripple(event)">★</button>`).join('')}
+        ${[1,2,3,4,5].map(s=>`<button class="star-btn${(ratings[key]||0)>=s?' filled':''}" onclick="rateBlock('${key}',${s})">★</button>`).join('')}
       </div>
       <span class="rating-label" id="rlabel-${key}">${ratings[key]?['','⭐ Poor','⭐⭐ Fair','⭐⭐⭐ Good','⭐⭐⭐⭐ Great','⭐⭐⭐⭐⭐ Amazing'][ratings[key]]:'Rate this stop'}</span>
     </div>
@@ -1879,39 +1092,37 @@ if(map) map.classList.toggle(‘visible’,view===‘map’);
 if(panel){const db=panel.querySelector(’.day-blocks’);if(db) db.style.display=view===‘map’?‘none’:‘grid’;}
 }
 
+// ============ VISITED TOGGLE ============
 function toggleVisited(key,btn){
 if(visitedBlocks.has(key)){visitedBlocks.delete(key);btn.classList.remove(‘active’);}
-else{visitedBlocks.add(key);btn.classList.add(‘active’);showToast(‘Marked as visited’,‘success’);}
-const blockId=`block-${key.replace('-','-')}`;
-// re-find by id pattern
-const parts=key.split(’-’);
-const el=document.getElementById(`block-${parts[0]}-${parts[1]}`);
-if(el) el.classList.toggle(‘visited’,visitedBlocks.has(key));
+else{visitedBlocks.add(key);btn.classList.add(‘active’);showToast(‘Marked as visited ✓’,‘success’);}
+const block=document.getElementById(‘block-’+key.replace(’-’,’-’));
+if(block) block.classList.toggle(‘visited’,visitedBlocks.has(key));
 }
 
+// ============ NOTES ============
 function toggleNotes(key,btn){
 const ta=document.getElementById(‘note-’+key);
 const isOpen=ta.classList.contains(‘open’);
 ta.classList.toggle(‘open’,!isOpen);
 if(!isOpen) ta.focus();
+btn.textContent=`📝 ${notes[key]||ta.value?'Edit note':'Add a note'}`;
 }
-function saveNote(key){const ta=document.getElementById(‘note-’+key);if(ta) notes[key]=ta.value.trim();}
+function saveNote(key){
+const ta=document.getElementById(‘note-’+key);
+if(ta) notes[key]=ta.value.trim();
+}
 
-// Star rating — each star gets a pop animation (Variable Reward micro-moment)
+// ============ RATING ============
 function rateBlock(key,val){
 ratings[key]=val;
 const stars=document.querySelectorAll(`#stars-${key} .star-btn`);
-stars.forEach((s,i)=>{
-s.classList.toggle(‘filled’,i<val);
-if(i<val) s.classList.add(‘just-rated’);
-setTimeout(()=>s.classList.remove(‘just-rated’),500);
-});
+stars.forEach((s,i)=>s.classList.toggle(‘filled’,i<val));
 const label=document.getElementById(‘rlabel-’+key);
 if(label) label.textContent=[’’,‘⭐ Poor’,‘⭐⭐ Fair’,‘⭐⭐⭐ Good’,‘⭐⭐⭐⭐ Great’,‘⭐⭐⭐⭐⭐ Amazing’][val]||’’;
-if(val===5) showToast(‘Amazing! You loved it 🌟’,‘reward’);
 }
 
-// SWAP BLOCK
+// ============ SWAP BLOCK ============
 async function regenBlock(dayIdx,blockIdx){
 const city=currentCity;
 const block=generatedDays[dayIdx]?.blocks[blockIdx];
@@ -1921,7 +1132,7 @@ const prefs=prefTags.join(’, ‘)||‘None’;
 try{
 const res=await fetch(’/api/chat’,{method:‘POST’,headers:{‘Content-Type’:‘application/json’},
 body:JSON.stringify({model:‘claude-sonnet-4-20250514’,max_tokens:500,messages:[{role:‘user’,
-content:`One alternative ${block.type} in "${city}" at ${block.time}, budget $${budgetAmt}/day, prefs: ${prefs}. Never use: ${used.join(', ')}. Return raw JSON: {"place":"","type":"${block.type}","desc":"2 sentences","tip":"tip","cost":"~$X","openTableSlug":"","googleMapsQuery":"place city","viatorQuery":"","bookingQuery":""}`}]})
+content:`One alternative ${block.type} in "${city}" at ${block.time}, budget $${budgetAmt}/day, prefs: ${prefs}. Never use: ${used.join(', ')}. Return raw JSON only: {"place":"","type":"${block.type}","desc":"2 sentences","tip":"tip","cost":"~$X","openTableSlug":"","googleMapsQuery":"place city","viatorQuery":"","bookingQuery":""}`}]})
 });
 const data=await res.json();
 const nb=JSON.parse(data.content?.find(b=>b.type===‘text’)?.text.replace(/`json|`/g,’’).trim()||’{}’);
@@ -1933,18 +1144,19 @@ temp.innerHTML=buildDayHTML(generatedDays[dayIdx],dayIdx,includeResv,false);
 const oldBlocks=document.getElementById(`block-${dayIdx}-${blockIdx}`)?.closest(’.day-blocks’);
 const newBlocks=temp.querySelector(’.day-blocks’);
 if(oldBlocks&&newBlocks) oldBlocks.innerHTML=newBlocks.innerHTML;
-showToast(‘Fresh suggestion found! ✨’,‘success’);
+showToast(‘Got a fresh suggestion! ✨’,‘success’);
 }catch(err){showToast(‘Could not swap — try again’,‘error’);console.error(err);}
 }
 
-// PACKING
+// ============ PACKING LIST ============
 async function openPacking(){
-document.getElementById(‘packingContent’).innerHTML=’<div class="itin-loading"><div class="itin-loader-wrap"><div class="itin-loader-ring"></div><div class="itin-loader-dot"></div></div><div class="loading-txt">Building your list…</div></div>’;
-document.getElementById(‘packingModal’).classList.add(‘open’);document.body.style.overflow=‘hidden’;
+document.getElementById(‘packingContent’).innerHTML=’<div class="itin-loading"><div class="itin-loader"></div><div class="loading-txt">Building your packing list…</div></div>’;
+document.getElementById(‘packingModal’).classList.add(‘open’);
+document.body.style.overflow=‘hidden’;
 try{
 const res=await fetch(’/api/chat’,{method:‘POST’,headers:{‘Content-Type’:‘application/json’},
 body:JSON.stringify({model:‘claude-sonnet-4-20250514’,max_tokens:1200,messages:[{role:‘user’,
-content:`Packing list for ${numDays}-day trip to "${currentCity}". Budget $${budgetAmt}/day. Vibes: ${itinSel.vibe.join(',')||'General'}. Group: ${itinSel.group}. Weather: ${weatherData?`${weatherData.avgMin}-${weatherData.avgMax}°C, ${weatherData.desc}`:'unknown'}. Raw JSON: {"sections":[{"title":"Essentials","items":["Passport","Phone charger"]},{"title":"Clothing","items":["..."]},{"title":"Toiletries","items":["..."]},{"title":"For ${currentCity}","items":["..."]}]}`}]})
+content:`Generate a packing list for a ${numDays}-day trip to "${currentCity}". Budget: $${budgetAmt}/day. Vibes: ${itinSel.vibe.join(', ')||'General'}. Group: ${itinSel.group}. Weather: ${weatherData?`${weatherData.avgMin}-${weatherData.avgMax}°C, ${weatherData.desc}`:'unknown'}. Return raw JSON: {"sections":[{"title":"Essentials","items":["Passport","Phone charger"]},{"title":"Clothing","items":["..."]},{"title":"Toiletries","items":["..."]},{"title":"For ${currentCity}","items":["..."]}]}`}]})
 });
 const data=await res.json();
 const parsed=JSON.parse(data.content?.find(b=>b.type===‘text’)?.text.replace(/`json|`/g,’’).trim()||’{}’);
@@ -1957,61 +1169,69 @@ html+=`<div class="pack-item${packChecked[key]?' checked':''}" id="pack-${key}" 
 });
 html+=’</div></div>’;
 });
-document.getElementById(‘packingContent’).innerHTML=html||’<div class="err-msg">Could not generate.</div>’;
+document.getElementById(‘packingContent’).innerHTML=html||’<div class="err-msg">Could not generate packing list.</div>’;
 }catch(err){document.getElementById(‘packingContent’).innerHTML=’<div class="err-msg"><strong>Error</strong>’+err.message+’</div>’;}
 }
 function togglePack(key){
 packChecked[key]=!packChecked[key];
 const el=document.getElementById(‘pack-’+key);
 if(el){el.classList.toggle(‘checked’,packChecked[key]);el.querySelector(’.pack-check’).textContent=packChecked[key]?‘✓’:‘○’;}
-if(packChecked[key]) showToast(‘Packed! ✓’,‘success’);
 }
 
-// LANGUAGE
+// ============ LANGUAGE PHRASES ============
 async function openLanguage(){
-document.getElementById(‘languageContent’).innerHTML=’<div class="itin-loading"><div class="itin-loader-wrap"><div class="itin-loader-ring"></div><div class="itin-loader-dot"></div></div><div class="loading-txt">Loading phrases…</div></div>’;
-document.getElementById(‘languageModal’).classList.add(‘open’);document.body.style.overflow=‘hidden’;
+document.getElementById(‘languageContent’).innerHTML=’<div class="itin-loading"><div class="itin-loader"></div><div class="loading-txt">Loading local phrases…</div></div>’;
+document.getElementById(‘languageModal’).classList.add(‘open’);
+document.body.style.overflow=‘hidden’;
 try{
 const res=await fetch(’/api/chat’,{method:‘POST’,headers:{‘Content-Type’:‘application/json’},
 body:JSON.stringify({model:‘claude-sonnet-4-20250514’,max_tokens:1000,messages:[{role:‘user’,
-content:`12 essential travel phrases for "${currentCity}". Raw JSON: {"language":"e.g. Japanese","phrases":[{"local":"...","romanized":"...","meaning":"...","context":"..."}]}`}]})
+content:`Give 12 essential travel phrases for visiting "${currentCity}". Include greetings, ordering food, directions, emergencies, and polite expressions. Return raw JSON: {"language":"e.g. Japanese","phrases":[{"local":"Arigatou gozaimasu","romanized":"Ah-ree-gah-toh goh-zah-ee-mahs","meaning":"Thank you very much","context":"Use when receiving service"}]}`}]})
 });
 const data=await res.json();
 const parsed=JSON.parse(data.content?.find(b=>b.type===‘text’)?.text.replace(/`json|`/g,’’).trim()||’{}’);
-let html=`<p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">Useful ${parsed.language||'local'} phrases for ${currentCity}:</p><div class="phrase-grid">`;
-(parsed.phrases||[]).forEach(p=>{html+=`<div class="phrase-card"><div class="phrase-local">${p.local}</div>${p.romanized?`<div class="phrase-roman">${p.romanized}</div>`:''}<div class="phrase-meaning">${p.meaning}</div>${p.context?`<div class="phrase-context">${p.context}</div>`:''}</div>`;});
+let html=`<p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">Useful ${parsed.language||'local'} phrases for ${currentCity}:</p><div class="phrase-grid">`;
+(parsed.phrases||[]).forEach(p=>{
+html+=`<div class="phrase-card"><div class="phrase-local">${p.local}</div>${p.romanized?`<div class="phrase-roman">${p.romanized}</div>`:''}<div class="phrase-meaning">${p.meaning}</div>${p.context?`<div style="font-size:0.7rem;color:var(--muted2);margin-top:0.1rem;">${p.context}</div>`:''}</div>`;
+});
 html+=’</div>’;
 document.getElementById(‘languageContent’).innerHTML=html;
 }catch(err){document.getElementById(‘languageContent’).innerHTML=’<div class="err-msg"><strong>Error</strong>’+err.message+’</div>’;}
 }
 
-// CARBON
-function calcCarbon(style,days){const m={Walking:0,Cycling:0.1,‘Public Transport’:1.2,‘Taxi / Rideshare’:3.5,Driving:4.8};return((m[style]||1.5)*days+2.5).toFixed(1);}
+// ============ CARBON FOOTPRINT ============
+function calcCarbon(style,days){
+const perDay={Walking:0,Cycling:0.1,‘Public Transport’:1.2,‘Taxi / Rideshare’:3.5,Driving:4.8};
+const base=perDay[style]||1.5;
+return ((base*days)+2.5).toFixed(1); // +2.5 for accommodation avg
+}
 function openCarbon(){
-const co2=parseFloat(calcCarbon(itinSel.style,numDays));
+const style=itinSel.style;
+const co2=parseFloat(calcCarbon(style,numDays));
 const trees=Math.ceil(co2/21);
-document.getElementById(‘carbonContent’).innerHTML=` <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1.1rem;">Estimated carbon for your ${numDays}-day trip to ${currentCity||'your destination'}.</p> <div class="carbon-breakdown"> <div class="carbon-item"><span>🚶 Transport (${itinSel.style})</span><span class="carbon-val">${calcCarbon(itinSel.style,numDays)} kg</span></div> <div class="carbon-item"><span>🏨 Accommodation</span><span class="carbon-val">${(numDays*2.1).toFixed(1)} kg</span></div> <div class="carbon-item"><span>🍽 Food & dining</span><span class="carbon-val">${(numDays*1.8).toFixed(1)} kg</span></div> <div class="carbon-item" style="border-top:1px solid var(--border2);margin-top:0.3rem;"><span style="font-weight:600;">Total trip estimate</span><span class="carbon-val" style="font-size:1rem;">${(co2+numDays*1.8+numDays*2.1).toFixed(1)} kg CO₂</span></div> </div> <div style="background:rgba(6,214,160,0.05);border:1px solid rgba(6,214,160,0.13);border-radius:10px;padding:0.9rem;margin-top:0.9rem;font-size:0.78rem;color:var(--muted);"> 🌱 To offset this trip, plant approximately <strong style="color:var(--a2)">${trees} tree${trees>1?'s':''}</strong>. </div> <a class="carbon-offset-link" href="https://www.goldstandard.org/take-action/offset-my-footprint" target="_blank" rel="noopener">🌍 Offset My Carbon →</a>`;
-document.getElementById(‘carbonModal’).classList.add(‘open’);document.body.style.overflow=‘hidden’;
+const flightCo2=(co2*3.2).toFixed(1);
+document.getElementById(‘carbonContent’).innerHTML=` <div style="font-size:0.82rem;color:var(--muted);margin-bottom:1.2rem;">Estimated carbon footprint for your ${numDays}-day trip to ${currentCity}.</div> <div class="carbon-breakdown"> <div class="carbon-item"><span class="carbon-label">🚶 Getting around (${style})</span><span class="carbon-val">${calcCarbon(style,numDays)} kg CO₂</span></div> <div class="carbon-item"><span class="carbon-label">🏨 Accommodation (est.)</span><span class="carbon-val">${(numDays*2.1).toFixed(1)} kg CO₂</span></div> <div class="carbon-item"><span class="carbon-label">🍽 Food & dining (est.)</span><span class="carbon-val">${(numDays*1.8).toFixed(1)} kg CO₂</span></div> <div class="carbon-item" style="border-top:2px solid var(--border2);"><span class="carbon-label" style="font-weight:600;">Total trip estimate</span><span class="carbon-val" style="font-size:1.1rem;">${(co2+numDays*1.8+numDays*2.1).toFixed(1)} kg CO₂</span></div> </div> <div style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.15);border-radius:10px;padding:0.9rem;margin-top:1rem;font-size:0.8rem;color:var(--muted);"> 🌱 To offset this trip, you'd need to plant approximately <strong style="color:var(--green)">${trees} tree${trees>1?'s':''}</strong>. Your trip emits roughly <strong style="color:var(--green)">${((co2+numDays*1.8+numDays*2.1)/flightCo2*100).toFixed(0)}%</strong> of a short-haul flight. </div> <a class="carbon-offset-btn" href="https://www.goldstandard.org/take-action/offset-my-footprint" target="_blank" rel="noopener">🌍 Offset My Carbon →</a>`;
+document.getElementById(‘carbonModal’).classList.add(‘open’);
+document.body.style.overflow=‘hidden’;
 }
 
-// MODALS
+// ============ SIDE MODALS ============
 function closeSideModal(id){document.getElementById(id).classList.remove(‘open’);document.body.style.overflow=’’;}
 function closeSideOut(id,e){if(e.target===document.getElementById(id))closeSideModal(id);}
-function closeModal(id){document.getElementById(id).classList.remove(‘open’);document.body.style.overflow=’’;}
-function closeModalOut(id,e){if(e.target===document.getElementById(id))closeModal(id);}
 
-// SAVE
+// ============ SAVE TRIP ============
 function saveTrip(){
 if(!generatedDays.length){showToast(‘Generate an itinerary first!’,‘error’);return;}
 const saved=JSON.parse(localStorage.getItem(‘wa_saved’)||’[]’);
-saved.unshift({id:Date.now(),title:currentItinTitle,city:currentCity,days:numDays,budget:budgetAmt,group:itinSel.group,date:new Date().toLocaleDateString(‘en-US’,{month:‘short’,day:‘numeric’,year:‘numeric’}),data:generatedDays});
+const trip={id:Date.now(),title:currentItinTitle,city:currentCity,days:numDays,budget:budgetAmt,group:itinSel.group,date:new Date().toLocaleDateString(‘en-US’,{month:‘short’,day:‘numeric’,year:‘numeric’}),data:generatedDays};
+saved.unshift(trip);
 localStorage.setItem(‘wa_saved’,JSON.stringify(saved.slice(0,20)));
 showToast(‘Trip saved! 💾’,‘success’);
 }
 function renderSaved(){
 const grid=document.getElementById(‘savedGrid’);
 const saved=JSON.parse(localStorage.getItem(‘wa_saved’)||’[]’);
-if(!saved.length){grid.innerHTML=`<div class="empty-state"><div class="empty-icon">🗺</div><div class="empty-title">No saved trips yet</div><div style="font-size:0.8rem;color:var(--muted);margin-top:0.25rem;">Build and save an itinerary!</div><button class="btn-primary" style="margin-top:1rem;" onclick="showPage('planner')">Start Planning</button></div>`;return;}
+if(!saved.length){grid.innerHTML=`<div class="empty-state"><div class="empty-icon">🗺</div><div class="empty-title">No saved trips yet</div><div style="font-size:0.8rem;color:var(--muted);margin-top:0.25rem;">Build an itinerary and hit Save!</div><button class="cta-primary" style="margin-top:1rem;" onclick="showPage('planner')">Start Planning</button></div>`;return;}
 grid.innerHTML=’’;
 saved.forEach(trip=>{
 const card=document.createElement(‘div’);card.className=‘saved-card’;
@@ -2020,49 +1240,60 @@ grid.appendChild(card);
 });
 }
 function loadTrip(id,e){
-if(e)e.stopPropagation();
+if(e) e.stopPropagation();
 const saved=JSON.parse(localStorage.getItem(‘wa_saved’)||’[]’);
-const trip=saved.find(t=>t.id===id);if(!trip)return;
+const trip=saved.find(t=>t.id===id);
+if(!trip) return;
 generatedDays=trip.data;currentCity=trip.city;currentItinTitle=trip.title;
 document.getElementById(‘itinCity’).value=trip.city;
 document.getElementById(‘itinTitle’).textContent=trip.title;
-document.getElementById(‘itinSub’).textContent=`${trip.days}d · ${trip.city}`;
+document.getElementById(‘itinSub’).textContent=`${trip.days} day${trip.days>1?'s':''} · ${trip.city}`;
 const tabs=document.getElementById(‘dayTabs’),panels=document.getElementById(‘dayPanels’);
 tabs.innerHTML=’’;panels.innerHTML=’’;
 generatedDays.forEach((day,i)=>{
-const tab=document.createElement(‘button’);tab.className=‘day-tab’+(i===0?’ active’:’’);
-tab.textContent=`Day ${day.dayNum}${day.theme?' · '+day.theme:''}`;tab.onclick=()=>switchDayTab(i);tabs.appendChild(tab);
-const panel=document.createElement(‘div’);panel.className=‘day-panel’+(i===0?’ active’:’’);
-panel.id=‘day-panel-’+i;panel.innerHTML=buildDayHTML(day,i,true,true);panels.appendChild(panel);
+const tab=document.createElement(‘button’);
+tab.className=‘day-tab’+(i===0?’ active’:’’);
+tab.textContent=`Day ${day.dayNum}${day.theme?' · '+day.theme:''}`;
+tab.onclick=()=>switchDayTab(i);tabs.appendChild(tab);
+const panel=document.createElement(‘div’);
+panel.className=‘day-panel’+(i===0?’ active’:’’);
+panel.id=‘day-panel-’+i;
+panel.innerHTML=buildDayHTML(day,i,true,true);
+panels.appendChild(panel);
 });
 document.getElementById(‘itinResult’).style.display=‘block’;
-document.getElementById(‘celebrateBlock’).style.display=‘none’;
 showPage(‘planner’);
 document.getElementById(‘itinResult’).scrollIntoView({behavior:‘smooth’,block:‘start’});
-showToast(‘Trip loaded!’,‘success’);
+showToast(‘Trip loaded! 📂’,‘success’);
 }
 function deleteTrip(id,e){
-if(e)e.stopPropagation();
+if(e) e.stopPropagation();
 let saved=JSON.parse(localStorage.getItem(‘wa_saved’)||’[]’);
-saved=saved.filter(t=>t.id!==id);localStorage.setItem(‘wa_saved’,JSON.stringify(saved));
-renderSaved();showToast(‘Deleted’,‘info’);
+saved=saved.filter(t=>t.id!==id);
+localStorage.setItem(‘wa_saved’,JSON.stringify(saved));
+renderSaved();showToast(‘Trip deleted’,‘info’);
 }
 
-// SHARE
+// ============ SHARE ============
 function openShare(){
 const url=`${window.location.origin}?trip=${encodeURIComponent(currentItinTitle||'My Trip')}&city=${encodeURIComponent(currentCity)}`;
 document.getElementById(‘shareLinkInput’).value=url;
-document.getElementById(‘shareModal’).classList.add(‘open’);document.body.style.overflow=‘hidden’;
+document.getElementById(‘shareModal’).classList.add(‘open’);
+document.body.style.overflow=‘hidden’;
 }
-function copyShareLink(){navigator.clipboard.writeText(document.getElementById(‘shareLinkInput’).value);showToast(‘Link copied!’,‘success’);}
-function shareTrip(title,city,e){if(e)e.stopPropagation();document.getElementById(‘shareLinkInput’).value=`${location.origin}?trip=${title}&city=${city}`;document.getElementById(‘shareModal’).classList.add(‘open’);document.body.style.overflow=‘hidden’;}
+function closeShare(){document.getElementById(‘shareModal’).classList.remove(‘open’);document.body.style.overflow=’’;}
+function closeShareOut(e){if(e.target===document.getElementById(‘shareModal’))closeShare();}
+function copyShareLink(){navigator.clipboard.writeText(document.getElementById(‘shareLinkInput’).value);showToast(‘Link copied! 🔗’,‘success’);}
+function shareTrip(title,city,e){if(e)e.stopPropagation();document.getElementById(‘shareLinkInput’).value=`${window.location.origin}?trip=${title}&city=${city}`;document.getElementById(‘shareModal’).classList.add(‘open’);document.body.style.overflow=‘hidden’;}
 function shareToWhatsApp(){window.open(`https://wa.me/?text=${encodeURIComponent('Check out my trip! '+document.getElementById('shareLinkInput').value)}`);}
 function shareToTwitter(){window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent("Just planned my trip with What's Around? "+document.getElementById('shareLinkInput').value)}`);}
 function shareToFacebook(){window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(document.getElementById('shareLinkInput').value)}`);}
-function shareToInstagram(){copyShareLink();showToast(‘Link copied — paste in your story!’,‘info’);}
+function shareToInstagram(){copyShareLink();showToast(‘Link copied — paste in your Instagram bio or story!’,‘info’);}
 
-// EMAIL
+// ============ EMAIL ============
 function openEmail(){document.getElementById(‘emailModal’).classList.add(‘open’);document.body.style.overflow=‘hidden’;}
+function closeEmail(){document.getElementById(‘emailModal’).classList.remove(‘open’);document.body.style.overflow=’’;}
+function closeEmailOut(e){if(e.target===document.getElementById(‘emailModal’))closeEmail();}
 function sendEmail(){
 const email=document.getElementById(‘emailInput’).value.trim();
 if(!email){showToast(‘Please enter your email’,‘error’);return;}
@@ -2073,10 +1304,10 @@ body+=`--- Day ${day.dayNum}${day.theme?' — '+day.theme:''} ---\n`;
 body+=’\n’;
 });
 window.location.href=`mailto:${email}?subject=${encodeURIComponent(currentItinTitle||'My Itinerary')}&body=${encodeURIComponent(body)}`;
-closeModal(‘emailModal’);showToast(‘Opening mail app…’,‘success’);
+closeEmail();showToast(‘Opening mail app…’,‘success’);
 }
 
-// AUTH
+// ============ AUTH ============
 function openAuth(tab=‘login’){switchAuthTab(tab);document.getElementById(‘authModal’).classList.add(‘open’);document.body.style.overflow=‘hidden’;}
 function closeAuth(){document.getElementById(‘authModal’).classList.remove(‘open’);document.body.style.overflow=’’;}
 function closeAuthOut(e){if(e.target===document.getElementById(‘authModal’))closeAuth();}
@@ -2088,21 +1319,24 @@ document.getElementById(‘auth-signup-form’).style.display=tab===‘signup’
 }
 function doAuth(type){
 if(type===‘login’){
-const email=document.getElementById(‘authEmail’).value.trim(),pass=document.getElementById(‘authPass’).value;
+const email=document.getElementById(‘authEmail’).value.trim();
+const pass=document.getElementById(‘authPass’).value;
 if(!email||!pass){showToast(‘Please fill in all fields’,‘error’);return;}
 const users=JSON.parse(localStorage.getItem(‘wa_users’)||’{}’);
 if(!users[email]||users[email].pass!==pass){showToast(‘Incorrect email or password’,‘error’);return;}
 currentUser={email,name:users[email].name};updateNavUser();closeAuth();
-showToast(`Welcome back, ${currentUser.name}!`,‘success’);
+showToast(`Welcome back, ${currentUser.name}! 👋`,‘success’);
 }else{
-const name=document.getElementById(‘authNameNew’).value.trim(),email=document.getElementById(‘authEmailNew’).value.trim(),pass=document.getElementById(‘authPassNew’).value;
+const name=document.getElementById(‘authNameNew’).value.trim();
+const email=document.getElementById(‘authEmailNew’).value.trim();
+const pass=document.getElementById(‘authPassNew’).value;
 if(!name||!email||!pass){showToast(‘Please fill in all fields’,‘error’);return;}
 if(pass.length<6){showToast(‘Password needs 6+ characters’,‘error’);return;}
 const users=JSON.parse(localStorage.getItem(‘wa_users’)||’{}’);
-if(users[email]){showToast(‘Account already exists’,‘error’);return;}
+if(users[email]){showToast(‘Account already exists — try signing in’,‘error’);return;}
 users[email]={name,pass};localStorage.setItem(‘wa_users’,JSON.stringify(users));
 currentUser={email,name};updateNavUser();closeAuth();
-fireConfetti();showToast(`Welcome, ${name}! 🎉`,‘success’);
+showToast(`Welcome, ${name}! Account created 🎉`,‘success’);
 }
 }
 function updateNavUser(){
@@ -2112,14 +1346,14 @@ else area.innerHTML=`<button class="nav-user-btn" onclick="openAuth('login')">Si
 }
 function signOut(){currentUser=null;updateNavUser();showToast(‘Signed out’,‘info’);}
 
-// BLOG
+// ============ BLOG ============
 let blogPosts=[
 {id:1,title:“The tiny yakitori alley that changed my life”,author:“James T.”,init:“JT”,city:“Tokyo”,cat:“Eat”,date:“Mar 18 2026”,excerpt:“Tucked behind Shinjuku station, Omoide Yokocho is everything you want late-night Tokyo to be — smoke, skewers, and strangers becoming friends.”,emoji:“🍢”,photo:null},
 {id:2,title:“Paris wine bars vs tourist traps”,author:“Céline M.”,init:“CM”,city:“Paris”,cat:“Drink”,date:“Mar 12 2026”,excerpt:“After three visits I finally figured out how to find the real caves à vin. Hint: avoid anything with an English menu on the door.”,emoji:“🍷”,photo:null},
-{id:3,title:“48 hours in Barcelona’s El Born”,author:“Ravi K.”,init:“RK”,city:“Barcelona”,cat:“Explore”,date:“Mar 5 2026”,excerpt:“El Born is walkable, beautiful, and genuinely underrated. Here’s my honest 48-hour itinerary.”,emoji:“🏛”,photo:null},
-{id:4,title:“Bangkok street food: a beginner’s guide”,author:“Priya N.”,init:“PN”,city:“Bangkok”,cat:“Eat”,date:“Feb 28 2026”,excerpt:“I was nervous about street food on my first trip. By day three I was eating pad kra pao for breakfast and have zero regrets.”,emoji:“🌶”,photo:null},
-{id:5,title:“The Lisbon viewpoints nobody talks about”,author:“Sofia A.”,init:“SA”,city:“Lisbon”,cat:“Explore”,date:“Feb 20 2026”,excerpt:“Everyone goes to Miradouro da Graça. Here are three I found by just walking uphill without Google Maps.”,emoji:“🌇”,photo:null},
-{id:6,title:“NYC coffee shops for remote work”,author:“Marcus L.”,init:“ML”,city:“New York”,cat:“Drink”,date:“Feb 14 2026”,excerpt:“I tested 22 coffee shops working remotely from NYC for a month. Here are the 5 worth your laptop.”,emoji:“☕”,photo:null}
+{id:3,title:“48 hours in Barcelona’s El Born”,author:“Ravi K.”,init:“RK”,city:“Barcelona”,cat:“Explore”,date:“Mar 5 2026”,excerpt:“El Born is walkable, beautiful, and genuinely underrated next to the Gothic Quarter. Here’s my honest 48-hour itinerary.”,emoji:“🏛”,photo:null},
+{id:4,title:“Bangkok street food: a beginner’s guide”,author:“Priya N.”,init:“PN”,city:“Bangkok”,cat:“Eat”,date:“Feb 28 2026”,excerpt:“I was nervous about street food on my first trip. By day three I was eating pad kra pao for breakfast and I have zero regrets.”,emoji:“🌶”,photo:null},
+{id:5,title:“The Lisbon viewpoints nobody talks about”,author:“Sofia A.”,init:“SA”,city:“Lisbon”,cat:“Explore”,date:“Feb 20 2026”,excerpt:“Everyone goes to Miradouro da Graça. Here are three I found by just walking uphill and not checking Google Maps.”,emoji:“🌇”,photo:null},
+{id:6,title:“NYC coffee shops for remote work”,author:“Marcus L.”,init:“ML”,city:“New York”,cat:“Drink”,date:“Feb 14 2026”,excerpt:“I tested 22 coffee shops working remotely from NYC for a month. Here are the 5 worth your laptop and your latte.”,emoji:“☕”,photo:null}
 ];
 function renderBlog(city){
 const grid=document.getElementById(‘blogGrid’);grid.innerHTML=’’;
@@ -2139,7 +1373,10 @@ function closeWrite(){document.getElementById(‘writeOverlay’).classList.remo
 function closeWriteOut(e){if(e.target===document.getElementById(‘writeOverlay’))closeWrite();}
 function toggleTag(el,tag){el.classList.toggle(‘sel’);if(el.classList.contains(‘sel’))selTags.push(tag);else selTags=selTags.filter(t=>t!==tag);}
 function submitPost(){
-const title=document.getElementById(‘postTitle’).value.trim(),author=document.getElementById(‘postAuthor’).value.trim(),body=document.getElementById(‘postBody’).value.trim(),cat=document.getElementById(‘postCat’).value;
+const title=document.getElementById(‘postTitle’).value.trim();
+const author=document.getElementById(‘postAuthor’).value.trim();
+const body=document.getElementById(‘postBody’).value.trim();
+const cat=document.getElementById(‘postCat’).value;
 if(!title||!author||!body){showToast(‘Please fill in all fields’,‘error’);return;}
 if(hasBad(title)||hasBad(body)){showToast(‘Remove inappropriate language’,‘error’);return;}
 const city=selTags[0]||‘Other’;
@@ -2154,10 +1391,10 @@ const filters=document.getElementById(‘blogFilters’);
 const exists=[…filters.querySelectorAll(’.btag’)].some(t=>t.textContent===city);
 if(!exists&&city!==‘Other’){const nt=document.createElement(‘span’);nt.className=‘btag’;nt.textContent=city;nt.onclick=function(){filterBlog(city,this);};filters.appendChild(nt);}
 renderBlog(‘all’);document.querySelectorAll(’#blogFilters .btag’).forEach((t,i)=>t.classList.toggle(‘active’,i===0));
-fireConfetti();showToast(‘Post published! 🎉’,‘success’);
+showToast(‘Post published! 🎉’,‘success’);
 }
 
-// DEFAULT DATES
+// Set default dates
 const today=new Date(),tomorrow=new Date(today);tomorrow.setDate(today.getDate()+1);
 document.getElementById(‘startDate’).value=today.toISOString().split(‘T’)[0];
 document.getElementById(‘endDate’).value=tomorrow.toISOString().split(‘T’)[0];
