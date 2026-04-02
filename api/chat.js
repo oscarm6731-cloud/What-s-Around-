@@ -6,43 +6,59 @@ res.setHeader(‘Access-Control-Allow-Headers’, ‘Content-Type’);
 if (req.method === ‘OPTIONS’) return res.status(200).end();
 if (req.method !== ‘POST’) return res.status(405).json({ error: ‘Method not allowed’ });
 
+const key = process.env.GROQ_API_KEY;
+if (!key) return res.status(500).json({ error: ‘GROQ_API_KEY not set’ });
+
 try {
-const { messages, system, max_tokens } = req.body;
+const body = req.body || {};
+const messages = [];
 
 ```
-const groqMessages = [];
-if (system) groqMessages.push({ role: 'system', content: system });
-(messages || []).forEach(m => groqMessages.push({ role: m.role, content: m.content }));
+if (body.system) {
+  messages.push({ role: 'system', content: String(body.system) });
+}
+
+const incoming = Array.isArray(body.messages) ? body.messages : [];
+incoming.forEach(function(m) {
+  messages.push({ role: m.role, content: String(m.content) });
+});
+
+if (messages.length === 0) {
+  return res.status(400).json({ error: 'No messages provided' });
+}
 
 const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
+    'Authorization': 'Bearer ' + key
   },
   body: JSON.stringify({
     model: 'llama-3.3-70b-versatile',
-    messages: groqMessages,
-    max_tokens: max_tokens || 8000,
+    messages: messages,
+    max_tokens: body.max_tokens || 4000,
     temperature: 0.7
   })
 });
 
 const data = await response.json();
 
-if (data.error) {
-  console.error('Groq error:', data.error);
-  return res.status(500).json({ error: data.error.message });
+if (!response.ok) {
+  console.error('Groq error:', JSON.stringify(data));
+  return res.status(500).json({ error: data.error ? data.error.message : 'Groq API error' });
 }
 
-// Return in Anthropic-compatible format so the frontend works unchanged
+const text = data.choices && data.choices[0] && data.choices[0].message
+  ? data.choices[0].message.content
+  : '';
+
 return res.status(200).json({
-  content: [{ type: 'text', text: data.choices?.[0]?.message?.content || '' }]
+  content: [{ type: 'text', text: text }]
 });
 ```
 
 } catch (err) {
-console.error(‘Handler error:’, err);
-return res.status(500).json({ error: ‘Server error’ });
+console.error(‘Handler error:’, err.message);
+return res.status(500).json({ error: err.message });
 }
 }
