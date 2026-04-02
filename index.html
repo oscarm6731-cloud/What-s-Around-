@@ -201,6 +201,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .chat-send:disabled{opacity:0.3;cursor:not-allowed;}
 .wx-banner{display:none;margin-top:0.8rem;background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.15);border-radius:10px;padding:0.75rem 1rem;align-items:center;gap:0.8rem;flex-wrap:wrap;}
 .wx-banner.show{display:flex;}
+
+.key-modal{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:1.5rem;}
+.key-modal.open{display:flex;}
+.key-box{background:var(–card);border:1px solid rgba(45,212,191,0.2);border-radius:20px;padding:2rem;width:100%;max-width:420px;}
+.key-box h2{font-family:“Bebas Neue”,sans-serif;font-size:1.4rem;letter-spacing:0.04em;margin-bottom:0.5rem;}
+.key-box p{font-size:0.82rem;color:var(–txt2);line-height:1.65;margin-bottom:1.1rem;}
+.key-box a{color:var(–teal);}
+
 </style>
 </head>
 <body>
@@ -409,15 +417,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 
 <div class="toast" id="toast"></div>
 
-<div id="keyModal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.88);align-items:center;justify-content:center;padding:1.5rem;">
-  <div style="background:#1a1928;border:1px solid rgba(45,212,191,0.2);border-radius:20px;padding:2rem;width:100%;max-width:420px;">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.04em;margin-bottom:0.5rem;color:#eeeaf8;">ENTER YOUR GROQ KEY</div>
-    <p style="font-size:0.82rem;color:#a8a3c0;margin-bottom:1.2rem;line-height:1.6;">Free at <a href="https://console.groq.com" target="_blank" style="color:#2dd4bf;">console.groq.com</a> then API Keys. Starts with gsk_</p>
-    <input id="apiKeyInput" type="password" placeholder="gsk_..." style="width:100%;background:#201f30;border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:0.78rem 1rem;font-size:16px;color:#eeeaf8;outline:none;margin-bottom:0.8rem;-webkit-appearance:none;display:block;">
-    <button onclick="saveKey()" style="width:100%;padding:0.9rem;background:linear-gradient(135deg,#2dd4bf,#60a5fa);color:#0d0d14;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.06em;border:none;border-radius:12px;cursor:pointer;display:block;">SAVE AND START PLANNING</button>
-  </div>
-</div>
-
 <script>
 var days=3,budget=150,vibes=[],group='Solo',travelStyle='Walking';
 var tripDays=[],curCity='',curTitle='';
@@ -523,9 +522,10 @@ async function generate(){
   document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
   var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')\n\nReturn ONLY a raw JSON object, no markdown, no code fences, no explanation:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Real place name","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Place City Country"}]}]}\n\nRules: 5-6 blocks per day. Real places only. Logical geographic flow.';
   try{
-    var res=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+getKey()},body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:4000,messages:[{role:'user',content:prompt}]})});var raw=await res.json();var data={content:[{type:'text',text:raw.choices&&raw.choices[0]?raw.choices[0].message.content:''}]};
-    var data=await res.json();
-    var text=(data.content&&data.content[0]?data.content[0].text:'').replace(/```json|```/g,'').trim();
+    var rawText=await callGroq(prompt,null,4000);
+    var text=rawText.replace(/```json|```/g,'').trim();
+    var si=text.indexOf('{'),ei=text.lastIndexOf('}');
+    if(si>-1&&ei>-1)text=text.slice(si,ei+1);
     var parsed=JSON.parse(text);
     tripDays=parsed.days||[];
     curTitle=parsed.title||(days+' Days in '+city);
@@ -547,7 +547,9 @@ async function generate(){
     });
     toast('Itinerary ready! 🎉','ok');
   }catch(err){
-    document.getElementById('dayPanels').innerHTML='<div class="loading"><div class="loading-txt" style="color:var(--rose)">Could not build itinerary.<br>Check your API key in Vercel.</div></div>';
+    var errMsg=err.message||'Unknown error';
+    document.getElementById('dayPanels').innerHTML='<div class="loading"><div class="loading-txt" style="color:var(--rose)">Error: '+errMsg+'</div></div>';
+    if(errMsg.indexOf('No API key')>-1||errMsg.indexOf('401')>-1)showKeyModal();
     console.error(err);
   }
   btn.disabled=false;btn.textContent='BUILD MY ITINERARY ✨';
@@ -633,9 +635,11 @@ async function openPacking(){
   document.getElementById('packContent').innerHTML='<div class="loading"><div class="loading-ring"></div><div class="loading-txt">Building your list...</div></div>';
   var prompt='Packing list for '+days+'-day trip to "'+curCity+'". Group: '+group+'. Budget: $'+budget+'/day.\nReturn ONLY raw JSON: {"sections":[{"title":"Essentials","items":["Passport","Charger"]},{"title":"Clothing","items":["..."]},{"title":"Toiletries","items":["..."]},{"title":"For '+curCity+'","items":["..."]}]}';
   try{
-    var res=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+getKey()},body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:1000,messages:[{role:'user',content:prompt}]})});var raw2=await res.json();var data={content:[{type:'text',text:raw2.choices&&raw2.choices[0]?raw2.choices[0].message.content:''}]};
-    var data=await res.json();
-    var parsed=JSON.parse((data.content&&data.content[0]?data.content[0].text:'').replace(/```json|```/g,'').trim());
+    var packRaw=await callGroq(prompt,null,1000);
+    var packText=packRaw.replace(/```json|```/g,'').trim();
+    var psi=packText.indexOf('{'),pei=packText.lastIndexOf('}');
+    if(psi>-1&&pei>-1)packText=packText.slice(psi,pei+1);
+    var parsed=JSON.parse(packText);
     var html='';
     (parsed.sections||[]).forEach(function(s){
       html+='<div class="pack-sec"><div class="pack-sec-title">'+s.title+'</div><div class="pack-items">';
@@ -701,31 +705,53 @@ async function sendChat(){
   var city=document.getElementById('city').value.trim()||curCity||'';
   var ctx=city?'\n\nContext: Planning a trip to '+city+', '+days+' days, $'+budget+'/day, group: '+group+'.':'';
   try{
-    var chatMsgs2=[{role:'system',content:'You are a friendly AI travel concierge. Answer travel questions concisely (2-4 sentences). Be warm and practical. Use occasional travel emojis.'+ctx}].concat(chatHistory.slice(-8));var res=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+getKey()},body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:400,messages:chatMsgs2})});var raw3=await res.json();var data={content:[{type:'text',text:raw3.choices&&raw3.choices[0]?raw3.choices[0].message.content:''}]};
-    var data=await res.json();
-    var reply=data.content&&data.content[0]?data.content[0].text:"Sorry, couldn't connect. Try again!";
+    var chatPrompt=chatHistory.slice(-1)[0].content;
+    var chatCtx='You are a friendly AI travel concierge. Answer travel questions concisely (2-4 sentences). Be warm and practical. Use occasional travel emojis.'+ctx;
+    var reply=await callGroq(chatPrompt,chatCtx,400);
     removeTyping();addMsg('ai',reply);chatHistory.push({role:'assistant',content:reply});
   }catch(e){removeTyping();addMsg('ai','Trouble connecting. Please try again! 🙏');}
   chatBusy=false;if(send)send.disabled=false;
 }
-setTimeout(function(){if(!chatOpen){var b=document.getElementById('chatBadge');if(b)b.classList.add('show');}},5000);
 
-function getKey(){return localStorage.getItem('groq_key')||'';}
+function getKey(){return localStorage.getItem("wa_groq_key")||"";}
 function saveKey(){
-  var k=document.getElementById('apiKeyInput').value.trim();
-  if(k){
-    localStorage.setItem('groq_key',k);
-    document.getElementById('keyModal').style.display='none';
-    toast('API key saved!','ok');
-  } else {
-    toast('Please enter your key','err');
-  }
+  var k=document.getElementById("keyInp").value.trim();
+  if(!k){showToast("Please enter your Groq key","err");return;}
+  if(k.slice(0,4)!=="gsk_"){showToast("Key should start with gsk_","err");return;}
+  localStorage.setItem("wa_groq_key",k);
+  document.getElementById("keyModal").classList.remove("open");
+  showToast("Key saved! Ready to plan","ok");
 }
-if(!getKey()){
-  document.getElementById('keyModal').style.display='flex';
+function showKeyModal(){document.getElementById("keyModal").classList.add("open");}
+async function callGroq(userPrompt,system,maxTok){
+  var key=getKey();
+  if(!key){showKeyModal();throw new Error("No API key set");}
+  var msgs=[];
+  if(system)msgs.push({role:"system",content:system});
+  msgs.push({role:"user",content:userPrompt});
+  var r=await fetch("https://api.groq.com/openai/v1/chat/completions",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},
+    body:JSON.stringify({model:"llama-3.3-70b-versatile",messages:msgs,max_tokens:maxTok||4000})
+  });
+  var d=await r.json();
+  if(!r.ok)throw new Error(d.error?d.error.message:"API error "+r.status);
+  return d.choices&&d.choices[0]?d.choices[0].message.content:"";
 }
+if(!getKey()){document.getElementById("keyModal").classList.add("open");}
 
+setTimeout(function(){if(!chatOpen){var b=document.getElementById('chatBadge');if(b)b.classList.add('show');}},5000);
 </script>
+
+<div id="keyModal" class="key-modal">
+  <div class="key-box">
+    <h2>ENTER YOUR GROQ KEY</h2>
+    <p>Get a free key at <a href="https://console.groq.com" target="_blank">console.groq.com</a> then API Keys. Starts with gsk_</p>
+    <input class="inp" id="keyInp" type="password" placeholder="gsk_..." style="margin-bottom:0.8rem">
+    <button class="btn-primary" style="width:100%;padding:0.9rem" onclick="saveKey()">SAVE AND START PLANNING</button>
+    <p style="font-size:0.7rem;color:var(--txt3);margin-top:0.75rem;text-align:center">Stored locally on your device only</p>
+  </div>
+</div>
 
 </body>
 </html>
