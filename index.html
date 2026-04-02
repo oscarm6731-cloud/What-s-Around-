@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -202,12 +201,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .wx-banner{display:none;margin-top:0.8rem;background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.15);border-radius:10px;padding:0.75rem 1rem;align-items:center;gap:0.8rem;flex-wrap:wrap;}
 .wx-banner.show{display:flex;}
 
-.key-modal{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:1.5rem;}
-.key-modal.open{display:flex;}
-.key-box{background:var(–card);border:1px solid rgba(45,212,191,0.2);border-radius:20px;padding:2rem;width:100%;max-width:420px;}
-.key-box h2{font-family:“Bebas Neue”,sans-serif;font-size:1.4rem;letter-spacing:0.04em;margin-bottom:0.5rem;}
-.key-box p{font-size:0.82rem;color:var(–txt2);line-height:1.65;margin-bottom:1.1rem;}
-.key-box a{color:var(–teal);}
+
 
 </style>
 </head>
@@ -228,7 +222,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 </nav>
 
 <!-- HOME -->
-
 <div class="page active" id="page-home">
   <div class="hero">
     <div class="hero-badge">✦ AI Travel Planner</div>
@@ -242,7 +235,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 </div>
 
 <!-- PLANNER -->
-
 <div class="page" id="page-planner">
 <div id="planner-page">
   <div class="planner-head">
@@ -338,7 +330,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     </div>
   </div>
 
-<button class="gen-btn" id="genBtn" onclick="generate()">BUILD MY ITINERARY ✨</button>
+  <button class="gen-btn" id="genBtn" onclick="generate()">BUILD MY ITINERARY ✨</button>
 
   <div id="results">
     <div class="res-hdr">
@@ -361,7 +353,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 </div>
 
 <!-- SAVED -->
-
 <div class="page" id="page-saved">
 <div id="saved-page">
   <div class="saved-head">
@@ -375,7 +366,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 </div><!-- .app -->
 
 <!-- PACKING MODAL -->
-
 <div class="modal-bg" id="packModal" onclick="if(event.target===this)closePack()">
   <div class="modal">
     <div class="modal-hdr">
@@ -387,7 +377,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 </div>
 
 <!-- CHAT -->
-
 <button class="chat-fab" id="chatFab" onclick="toggleChat()">
   🤖
   <span class="chat-badge" id="chatBadge">1</span>
@@ -549,7 +538,7 @@ async function generate(){
   }catch(err){
     var errMsg=err.message||'Unknown error';
     document.getElementById('dayPanels').innerHTML='<div class="loading"><div class="loading-txt" style="color:var(--rose)">Error: '+errMsg+'</div></div>';
-    if(errMsg.indexOf('No API key')>-1||errMsg.indexOf('401')>-1)showKeyModal();
+    
     console.error(err);
   }
   btn.disabled=false;btn.textContent='BUILD MY ITINERARY ✨';
@@ -713,45 +702,23 @@ async function sendChat(){
   chatBusy=false;if(send)send.disabled=false;
 }
 
-function getKey(){return localStorage.getItem("wa_groq_key")||"";}
-function saveKey(){
-  var k=document.getElementById("keyInp").value.trim();
-  if(!k){showToast("Please enter your Groq key","err");return;}
-  if(k.slice(0,4)!=="gsk_"){showToast("Key should start with gsk_","err");return;}
-  localStorage.setItem("wa_groq_key",k);
-  document.getElementById("keyModal").classList.remove("open");
-  showToast("Key saved! Ready to plan","ok");
-}
-function showKeyModal(){document.getElementById("keyModal").classList.add("open");}
 async function callGroq(userPrompt,system,maxTok){
-  var key=getKey();
-  if(!key){showKeyModal();throw new Error("No API key set");}
   var msgs=[];
   if(system)msgs.push({role:"system",content:system});
   msgs.push({role:"user",content:userPrompt});
-  var r=await fetch("https://api.groq.com/openai/v1/chat/completions",{
+  var r=await fetch("/api/chat",{
     method:"POST",
-    headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},
-    body:JSON.stringify({model:"llama-3.3-70b-versatile",messages:msgs,max_tokens:maxTok||4000})
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({messages:msgs,max_tokens:maxTok||4000})
   });
   var d=await r.json();
-  if(!r.ok)throw new Error(d.error?d.error.message:"API error "+r.status);
-  return d.choices&&d.choices[0]?d.choices[0].message.content:"";
+  if(!r.ok)throw new Error(d.error||"API error "+r.status);
+  return d.content&&d.content[0]?d.content[0].text:"";
 }
-if(!getKey()){document.getElementById("keyModal").classList.add("open");}
 
 setTimeout(function(){if(!chatOpen){var b=document.getElementById('chatBadge');if(b)b.classList.add('show');}},5000);
 </script>
 
-<div id="keyModal" class="key-modal">
-  <div class="key-box">
-    <h2>ENTER YOUR GROQ KEY</h2>
-    <p>Get a free key at <a href="https://console.groq.com" target="_blank">console.groq.com</a> then API Keys. Starts with gsk_</p>
-    <input class="inp" id="keyInp" type="password" placeholder="gsk_..." style="margin-bottom:0.8rem">
-    <button class="btn-primary" style="width:100%;padding:0.9rem" onclick="saveKey()">SAVE AND START PLANNING</button>
-    <p style="font-size:0.7rem;color:var(--txt3);margin-top:0.75rem;text-align:center">Stored locally on your device only</p>
-  </div>
-</div>
 
 </body>
 </html>
