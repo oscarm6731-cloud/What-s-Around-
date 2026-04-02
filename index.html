@@ -514,7 +514,7 @@ async function generate(){
   document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
   var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')\n\nReturn ONLY a raw JSON object, no markdown, no code fences, no explanation:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Real place name","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Place City Country"}]}]}\n\nRules: 5-6 blocks per day. Real places only. Logical geographic flow.';
   try{
-    var res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({max_tokens:4000,messages:[{role:'user',content:prompt}]})});
+    var res=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+getKey()},body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:4000,messages:[{role:'user',content:prompt}]})});var raw=await res.json();var data={content:[{type:'text',text:raw.choices&&raw.choices[0]?raw.choices[0].message.content:''}]};
     var data=await res.json();
     var text=(data.content&&data.content[0]?data.content[0].text:'').replace(/```json|```/g,'').trim();
     var parsed=JSON.parse(text);
@@ -624,7 +624,7 @@ async function openPacking(){
   document.getElementById('packContent').innerHTML='<div class="loading"><div class="loading-ring"></div><div class="loading-txt">Building your list...</div></div>';
   var prompt='Packing list for '+days+'-day trip to "'+curCity+'". Group: '+group+'. Budget: $'+budget+'/day.\nReturn ONLY raw JSON: {"sections":[{"title":"Essentials","items":["Passport","Charger"]},{"title":"Clothing","items":["..."]},{"title":"Toiletries","items":["..."]},{"title":"For '+curCity+'","items":["..."]}]}';
   try{
-    var res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    var res=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+getKey()},body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:1000,messages:[{role:'user',content:prompt}]})});var raw2=await res.json();var data={content:[{type:'text',text:raw2.choices&&raw2.choices[0]?raw2.choices[0].message.content:''}]};
     var data=await res.json();
     var parsed=JSON.parse((data.content&&data.content[0]?data.content[0].text:'').replace(/```json|```/g,'').trim());
     var html='';
@@ -692,7 +692,7 @@ async function sendChat(){
   var city=document.getElementById('city').value.trim()||curCity||'';
   var ctx=city?'\n\nContext: Planning a trip to '+city+', '+days+' days, $'+budget+'/day, group: '+group+'.':'';
   try{
-    var res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({max_tokens:400,system:'You are a friendly AI travel concierge. Answer travel questions concisely (2-4 sentences). Be warm and practical. Use occasional travel emojis.'+ctx,messages:chatHistory.slice(-8)})});
+    var chatMsgs2=[{role:'system',content:'You are a friendly AI travel concierge. Answer travel questions concisely (2-4 sentences). Be warm and practical. Use occasional travel emojis.'+ctx}].concat(chatHistory.slice(-8));var res=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+getKey()},body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:400,messages:chatMsgs2})});var raw3=await res.json();var data={content:[{type:'text',text:raw3.choices&&raw3.choices[0]?raw3.choices[0].message.content:''}]};
     var data=await res.json();
     var reply=data.content&&data.content[0]?data.content[0].text:"Sorry, couldn't connect. Try again!";
     removeTyping();addMsg('ai',reply);chatHistory.push({role:'assistant',content:reply});
@@ -701,6 +701,27 @@ async function sendChat(){
 }
 setTimeout(function(){if(!chatOpen){var b=document.getElementById('chatBadge');if(b)b.classList.add('show');}},5000);
 </script>
+
+<div id="keyModal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;padding:1.5rem;">
+  <div style="background:#1a1928;border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:2rem;width:100%;max-width:420px;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.04em;margin-bottom:0.5rem;color:#eeeaf8;">ENTER YOUR GROQ API KEY</div>
+    <p style="font-size:0.82rem;color:#a8a3c0;margin-bottom:1.2rem;line-height:1.6;">Get a free key at <a href="https://console.groq.com" target="_blank" style="color:#2dd4bf;">console.groq.com</a> → API Keys → Create API Key. Starts with <strong style="color:#eeeaf8;">gsk_</strong></p>
+    <input id="apiKeyInput" type="password" placeholder="gsk_..." style="width:100%;background:#201f30;border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:0.78rem 1rem;font-size:1rem;color:#eeeaf8;outline:none;margin-bottom:0.8rem;-webkit-appearance:none;">
+    <button onclick="saveKey()" style="width:100%;padding:0.9rem;background:linear-gradient(135deg,#2dd4bf,#60a5fa);color:#0d0d14;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.06em;border:none;border-radius:12px;cursor:pointer;">SAVE & START PLANNING</button>
+  </div>
+</div>
+
+function getKey(){
+return localStorage.getItem(‘groq_key’)||’’;
+}
+function saveKey(){
+var k=document.getElementById(‘apiKeyInput’).value.trim();
+if(k){localStorage.setItem(‘groq_key’,k);document.getElementById(‘keyModal’).style.display=‘none’;toast(‘API key saved!’,‘ok’);}
+}
+// Check for key on load
+window.addEventListener(‘load’,function(){
+if(!getKey()){document.getElementById(‘keyModal’).style.display=‘flex’;}
+});
 
 </body>
 </html>
