@@ -201,6 +201,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .chat-send:disabled{opacity:0.3;cursor:not-allowed;}
 .wx-banner{display:none;margin-top:0.8rem;background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.15);border-radius:10px;padding:0.75rem 1rem;align-items:center;gap:0.8rem;flex-wrap:wrap;}
 .wx-banner.show{display:flex;}
+.sl-b{background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.2);color:var(--teal);}
+.sl-g{background:rgba(149,96,244,0.08);border:1px solid rgba(149,96,244,0.2);color:#9560f4;}
+.affil-footer{text-align:center;padding:1.5rem 1.5rem 2.5rem;border-top:1px solid var(--line);margin-top:2rem;}
+.affil-footer p{font-size:0.72rem;color:var(--txt3);line-height:1.6;}
+.affil-footer strong{color:var(--txt2);}
 
 </style>
 </head>
@@ -226,7 +231,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   <div class="hero">
     <div class="hero-badge">✦ AI Travel Planner</div>
     <h1>PLAN YOUR<br><span>PERFECT TRIP</span></h1>
-    <p class="hero-sub">Tell us where you're going. We'll build a day-by-day itinerary with real places, costs, and booking links — powered by AI.</p>
+    <p class="hero-sub">Tell us where you're going. We'll build a day-by-day itinerary with real places, costs, and booking links.</p>
     <div class="hero-btns">
       <button class="btn-primary" onclick="goPage('planner')">✨ Start Planning</button>
       <button class="btn-ghost" onclick="surprise()">🎲 Surprise Me</button>
@@ -344,10 +349,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
         <button class="btn-sm btn-muted" onclick="saveTrip()">💾 Save</button>
         <button class="btn-sm btn-muted" onclick="openPacking()">🎒 Pack</button>
         <button class="btn-sm btn-muted" onclick="window.print()">🖨 Print</button>
+        <button class="btn-sm btn-muted" id="scanBtn" onclick="scanPhoto()">📸 Scan a Photo</button>
       </div>
     </div>
     <div class="day-tabs" id="dayTabs"></div>
     <div id="dayPanels"></div>
+    <div id="scannedStops"></div>
   </div>
 
 </div>
@@ -364,6 +371,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   <div id="savedGrid"></div>
 </div>
 </div>
+
+<footer class="affil-footer">
+  <p><strong>What's Around?</strong> &mdash; Your free AI travel planner.<br>Booking links help keep this tool free. Thank you for using them.</p>
+</footer>
 
 </div><!-- .app -->
 
@@ -562,11 +573,19 @@ function buildDay(day,di,links){
     var lhtml='';
     if(links){
       var mq=encodeURIComponent(b.mapsQuery||b.place+' '+curCity);
+      var placeEnc=encodeURIComponent(b.place+' '+curCity);
+      var isFood=t.indexOf('breakfast')>-1||t.indexOf('lunch')>-1||t.indexOf('dinner')>-1||t.indexOf('cafe')>-1||t.indexOf('food')>-1||t.indexOf('restaurant')>-1||t.indexOf('brunch')>-1||t.indexOf('bar')>-1||t.indexOf('drink')>-1;
+      var isAttr=t.indexOf('tour')>-1||t.indexOf('museum')>-1||t.indexOf('visit')>-1||t.indexOf('attraction')>-1||t.indexOf('explore')>-1||t.indexOf('sightseeing')>-1||t.indexOf('activity')>-1||t.indexOf('experience')>-1;
+      var isHotel=t.indexOf('hotel')>-1||t.indexOf('accommodation')>-1||t.indexOf('hostel')>-1||t.indexOf('stay')>-1||t.indexOf('check-in')>-1||t.indexOf('check in')>-1;
       lhtml+='<a class="slink sl-m" href="https://maps.google.com/maps?q='+mq+'" target="_blank" rel="noopener">📍 Maps</a>';
-      if(t.indexOf('breakfast')>-1||t.indexOf('lunch')>-1||t.indexOf('dinner')>-1||t.indexOf('cafe')>-1||t.indexOf('food')>-1||t.indexOf('restaurant')>-1||t.indexOf('brunch')>-1)
+      if(isFood)
         lhtml+='<a class="slink sl-o" href="https://www.opentable.com/r/'+encodeURIComponent(b.place)+'" target="_blank" rel="noopener">🍽 Reserve</a>';
-      if(t.indexOf('tour')>-1||t.indexOf('museum')>-1||t.indexOf('visit')>-1||t.indexOf('attraction')>-1||t.indexOf('explore')>-1)
-        lhtml+='<a class="slink sl-v" href="https://www.viator.com/search/'+encodeURIComponent(b.place+' '+curCity)+'" target="_blank" rel="noopener">🎟 Viator</a>';
+      if(isAttr){
+        lhtml+='<a class="slink sl-v" href="https://www.viator.com/search/'+placeEnc+'?pid=P00107301" target="_blank" rel="noopener">🎟 Viator</a>';
+        lhtml+='<a class="slink sl-g" href="https://www.getyourguide.com/s/?q='+placeEnc+'&partner_id=T1EGNP0" target="_blank" rel="noopener">🎫 GYG</a>';
+      }
+      if(isHotel)
+        lhtml+='<a class="slink sl-b" href="https://www.booking.com/searchresults.html?aid=7956794&ss='+placeEnc+'" target="_blank" rel="noopener">🏨 Book</a>';
     }
     html+='<div class="stop"><div class="stop-hdr"><div class="stop-n">'+(bi+1)+'</div><div class="stop-time">'+b.time+'</div><div class="stop-name">'+b.place+'</div><div class="stop-type">'+b.type+'</div>'+(b.cost?'<div class="stop-cost">'+b.cost+'</div>':'')+'</div><div class="stop-body"><div class="stop-desc">'+b.desc+'</div>'+(b.tip?'<div class="stop-tip">💡 '+b.tip+'</div>':'')+(lhtml?'<div class="stop-links">'+lhtml+'</div>':'')+'</div></div>';
   });
@@ -723,6 +742,45 @@ async function callGroq(userPrompt,system,maxTok){
 }
 
 setTimeout(function(){if(!chatOpen){var b=document.getElementById('chatBadge');if(b)b.classList.add('show');}},5000);
+
+async function scanPhoto(){
+  var input=document.createElement('input');
+  input.type='file';input.accept='image/*';
+  input.onchange=async function(){
+    var file=input.files[0];if(!file)return;
+    var scanBtn=document.getElementById('scanBtn');
+    if(scanBtn){scanBtn.disabled=true;scanBtn.textContent='🔍 Scanning...';}
+    var reader=new FileReader();
+    reader.onload=async function(e){
+      var dataUrl=e.target.result;
+      try{
+        var prompt='Identify the location, food dish, restaurant, attraction, or place shown in this image. Return ONLY raw JSON with no markdown: {"place":"Exact place or dish name","type":"Restaurant|Attraction|Landmark|Food|Market|Hotel","desc":"Two vivid sentences about this place.","tip":"One practical visitor tip.","cost":"~$XX","mapsQuery":"Place City Country"}';
+        var r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:prompt}],image:dataUrl,max_tokens:500})});
+        var raw=await r.text();
+        var d;try{d=JSON.parse(raw);}catch(ex){throw new Error('Server error: '+raw.slice(0,120));}
+        if(!r.ok)throw new Error(d.error||'API error '+r.status);
+        var text=d.content&&d.content[0]?d.content[0].text:'';
+        text=text.replace(/```json|```/g,'').trim();
+        var si=text.indexOf('{'),ei=text.lastIndexOf('}');
+        if(si>-1&&ei>-1)text=text.slice(si,ei+1);
+        var sc=JSON.parse(text);
+        var mq=encodeURIComponent(sc.mapsQuery||sc.place);
+        var stopHtml='<div class="stop" style="border-color:rgba(45,212,191,0.3)"><div class="stop-hdr"><div class="stop-n" style="background:linear-gradient(135deg,var(--rose),#f4a27a)">📸</div><div class="stop-time">SCANNED</div><div class="stop-name">'+sc.place+'</div><div class="stop-type">'+sc.type+'</div>'+(sc.cost?'<div class="stop-cost">'+sc.cost+'</div>':'')+'</div><div class="stop-body"><div class="stop-desc">'+sc.desc+'</div>'+(sc.tip?'<div class="stop-tip">💡 '+sc.tip+'</div>':'')+'<div class="stop-links"><a class="slink sl-m" href="https://maps.google.com/maps?q='+mq+'" target="_blank" rel="noopener">📍 Maps</a></div></div></div>';
+        var sec=document.getElementById('scannedStops');
+        if(sec){
+          if(!sec.querySelector('.scan-hdr'))sec.innerHTML='<div class="scan-hdr" style="font-family:Bebas Neue,sans-serif;font-size:1.1rem;letter-spacing:0.04em;color:var(--teal);margin:1.5rem 0 0.75rem;">📸 SCANNED PLACES</div><div id="scanList" style="display:grid;gap:0.75rem;"></div>';
+          var list=document.getElementById('scanList');
+          if(list)list.insertAdjacentHTML('beforeend',stopHtml);
+        }
+        document.getElementById('results').style.display='block';
+        toast('📸 Added: '+sc.place,'ok');
+      }catch(err){toast('Could not identify photo: '+err.message,'err');}
+      if(scanBtn){scanBtn.disabled=false;scanBtn.textContent='📸 Scan a Photo';}
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+}
 </script>
 
 </body>

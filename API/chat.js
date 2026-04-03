@@ -8,13 +8,21 @@ module.exports = async (req, res) => {
   if (!key) return res.status(500).json({ error: 'No API key configured' });
   try {
     const body = req.body || {};
-    const msgs = [];
-    if (body.system) msgs.push({ role: 'system', content: body.system });
-    (body.messages || []).forEach(m => msgs.push({ role: m.role, content: m.content }));
+    let msgs, model;
+    if (body.image) {
+      const textContent = (body.messages && body.messages[0]) ? body.messages[0].content : '';
+      msgs = [{ role: 'user', content: [{ type: 'image_url', image_url: { url: body.image } }, { type: 'text', text: textContent }] }];
+      model = 'llama-4-scout-17b-16e-instruct';
+    } else {
+      msgs = [];
+      if (body.system) msgs.push({ role: 'system', content: body.system });
+      (body.messages || []).forEach(m => msgs.push({ role: m.role, content: m.content }));
+      model = 'llama-3.3-70b-versatile';
+    }
     const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: msgs, max_tokens: body.max_tokens || 4000 })
+      body: JSON.stringify({ model, messages: msgs, max_tokens: body.max_tokens || 4000 })
     });
     const d = await r.json();
     if (!r.ok) return res.status(500).json({ error: d.error ? d.error.message : 'Groq error' });
