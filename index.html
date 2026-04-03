@@ -206,6 +206,38 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .affil-footer{text-align:center;padding:1.5rem 1.5rem 2.5rem;border-top:1px solid var(--line);margin-top:2rem;}
 .affil-footer p{font-size:0.72rem;color:var(--txt3);line-height:1.6;}
 .affil-footer strong{color:var(--txt2);}
+.fl-tabs{display:flex;gap:0.5rem;margin-bottom:1.2rem;}
+.fl-tab{flex:1;padding:0.55rem;background:var(--card2);border:1px solid var(--line);border-radius:10px;font-size:0.78rem;font-weight:600;color:var(--txt2);cursor:pointer;transition:all 0.15s;text-align:center;-webkit-tap-highlight-color:transparent;}
+.fl-tab.active{background:rgba(45,212,191,0.1);border-color:rgba(45,212,191,0.35);color:var(--teal);}
+.fl-form{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;}
+.fl-form .full{grid-column:1/-1;}
+.fl-card{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.75rem;}
+.fl-icon{width:36px;height:36px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.fl-icon.flight{background:rgba(96,165,250,0.12);border:1px solid rgba(96,165,250,0.2);}
+.fl-icon.stay{background:rgba(45,212,191,0.12);border:1px solid rgba(45,212,191,0.2);}
+.fl-info{flex:1;min-width:0;}
+.fl-main{font-size:0.85rem;font-weight:600;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.fl-meta{font-size:0.68rem;color:var(--txt3);margin-top:0.15rem;}
+.fl-acts{display:flex;gap:0.3rem;flex-shrink:0;}
+.tl-wrap{border-left:2px solid var(--line2);padding-left:1rem;display:grid;gap:0.85rem;margin-top:0.5rem;}
+.tl-item{position:relative;font-size:0.8rem;color:var(--txt2);}
+.tl-item::before{content:'';position:absolute;left:-1.38rem;top:0.35rem;width:8px;height:8px;border-radius:50%;background:var(--teal);border:2px solid var(--bg);}
+.tl-item.stay-tl::before{background:var(--sky);}
+.tl-date{font-size:0.66rem;color:var(--txt3);margin-bottom:0.1rem;letter-spacing:0.04em;}
+.ap-wrap{position:relative;}
+.ap-list{position:absolute;top:calc(100% + 3px);left:0;right:0;background:var(--card);border:1px solid var(--line2);border-radius:10px;z-index:500;max-height:200px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5);}
+.ap-item{padding:0.55rem 0.85rem;font-size:0.8rem;cursor:pointer;color:var(--txt2);display:flex;align-items:center;gap:0.6rem;transition:background 0.1s;-webkit-tap-highlight-color:transparent;}
+.ap-item:hover{background:rgba(45,212,191,0.07);color:var(--txt);}
+.ap-code{font-family:'Bebas Neue',sans-serif;font-size:0.95rem;color:var(--teal);min-width:2.2rem;letter-spacing:0.05em;}
+.ap-name{flex:1;}
+.ap-city{font-size:0.65rem;color:var(--txt3);}
+.trip-toggle{display:flex;gap:0.4rem;margin-bottom:0.85rem;}
+.trip-btn{flex:1;padding:0.5rem;background:var(--card2);border:1px solid var(--line);border-radius:8px;font-size:0.78rem;font-weight:600;color:var(--txt2);cursor:pointer;text-align:center;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
+.trip-btn.active{background:rgba(45,212,191,0.1);border-color:rgba(45,212,191,0.35);color:var(--teal);}
+.site-row{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;background:var(--card2);border:1px solid var(--line);border-radius:11px;text-decoration:none;color:var(--txt);font-size:0.82rem;font-weight:500;transition:border-color 0.15s,background 0.15s;margin-bottom:0.45rem;}
+.site-row:hover{border-color:rgba(45,212,191,0.3);background:rgba(45,212,191,0.04);}
+.site-row-left{display:flex;align-items:center;gap:0.6rem;}
+.site-row-desc{font-size:0.68rem;color:var(--txt3);margin-top:0.1rem;}
 
 </style>
 </head>
@@ -229,7 +261,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 
 <div class="page active" id="page-home">
   <div class="hero">
-    <div class="hero-badge">✦ AI Travel Planner</div>
     <h1>PLAN YOUR<br><span>PERFECT TRIP</span></h1>
     <p class="hero-sub">Tell us where you're going. We'll build a day-by-day itinerary with real places, costs, and booking links.</p>
     <div class="hero-btns">
@@ -350,6 +381,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
         <button class="btn-sm btn-muted" onclick="openPacking()">🎒 Pack</button>
         <button class="btn-sm btn-muted" onclick="window.print()">🖨 Print</button>
         <button class="btn-sm btn-muted" id="scanBtn" onclick="scanPhoto()">📸 Scan a Photo</button>
+        <button class="btn-sm btn-muted" onclick="openFlights()">✈️ Flights & Stays</button>
       </div>
     </div>
     <div class="day-tabs" id="dayTabs"></div>
@@ -387,6 +419,78 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
       <button class="modal-x" onclick="closePack()">✕</button>
     </div>
     <div id="packContent"><div class="loading"><div class="loading-ring"></div><div class="loading-txt">Building your list...</div></div></div>
+  </div>
+</div>
+
+<!-- FLIGHTS & STAYS MODAL -->
+
+<div class="modal-bg" id="flightsModal" onclick="if(event.target===this)closeFlights()">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">✈️ FLIGHTS & STAYS</div>
+      <button class="modal-x" onclick="closeFlights()">✕</button>
+    </div>
+    <div class="fl-tabs">
+      <button class="fl-tab active" id="flTab-search" onclick="switchFlTab('search')">🔍 Search</button>
+      <button class="fl-tab" id="flTab-flights" onclick="switchFlTab('flights')">✈️ My Flights</button>
+      <button class="fl-tab" id="flTab-stays" onclick="switchFlTab('stays')">🏨 My Stays</button>
+      <button class="fl-tab" id="flTab-timeline" onclick="switchFlTab('timeline')">📅 Timeline</button>
+    </div>
+
+    <!-- SEARCH PANEL -->
+    <div id="flPanel-search">
+      <div class="trip-toggle">
+        <button class="trip-btn active" id="tt-round" onclick="setTripType('round')">⇄ Round Trip</button>
+        <button class="trip-btn" id="tt-one" onclick="setTripType('one')">→ One Way</button>
+      </div>
+      <div style="display:grid;gap:0.5rem;margin-bottom:0.75rem;">
+        <div class="ap-wrap">
+          <input class="inp" id="fl-s-from" placeholder="Flying from — city or airport" autocomplete="off" oninput="showApDrop('fl-s-from','fl-from-list',this.value)" style="font-size:0.85rem;padding:0.6rem 0.8rem;">
+          <div class="ap-list" id="fl-from-list" style="display:none;"></div>
+        </div>
+        <div class="ap-wrap">
+          <input class="inp" id="fl-s-to" placeholder="Flying to — city or airport" autocomplete="off" oninput="showApDrop('fl-s-to','fl-to-list',this.value)" style="font-size:0.85rem;padding:0.6rem 0.8rem;">
+          <div class="ap-list" id="fl-to-list" style="display:none;"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+          <div><div style="font-size:0.67rem;color:var(--txt3);margin-bottom:0.25rem;padding-left:0.1rem;">Departing</div><input class="inp" id="fl-depart" type="date" style="font-size:0.85rem;padding:0.6rem 0.8rem;width:100%;"></div>
+          <div id="fl-return-wrap"><div style="font-size:0.67rem;color:var(--txt3);margin-bottom:0.25rem;padding-left:0.1rem;">Returning</div><input class="inp" id="fl-return" type="date" style="font-size:0.85rem;padding:0.6rem 0.8rem;width:100%;"></div>
+        </div>
+      </div>
+      <button class="btn-primary" style="width:100%;padding:0.8rem;font-size:0.9rem;letter-spacing:0.04em;" onclick="searchFlights()">SEARCH FLIGHTS</button>
+      <div id="flSearchResults" style="margin-top:1rem;"></div>
+    </div>
+
+    <!-- MY FLIGHTS PANEL -->
+    <div id="flPanel-flights" style="display:none;">
+      <div class="fl-form">
+        <input class="inp full" id="fl-airline" placeholder="Airline (e.g. British Airways)" style="font-size:0.85rem;padding:0.6rem 0.8rem;grid-column:1/-1;">
+        <input class="inp" id="fl-num" placeholder="Flight no. (e.g. BA123)" style="font-size:0.85rem;padding:0.6rem 0.8rem;">
+        <input class="inp" id="fl-date" type="date" style="font-size:0.85rem;padding:0.6rem 0.8rem;">
+        <input class="inp" id="fl-from" placeholder="From (e.g. LHR)" style="font-size:0.85rem;padding:0.6rem 0.8rem;">
+        <input class="inp" id="fl-to" placeholder="To (e.g. CDG)" style="font-size:0.85rem;padding:0.6rem 0.8rem;">
+      </div>
+      <button class="btn-primary" style="width:100%;padding:0.7rem;font-size:0.88rem;" onclick="addFlight()">+ Add Flight</button>
+      <div id="flightList" style="margin-top:1rem;"></div>
+    </div>
+
+    <!-- MY STAYS PANEL -->
+    <div id="flPanel-stays" style="display:none;">
+      <div class="fl-form">
+        <input class="inp full" id="st-hotel" placeholder="Hotel or Airbnb name" style="font-size:0.85rem;padding:0.6rem 0.8rem;grid-column:1/-1;">
+        <input class="inp" id="st-checkin" type="date" style="font-size:0.85rem;padding:0.6rem 0.8rem;">
+        <input class="inp" id="st-checkout" type="date" style="font-size:0.85rem;padding:0.6rem 0.8rem;">
+        <input class="inp" id="st-conf" placeholder="Confirmation # (optional)" style="font-size:0.85rem;padding:0.6rem 0.8rem;">
+        <input class="inp" id="st-price" placeholder="Price/night $" type="number" style="font-size:0.85rem;padding:0.6rem 0.8rem;">
+      </div>
+      <button class="btn-primary" style="width:100%;padding:0.7rem;font-size:0.88rem;" onclick="addStay()">+ Add Stay</button>
+      <div id="stayList" style="margin-top:1rem;"></div>
+    </div>
+
+    <!-- TIMELINE PANEL -->
+    <div id="flPanel-timeline" style="display:none;">
+      <div id="tlContent"></div>
+    </div>
   </div>
 </div>
 
@@ -579,7 +683,7 @@ function buildDay(day,di,links){
       var isHotel=t.indexOf('hotel')>-1||t.indexOf('accommodation')>-1||t.indexOf('hostel')>-1||t.indexOf('stay')>-1||t.indexOf('check-in')>-1||t.indexOf('check in')>-1;
       lhtml+='<a class="slink sl-m" href="https://maps.google.com/maps?q='+mq+'" target="_blank" rel="noopener">📍 Maps</a>';
       if(isFood)
-        lhtml+='<a class="slink sl-o" href="https://www.opentable.com/r/'+encodeURIComponent(b.place)+'" target="_blank" rel="noopener">🍽 Reserve</a>';
+        lhtml+='<a class="slink sl-o" href="https://www.google.com/search?q='+encodeURIComponent('reserve table '+b.place+' '+curCity)+'" target="_blank" rel="noopener">🍽 Reserve</a>';
       if(isAttr){
         lhtml+='<a class="slink sl-v" href="https://www.viator.com/search/'+placeEnc+'?pid=P00107301" target="_blank" rel="noopener">🎟 Viator</a>';
         lhtml+='<a class="slink sl-g" href="https://www.getyourguide.com/s/?q='+placeEnc+'&partner_id=T1EGNP0" target="_blank" rel="noopener">🎫 GYG</a>';
@@ -742,6 +846,276 @@ async function callGroq(userPrompt,system,maxTok){
 }
 
 setTimeout(function(){if(!chatOpen){var b=document.getElementById('chatBadge');if(b)b.classList.add('show');}},5000);
+
+var AIRPORT_DB={
+  'london':[{c:'LHR',n:'Heathrow'},{c:'LGW',n:'Gatwick'},{c:'STN',n:'Stansted'},{c:'LTN',n:'Luton'},{c:'LCY',n:'City'}],
+  'new york':[{c:'JFK',n:'JFK International'},{c:'EWR',n:'Newark Liberty'},{c:'LGA',n:'LaGuardia'}],
+  'paris':[{c:'CDG',n:'Charles de Gaulle'},{c:'ORY',n:'Orly'}],
+  'tokyo':[{c:'NRT',n:'Narita'},{c:'HND',n:'Haneda'}],
+  'osaka':[{c:'KIX',n:'Kansai International'},{c:'ITM',n:'Itami'}],
+  'kyoto':[{c:'KIX',n:'Kansai (nearest)'},{c:'ITM',n:'Itami (nearest)'}],
+  'los angeles':[{c:'LAX',n:'LA International'},{c:'BUR',n:'Hollywood Burbank'},{c:'LGB',n:'Long Beach'},{c:'SNA',n:'John Wayne'}],
+  'chicago':[{c:'ORD',n:"O'Hare International"},{c:'MDW',n:'Midway'}],
+  'dubai':[{c:'DXB',n:'Dubai International'},{c:'DWC',n:'Al Maktoum'}],
+  'singapore':[{c:'SIN',n:'Changi'}],
+  'amsterdam':[{c:'AMS',n:'Schiphol'}],
+  'barcelona':[{c:'BCN',n:'El Prat'}],
+  'madrid':[{c:'MAD',n:'Barajas'}],
+  'rome':[{c:'FCO',n:'Fiumicino'},{c:'CIA',n:'Ciampino'}],
+  'milan':[{c:'MXP',n:'Malpensa'},{c:'LIN',n:'Linate'},{c:'BGY',n:'Bergamo Orio al Serio'}],
+  'frankfurt':[{c:'FRA',n:'Frankfurt Airport'}],
+  'munich':[{c:'MUC',n:'Munich Airport'}],
+  'zurich':[{c:'ZRH',n:'Zurich Airport'}],
+  'vienna':[{c:'VIE',n:'Vienna International'}],
+  'istanbul':[{c:'IST',n:'Istanbul Airport'},{c:'SAW',n:'Sabiha Gökçen'}],
+  'bangkok':[{c:'BKK',n:'Suvarnabhumi'},{c:'DMK',n:'Don Mueang'}],
+  'bali':[{c:'DPS',n:'Ngurah Rai'}],
+  'sydney':[{c:'SYD',n:'Kingsford Smith'}],
+  'melbourne':[{c:'MEL',n:'Tullamarine'}],
+  'toronto':[{c:'YYZ',n:'Pearson International'},{c:'YTZ',n:'Billy Bishop City'}],
+  'vancouver':[{c:'YVR',n:'Vancouver International'}],
+  'miami':[{c:'MIA',n:'Miami International'},{c:'FLL',n:'Fort Lauderdale'}],
+  'san francisco':[{c:'SFO',n:'San Francisco International'},{c:'OAK',n:'Oakland'},{c:'SJC',n:'San Jose'}],
+  'seattle':[{c:'SEA',n:'Seattle-Tacoma'}],
+  'boston':[{c:'BOS',n:'Logan International'}],
+  'washington':[{c:'DCA',n:'Reagan National'},{c:'IAD',n:'Dulles International'},{c:'BWI',n:'Baltimore/Washington'}],
+  'las vegas':[{c:'LAS',n:'Harry Reid International'}],
+  'orlando':[{c:'MCO',n:'Orlando International'},{c:'SFB',n:'Orlando Sanford'}],
+  'atlanta':[{c:'ATL',n:'Hartsfield-Jackson'}],
+  'dallas':[{c:'DFW',n:'Dallas/Fort Worth'},{c:'DAL',n:'Dallas Love Field'}],
+  'houston':[{c:'IAH',n:'George Bush Intercontinental'},{c:'HOU',n:'William P. Hobby'}],
+  'denver':[{c:'DEN',n:'Denver International'}],
+  'phoenix':[{c:'PHX',n:'Sky Harbor'}],
+  'minneapolis':[{c:'MSP',n:'Minneapolis-Saint Paul'}],
+  'philadelphia':[{c:'PHL',n:'Philadelphia International'}],
+  'detroit':[{c:'DTW',n:'Detroit Metropolitan'}],
+  'montreal':[{c:'YUL',n:'Pierre Elliott Trudeau'}],
+  'calgary':[{c:'YYC',n:'Calgary International'}],
+  'cape town':[{c:'CPT',n:'Cape Town International'}],
+  'johannesburg':[{c:'JNB',n:'O.R. Tambo'}],
+  'nairobi':[{c:'NBO',n:'Jomo Kenyatta'}],
+  'cairo':[{c:'CAI',n:'Cairo International'}],
+  'marrakech':[{c:'RAK',n:'Marrakech Menara'}],
+  'casablanca':[{c:'CMN',n:'Mohammed V'}],
+  'lisbon':[{c:'LIS',n:'Humberto Delgado'}],
+  'porto':[{c:'OPO',n:'Francisco Sá Carneiro'}],
+  'athens':[{c:'ATH',n:'Eleftherios Venizelos'}],
+  'prague':[{c:'PRG',n:'Václav Havel'}],
+  'budapest':[{c:'BUD',n:'Ferenc Liszt'}],
+  'stockholm':[{c:'ARN',n:'Stockholm Arlanda'},{c:'BMA',n:'Bromma'}],
+  'oslo':[{c:'OSL',n:'Oslo Gardermoen'}],
+  'copenhagen':[{c:'CPH',n:'Copenhagen Kastrup'}],
+  'helsinki':[{c:'HEL',n:'Helsinki-Vantaa'}],
+  'brussels':[{c:'BRU',n:'Brussels Airport'},{c:'CRL',n:'Brussels South Charleroi'}],
+  'dublin':[{c:'DUB',n:'Dublin Airport'}],
+  'manchester':[{c:'MAN',n:'Manchester Airport'}],
+  'edinburgh':[{c:'EDI',n:'Edinburgh Airport'}],
+  'glasgow':[{c:'GLA',n:'Glasgow International'}],
+  'nice':[{c:'NCE',n:"Côte d'Azur"}],
+  'venice':[{c:'VCE',n:'Marco Polo'},{c:'TSF',n:'Treviso'}],
+  'florence':[{c:'FLR',n:'Amerigo Vespucci'}],
+  'naples':[{c:'NAP',n:'Naples International'}],
+  'seville':[{c:'SVQ',n:'Seville Airport'}],
+  'valencia':[{c:'VLC',n:'Valencia Airport'}],
+  'malaga':[{c:'AGP',n:'Costa del Sol'}],
+  'ibiza':[{c:'IBZ',n:'Ibiza Airport'}],
+  'mykonos':[{c:'JMK',n:'Mykonos Island National'}],
+  'santorini':[{c:'JTR',n:'Santorini (Thira)'}],
+  'dubrovnik':[{c:'DBV',n:'Dubrovnik Airport'}],
+  'split':[{c:'SPU',n:'Split Airport'}],
+  'reykjavik':[{c:'KEF',n:'Keflavík International'},{c:'RKV',n:'Reykjavík Domestic'}],
+  'krakow':[{c:'KRK',n:'John Paul II International'}],
+  'warsaw':[{c:'WAW',n:'Warsaw Chopin'}],
+  'hong kong':[{c:'HKG',n:'Hong Kong International'}],
+  'shanghai':[{c:'PVG',n:'Pudong'},{c:'SHA',n:'Hongqiao'}],
+  'beijing':[{c:'PEK',n:'Capital International'},{c:'PKX',n:'Daxing'}],
+  'seoul':[{c:'ICN',n:'Incheon'},{c:'GMP',n:'Gimpo'}],
+  'kuala lumpur':[{c:'KUL',n:'Kuala Lumpur International'},{c:'SZB',n:'Sultan Abdul Aziz Shah'}],
+  'jakarta':[{c:'CGK',n:'Soekarno-Hatta'}],
+  'manila':[{c:'MNL',n:'Ninoy Aquino'}],
+  'ho chi minh':[{c:'SGN',n:'Tan Son Nhat'}],
+  'hanoi':[{c:'HAN',n:'Noi Bai'}],
+  'phuket':[{c:'HKT',n:'Phuket International'}],
+  'chiang mai':[{c:'CNX',n:'Chiang Mai International'}],
+  'delhi':[{c:'DEL',n:'Indira Gandhi'}],
+  'mumbai':[{c:'BOM',n:'Chhatrapati Shivaji Maharaj'}],
+  'maldives':[{c:'MLE',n:'Velana International'}],
+  'colombo':[{c:'CMB',n:'Bandaranaike International'}],
+  'kathmandu':[{c:'KTM',n:'Tribhuvan International'}],
+  'doha':[{c:'DOH',n:'Hamad International'}],
+  'abu dhabi':[{c:'AUH',n:'Abu Dhabi International'}],
+  'riyadh':[{c:'RUH',n:'King Khalid International'}],
+  'tel aviv':[{c:'TLV',n:'Ben Gurion International'}],
+  'auckland':[{c:'AKL',n:'Auckland Airport'}],
+  'brisbane':[{c:'BNE',n:'Brisbane Airport'}],
+  'perth':[{c:'PER',n:'Perth Airport'}],
+  'mexico city':[{c:'MEX',n:'Benito Juárez'}],
+  'cancun':[{c:'CUN',n:'Cancún International'}],
+  'buenos aires':[{c:'EZE',n:'Ministro Pistarini'},{c:'AEP',n:'Jorge Newbery'}],
+  'rio de janeiro':[{c:'GIG',n:'Galeão'},{c:'SDU',n:'Santos Dumont'}],
+  'sao paulo':[{c:'GRU',n:'Guarulhos'},{c:'CGH',n:'Congonhas'}],
+  'lima':[{c:'LIM',n:'Jorge Chávez'}],
+  'bogota':[{c:'BOG',n:'El Dorado'}]
+};
+
+var flightData=[],stayData=[],flFromCode='',flToCode='',flTripType='round';
+
+function openFlights(){
+  document.getElementById('flightsModal').classList.add('open');
+  // Pre-fill destination from current trip city
+  if(curCity&&!flToCode){
+    var cityKey=curCity.toLowerCase().split(',')[0].trim();
+    var aps=AIRPORT_DB[cityKey]||[];
+    if(aps.length){
+      flToCode=aps[0].c;
+      var toInp=document.getElementById('fl-s-to');
+      if(toInp)toInp.value=cityKey.replace(/\b\w/g,function(l){return l.toUpperCase();})+' — '+aps[0].n+' ('+aps[0].c+')';
+    }
+  }
+  renderFlights();renderStays();
+}
+function closeFlights(){document.getElementById('flightsModal').classList.remove('open');}
+function switchFlTab(tab){
+  ['search','flights','stays','timeline'].forEach(function(t){
+    document.getElementById('flTab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('flPanel-'+t).style.display=t===tab?'':'none';
+  });
+  if(tab==='timeline')renderTimeline();
+}
+function setTripType(type){
+  flTripType=type;
+  document.getElementById('tt-round').classList.toggle('active',type==='round');
+  document.getElementById('tt-one').classList.toggle('active',type==='one');
+  var rw=document.getElementById('fl-return-wrap');
+  if(rw)rw.style.opacity=type==='one'?'0.35':'1';
+}
+function showApDrop(inputId,listId,query){
+  var list=document.getElementById(listId);if(!list)return;
+  if(!query||query.length<2){list.style.display='none';return;}
+  var q=query.toLowerCase().trim();
+  var results=[];
+  Object.keys(AIRPORT_DB).forEach(function(city){
+    if(city.indexOf(q)>-1)AIRPORT_DB[city].forEach(function(ap){results.push({city:city,c:ap.c,n:ap.n});});
+  });
+  Object.keys(AIRPORT_DB).forEach(function(city){
+    AIRPORT_DB[city].forEach(function(ap){
+      if(ap.c.toLowerCase().indexOf(q)>-1&&!results.find(function(r){return r.c===ap.c;}))
+        results.push({city:city,c:ap.c,n:ap.n});
+    });
+  });
+  results=results.slice(0,7);
+  if(!results.length){list.style.display='none';return;}
+  list.innerHTML=results.map(function(r){
+    var cityLabel=r.city.replace(/\b\w/g,function(l){return l.toUpperCase();});
+    return '<div class="ap-item" onclick="selectAirport(\''+inputId+'\',\''+listId+'\',\''+r.c+'\',\''+cityLabel+' — '+r.n+' ('+r.c+')\')"><span class="ap-code">'+r.c+'</span><span class="ap-name">'+r.n+'<span class="ap-city"> · '+cityLabel+'</span></span></div>';
+  }).join('');
+  list.style.display='block';
+}
+function selectAirport(inputId,listId,code,label){
+  var inp=document.getElementById(inputId);var list=document.getElementById(listId);
+  if(inp)inp.value=label;if(list)list.style.display='none';
+  if(inputId==='fl-s-from')flFromCode=code;
+  if(inputId==='fl-s-to')flToCode=code;
+}
+document.addEventListener('click',function(e){
+  ['fl-from-list','fl-to-list'].forEach(function(lid){
+    var list=document.getElementById(lid);if(!list)return;
+    var inp=document.getElementById(lid==='fl-from-list'?'fl-s-from':'fl-s-to');
+    if(list&&inp&&!list.contains(e.target)&&!inp.contains(e.target))list.style.display='none';
+  });
+});
+function searchFlights(){
+  var fromVal=document.getElementById('fl-s-from').value.trim();
+  var toVal=document.getElementById('fl-s-to').value.trim();
+  var depart=document.getElementById('fl-depart').value;
+  var ret=document.getElementById('fl-return').value;
+  if(!fromVal||!toVal||!depart){toast('Please fill in origin, destination, and departure date','err');return;}
+  var from=flFromCode||(fromVal.match(/\(([A-Z]{3})\)/)||[])[1]||fromVal.slice(0,3).toUpperCase();
+  var to=flToCode||(toVal.match(/\(([A-Z]{3})\)/)||[])[1]||toVal.slice(0,3).toUpperCase();
+  var isRound=flTripType==='round'&&ret;
+  var dSky=depart.slice(2).replace(/-/g,'');
+  var rSky=ret?ret.slice(2).replace(/-/g,''):'';
+  var sites=[
+    {name:'Google Flights',desc:'Compare all airlines & prices',icon:'🔵',
+     url:'https://www.google.com/travel/flights?q=flights+from+'+from+'+to+'+to+(depart?'+on+'+depart:'')+(isRound?'+return+'+ret:'')},
+    {name:'Skyscanner',desc:'Best overall price comparison',icon:'🟢',
+     url:'https://www.skyscanner.net/transport/flights/'+from+'/'+to+'/'+dSky+'/'+(isRound?rSky+'/':'')},
+    {name:'Kayak',desc:'Price alerts & deal finder',icon:'🟡',
+     url:'https://www.kayak.com/flights/'+from+'-'+to+'/'+depart+(isRound?'/'+ret:'')},
+    {name:'Momondo',desc:'Finds hidden & budget deals',icon:'🟠',
+     url:'https://www.momondo.com/flight-search/'+from+'-'+to+'/'+depart+(isRound?'/'+ret:'/1')}
+  ];
+  var summary=from+' → '+to+(isRound?' (Return)':' (One Way)')+' · '+fmtDate(depart)+(isRound?' → '+fmtDate(ret):'');
+  document.getElementById('flSearchResults').innerHTML=
+    '<div style="font-size:0.7rem;color:var(--teal);margin-bottom:0.75rem;font-weight:600;letter-spacing:0.04em;">'+summary+'</div>'+
+    sites.map(function(s){
+      return '<a class="site-row" href="'+s.url+'" target="_blank" rel="noopener"><div class="site-row-left">'+s.icon+' <div><div>'+s.name+'</div><div class="site-row-desc">'+s.desc+'</div></div></div><div style="font-size:0.72rem;color:var(--teal);">Open →</div></a>';
+    }).join('');
+}
+function fmtDate(d){if(!d)return '';var p=d.split('-');var m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return m[parseInt(p[1])-1]+' '+parseInt(p[2])+', '+p[0];}
+function addFlight(){
+  var airline=document.getElementById('fl-airline').value.trim();
+  var num=document.getElementById('fl-num').value.trim();
+  var from=document.getElementById('fl-from').value.trim().toUpperCase();
+  var to=document.getElementById('fl-to').value.trim().toUpperCase();
+  var date=document.getElementById('fl-date').value;
+  if(!from||!to||!date){toast('Please fill in From, To, and Date','err');return;}
+  flightData.push({id:Date.now(),airline:airline||'',num:num||'',from:from,to:to,date:date});
+  ['fl-airline','fl-num','fl-from','fl-to','fl-date'].forEach(function(id){document.getElementById(id).value='';});
+  renderFlights();toast('✈️ Flight added!','ok');
+}
+function delFlight(id){flightData=flightData.filter(function(f){return f.id!==id;});renderFlights();}
+function renderFlights(){
+  var el=document.getElementById('flightList');if(!el)return;
+  if(!flightData.length){el.innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--txt3);font-size:0.78rem;">No flights added yet.</div>';return;}
+  el.innerHTML=flightData.map(function(f){
+    var code=(f.airline+f.num).replace(/\s/g,'');
+    var trackUrl='https://www.flightaware.com/live/flight/'+encodeURIComponent(code);
+    var searchUrl='https://www.google.com/travel/flights?q=flights+'+encodeURIComponent(f.from+' to '+f.to);
+    var label=f.from+' → '+f.to+(f.num?' · '+(f.airline?f.airline+' ':'')+f.num:'');
+    return '<div class="fl-card"><div class="fl-icon flight">✈️</div><div class="fl-info"><div class="fl-main">'+label+'</div><div class="fl-meta">'+fmtDate(f.date)+'</div></div><div class="fl-acts"><a class="btn-sm btn-teal" href="'+trackUrl+'" target="_blank" rel="noopener" style="text-decoration:none;">Track</a><a class="btn-sm btn-muted" href="'+searchUrl+'" target="_blank" rel="noopener" style="text-decoration:none;">Search</a><button class="btn-sm btn-rose" onclick="delFlight('+f.id+')">✕</button></div></div>';
+  }).join('');
+}
+function addStay(){
+  var hotel=document.getElementById('st-hotel').value.trim();
+  var checkin=document.getElementById('st-checkin').value;
+  var checkout=document.getElementById('st-checkout').value;
+  var conf=document.getElementById('st-conf').value.trim();
+  var price=document.getElementById('st-price').value;
+  if(!hotel||!checkin||!checkout){toast('Please fill in hotel name and dates','err');return;}
+  stayData.push({id:Date.now(),hotel:hotel,checkin:checkin,checkout:checkout,conf:conf,price:price});
+  ['st-hotel','st-checkin','st-checkout','st-conf','st-price'].forEach(function(id){document.getElementById(id).value='';});
+  renderStays();toast('🏨 Stay added!','ok');
+}
+function delStay(id){stayData=stayData.filter(function(s){return s.id!==id;});renderStays();}
+function renderStays(){
+  var el=document.getElementById('stayList');if(!el)return;
+  if(!stayData.length){el.innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--txt3);font-size:0.78rem;">No stays added yet.</div>';return;}
+  el.innerHTML=stayData.map(function(s){
+    var nights=s.checkin&&s.checkout?Math.round((new Date(s.checkout)-new Date(s.checkin))/(864e5)):0;
+    var total=s.price&&nights?'$'+(parseFloat(s.price)*nights).toFixed(0)+' total':'';
+    var bookUrl='https://www.booking.com/searchresults.html?aid=7956794&ss='+encodeURIComponent(s.hotel+(curCity?' '+curCity:''));
+    var mapsUrl='https://maps.google.com/maps?q='+encodeURIComponent(s.hotel+(curCity?' '+curCity:''));
+    return '<div class="fl-card"><div class="fl-icon stay">🏨</div><div class="fl-info"><div class="fl-main">'+s.hotel+'</div><div class="fl-meta">'+fmtDate(s.checkin)+' → '+fmtDate(s.checkout)+(nights?' · '+nights+' night'+(nights!==1?'s':''):'')+( total?' · '+total:'')+(s.conf?' · #'+s.conf:'')+'</div></div><div class="fl-acts"><a class="btn-sm btn-teal" href="'+bookUrl+'" target="_blank" rel="noopener" style="text-decoration:none;">Book</a><a class="btn-sm btn-muted" href="'+mapsUrl+'" target="_blank" rel="noopener" style="text-decoration:none;">Map</a><button class="btn-sm btn-rose" onclick="delStay('+s.id+')">✕</button></div></div>';
+  }).join('');
+}
+function renderTimeline(){
+  var el=document.getElementById('tlContent');if(!el)return;
+  var all=[];
+  flightData.forEach(function(f){all.push({date:f.date,sort:f.date,type:'flight',label:(f.airline?f.airline+' ':'')+f.from+' → '+f.to+(f.num?' ('+f.num+')':'')});});
+  stayData.forEach(function(s){all.push({date:s.checkin,date2:s.checkout,sort:s.checkin,type:'stay',label:s.hotel});});
+  all.sort(function(a,b){return a.sort.localeCompare(b.sort);});
+  if(!all.length){el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--txt3);font-size:0.78rem;">Add flights and stays to see your trip timeline here.</div>';return;}
+  var totalNights=stayData.reduce(function(s,x){return s+(x.checkin&&x.checkout?Math.round((new Date(x.checkout)-new Date(x.checkin))/(864e5)):0);},0);
+  var summary='<div style="display:flex;gap:1.2rem;margin-bottom:1rem;flex-wrap:wrap;">'+
+    '<div style="font-size:0.78rem;color:var(--txt2);">✈️ <strong style="color:var(--txt)">'+flightData.length+'</strong> flight'+(flightData.length!==1?'s':'')+'</div>'+
+    '<div style="font-size:0.78rem;color:var(--txt2);">🏨 <strong style="color:var(--txt)">'+totalNights+'</strong> night'+(totalNights!==1?'s':'')+'</div>'+
+    '</div>';
+  el.innerHTML=summary+'<div class="tl-wrap">'+all.map(function(item){
+    var dateStr=item.type==='stay'?fmtDate(item.date)+' – '+fmtDate(item.date2):fmtDate(item.date);
+    return '<div class="tl-item'+(item.type==='stay'?' stay-tl':'')+'"><div class="tl-date">'+dateStr+'</div><div>'+(item.type==='flight'?'✈️':'🏨')+' '+item.label+'</div></div>';
+  }).join('')+'</div>';
+}
 
 async function scanPhoto(){
   var input=document.createElement('input');
