@@ -61,6 +61,39 @@ body.light .dest-hero-grad{background:linear-gradient(to right,rgba(245,244,255,
 .place-card-name{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.03em;color:var(--txt);margin-bottom:0.2rem;}
 .place-card-meta{font-size:0.72rem;color:var(--txt3);display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.65rem;}
 .place-card-actions{display:flex;gap:0.35rem;}
+/* Best time calendar */
+.bt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-top:0.75rem;}
+@media(min-width:480px){.bt-grid{grid-template-columns:repeat(6,1fr);}}
+.bt-month{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:0.5rem 0.4rem;text-align:center;cursor:default;transition:border-color 0.15s;}
+.bt-month:hover{border-color:var(--line2);}
+.bt-month-name{font-size:0.65rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--txt3);margin-bottom:0.4rem;}
+.bt-bars{display:flex;flex-direction:column;gap:3px;}
+.bt-bar-wrap{display:flex;align-items:center;gap:3px;}
+.bt-bar-bg{flex:1;height:5px;background:var(--card);border-radius:3px;overflow:hidden;}
+.bt-bar-fill{height:100%;border-radius:3px;transition:width 0.4s;}
+.bt-legend{display:flex;gap:0.8rem;flex-wrap:wrap;margin-top:0.6rem;font-size:0.68rem;color:var(--txt3);}
+.bt-dot{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:3px;}
+.bt-badge{display:inline-block;padding:0.15rem 0.5rem;border-radius:5px;font-size:0.65rem;font-weight:700;margin-top:0.3rem;}
+/* Events section */
+.events-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.1rem;margin-top:1rem;}
+.events-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.04em;color:var(--txt);margin-bottom:0.15rem;}
+.events-sub{font-size:0.72rem;color:var(--txt3);margin-bottom:0.85rem;}
+.events-links{display:flex;flex-wrap:wrap;gap:0.4rem;}
+.elink{display:inline-flex;align-items:center;gap:0.25rem;padding:0.35rem 0.75rem;border-radius:8px;font-size:0.74rem;font-weight:600;text-decoration:none;transition:all 0.15s;background:var(--card2);border:1px solid var(--line2);color:var(--txt2);}
+.elink:hover{color:var(--txt);border-color:var(--teal);}
+/* Hotels section */
+.hotel-opts{display:grid;gap:0.5rem;margin-top:0.75rem;}
+.hotel-opt{display:flex;align-items:center;justify-content:space-between;padding:0.7rem 0.9rem;background:var(--card2);border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--txt);transition:border-color 0.15s;}
+.hotel-opt:hover{border-color:rgba(45,212,191,0.35);}
+.hotel-opt-left{display:flex;align-items:center;gap:0.6rem;}
+.hotel-opt-name{font-size:0.84rem;font-weight:600;color:var(--txt);}
+.hotel-opt-range{font-size:0.7rem;color:var(--txt3);margin-top:0.1rem;}
+.hotel-opt-price{font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--teal);}
+/* Hidden gems highlight */
+.gems-active .gen-btn{background:linear-gradient(135deg,var(--gold),#f4a22a);box-shadow:0 10px 30px rgba(245,200,66,0.35);}
+/* wx clickable */
+.wx-banner{cursor:pointer;user-select:none;}
+.wx-unit{font-size:0.62rem;color:var(--teal);background:rgba(45,212,191,0.1);border:1px solid rgba(45,212,191,0.2);padding:0.1rem 0.35rem;border-radius:4px;margin-left:0.3rem;font-weight:700;}
 .bg-orb{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
 .bg-orb::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(45,212,191,0.07) 0%,transparent 70%);top:-200px;right:-100px;border-radius:50%;}
 .bg-orb::after{content:'';position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(244,96,122,0.06) 0%,transparent 70%);bottom:-150px;left:-100px;border-radius:50%;}
@@ -337,12 +370,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     </div>
     <button class="near-me-btn" onclick="nearMe()">📍 Use my location</button>
     <div class="dest-blurb" id="destBlurb"></div>
-    <div class="wx-banner" id="wxBanner">
+    <div class="wx-banner" id="wxBanner" onclick="toggleWxUnit()" title="Tap to switch °C/°F">
       <span id="wxEmoji" style="font-size:1.8rem;"></span>
-      <div>
+      <div style="flex:1;">
         <div id="wxName" style="font-weight:600;font-size:0.88rem;color:var(--txt);"></div>
         <div id="wxDesc" style="font-size:0.72rem;color:var(--txt3);"></div>
       </div>
+      <span class="wx-unit" id="wxUnit">°C</span>
     </div>
   </div>
 
@@ -409,7 +443,28 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
 
   <div class="card">
-    <div class="card-title">07 · Settings</div>
+    <div class="card-title">07 · Dietary preferences</div>
+    <div class="card-sub">We'll filter food stops accordingly</div>
+    <div class="opts" id="dietOpts">
+      <button class="opt" onclick="togDiet(this,'Vegetarian')">🌿 Vegetarian</button>
+      <button class="opt" onclick="togDiet(this,'Vegan')">🥗 Vegan</button>
+      <button class="opt" onclick="togDiet(this,'Halal')">🥩 Halal</button>
+      <button class="opt" onclick="togDiet(this,'Gluten-Free')">🌾 Gluten-Free</button>
+      <button class="opt" onclick="togDiet(this,'Pescatarian')">🐟 Pescatarian</button>
+      <button class="opt" onclick="togDiet(this,'Dairy-Free')">🥛 Dairy-Free</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">08 · Travel dates <span style="font-size:0.7rem;font-family:'DM Sans',sans-serif;color:var(--txt3);font-weight:400;">(optional — unlocks events & hotel search)</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.5rem;">
+      <div><div style="font-size:0.68rem;color:var(--txt3);margin-bottom:0.25rem;">Check-in</div><input class="inp" id="travelFrom" type="date" style="font-size:0.85rem;padding:0.6rem 0.8rem;width:100%;"></div>
+      <div><div style="font-size:0.68rem;color:var(--txt3);margin-bottom:0.25rem;">Check-out</div><input class="inp" id="travelTo" type="date" style="font-size:0.85rem;padding:0.6rem 0.8rem;width:100%;"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">09 · Settings</div>
     <div class="toggle-row">
       <div>
         <div class="toggle-lbl">🔗 Booking links</div>
@@ -421,9 +476,21 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
         <div class="t-thumb"></div>
       </label>
     </div>
+    <div class="toggle-row" style="margin-top:0.4rem;">
+      <div>
+        <div class="toggle-lbl">💎 Hidden Gems Mode</div>
+        <div class="toggle-sub">Skip tourist traps — locals-only spots</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="gemsToggle" onchange="toggleGems(this)">
+        <div class="t-track"></div>
+        <div class="t-thumb"></div>
+      </label>
+    </div>
   </div>
 
 <button class="gen-btn" id="genBtn" onclick="generate()">BUILD MY ITINERARY ✨</button>
+<button class="btn-ghost" style="width:100%;margin-top:0.6rem;font-size:0.85rem;" onclick="openBestTime()">📅 Best Time to Visit</button>
 
   <div id="results">
     <div class="dest-hero" id="destHero">
@@ -457,6 +524,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     <div class="day-tabs" id="dayTabs"></div>
     <div id="dayPanels"></div>
     <div id="scannedStops"></div>
+    <div id="eventsCard" style="display:none;"></div>
+    <div id="hotelsCard" style="display:none;"></div>
   </div>
 
 </div>
@@ -566,6 +635,18 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     <div id="flPanel-timeline" style="display:none;">
       <div id="tlContent"></div>
     </div>
+  </div>
+</div>
+
+<!-- BEST TIME MODAL -->
+<div class="modal-bg" id="bestTimeModal" onclick="if(event.target===this)closeBestTime()">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">📅 BEST TIME TO VISIT</div>
+      <button class="modal-x" onclick="closeBestTime()">✕</button>
+    </div>
+    <div id="btCity" style="font-size:0.78rem;color:var(--txt3);margin-bottom:1rem;"></div>
+    <div id="btContent"><div class="loading"><div class="loading-ring"></div><div class="loading-txt">Analysing best months...</div></div></div>
   </div>
 </div>
 
@@ -761,9 +842,14 @@ async function doFetchWx(){
     var lo=Math.round(minArr.slice(0,3).reduce(function(a,b){return a+b;},0)/Math.min(3,minArr.length));
     var emoji=code<3?'☀️':code<50?'⛅':code<70?'🌧':code<80?'⛈':'🌨';
     var desc=code<3?'Clear skies':code<50?'Partly cloudy':code<70?'Rainy':'Stormy';
+    wxHiC=hi;wxLoC=lo;
     document.getElementById('wxEmoji').textContent=emoji;
     document.getElementById('wxName').textContent=r.name+', '+r.country;
-    document.getElementById('wxDesc').textContent=desc+' · '+lo+'°–'+hi+'°C';
+    var dispHi=wxUseFahrenheit?Math.round(hi*9/5+32):hi;
+    var dispLo=wxUseFahrenheit?Math.round(lo*9/5+32):lo;
+    var unit=wxUseFahrenheit?'°F':'°C';
+    document.getElementById('wxDesc').textContent=desc+' · '+dispLo+'°–'+dispHi+unit;
+    var unitEl=document.getElementById('wxUnit');if(unitEl)unitEl.textContent=wxUseFahrenheit?'°F':'°C';
     banner.classList.add('show');
   }catch(e){}
 }
@@ -791,13 +877,18 @@ async function generate(){
   var customVibe=document.getElementById('customVibe').value.trim();
   var vibeStr=(vibes.length?vibes.join(', '):'General sightseeing')+(customVibe?' · '+customVibe:'');
   var budgetDesc=document.getElementById('budgetDesc').textContent;
+  var dietStr=dietaryPrefs.length?'\nDietary: '+dietaryPrefs.join(', ')+' — all food stops must comply.':'';
+  var travelFrom=document.getElementById('travelFrom').value;
+  var travelTo=document.getElementById('travelTo').value;
+  var dateStr=travelFrom?'\nTravel dates: '+travelFrom+(travelTo?' to '+travelTo:''):'';
+  var gemsStr=document.getElementById('gemsToggle').checked?'\nIMPORTANT: Hidden Gems Mode — avoid all tourist traps, famous chains, overcrowded spots. Only local favorites, neighborhood gems, places locals actually use. No Eiffel Tower, no TripAdvisor top-10.':'';
   var btn=document.getElementById('genBtn');
   btn.disabled=true;btn.textContent='BUILDING...';
   document.getElementById('results').style.display='block';
   document.getElementById('dayTabs').innerHTML='';
   document.getElementById('dayPanels').innerHTML='<div class="loading"><div class="loading-ring"></div><div class="loading-txt">Crafting '+days+' day'+(days>1?'s':'')+' in '+city+'...</div><div class="loading-sub">Finding real places just for you</div></div>';
   document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
-  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')\n\nReturn ONLY a raw JSON object, no markdown, no code fences, no explanation:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Real place name","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Place City Country"}]}]}\n\nRules: 5-6 blocks per day. Real places only. Logical geographic flow.';
+  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences, no explanation:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Real place name","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Place City Country"}]}]}\n\nRules: 5-6 blocks per day. Real places only. Logical geographic flow.';
   try{
     var rawText=await callGroq(prompt,null,4000);
     var text=rawText.replace(/```json|```/g,'').trim();
@@ -824,6 +915,9 @@ async function generate(){
     });
     toast('Itinerary ready! 🎉','ok');
     bumpCounter();
+    // Events + Hotels (non-blocking, fire after render)
+    setTimeout(function(){renderEventsCard(city,travelFrom,travelTo);},300);
+    setTimeout(function(){renderHotelsCard(city,travelFrom,travelTo);},600);
     // Email capture (show once per session)
     if(!sessionStorage.getItem('wa_email_shown')){
       var emailHtml='<div class="email-capture" id="emailCapture"><div style="flex:1;min-width:160px;"><div style="font-size:0.82rem;font-weight:600;color:var(--txt);">📧 Email this itinerary</div><div style="font-size:0.7rem;color:var(--txt3);margin-top:0.15rem;">Get a copy + travel tips in your inbox</div></div><div style="display:flex;gap:0.4rem;flex:1;min-width:200px;"><input class="inp" id="emailInp" type="email" placeholder="your@email.com" style="flex:1;font-size:0.85rem;padding:0.55rem 0.8rem;"><button class="btn-sm btn-teal" onclick="submitEmail()">Send ✓</button></div></div>';
@@ -1025,6 +1119,120 @@ async function callGroq(userPrompt,system,maxTok){
 
 setTimeout(function(){if(!chatOpen){var b=document.getElementById('chatBadge');if(b)b.classList.add('show');}},5000);
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}
+
+// ── Weather C/F toggle ──
+var wxHiC=20,wxLoC=15,wxUseFahrenheit=localStorage.getItem('wa_wx_unit')==='F';
+function toggleWxUnit(){
+  wxUseFahrenheit=!wxUseFahrenheit;
+  localStorage.setItem('wa_wx_unit',wxUseFahrenheit?'F':'C');
+  var unitEl=document.getElementById('wxUnit');
+  if(unitEl)unitEl.textContent=wxUseFahrenheit?'°F':'°C';
+  updateWxDisplay();
+}
+function updateWxDisplay(){
+  var descEl=document.getElementById('wxDesc');
+  if(!descEl||!descEl.textContent)return;
+  var hi=wxUseFahrenheit?Math.round(wxHiC*9/5+32):wxHiC;
+  var lo=wxUseFahrenheit?Math.round(wxLoC*9/5+32):wxLoC;
+  var unit=wxUseFahrenheit?'°F':'°C';
+  var parts=descEl.textContent.split(' · ');
+  if(parts.length>=2)descEl.textContent=parts[0]+' · '+lo+'°–'+hi+unit;
+}
+
+// ── Hidden Gems ──
+function toggleGems(cb){
+  var plannerPage=document.getElementById('planner-page');
+  if(plannerPage)plannerPage.classList.toggle('gems-active',cb.checked);
+  toast(cb.checked?'💎 Hidden Gems Mode on — no tourist traps!':'Hidden Gems Mode off','info');
+}
+
+// ── Dietary ──
+var dietaryPrefs=[];
+function togDiet(btn,val){
+  btn.classList.toggle('on');
+  if(btn.classList.contains('on'))dietaryPrefs.push(val);
+  else dietaryPrefs=dietaryPrefs.filter(function(v){return v!==val;});
+}
+
+// ── Best Time to Visit ──
+function openBestTime(){
+  var city=document.getElementById('city').value.trim()||curCity;
+  if(!city){toast('Enter a destination first','err');return;}
+  document.getElementById('bestTimeModal').classList.add('open');
+  document.getElementById('btCity').textContent='Analysing '+city+'...';
+  document.getElementById('btContent').innerHTML='<div class="loading"><div class="loading-ring"></div><div class="loading-txt">Crunching climate data...</div></div>';
+  loadBestTime(city);
+}
+function closeBestTime(){document.getElementById('bestTimeModal').classList.remove('open');}
+async function loadBestTime(city){
+  try{
+    var prompt='For "'+city+", rate each month for a traveller. Return ONLY raw JSON array (no markdown):\n[{\"m\":\"Jan\",\"wx\":3,\"crowds\":4,\"price\":3,\"note\":\"Brief 5-word note\"},{...}]\nwx=weather comfort 1-5, crowds=1(empty)–5(packed), price=1(cheap)–5(expensive). All 12 months.";
+    var raw=await callGroq(prompt,null,600);
+    raw=raw.replace(/```json|```/g,'').trim();
+    var si=raw.indexOf('['),ei=raw.lastIndexOf(']');
+    if(si>-1&&ei>-1)raw=raw.slice(si,ei+1);
+    var data=JSON.parse(raw);
+    var city2=document.getElementById('city').value.trim()||curCity;
+    document.getElementById('btCity').textContent=city2+' — click a month to see details';
+    // Find best months (avg score)
+    var scored=data.map(function(m){return {m:m.m,score:(m.wx+(5-m.crowds)+( 5-m.price))/3,d:m};});
+    scored.sort(function(a,b){return b.score-a.score;});
+    var best=scored.slice(0,3).map(function(s){return s.m;});
+    var wxColors=['#ef4444','#f97316','#eab308','#84cc16','#22c55e'];
+    var crowdColors=['#22c55e','#84cc16','#eab308','#f97316','#ef4444'];
+    var priceColors=['#22c55e','#84cc16','#eab308','#f97316','#ef4444'];
+    var html='<div class="bt-grid">'+data.map(function(m){
+      var isBest=best.indexOf(m.m)>-1;
+      var wxPct=(m.wx/5*100)+'%',crPct=(m.crowds/5*100)+'%',prPct=(m.price/5*100)+'%';
+      return '<div class="bt-month" title="'+m.note+'" style="'+(isBest?'border-color:rgba(45,212,191,0.5);background:rgba(45,212,191,0.06);':'')+'"><div class="bt-month-name">'+m.m+'</div><div class="bt-bars"><div class="bt-bar-wrap" title="Weather: '+m.wx+'/5"><div class="bt-bar-bg"><div class="bt-bar-fill" style="width:'+wxPct+';background:'+wxColors[m.wx-1]+'"></div></div></div><div class="bt-bar-wrap" title="Crowds: '+m.crowds+'/5"><div class="bt-bar-bg"><div class="bt-bar-fill" style="width:'+crPct+';background:'+crowdColors[m.crowds-1]+'"></div></div></div><div class="bt-bar-wrap" title="Price: '+m.price+'/5"><div class="bt-bar-bg"><div class="bt-bar-fill" style="width:'+prPct+';background:'+priceColors[m.price-1]+'"></div></div></div></div>'+(isBest?'<div class="bt-badge" style="background:rgba(45,212,191,0.12);color:var(--teal);">Best</div>':'')+'</div>';
+    }).join('')+'</div>';
+    html+='<div class="bt-legend"><span><span class="bt-dot" style="background:#22c55e;"></span>Good weather</span><span><span class="bt-dot" style="background:#ef4444;"></span>Poor weather / packed / pricey</span></div>';
+    html+='<div style="margin-top:0.75rem;font-size:0.78rem;color:var(--txt2);"><strong style="color:var(--txt)">Best months:</strong> '+best.join(', ')+' · Hover/tap a month for details</div>';
+    document.getElementById('btContent').innerHTML=html;
+  }catch(e){document.getElementById('btContent').innerHTML='<div style="color:var(--rose);padding:1rem;font-size:0.85rem;">Could not load best time data. Try again.</div>';}
+}
+
+// ── Events card ──
+function renderEventsCard(city,dateFrom,dateTo){
+  var el=document.getElementById('eventsCard');if(!el)return;
+  var cityEnc=encodeURIComponent(city);
+  var citySlug=city.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+  var dateParam=dateFrom?'&start_date='+dateFrom+(dateTo?'&end_date='+dateTo:''):'';
+  var links=[
+    {name:'Eventbrite',icon:'🎟',url:'https://www.eventbrite.com/d/'+citySlug+'/all-events/?'+dateParam.slice(1)},
+    {name:'Meetup',icon:'🤝',url:'https://www.meetup.com/find/?location='+cityEnc+(dateFrom?'&dateRange=custom&startDate='+dateFrom:'')},
+    {name:'Songkick',icon:'🎵',url:'https://www.songkick.com/search?query='+cityEnc},
+    {name:'Resident Advisor',icon:'🎧',url:'https://ra.co/events/'+citySlug},
+    {name:'TimeOut',icon:'📰',url:'https://www.timeout.com/'+citySlug+'/things-to-do'},
+    {name:'Ticketmaster',icon:'🏟',url:'https://www.ticketmaster.com/search?q='+cityEnc+(dateFrom?'&dateStart='+dateFrom:'')},
+  ];
+  var dateNote=dateFrom?' during your trip ('+fmtDate(dateFrom)+(dateTo?'–'+fmtDate(dateTo):'')+')':', on your travel dates';
+  el.innerHTML='<div class="events-card"><div class="events-title">🎟 Events'+dateNote+'</div><div class="events-sub">Live concerts, festivals, markets and more in '+city+'</div><div class="events-links">'+links.map(function(l){return '<a class="elink" href="'+l.url+'" target="_blank" rel="noopener">'+l.icon+' '+l.name+'</a>';}).join('')+'</div></div>';
+  el.style.display='block';
+}
+
+// ── Hotels card ──
+async function renderHotelsCard(city,dateFrom,dateTo){
+  var el=document.getElementById('hotelsCard');if(!el)return;
+  el.innerHTML='<div class="events-card"><div class="events-title">🏨 Places to Stay</div><div class="loading-txt" style="font-size:0.78rem;color:var(--txt3);margin-top:0.5rem;">Finding accommodation options...</div></div>';
+  el.style.display='block';
+  try{
+    var prompt='Suggest 3 specific hotels or accommodation options in "'+city+'" for a '+group+' traveller with $'+budget+'/day budget. One budget, one mid-range, one luxury.\nReturn ONLY raw JSON (no markdown): [{"tier":"Budget","name":"Specific hotel name","area":"Neighbourhood","pricePerNight":"~$XX","why":"One sentence why it\'s great"},{"tier":"Mid-Range","name":"...","area":"...","pricePerNight":"~$XX","why":"..."},{"tier":"Luxury","name":"...","area":"...","pricePerNight":"~$XX","why":"..."}]';
+    var raw=await callGroq(prompt,null,500);
+    raw=raw.replace(/```json|```/g,'').trim();
+    var si=raw.indexOf('['),ei=raw.lastIndexOf(']');
+    if(si>-1&&ei>-1)raw=raw.slice(si,ei+1);
+    var hotels=JSON.parse(raw);
+    var tierColors={Budget:'var(--teal)',  'Mid-Range':'var(--sky)',Luxury:'var(--gold)'};
+    var tierIcons={Budget:'🏠','Mid-Range':'🏨',Luxury:'⭐'};
+    var dateParams=dateFrom?'&checkin='+dateFrom+(dateTo?'&checkout='+dateTo:''):'';
+    var html='<div class="events-card"><div class="events-title">🏨 Places to Stay in '+city+'</div><div class="events-sub">AI-curated picks · click to check live prices</div><div class="hotel-opts">'+hotels.map(function(h){
+      var bookUrl='https://www.booking.com/searchresults.html?aid=7956794&ss='+encodeURIComponent(h.name+' '+city)+dateParams;
+      return '<a class="hotel-opt" href="'+bookUrl+'" target="_blank" rel="noopener"><div class="hotel-opt-left"><span style="font-size:1.2rem">'+( tierIcons[h.tier]||'🏨')+'</span><div><div class="hotel-opt-name">'+h.name+'</div><div class="hotel-opt-range"><span style="color:'+tierColors[h.tier]+';font-weight:600">'+h.tier+'</span> · '+h.area+' · '+h.why+'</div></div></div><div class="hotel-opt-price">'+h.pricePerNight+'<span style="font-size:0.6rem;color:var(--txt3);">/night</span></div></a>';
+    }).join('')+'</div></div>';
+    el.innerHTML=html;
+  }catch(e){el.style.display='none';}
+}
 
 // ── Near Me ──
 function nearMe(){
