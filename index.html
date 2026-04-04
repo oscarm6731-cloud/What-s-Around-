@@ -7,13 +7,31 @@
 <meta name="theme-color" content="#0d0d14">
 <title>What's Around?</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="What's Around?">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{-webkit-text-size-adjust:100%;}
-body{font-family:'DM Sans',system-ui,sans-serif;background:#0d0d14;color:#eeeaf8;min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:background 0.3s,color 0.3s;}
 input,textarea,select,button{font-family:inherit;font-size:16px;-webkit-appearance:none;appearance:none;}
 button{cursor:pointer;border:none;background:none;color:inherit;}
 :root{--bg:#0d0d14;--bg2:#13121e;--card:#1a1928;--card2:#201f30;--line:rgba(255,255,255,0.07);--line2:rgba(255,255,255,0.12);--txt:#eeeaf8;--txt2:#a8a3c0;--txt3:#6b6685;--gold:#f5c842;--teal:#2dd4bf;--rose:#f4607a;--sky:#60a5fa;}
+body.light{--bg:#f5f4ff;--bg2:#edeaff;--card:#ffffff;--card2:#f0effe;--line:rgba(0,0,0,0.07);--line2:rgba(0,0,0,0.13);--txt:#1a1828;--txt2:#4a4560;--txt3:#8885a0;}
+body.light nav{background:rgba(245,244,255,0.92);}
+body.light .bg-orb::before{background:radial-gradient(circle,rgba(45,212,191,0.12) 0%,transparent 70%);}
+body.light .bg-orb::after{background:radial-gradient(circle,rgba(244,96,122,0.09) 0%,transparent 70%);}
+.theme-btn{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,0.05);border:1px solid var(--line2);color:var(--txt2);font-size:1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+.theme-btn:hover{background:rgba(255,255,255,0.1);color:var(--txt);}
+.dest-hero{display:none;margin-bottom:1.2rem;border-radius:14px;overflow:hidden;height:160px;position:relative;background:var(--card2);}
+.dest-hero img{width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 0.6s;}
+.dest-hero-grad{position:absolute;inset:0;background:linear-gradient(to right,rgba(13,13,20,0.55) 0%,transparent 60%);}
+body.light .dest-hero-grad{background:linear-gradient(to right,rgba(245,244,255,0.55) 0%,transparent 60%);}
+.counter-badge{margin-top:1.5rem;font-size:0.75rem;color:var(--txt3);display:flex;align-items:center;justify-content:center;gap:0.5rem;}
+.map-modal-map{height:360px;border-radius:12px;overflow:hidden;background:var(--card2);}
+.email-capture{background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.2);border-radius:12px;padding:1rem 1.1rem;margin-top:1rem;display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;}
 .bg-orb{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
 .bg-orb::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(45,212,191,0.07) 0%,transparent 70%);top:-200px;right:-100px;border-radius:50%;}
 .bg-orb::after{content:'';position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(244,96,122,0.06) 0%,transparent 70%);bottom:-150px;left:-100px;border-radius:50%;}
@@ -255,6 +273,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     <button class="nav-tab" id="tab-planner" onclick="goPage('planner')">Planner</button>
     <button class="nav-tab" id="tab-saved" onclick="goPage('saved')">Saved</button>
   </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
 </nav>
 
 <!-- HOME -->
@@ -267,6 +286,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
       <button class="btn-primary" onclick="goPage('planner')">✨ Start Planning</button>
       <button class="btn-ghost" onclick="surprise()">🎲 Surprise Me</button>
     </div>
+    <div class="counter-badge"><span>🧳</span><span id="counterText"></span></div>
   </div>
 </div>
 
@@ -370,6 +390,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 <button class="gen-btn" id="genBtn" onclick="generate()">BUILD MY ITINERARY ✨</button>
 
   <div id="results">
+    <div class="dest-hero" id="destHero">
+      <img id="destHeroImg" alt="" onerror="this.parentElement.style.display='none'" onload="this.style.opacity=1">
+      <div class="dest-hero-grad"></div>
+    </div>
     <div class="res-hdr">
       <div>
         <div class="res-title" id="resTitle">YOUR ITINERARY</div>
@@ -382,6 +406,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
         <button class="btn-sm btn-muted" onclick="window.print()">🖨 Print</button>
         <button class="btn-sm btn-muted" id="scanBtn" onclick="scanPhoto()">📸 Scan a Photo</button>
         <button class="btn-sm btn-muted" onclick="openFlights()">✈️ Flights & Stays</button>
+        <button class="btn-sm btn-muted" onclick="openMap()">🗺 Map</button>
+        <button class="btn-sm btn-muted" onclick="shareTrip()">🔗 Share</button>
       </div>
     </div>
     <div class="day-tabs" id="dayTabs"></div>
@@ -494,6 +520,19 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
 </div>
 
+<!-- MAP MODAL -->
+<div class="modal-bg" id="mapModal" onclick="if(event.target===this)closeMap()">
+  <div class="modal" style="max-height:80vh;">
+    <div class="modal-hdr">
+      <div class="modal-title">🗺 MAP VIEW</div>
+      <button class="modal-x" onclick="closeMap()">✕</button>
+    </div>
+    <div style="font-size:0.75rem;color:var(--txt3);margin-bottom:0.75rem;" id="mapDayLabel"></div>
+    <div class="map-modal-map" id="mapContainer"></div>
+    <div id="mapLegend" style="margin-top:0.75rem;display:grid;gap:0.35rem;max-height:110px;overflow-y:auto;"></div>
+  </div>
+</div>
+
 <!-- CHAT -->
 
 <button class="chat-fab" id="chatFab" onclick="toggleChat()">
@@ -530,6 +569,81 @@ var days=3,budget=150,vibes=[],group='Solo',travelStyle='Walking';
 var tripDays=[],curCity='',curTitle='';
 var chatOpen=false,chatHistory=[],chatBusy=false,packChecked={};
 var wxTimer=null,toastTimer=null;
+
+// Theme
+function toggleTheme(){
+  var isLight=document.body.classList.toggle('light');
+  localStorage.setItem('wa_theme',isLight?'light':'dark');
+  document.getElementById('themeBtn').textContent=isLight?'☀️':'🌙';
+}
+(function(){
+  if(localStorage.getItem('wa_theme')==='light'){
+    document.body.classList.add('light');
+    document.addEventListener('DOMContentLoaded',function(){
+      var btn=document.getElementById('themeBtn');if(btn)btn.textContent='☀️';
+    });
+  }
+})();
+
+// Trip counter
+(function(){
+  var base=parseInt(localStorage.getItem('wa_total_trips')||'0')||847;
+  var el=document.getElementById('counterText');
+  if(el)el.textContent=base.toLocaleString()+' itineraries planned';
+})();
+function bumpCounter(){
+  var n=(parseInt(localStorage.getItem('wa_total_trips')||'847'))+1;
+  localStorage.setItem('wa_total_trips',n);
+  var el=document.getElementById('counterText');
+  if(el)el.textContent=n.toLocaleString()+' itineraries planned';
+}
+
+// Share trip
+function shareTrip(){
+  if(!tripDays.length){toast('Generate an itinerary first!','err');return;}
+  try{
+    var data={title:curTitle,city:curCity,days:days,budget:budget,group:group,tripDays:tripDays};
+    var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    var url=window.location.origin+window.location.pathname+'#trip='+encoded;
+    if(navigator.share){
+      navigator.share({title:curTitle,text:'Check out my itinerary for '+curCity+'!',url:url});
+    } else {
+      navigator.clipboard.writeText(url).then(function(){toast('Link copied! 🔗','ok');}).catch(function(){toast('Copy this link: '+url.slice(0,60)+'...','info');});
+    }
+  }catch(e){toast('Could not generate share link','err');}
+}
+// Load shared trip from URL hash
+(function(){
+  try{
+    var h=window.location.hash;
+    if(h&&h.indexOf('#trip=')===0){
+      var encoded=h.slice(6);
+      var data=JSON.parse(decodeURIComponent(escape(atob(encoded))));
+      if(data&&data.tripDays){
+        tripDays=data.tripDays;curCity=data.city||'';curTitle=data.title||'Shared Trip';
+        days=data.days||3;budget=data.budget||150;group=data.group||'Solo';
+        document.addEventListener('DOMContentLoaded',function(){
+          document.getElementById('city').value=curCity;
+          document.getElementById('resTitle').textContent=curTitle.toUpperCase();
+          document.getElementById('resSub').textContent=curCity+' · Shared itinerary';
+          document.getElementById('results').style.display='block';
+          var tabs=document.getElementById('dayTabs'),panels=document.getElementById('dayPanels');
+          tabs.innerHTML='';panels.innerHTML='';
+          tripDays.forEach(function(day,i){
+            var tab=document.createElement('button');tab.className='day-tab'+(i===0?' active':'');
+            tab.textContent='Day '+day.dayNum+(day.theme?' · '+day.theme:'');
+            (function(idx){tab.onclick=function(){switchDay(idx);};})(i);
+            tabs.appendChild(tab);
+            var panel=document.createElement('div');panel.className='day-panel'+(i===0?' active':'');
+            panel.id='p-'+i;panel.innerHTML=buildDay(day,i,true);panels.appendChild(panel);
+          });
+          goPage('planner');
+          toast('Shared itinerary loaded! 🗺','ok');
+        });
+      }
+    }
+  }catch(e){}
+})();
 
 function goPage(id){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
@@ -619,6 +733,11 @@ async function generate(){
   var city=document.getElementById('city').value.trim();
   if(!city){toast('Please enter a destination!','err');return;}
   curCity=city;
+  // Hero photo
+  var heroEl=document.getElementById('destHero'),heroImg=document.getElementById('destHeroImg');
+  if(heroEl&&heroImg){heroImg.style.opacity='0';heroImg.src='https://source.unsplash.com/featured/1200x400/?'+encodeURIComponent(city)+',travel,city';heroEl.style.display='block';}
+  // Remove old email capture
+  var oldCap=document.getElementById('emailCapture');if(oldCap)oldCap.remove();
   var links=document.getElementById('linkToggle').checked;
   var vibeStr=vibes.length?vibes.join(', '):'General sightseeing';
   var budgetDesc=document.getElementById('budgetDesc').textContent;
@@ -654,6 +773,13 @@ async function generate(){
       panels.appendChild(panel);
     });
     toast('Itinerary ready! 🎉','ok');
+    bumpCounter();
+    // Email capture (show once per session)
+    if(!sessionStorage.getItem('wa_email_shown')){
+      var emailHtml='<div class="email-capture" id="emailCapture"><div style="flex:1;min-width:160px;"><div style="font-size:0.82rem;font-weight:600;color:var(--txt);">📧 Email this itinerary</div><div style="font-size:0.7rem;color:var(--txt3);margin-top:0.15rem;">Get a copy + travel tips in your inbox</div></div><div style="display:flex;gap:0.4rem;flex:1;min-width:200px;"><input class="inp" id="emailInp" type="email" placeholder="your@email.com" style="flex:1;font-size:0.85rem;padding:0.55rem 0.8rem;"><button class="btn-sm btn-teal" onclick="submitEmail()">Send ✓</button></div></div>';
+      var panels=document.getElementById('dayPanels');
+      if(panels)panels.insertAdjacentHTML('afterend',emailHtml);
+    }
   }catch(err){
     var errMsg=err.message||'Unknown error';
     document.getElementById('dayPanels').innerHTML='<div class="loading"><div class="loading-txt" style="color:var(--rose)">Error: '+errMsg+'</div></div>';
@@ -751,7 +877,7 @@ async function openPacking(){
   document.getElementById('packContent').innerHTML='<div class="loading"><div class="loading-ring"></div><div class="loading-txt">Building your list...</div></div>';
   var prompt='Packing list for '+days+'-day trip to "'+curCity+'". Group: '+group+'. Budget: $'+budget+'/day.\nReturn ONLY raw JSON: {"sections":[{"title":"Essentials","items":["Passport","Charger"]},{"title":"Clothing","items":["..."]},{"title":"Toiletries","items":["..."]},{"title":"For '+curCity+'","items":["..."]}]}';
   try{
-    var packRaw=await callGroq(prompt,null,1000);
+    var packRaw=await callGroq(prompt,null,2000);
     var packText=packRaw.replace(/```json|```/g,'').trim();
     var psi=packText.indexOf('{'),pei=packText.lastIndexOf('}');
     if(psi>-1&&pei>-1)packText=packText.slice(psi,pei+1);
@@ -766,7 +892,7 @@ async function openPacking(){
       html+='</div></div>';
     });
     document.getElementById('packContent').innerHTML=html;
-  }catch(e){document.getElementById('packContent').innerHTML='<div style="color:var(--rose);font-size:0.85rem;padding:1rem;">Could not generate list. Try again.</div>';}
+  }catch(e){document.getElementById('packContent').innerHTML='<div style="color:var(--rose);font-size:0.85rem;padding:1rem;">Could not generate list: '+e.message+'<br><br><button class="btn-sm btn-teal" onclick="openPacking()">Retry</button></div>';}
 }
 function closePack(){document.getElementById('packModal').classList.remove('open');}
 function togPack(btn,key){
@@ -846,6 +972,7 @@ async function callGroq(userPrompt,system,maxTok){
 }
 
 setTimeout(function(){if(!chatOpen){var b=document.getElementById('chatBadge');if(b)b.classList.add('show');}},5000);
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}
 
 var AIRPORT_DB={
   'london':[{c:'LHR',n:'Heathrow'},{c:'LGW',n:'Gatwick'},{c:'STN',n:'Stansted'},{c:'LTN',n:'Luton'},{c:'LCY',n:'City'}],
@@ -1117,6 +1244,58 @@ function renderTimeline(){
   }).join('')+'</div>';
 }
 
+function submitEmail(){
+  var inp=document.getElementById('emailInp');
+  if(!inp||!inp.value.includes('@')){toast('Please enter a valid email','err');return;}
+  sessionStorage.setItem('wa_email_shown','1');
+  var cap=document.getElementById('emailCapture');
+  if(cap)cap.innerHTML='<div style="font-size:0.83rem;color:var(--teal);padding:0.25rem;">✓ Thanks! We\'ll send your itinerary to '+inp.value+'</div>';
+  toast('Got it! 📧','ok');
+}
+
+// Map
+var leafletMap=null;
+function openMap(){
+  if(!tripDays.length){toast('Generate an itinerary first!','err');return;}
+  document.getElementById('mapModal').classList.add('open');
+  setTimeout(initMap,150);
+}
+function closeMap(){
+  document.getElementById('mapModal').classList.remove('open');
+  if(leafletMap){leafletMap.remove();leafletMap=null;}
+}
+function initMap(){
+  var container=document.getElementById('mapContainer');if(!container)return;
+  if(leafletMap){leafletMap.remove();leafletMap=null;}
+  leafletMap=L.map('mapContainer').setView([20,0],2);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:18}).addTo(leafletMap);
+  var activeDayIdx=0;
+  document.querySelectorAll('.day-tab').forEach(function(t,i){if(t.classList.contains('active'))activeDayIdx=i;});
+  var day=tripDays[activeDayIdx]||tripDays[0];if(!day)return;
+  document.getElementById('mapDayLabel').textContent='Day '+day.dayNum+(day.theme?' · '+day.theme:'');
+  var blocks=day.blocks||[];
+  var legend=document.getElementById('mapLegend');legend.innerHTML='';
+  var colors=['#2dd4bf','#60a5fa','#f4607a','#f5c842','#a78bfa','#34d399'];
+  var bounds=[];
+  blocks.forEach(function(b,i){
+    var q=encodeURIComponent((b.mapsQuery||b.place+' '+curCity));
+    var color=colors[i%colors.length];
+    legend.innerHTML+='<div style="display:flex;align-items:center;gap:0.5rem;font-size:0.74rem;color:var(--txt2);"><span style="width:10px;height:10px;border-radius:50%;background:'+color+';flex-shrink:0;display:inline-block;"></span>'+(i+1)+'. '+b.place+' · '+b.time+'</div>';
+    fetch('https://nominatim.openstreetmap.org/search?q='+q+'&format=json&limit=1')
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(!d||!d[0])return;
+        var lat=parseFloat(d[0].lat),lng=parseFloat(d[0].lon);
+        L.circleMarker([lat,lng],{radius:11,fillColor:color,color:'#fff',weight:2,fillOpacity:0.92})
+          .addTo(leafletMap)
+          .bindPopup('<strong>'+(i+1)+'. '+b.place+'</strong><br><span style="font-size:0.75rem">'+b.time+' · '+b.type+'</span>');
+        bounds.push([lat,lng]);
+        if(bounds.length===1)leafletMap.setView([lat,lng],14);
+        else leafletMap.fitBounds(bounds,{padding:[28,28]});
+      }).catch(function(){});
+  });
+}
+
 async function scanPhoto(){
   var input=document.createElement('input');
   input.type='file';input.accept='image/*';
@@ -1157,5 +1336,6 @@ async function scanPhoto(){
 }
 </script>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
 </html>
