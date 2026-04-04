@@ -388,6 +388,18 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
       <button class="days-btn" onclick="chDays(1)">+</button>
       <div class="days-lbl" id="daysLbl">days</div>
     </div>
+    <div style="margin-top:0.9rem;">
+      <div style="font-size:0.72rem;color:var(--txt3);margin-bottom:0.5rem;">Which days of the week are you there?</div>
+      <div class="opts" id="dowOpts">
+        <button class="opt" onclick="togDow(this,'Monday')">Mon</button>
+        <button class="opt" onclick="togDow(this,'Tuesday')">Tue</button>
+        <button class="opt" onclick="togDow(this,'Wednesday')">Wed</button>
+        <button class="opt" onclick="togDow(this,'Thursday')">Thu</button>
+        <button class="opt" onclick="togDow(this,'Friday')">Fri</button>
+        <button class="opt on" onclick="togDow(this,'Saturday')">Sat</button>
+        <button class="opt on" onclick="togDow(this,'Sunday')">Sun</button>
+      </div>
+    </div>
   </div>
 
   <div class="card">
@@ -888,7 +900,8 @@ async function generate(){
   document.getElementById('dayTabs').innerHTML='';
   document.getElementById('dayPanels').innerHTML='<div class="loading"><div class="loading-ring"></div><div class="loading-txt">Crafting '+days+' day'+(days>1?'s':'')+' in '+city+'...</div><div class="loading-sub">Finding real places just for you</div></div>';
   document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
-  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences, no explanation:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Real place name","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Place City Country"}]}]}\n\nRules: 5-6 blocks per day. Real places only. Logical geographic flow.';
+  var dowStr=tripDows.length?'\nDays of the week visiting: '+tripDows.join(', ')+' — IMPORTANT: only recommend places that are open on those days. Avoid museums, markets, or spots typically closed on those days.':'';
+  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+dowStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences, no explanation:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Real place name","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Place City Country"}]}]}\n\nRules: 7-8 blocks per day covering morning through late night. Real places only. Logical geographic flow. Include a good mix of times across the full day.';
   try{
     var rawText=await callGroq(prompt,null,4000);
     var text=rawText.replace(/```json|```/g,'').trim();
@@ -1148,6 +1161,12 @@ function toggleGems(cb){
 
 // ── Dietary ──
 var dietaryPrefs=[];
+var tripDows=['Saturday','Sunday'];
+function togDow(btn,val){
+  btn.classList.toggle('on');
+  if(btn.classList.contains('on'))tripDows.push(val);
+  else tripDows=tripDows.filter(function(v){return v!==val;});
+}
 function togDiet(btn,val){
   btn.classList.toggle('on');
   if(btn.classList.contains('on'))dietaryPrefs.push(val);
