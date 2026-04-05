@@ -956,7 +956,7 @@ async function generate(){
     var text=rawText.replace(/```json|```/g,'').trim();
     var si=text.indexOf('{'),ei=text.lastIndexOf('}');
     if(si>-1&&ei>-1)text=text.slice(si,ei+1);
-    var parsed=JSON.parse(text);
+    var parsed=repairJSON(text);
     tripDays=parsed.days||[];
     curTitle=parsed.title||(days+' Days in '+city);
     document.getElementById('resTitle').textContent=curTitle.toUpperCase();
@@ -1117,7 +1117,7 @@ async function openPacking(){
     var packText=packRaw.replace(/```json|```/g,'').trim();
     var psi=packText.indexOf('{'),pei=packText.lastIndexOf('}');
     if(psi>-1&&pei>-1)packText=packText.slice(psi,pei+1);
-    var parsed=JSON.parse(packText);
+    var parsed=repairJSON(packText);
     var html='';
     (parsed.sections||[]).forEach(function(s){
       html+='<div class="pack-sec"><div class="pack-sec-title">'+s.title+'</div><div class="pack-items">';
@@ -1207,6 +1207,25 @@ async function callGroq(userPrompt,system,maxTok){
   return d.content&&d.content[0]?d.content[0].text:"";
 }
 
+// Attempt to fix truncated JSON by closing unclosed brackets/braces
+function repairJSON(str){
+  try{return JSON.parse(str);}catch(e){}
+  // Strip trailing incomplete object (e.g. ,{"m":"Dec"...)
+  var fixed=str.replace(/,\s*\{[^}]*$/,'').replace(/,\s*\[[^\]]*$/,'');
+  // Count unmatched openers
+  var objs=0,arrs=0;
+  for(var i=0;i<fixed.length;i++){
+    var c=fixed[i];
+    if(c==='{')objs++;else if(c==='}')objs--;
+    else if(c==='[')arrs++;else if(c===']')arrs--;
+  }
+  // Remove trailing comma before we close
+  fixed=fixed.replace(/,\s*$/,'');
+  for(var j=0;j<objs;j++)fixed+='}';
+  for(var k=0;k<arrs;k++)fixed+=']';
+  return JSON.parse(fixed);
+}
+
 setTimeout(function(){if(!chatOpen){var b=document.getElementById('chatBadge');if(b)b.classList.add('show');}},5000);
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}
 
@@ -1263,11 +1282,11 @@ function closeBestTime(){document.getElementById('bestTimeModal').classList.remo
 async function loadBestTime(city){
   try{
     var prompt='For "'+city+", rate each month for a traveller. Return ONLY raw JSON array (no markdown):\n[{\"m\":\"Jan\",\"wx\":3,\"crowds\":4,\"price\":3,\"note\":\"Brief 5-word note\"},{...}]\nwx=weather comfort 1-5, crowds=1(empty)–5(packed), price=1(cheap)–5(expensive). All 12 months.";
-    var raw=await callGroq(prompt,null,600);
+    var raw=await callGroq(prompt,null,900);
     raw=raw.replace(/```json|```/g,'').trim();
     var si=raw.indexOf('['),ei=raw.lastIndexOf(']');
     if(si>-1&&ei>-1)raw=raw.slice(si,ei+1);
-    var data=JSON.parse(raw);
+    var data=repairJSON(raw);
     var city2=document.getElementById('city').value.trim()||curCity;
     document.getElementById('btCity').textContent=city2+' — click a month to see details';
     // Find best months (avg score)
@@ -1314,11 +1333,11 @@ async function renderHotelsCard(city,dateFrom,dateTo){
   el.style.display='block';
   try{
     var prompt='Suggest 3 specific hotels or accommodation options in "'+city+'" for a '+group+' traveller with $'+budget+'/day budget. One budget, one mid-range, one luxury.\nReturn ONLY raw JSON (no markdown): [{"tier":"Budget","name":"Specific hotel name","area":"Neighbourhood","pricePerNight":"~$XX","why":"One sentence why it\'s great"},{"tier":"Mid-Range","name":"...","area":"...","pricePerNight":"~$XX","why":"..."},{"tier":"Luxury","name":"...","area":"...","pricePerNight":"~$XX","why":"..."}]';
-    var raw=await callGroq(prompt,null,500);
+    var raw=await callGroq(prompt,null,800);
     raw=raw.replace(/```json|```/g,'').trim();
     var si=raw.indexOf('['),ei=raw.lastIndexOf(']');
     if(si>-1&&ei>-1)raw=raw.slice(si,ei+1);
-    var hotels=JSON.parse(raw);
+    var hotels=repairJSON(raw);
     var tierColors={Budget:'var(--teal)',  'Mid-Range':'var(--sky)',Luxury:'var(--gold)'};
     var tierIcons={Budget:'🏠','Mid-Range':'🏨',Luxury:'⭐'};
     var dateParams=dateFrom?'&checkin='+dateFrom+(dateTo?'&checkout='+dateTo:''):'';
@@ -1441,11 +1460,11 @@ async function randomizeStop(di,bi,btn){
   if(btn){btn.disabled=true;btn.textContent='⏳';}
   try{
     var prompt='I have a travel itinerary for "'+curCity+'". Replace this single stop with something DIFFERENT but equally good.\nCurrent stop: "'+b.place+'" (type: '+b.type+', time: '+b.time+')\nInterests: '+(vibes.join(', ')||'general')+'.\nReturn ONLY raw JSON (no markdown): {"time":"'+b.time+'","place":"New place name","type":"'+b.type+'","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$XX","mapsQuery":"Place City Country"}';
-    var raw=await callGroq(prompt,null,400);
+    var raw=await callGroq(prompt,null,550);
     raw=raw.replace(/```json|```/g,'').trim();
     var si=raw.indexOf('{'),ei=raw.lastIndexOf('}');
     if(si>-1&&ei>-1)raw=raw.slice(si,ei+1);
-    var nb=JSON.parse(raw);
+    var nb=repairJSON(raw);
     tripDays[di].blocks[bi]=nb;
     // Re-render just this panel
     var panel=document.getElementById('p-'+di);
@@ -1715,11 +1734,11 @@ function searchFlights(){
       var fromCity=fromVal.split('—')[0].trim();
       var toCity=toVal.split('—')[0].trim();
       var tripDesc=(isRound?'round trip':'one-way')+' from '+fromCity+' to '+toCity+' departing '+fmtDate(depart)+(isRound?' returning '+fmtDate(ret):'');
-      var raw=await callGroq('Estimate the typical economy flight price range for a '+tripDesc+'. Return ONLY raw JSON: {"low":"$XXX","high":"$XXX","note":"One-sentence tip on getting a better deal."}',null,120);
+      var raw=await callGroq('Estimate the typical economy flight price range for a '+tripDesc+'. Return ONLY raw JSON: {"low":"$XXX","high":"$XXX","note":"One-sentence tip on getting a better deal."}',null,200);
       raw=raw.replace(/```json|```/g,'').trim();
       var si=raw.indexOf('{'),ei=raw.lastIndexOf('}');
       if(si>-1&&ei>-1)raw=raw.slice(si,ei+1);
-      var est=JSON.parse(raw);
+      var est=repairJSON(raw);
       if(estEl)estEl.innerHTML='<span style="color:var(--txt2);">✈️ Estimated economy fare:</span> <span class="flight-est-badge">'+est.low+'–'+est.high+'</span>'+(est.note?'<span style="color:var(--txt3);margin-left:0.5rem;">· '+est.note+'</span>':'');
     }catch(e){if(estEl)estEl.style.display='none';}
   })();
@@ -1875,7 +1894,7 @@ async function scanPhoto(){
         text=text.replace(/```json|```/g,'').trim();
         var si=text.indexOf('{'),ei=text.lastIndexOf('}');
         if(si>-1&&ei>-1)text=text.slice(si,ei+1);
-        var sc=JSON.parse(text);
+        var sc=repairJSON(text);
         var mq=encodeURIComponent(sc.mapsQuery||sc.place);
         var stopHtml='<div class="stop" style="border-color:rgba(45,212,191,0.3)"><div class="stop-hdr"><div class="stop-n" style="background:linear-gradient(135deg,var(--rose),#f4a27a)">📸</div><div class="stop-time">SCANNED</div><div class="stop-name">'+sc.place+'</div><div class="stop-type">'+sc.type+'</div>'+(sc.cost?'<div class="stop-cost">'+sc.cost+'</div>':'')+'</div><div class="stop-body"><div class="stop-desc">'+sc.desc+'</div>'+(sc.tip?'<div class="stop-tip">💡 '+sc.tip+'</div>':'')+'<div class="stop-links"><a class="slink sl-m" href="https://maps.google.com/maps?q='+mq+'" target="_blank" rel="noopener">📍 Maps</a></div></div></div>';
         var sec=document.getElementById('scannedStops');
