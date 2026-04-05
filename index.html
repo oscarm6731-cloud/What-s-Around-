@@ -1207,19 +1207,25 @@ async function callGroq(userPrompt,system,maxTok){
   return d.content&&d.content[0]?d.content[0].text:"";
 }
 
-// Attempt to fix truncated JSON by closing unclosed brackets/braces
+// Attempt to fix truncated or malformed JSON from AI responses
 function repairJSON(str){
   try{return JSON.parse(str);}catch(e){}
-  // Strip trailing incomplete object (e.g. ,{"m":"Dec"...)
-  var fixed=str.replace(/,\s*\{[^}]*$/,'').replace(/,\s*\[[^\]]*$/,'');
-  // Count unmatched openers
+  var fixed=str;
+  // Fix unquoted property names: {place: "foo"} → {"place": "foo"}
+  fixed=fixed.replace(/([{,]\s*)([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g,'$1"$2":');
+  // Fix single-quoted strings → double-quoted
+  fixed=fixed.replace(/'([^'\\]*(\\.[^'\\]*)*)'/g,'"$1"');
+  // Remove trailing commas before ] or }
+  fixed=fixed.replace(/,(\s*[}\]])/g,'$1');
+  try{return JSON.parse(fixed);}catch(e2){}
+  // Strip trailing incomplete object then close unclosed brackets
+  fixed=fixed.replace(/,\s*\{[^}]*$/,'').replace(/,\s*\[[^\]]*$/,'');
   var objs=0,arrs=0;
   for(var i=0;i<fixed.length;i++){
     var c=fixed[i];
     if(c==='{')objs++;else if(c==='}')objs--;
     else if(c==='[')arrs++;else if(c===']')arrs--;
   }
-  // Remove trailing comma before we close
   fixed=fixed.replace(/,\s*$/,'');
   for(var j=0;j<objs;j++)fixed+='}';
   for(var k=0;k<arrs;k++)fixed+=']';
