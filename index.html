@@ -319,6 +319,55 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .site-row-left{display:flex;align-items:center;gap:0.6rem;}
 .site-row-desc{font-size:0.68rem;color:var(--txt3);margin-top:0.1rem;}
 
+/* ── Design overhaul ── */
+/* Enhanced stop cards */
+.stop{transition:all 0.22s cubic-bezier(0.25,0.46,0.45,0.94);}
+.stop:hover{border-color:rgba(45,212,191,0.22);transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,0.28);}
+.stop-name{font-size:1.12rem !important;letter-spacing:0.02em;}
+/* Time-of-day accent borders */
+.stop[data-slot="morning"]{border-left:3px solid rgba(245,200,66,0.5);}
+.stop[data-slot="afternoon"]{border-left:3px solid rgba(96,165,250,0.5);}
+.stop[data-slot="evening"]{border-left:3px solid rgba(244,96,122,0.5);}
+.stop[data-slot="night"]{border-left:3px solid rgba(149,96,244,0.5);}
+.stop[data-slot="latenight"]{border-left:3px solid rgba(45,212,191,0.5);}
+/* Staggered stop animation */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.day-panel.active .stop{animation:fadeUp 0.3s ease both;}
+.day-panel.active .stop:nth-child(1){animation-delay:0.03s;}
+.day-panel.active .stop:nth-child(2){animation-delay:0.07s;}
+.day-panel.active .stop:nth-child(3){animation-delay:0.11s;}
+.day-panel.active .stop:nth-child(4){animation-delay:0.15s;}
+.day-panel.active .stop:nth-child(5){animation-delay:0.19s;}
+.day-panel.active .stop:nth-child(6){animation-delay:0.23s;}
+.day-panel.active .stop:nth-child(7){animation-delay:0.27s;}
+.day-panel.active .stop:nth-child(8){animation-delay:0.31s;}
+/* Bigger planner card titles */
+.card-title{font-size:1.2rem !important;letter-spacing:0.03em;}
+/* Micro-interactions */
+.opt:active,.btn-sm:active{transform:scale(0.91) !important;}
+.gen-btn:hover{box-shadow:0 16px 40px rgba(45,212,191,0.42) !important;}
+/* ── Traffic warnings ── */
+.traffic-warn{display:flex;align-items:center;gap:0.45rem;padding:0.45rem 0.85rem;background:rgba(245,200,66,0.07);border:1px solid rgba(245,200,66,0.18);border-left:3px solid var(--gold);border-radius:8px;font-size:0.73rem;color:var(--gold);font-weight:500;margin-bottom:0.38rem;animation:fadeUp 0.28s ease both;}
+.traffic-warn.rush-pm{background:rgba(244,96,122,0.07);border-color:rgba(244,96,122,0.2);border-left-color:var(--rose);color:var(--rose);}
+/* ── Rideshare link ── */
+.sl-ride{background:rgba(30,30,48,0.7);border:1px solid rgba(255,255,255,0.1);color:var(--txt2);}
+.sl-ride:hover{border-color:rgba(255,255,255,0.22);color:var(--txt);}
+/* ── Hotel platform rows ── */
+.hotel-platform-section{margin-top:0.85rem;border-top:1px solid var(--line);padding-top:0.85rem;}
+.hotel-platform-title{font-size:0.67rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--txt3);margin-bottom:0.5rem;}
+.hotel-platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;}
+.hotel-platform-btn{display:flex;align-items:center;gap:0.5rem;padding:0.55rem 0.75rem;background:var(--card2);border:1px solid var(--line);border-radius:9px;text-decoration:none;color:var(--txt);transition:border-color 0.15s,transform 0.12s;-webkit-tap-highlight-color:transparent;}
+.hotel-platform-btn:hover{border-color:rgba(45,212,191,0.35);transform:scale(1.02);}
+.hotel-platform-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;}
+.hotel-platform-info{flex:1;min-width:0;}
+.hotel-platform-name{font-size:0.78rem;font-weight:600;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.hotel-platform-sub{font-size:0.62rem;color:var(--txt3);}
+/* ── Flight price estimate ── */
+.flight-est-row{display:flex;align-items:center;justify-content:space-between;margin-top:-0.1rem;margin-bottom:0.45rem;padding:0.28rem 0;}
+.flight-est-badge{font-family:'Bebas Neue',sans-serif;font-size:0.9rem;color:var(--teal);letter-spacing:0.04em;}
+.flight-est-loading{font-size:0.67rem;color:var(--txt3);animation:pulse 1.2s ease infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
 </style>
 </head>
 <body>
@@ -798,10 +847,10 @@ function goPage(id){
 
 function toast(msg,type){
   var el=document.getElementById('toast');
-  el.textContent=msg;
+  el.innerHTML=msg;
   el.className='toast show '+(type||'info');
   clearTimeout(toastTimer);
-  toastTimer=setTimeout(function(){el.classList.remove('show');},3200);
+  toastTimer=setTimeout(function(){el.classList.remove('show');},3800);
 }
 
 function togOpt(btn,val){
@@ -951,6 +1000,20 @@ function switchDay(i){
   document.querySelectorAll('.day-panel').forEach(function(p,j){p.classList.toggle('active',j===i);});
 }
 
+function getRushWarn(timeStr){
+  var m=timeStr?timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i):null;
+  if(!m)return null;
+  var h=parseInt(m[1]),ap=(m[3]||'').toUpperCase();
+  if(ap==='PM'&&h!==12)h+=12;
+  if(ap==='AM'&&h===12)h=0;
+  if(h>=7&&h<9)return {cls:'',msg:'⚠️ Morning rush — peak traffic 7–9 AM. Leave 15–20 mins early.'};
+  if(h>=17&&h<19)return {cls:'rush-pm',msg:'⚠️ Evening rush — busiest roads 5–7 PM. Allow extra travel time.'};
+  // Weekend midday tourist rush
+  var hasWeekend=tripDows.some(function(d){return d==='Saturday'||d==='Sunday';});
+  if(hasWeekend&&h>=11&&h<14)return {cls:'',msg:'🧳 Weekend peak hours — popular spots get crowded 11 AM–2 PM.'};
+  return null;
+}
+
 function buildDay(day,di,links){
   var blocks=day.blocks||[];
   var html='';
@@ -961,10 +1024,15 @@ function buildDay(day,di,links){
     if(links){
       var mq=encodeURIComponent(b.mapsQuery||b.place+' '+curCity);
       var placeEnc=encodeURIComponent(b.place+' '+curCity);
+      var destEnc=encodeURIComponent(b.mapsQuery||b.place+' '+curCity);
       var isFood=t.indexOf('breakfast')>-1||t.indexOf('lunch')>-1||t.indexOf('dinner')>-1||t.indexOf('cafe')>-1||t.indexOf('food')>-1||t.indexOf('restaurant')>-1||t.indexOf('brunch')>-1||t.indexOf('bar')>-1||t.indexOf('drink')>-1;
       var isAttr=t.indexOf('tour')>-1||t.indexOf('museum')>-1||t.indexOf('visit')>-1||t.indexOf('attraction')>-1||t.indexOf('explore')>-1||t.indexOf('sightseeing')>-1||t.indexOf('activity')>-1||t.indexOf('experience')>-1;
       var isHotel=t.indexOf('hotel')>-1||t.indexOf('accommodation')>-1||t.indexOf('hostel')>-1||t.indexOf('stay')>-1||t.indexOf('check-in')>-1||t.indexOf('check in')>-1;
       lhtml+='<a class="slink sl-m" href="https://maps.google.com/maps?q='+mq+'" target="_blank" rel="noopener">📍 Maps</a>';
+      // Rideshare: Uber deeplink, Lyft fallback
+      var uberUrl='https://www.uber.com/ride?action=setPickup&dropoff[formatted_address]='+destEnc;
+      var lyftUrl='https://www.lyft.com/rider/referrals/ride?destination='+destEnc;
+      lhtml+='<a class="slink sl-ride" href="'+uberUrl+'" target="_blank" rel="noopener" title="Open in Uber app or browser. Tap to try Lyft instead." onclick="handleRideTap(event,\''+lyftUrl+'\')">🚗 Ride</a>';
       if(isFood)
         lhtml+='<a class="slink sl-o" href="https://www.google.com/search?q='+encodeURIComponent('reserve table '+b.place+' '+curCity)+'" target="_blank" rel="noopener">🍽 Reserve</a>';
       if(isAttr){
@@ -975,10 +1043,19 @@ function buildDay(day,di,links){
         lhtml+='<a class="slink sl-b" href="https://www.booking.com/searchresults.html?aid=7956794&ss='+placeEnc+'" target="_blank" rel="noopener">🏨 Book</a>';
     }
     var slot=getTimeSlot(b.time);
+    var rush=getRushWarn(b.time);
     var isSaved=isPlaceSaved(b.place,curCity);
+    if(rush)html+='<div class="traffic-warn '+rush.cls+'">'+rush.msg+'</div>';
     html+='<div class="stop" data-slot="'+slot+'" id="stop-'+di+'-'+bi+'"><div class="stop-hdr"><div class="stop-n">'+(bi+1)+'</div><div class="stop-time">'+b.time+'</div><div class="stop-name">'+b.place+'</div><div class="stop-type">'+b.type+'</div>'+(b.cost?'<div class="stop-cost">'+b.cost+'</div>':'')+'<button class="stop-act" onclick="randomizeStop('+di+','+bi+',this)" title="Swap this stop">🎲</button><button class="stop-act'+(isSaved?' saved-act':'')+'" id="save-act-'+di+'-'+bi+'" onclick="savePlace('+di+','+bi+',this)" title="Save this place">'+(isSaved?'🔖':'🏷')+'</button></div><div class="stop-body"><div class="stop-desc">'+b.desc+'</div>'+(b.tip?'<div class="stop-tip">💡 '+b.tip+'</div>':'')+(lhtml?'<div class="stop-links">'+lhtml+'</div>':'')+'</div></div>';
   });
   return html;
+}
+
+function handleRideTap(e,lyftUrl){
+  // Show Lyft alternative as a toast option after a moment
+  setTimeout(function(){
+    toast('Also try Lyft → <a href="'+lyftUrl+'" target="_blank" style="color:var(--teal);text-decoration:underline;">Open Lyft</a>','info');
+  },2800);
 }
 
 function saveTrip(){
@@ -1245,10 +1322,23 @@ async function renderHotelsCard(city,dateFrom,dateTo){
     var tierColors={Budget:'var(--teal)',  'Mid-Range':'var(--sky)',Luxury:'var(--gold)'};
     var tierIcons={Budget:'🏠','Mid-Range':'🏨',Luxury:'⭐'};
     var dateParams=dateFrom?'&checkin='+dateFrom+(dateTo?'&checkout='+dateTo:''):'';
-    var html='<div class="events-card"><div class="events-title">🏨 Places to Stay in '+city+'</div><div class="events-sub">AI-curated picks · click to check live prices</div><div class="hotel-opts">'+hotels.map(function(h){
+    var cityEnc=encodeURIComponent(city);
+    var citySlug=city.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+    var airbnbDates=dateFrom?'?checkin='+dateFrom+(dateTo?'&checkout='+dateTo:''):'';
+    var hotelsDates=dateFrom?'&d1='+dateFrom+(dateTo?'&d2='+dateTo:''):'';
+    var platforms=[
+      {name:'Booking.com',sub:'Best selection + free cancellation',icon:'🔵',color:'rgba(0,112,201,0.15)',url:'https://www.booking.com/searchresults.html?aid=7956794&ss='+cityEnc+dateParams},
+      {name:'Hotels.com',sub:'Collect nights, earn free stays',icon:'🟠',color:'rgba(220,100,30,0.12)',url:'https://www.hotels.com/search?q='+cityEnc+hotelsDates},
+      {name:'Airbnb',sub:'Unique homes & local experiences',icon:'🔴',color:'rgba(255,56,92,0.1)',url:'https://www.airbnb.com/s/'+cityEnc+'/homes'+airbnbDates},
+      {name:'Hostelworld',sub:'Budget hostels & social stays',icon:'🟢',color:'rgba(0,160,80,0.1)',url:'https://www.hostelworld.com/findabed.php/ChosenCity.'+citySlug}
+    ];
+    var html='<div class="events-card"><div class="events-title">🏨 Places to Stay in '+city+'</div><div class="events-sub">AI-curated picks · tap to check live prices</div><div class="hotel-opts">'+hotels.map(function(h){
       var bookUrl='https://www.booking.com/searchresults.html?aid=7956794&ss='+encodeURIComponent(h.name+' '+city)+dateParams;
-      return '<a class="hotel-opt" href="'+bookUrl+'" target="_blank" rel="noopener"><div class="hotel-opt-left"><span style="font-size:1.2rem">'+( tierIcons[h.tier]||'🏨')+'</span><div><div class="hotel-opt-name">'+h.name+'</div><div class="hotel-opt-range"><span style="color:'+tierColors[h.tier]+';font-weight:600">'+h.tier+'</span> · '+h.area+' · '+h.why+'</div></div></div><div class="hotel-opt-price">'+h.pricePerNight+'<span style="font-size:0.6rem;color:var(--txt3);">/night</span></div></a>';
-    }).join('')+'</div></div>';
+      return '<a class="hotel-opt" href="'+bookUrl+'" target="_blank" rel="noopener"><div class="hotel-opt-left"><span style="font-size:1.2rem">'+(tierIcons[h.tier]||'🏨')+'</span><div><div class="hotel-opt-name">'+h.name+'</div><div class="hotel-opt-range"><span style="color:'+tierColors[h.tier]+';font-weight:600">'+h.tier+'</span> · '+h.area+' · '+h.why+'</div></div></div><div class="hotel-opt-price">'+h.pricePerNight+'<span style="font-size:0.6rem;color:var(--txt3);">/night</span></div></a>';
+    }).join('')+'</div>';
+    html+='<div class="hotel-platform-section"><div class="hotel-platform-title">Compare prices on</div><div class="hotel-platform-grid">'+platforms.map(function(p){
+      return '<a class="hotel-platform-btn" href="'+p.url+'" target="_blank" rel="noopener" style="background:'+p.color+';"><div class="hotel-platform-icon">'+p.icon+'</div><div class="hotel-platform-info"><div class="hotel-platform-name">'+p.name+'</div><div class="hotel-platform-sub">'+p.sub+'</div></div></a>';
+    }).join('')+'</div></div></div>';
     el.innerHTML=html;
   }catch(e){el.style.display='none';}
 }
@@ -1613,9 +1703,26 @@ function searchFlights(){
   var summary=from+' → '+to+(isRound?' (Return)':' (One Way)')+' · '+fmtDate(depart)+(isRound?' → '+fmtDate(ret):'');
   document.getElementById('flSearchResults').innerHTML=
     '<div style="font-size:0.7rem;color:var(--teal);margin-bottom:0.75rem;font-weight:600;letter-spacing:0.04em;">'+summary+'</div>'+
+    '<div id="flPriceEst" style="margin-bottom:0.75rem;padding:0.55rem 0.85rem;background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.15);border-radius:9px;font-size:0.72rem;color:var(--txt3);display:flex;align-items:center;gap:0.5rem;"><span class="flight-est-loading">✨ Estimating price range...</span></div>'+
     sites.map(function(s){
       return '<a class="site-row" href="'+s.url+'" target="_blank" rel="noopener"><div class="site-row-left">'+s.icon+' <div><div>'+s.name+'</div><div class="site-row-desc">'+s.desc+'</div></div></div><div style="font-size:0.72rem;color:var(--teal);">Open →</div></a>';
     }).join('');
+  // Async AI price estimate (non-blocking)
+  (async function(){
+    var estEl=document.getElementById('flPriceEst');
+    if(!estEl)return;
+    try{
+      var fromCity=fromVal.split('—')[0].trim();
+      var toCity=toVal.split('—')[0].trim();
+      var tripDesc=(isRound?'round trip':'one-way')+' from '+fromCity+' to '+toCity+' departing '+fmtDate(depart)+(isRound?' returning '+fmtDate(ret):'');
+      var raw=await callGroq('Estimate the typical economy flight price range for a '+tripDesc+'. Return ONLY raw JSON: {"low":"$XXX","high":"$XXX","note":"One-sentence tip on getting a better deal."}',null,120);
+      raw=raw.replace(/```json|```/g,'').trim();
+      var si=raw.indexOf('{'),ei=raw.lastIndexOf('}');
+      if(si>-1&&ei>-1)raw=raw.slice(si,ei+1);
+      var est=JSON.parse(raw);
+      if(estEl)estEl.innerHTML='<span style="color:var(--txt2);">✈️ Estimated economy fare:</span> <span class="flight-est-badge">'+est.low+'–'+est.high+'</span>'+(est.note?'<span style="color:var(--txt3);margin-left:0.5rem;">· '+est.note+'</span>':'');
+    }catch(e){if(estEl)estEl.style.display='none';}
+  })();
 }
 function fmtDate(d){if(!d)return '';var p=d.split('-');var m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return m[parseInt(p[1])-1]+' '+parseInt(p[2])+', '+p[0];}
 function addFlight(){
