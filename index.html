@@ -414,7 +414,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     <div class="card-title">01 · Where are you going?</div>
     <div class="card-sub">City, country, or region</div>
     <div class="city-inp-wrap">
-      <input class="inp" id="city" type="text" placeholder="e.g. Tokyo · Paris · Bali" oninput="onCityInput(this.value)" autocomplete="off">
+      <input class="inp" id="city" type="text" placeholder="City, state, country — or ZIP / postal code" oninput="onCityInput(this.value)" autocomplete="off">
       <div class="city-sugs" id="citySugs"></div>
     </div>
     <button class="near-me-btn" onclick="nearMe()">📍 Use my location</button>
@@ -1396,23 +1396,59 @@ function onCityInput(val){
   clearTimeout(cityTimer);
   var sugs=document.getElementById('citySugs');
   if(!val||val.length<2){sugs.style.display='none';return;}
-  cityTimer=setTimeout(function(){fetchCitySugs(val);},400);
+  cityTimer=setTimeout(function(){
+    // Detect postal/ZIP codes: pure digits (4-6) or common formats (UK, CA, AU, DE)
+    var isPostal=/^\d{4,6}$/.test(val.trim())||/^[A-Z]{1,2}\d[\dA-Z]?\s?\d[A-Z]{2}$/i.test(val.trim())||/^[A-Z]\d[A-Z]\s?\d[A-Z]\d$/i.test(val.trim());
+    if(isPostal){fetchPostalSugs(val.trim());}else{fetchNameSugs(val);}
+  },400);
 }
-function fetchCitySugs(q){
-  fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(q)+'&count=5&language=en&format=json')
+
+function fetchPostalSugs(q){
+  fetch('https://nominatim.openstreetmap.org/search?postalcode='+encodeURIComponent(q)+'&format=json&limit=5&addressdetails=1')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var sugs=document.getElementById('citySugs');
+      if(!d||!d.length){
+        // fallback: try as free-text
+        fetchNameSugs(q);return;
+      }
+      var seen={};
+      var items=d.filter(function(r){
+        var city=(r.address&&(r.address.city||r.address.town||r.address.village||r.address.county))||'';
+        if(!city||seen[city])return false;
+        seen[city]=1;return true;
+      });
+      if(!items.length){sugs.style.display='none';return;}
+      sugs.innerHTML=items.map(function(r){
+        var addr=r.address||{};
+        var city=addr.city||addr.town||addr.village||addr.county||'';
+        var state=addr.state||addr.county||'';
+        var country=addr.country||'';
+        var full=[city,state,country].filter(Boolean).join(', ');
+        var badge='📮 '+q;
+        return '<div class="city-sug" onclick="selectCity(\''+city.replace(/'/g,'&#39;')+'\',\''+country.replace(/'/g,'&#39;')+'\',\''+full.replace(/'/g,'&#39;')+'\')">'+'<div class="city-sug-top"><span class="city-sug-name">'+city+'</span><span class="city-sug-country">'+country+(state?' · '+state:'')+'</span></div>'+'<div class="city-sug-desc">'+badge+'</div></div>';
+      }).join('');
+      sugs.style.display='block';
+    }).catch(function(){});
+}
+
+function fetchNameSugs(q){
+  fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(q)+'&count=6&language=en&format=json')
     .then(function(r){return r.json();})
     .then(function(d){
       var sugs=document.getElementById('citySugs');
       if(!d.results||!d.results.length){sugs.style.display='none';return;}
       sugs.innerHTML=d.results.map(function(r){
-        var pop=r.population?'Pop. '+r.population.toLocaleString()+' · ':'';
-        var elev=r.elevation?'Elev. '+Math.round(r.elevation)+'m':'';
-        var meta=pop+(r.timezone||'')+(elev?' · '+elev:'');
-        return '<div class="city-sug" onclick="selectCity(\''+r.name.replace(/'/g,'&#39;')+'\',\''+( r.country||'').replace(/'/g,'&#39;')+'\',\''+r.name+', '+(r.country||'')+'\')"><div class="city-sug-top"><span class="city-sug-name">'+r.name+'</span><span class="city-sug-country">'+(r.country||'')+(r.admin1?' · '+r.admin1:'')+'</span></div>'+(meta?'<div class="city-sug-desc">'+meta+'</div>':'')+'</div>';
+        var state=r.admin1||'';
+        var country=r.country||'';
+        var full=r.name+(state?', '+state:'')+(country?', '+country:'');
+        var meta=r.population?'Pop. '+r.population.toLocaleString():'';
+        return '<div class="city-sug" onclick="selectCity(\''+r.name.replace(/'/g,'&#39;')+'\',\''+country.replace(/'/g,'&#39;')+'\',\''+full.replace(/'/g,'&#39;')+'\')">'+'<div class="city-sug-top"><span class="city-sug-name">'+r.name+'</span><span class="city-sug-country">'+country+(state?' · '+state:'')+'</span></div>'+(meta?'<div class="city-sug-desc">'+meta+'</div>':'')+'</div>';
       }).join('');
       sugs.style.display='block';
     }).catch(function(){});
 }
+
 function selectCity(name,country,full){
   document.getElementById('city').value=full;
   document.getElementById('citySugs').style.display='none';
