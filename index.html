@@ -367,6 +367,18 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .flight-est-badge{font-family:'Bebas Neue',sans-serif;font-size:0.9rem;color:var(--teal);letter-spacing:0.04em;}
 .flight-est-loading{font-size:0.67rem;color:var(--txt3);animation:pulse 1.2s ease infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+/* ── Category pills ── */
+.cat-pills{display:flex;flex-wrap:wrap;gap:0.38rem;margin-top:0.65rem;}
+.cat-pill{padding:0.4rem 0.82rem;background:var(--card2);border:1px solid var(--line2);border-radius:100px;font-size:0.78rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.cat-pill:hover{background:var(--card);color:var(--txt);}
+.cat-pill.on{background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.4);color:var(--sky);}
+/* ── Verify links ── */
+.sl-yelp{background:rgba(244,96,122,0.08);border:1px solid rgba(244,96,122,0.2);color:var(--rose);}
+.sl-ta{background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);color:#34d399;}
+/* ── Radius badge on stop ── */
+.stop-radius{font-size:0.6rem;color:var(--txt3);background:rgba(255,255,255,0.04);border:1px solid var(--line);padding:0.12rem 0.42rem;border-radius:4px;white-space:nowrap;flex-shrink:0;}
+/* ── Active category banner ── */
+.cat-active-banner{background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.18);border-left:3px solid var(--sky);border-radius:8px;padding:0.5rem 0.85rem;margin-bottom:0.6rem;font-size:0.75rem;color:var(--sky);font-weight:500;}
 
 </style>
 </head>
@@ -427,10 +439,39 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
       </div>
       <span class="wx-unit" id="wxUnit">°C</span>
     </div>
+    <div style="margin-top:0.85rem;">
+      <div style="font-size:0.72rem;color:var(--txt3);margin-bottom:0.45rem;">Search radius from city center</div>
+      <div class="opts" id="radiusOpts">
+        <button class="opt" onclick="setRadius(this,0.5)">0.5 mi</button>
+        <button class="opt" onclick="setRadius(this,1)">1 mi</button>
+        <button class="opt" onclick="setRadius(this,2)">2 mi</button>
+        <button class="opt on" onclick="setRadius(this,5)">5 mi</button>
+        <button class="opt" onclick="setRadius(this,10)">10 mi</button>
+        <button class="opt" onclick="setRadius(this,25)">25 mi</button>
+      </div>
+    </div>
   </div>
 
   <div class="card">
-    <div class="card-title">02 · How many days?</div>
+    <div class="card-title">02 · What are you looking for?</div>
+    <div class="card-sub">Optional — focus every stop on one category</div>
+    <input class="inp" id="categorySearch" type="text" placeholder="e.g. coffee shops · rooftop bars · vegan restaurants" oninput="onCatInput(this.value)" autocomplete="off">
+    <div class="cat-pills">
+      <button class="cat-pill" onclick="setCat(this,'coffee shops')">☕ Coffee</button>
+      <button class="cat-pill" onclick="setCat(this,'parks and gardens')">🌳 Parks</button>
+      <button class="cat-pill" onclick="setCat(this,'bars')">🍺 Bars</button>
+      <button class="cat-pill" onclick="setCat(this,'restaurants and food')">🍕 Food</button>
+      <button class="cat-pill" onclick="setCat(this,'museums')">🏛 Museums</button>
+      <button class="cat-pill" onclick="setCat(this,'shopping')">🛍 Shopping</button>
+      <button class="cat-pill" onclick="setCat(this,'nightlife and clubs')">🌙 Nightlife</button>
+      <button class="cat-pill" onclick="setCat(this,'beaches')">🏖 Beaches</button>
+      <button class="cat-pill" onclick="setCat(this,'gyms and fitness')">💪 Gyms</button>
+      <button class="cat-pill" onclick="setCat(this,'entertainment and theaters')">🎭 Entertainment</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">03 · How many days?</div>
     <div class="days-row">
       <button class="days-btn" onclick="chDays(-1)">−</button>
       <div class="days-num" id="daysNum">3</div>
@@ -452,7 +493,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
 
   <div class="card">
-    <div class="card-title">03 · What's your vibe?</div>
+    <div class="card-title">04 · What's your vibe?</div>
     <div class="card-sub">Pick all that apply</div>
     <div class="opts">
       <button class="opt" onclick="togOpt(this,'Culture')">🏛 Culture</button>
@@ -471,7 +512,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
 
   <div class="card">
-    <div class="card-title">04 · Who's coming?</div>
+    <div class="card-title">05 · Who's coming?</div>
     <div class="opts" id="grpOpts">
       <button class="opt on" onclick="selOpt('grpOpts',this,'Solo')">🙋 Solo</button>
       <button class="opt" onclick="selOpt('grpOpts',this,'Couple')">👫 Couple</button>
@@ -481,7 +522,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
 
   <div class="card">
-    <div class="card-title">05 · Getting around</div>
+    <div class="card-title">06 · Getting around</div>
     <div class="opts" id="stylOpts">
       <button class="opt on" onclick="selOpt('stylOpts',this,'Walking')">🚶 Walking</button>
       <button class="opt" onclick="selOpt('stylOpts',this,'Transit')">🚇 Transit</button>
@@ -491,7 +532,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
 
   <div class="card">
-    <div class="card-title">06 · Daily budget</div>
+    <div class="card-title">07 · Daily budget</div>
     <div class="budget-top">
       <div>
         <div class="budget-val" id="budgetVal">$150</div>
@@ -504,7 +545,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
 
   <div class="card">
-    <div class="card-title">07 · Dietary preferences</div>
+    <div class="card-title">08 · Dietary preferences</div>
     <div class="card-sub">We'll filter food stops accordingly</div>
     <div class="opts" id="dietOpts">
       <button class="opt" onclick="togDiet(this,'Vegetarian')">🌿 Vegetarian</button>
@@ -517,7 +558,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
 
   <div class="card">
-    <div class="card-title">08 · Travel dates <span style="font-size:0.7rem;font-family:'DM Sans',sans-serif;color:var(--txt3);font-weight:400;">(optional — unlocks events & hotel search)</span></div>
+    <div class="card-title">09 · Travel dates <span style="font-size:0.7rem;font-family:'DM Sans',sans-serif;color:var(--txt3);font-weight:400;">(optional — unlocks events & hotel search)</span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.5rem;">
       <div><div style="font-size:0.68rem;color:var(--txt3);margin-bottom:0.25rem;">Check-in</div><input class="inp" id="travelFrom" type="date" style="font-size:0.85rem;padding:0.6rem 0.8rem;width:100%;"></div>
       <div><div style="font-size:0.68rem;color:var(--txt3);margin-bottom:0.25rem;">Check-out</div><input class="inp" id="travelTo" type="date" style="font-size:0.85rem;padding:0.6rem 0.8rem;width:100%;"></div>
@@ -525,7 +566,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
 
   <div class="card">
-    <div class="card-title">09 · Settings</div>
+    <div class="card-title">10 · Settings</div>
     <div class="toggle-row">
       <div>
         <div class="toggle-lbl">🔗 Booking links</div>
@@ -757,6 +798,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 
 <script>
 var days=3,budget=150,vibes=[],group='Solo',travelStyle='Walking';
+var searchRadius=5,categorySearch='';
 var tripDays=[],curCity='',curTitle='';
 var chatOpen=false,chatHistory=[],chatBusy=false,packChecked={};
 var wxTimer=null,toastTimer=null;
@@ -853,6 +895,21 @@ function toast(msg,type){
   toastTimer=setTimeout(function(){el.classList.remove('show');},3800);
 }
 
+function setRadius(btn,val){
+  searchRadius=val;
+  document.querySelectorAll('#radiusOpts .opt').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+}
+function setCat(btn,val){
+  categorySearch=val;
+  var inp=document.getElementById('categorySearch');if(inp)inp.value=val;
+  document.querySelectorAll('.cat-pill').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+}
+function onCatInput(val){
+  categorySearch=val;
+  if(!val)document.querySelectorAll('.cat-pill').forEach(function(b){b.classList.remove('on');});
+}
 function togOpt(btn,val){
   btn.classList.toggle('on');
   if(btn.classList.contains('on'))vibes.push(val);
@@ -949,10 +1006,15 @@ async function generate(){
   document.getElementById('dayTabs').innerHTML='';
   document.getElementById('dayPanels').innerHTML='<div class="loading"><div class="loading-ring"></div><div class="loading-txt">Crafting '+days+' day'+(days>1?'s':'')+' in '+city+'...</div><div class="loading-sub">Finding real places just for you</div></div>';
   document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
-  var dowStr=tripDows.length?'\nDays of the week visiting: '+tripDows.join(', ')+' — IMPORTANT: only recommend places that are open on those days. Avoid museums, markets, or spots typically closed on those days.':'';
-  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+dowStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences, no explanation:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Tsukiji Outer Market","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Tsukiji Outer Market Tokyo Japan"}]}]}\n\nSTRICT RULES — you must follow every one:\n1. Only recommend places that are 100% real, currently open, and well-known. Do not invent or hallucinate place names.\n2. Use the full official name of each place exactly as it appears on Google Maps.\n3. Match each block type precisely — if type is Breakfast or Cafe, only recommend breakfast spots or cafes, never bars, clubs, or unrelated venues. If type is Museum, only recommend museums.\n4. If you are not certain a place is real and currently open, choose a different place you are certain about.\n5. Prioritise famous, highly-reviewed, well-visited places that are guaranteed to exist.\n6. mapsQuery must be: full official place name + city + country (e.g. "Eiffel Tower Paris France"). Never just the place name alone.\n7. 7-8 blocks per day covering morning through late night. Logical geographic flow within each day.';
+  var dowStr=tripDows.length?'\nDays of the week visiting: '+tripDows.join(', ')+' — only recommend places open on those days.':'';
+  var catSearch=document.getElementById('categorySearch').value.trim();
+  categorySearch=catSearch;
+  var radiusStr='\nRADIUS: Every place must be within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of the city center of "'+city+'". No suburbs, no outskirts.';
+  var catStr=catSearch?'\nCATEGORY — MANDATORY: The user is ONLY looking for "'+catSearch+'". Every single stop must be a "'+catSearch+'". Do not include any other venue type. If you cannot find enough real "'+catSearch+'" places within '+searchRadius+' miles of '+city+', reduce the number of blocks rather than substituting a different category. This is non-negotiable.':'';
+  var sysPrompt='You are an expert local travel guide for '+city+'. You only recommend real, verified, currently-open businesses that appear on Google Maps and Yelp with actual reviews. You never invent place names. You never substitute a different category for what the user asked. You always stay within the specified radius of the city center.';
+  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+dowStr+radiusStr+catStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Tsukiji Outer Market","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Tsukiji Outer Market Tokyo Japan"}]}]}\n\nNON-NEGOTIABLE RULES:\n1. Only real places: 100% verified, currently open, with reviews on Google Maps or Yelp. Do not invent names.\n2. Full official name exactly as on Google Maps.\n3. Type must match exactly — Breakfast block = breakfast venue only, never a bar or club.\n4. If uncertain whether a place is open, pick a famous guaranteed-to-exist alternative.\n5. mapsQuery = full official name + city + country (e.g. "Tsukiji Outer Market Tokyo Japan").\n6. Stay within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of '+city+' city center. Do not recommend places in other cities or distant suburbs.\n7. 7-8 blocks per day unless category filter limits options — then fewer real places is better than wrong category.\n8. Only recommend places that appear on Google Maps, Yelp, and TripAdvisor.';
   try{
-    var rawText=await callGroq(prompt,null,4000);
+    var rawText=await callGroq(prompt,sysPrompt,4000);
     var text=rawText.replace(/```json|```/g,'').trim();
     var si=text.indexOf('{'),ei=text.lastIndexOf('}');
     if(si>-1&&ei>-1)text=text.slice(si,ei+1);
@@ -1017,6 +1079,7 @@ function getRushWarn(timeStr){
 function buildDay(day,di,links){
   var blocks=day.blocks||[];
   var html='';
+  if(categorySearch)html+='<div class="cat-active-banner">🔍 Showing only: <strong>'+categorySearch+'</strong> · within '+searchRadius+' mi of '+curCity+'</div>';
   if(day.dayCost){html+='<div style="background:rgba(245,200,66,0.06);border:1px solid rgba(245,200,66,0.15);border-radius:10px;padding:0.7rem 1rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.7rem;color:var(--txt3)">Estimated day spend</span><span style="font-family:Bebas Neue,sans-serif;font-size:1.1rem;color:var(--gold)">'+day.dayCost+' per person</span></div>';}
   blocks.forEach(function(b,bi){
     var t=(b.type||'').toLowerCase();
@@ -1030,6 +1093,9 @@ function buildDay(day,di,links){
       var isHotel=t.indexOf('hotel')>-1||t.indexOf('accommodation')>-1||t.indexOf('hostel')>-1||t.indexOf('stay')>-1||t.indexOf('check-in')>-1||t.indexOf('check in')>-1;
       var mapsUrl='https://www.google.com/maps/search/?api=1&query='+mq;
       lhtml+='<a class="slink sl-m" href="'+mapsUrl+'" target="_blank" rel="noopener">📍 Maps</a>';
+      // Verify links always shown
+      lhtml+='<a class="slink sl-yelp" href="https://www.yelp.com/search?find_desc='+encodeURIComponent(b.place)+'&find_loc='+encodeURIComponent(curCity)+'" target="_blank" rel="noopener">🔍 Yelp</a>';
+      lhtml+='<a class="slink sl-ta" href="https://www.tripadvisor.com/Search?q='+encodeURIComponent(b.place+' '+curCity)+'" target="_blank" rel="noopener">⭐ TA</a>';
       // Rideshare: Uber deeplink, Lyft fallback
       var uberUrl='https://www.uber.com/ride?action=setPickup&dropoff[formatted_address]='+destEnc;
       var lyftUrl='https://www.lyft.com/rider/referrals/ride?destination='+destEnc;
@@ -1047,7 +1113,7 @@ function buildDay(day,di,links){
     var rush=getRushWarn(b.time);
     var isSaved=isPlaceSaved(b.place,curCity);
     if(rush)html+='<div class="traffic-warn '+rush.cls+'">'+rush.msg+'</div>';
-    html+='<div class="stop" data-slot="'+slot+'" id="stop-'+di+'-'+bi+'"><div class="stop-hdr"><div class="stop-n">'+(bi+1)+'</div><div class="stop-time">'+b.time+'</div><div class="stop-name">'+b.place+'</div><div class="stop-type">'+b.type+'</div>'+(b.cost?'<div class="stop-cost">'+b.cost+'</div>':'')+'<button class="stop-act" onclick="randomizeStop('+di+','+bi+',this)" title="Swap this stop">🎲</button><button class="stop-act'+(isSaved?' saved-act':'')+'" id="save-act-'+di+'-'+bi+'" onclick="savePlace('+di+','+bi+',this)" title="Save this place">'+(isSaved?'🔖':'🏷')+'</button></div><div class="stop-body"><div class="stop-desc">'+b.desc+'</div>'+(b.tip?'<div class="stop-tip">💡 '+b.tip+'</div>':'')+(lhtml?'<div class="stop-links">'+lhtml+'</div>':'')+'</div></div>';
+    html+='<div class="stop" data-slot="'+slot+'" id="stop-'+di+'-'+bi+'"><div class="stop-hdr"><div class="stop-n">'+(bi+1)+'</div><div class="stop-time">'+b.time+'</div><div class="stop-name">'+b.place+'</div><div class="stop-type">'+b.type+'</div>'+(b.cost?'<div class="stop-cost">'+b.cost+'</div>':'')+'<div class="stop-radius">≤'+searchRadius+'mi</div><button class="stop-act" onclick="randomizeStop('+di+','+bi+',this)" title="Swap this stop">🎲</button><button class="stop-act'+(isSaved?' saved-act':'')+'" id="save-act-'+di+'-'+bi+'" onclick="savePlace('+di+','+bi+',this)" title="Save this place">'+(isSaved?'🔖':'🏷')+'</button></div><div class="stop-body"><div class="stop-desc">'+b.desc+'</div>'+(b.tip?'<div class="stop-tip">💡 '+b.tip+'</div>':'')+(lhtml?'<div class="stop-links">'+lhtml+'</div>':'')+'</div></div>';
   });
   return html;
 }
@@ -1502,7 +1568,8 @@ async function randomizeStop(di,bi,btn){
   if(stopEl)stopEl.classList.add('replacing');
   if(btn){btn.disabled=true;btn.textContent='⏳';}
   try{
-    var prompt='I have a travel itinerary for "'+curCity+'". Replace this single stop with something DIFFERENT but equally good.\nCurrent stop: "'+b.place+'" (type: '+b.type+', time: '+b.time+')\nInterests: '+(vibes.join(', ')||'general')+'.\nRules: Only recommend a real, currently-open, well-known place. Match the type exactly — type is "'+b.type+'" so only suggest a real '+b.type+'. Use the full official name as on Google Maps. mapsQuery must be full place name + city + country.\nReturn ONLY raw JSON (no markdown): {"time":"'+b.time+'","place":"Full Official Place Name","type":"'+b.type+'","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$XX","mapsQuery":"Full Place Name '+curCity+' Country"}';
+    var catNote=categorySearch?' The user is only looking for "'+categorySearch+'" — the replacement must also be a "'+categorySearch+'"':'';
+    var prompt='Replace one stop in a "'+curCity+'" itinerary. The replacement MUST be located in "'+curCity+'" within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of the city center. Do not suggest places in other cities.\nCurrent stop: "'+b.place+'" (type: '+b.type+', time: '+b.time+')\nInterests: '+(vibes.join(', ')||'general')+'.'+catNote+'\nRules: Real, currently-open, verified place only. Match type "'+b.type+'" exactly. Full official Google Maps name. mapsQuery = full name + city + country.\nReturn ONLY raw JSON (no markdown): {"time":"'+b.time+'","place":"Full Official Place Name","type":"'+b.type+'","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$XX","mapsQuery":"Full Place Name '+curCity+' Country"}';
     var raw=await callGroq(prompt,null,550);
     raw=raw.replace(/```json|```/g,'').trim();
     var si=raw.indexOf('{'),ei=raw.lastIndexOf('}');
