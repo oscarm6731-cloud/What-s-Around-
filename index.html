@@ -950,7 +950,7 @@ async function generate(){
   document.getElementById('dayPanels').innerHTML='<div class="loading"><div class="loading-ring"></div><div class="loading-txt">Crafting '+days+' day'+(days>1?'s':'')+' in '+city+'...</div><div class="loading-sub">Finding real places just for you</div></div>';
   document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
   var dowStr=tripDows.length?'\nDays of the week visiting: '+tripDows.join(', ')+' — IMPORTANT: only recommend places that are open on those days. Avoid museums, markets, or spots typically closed on those days.':'';
-  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+dowStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences, no explanation:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Real place name","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Place City Country"}]}]}\n\nRules: 7-8 blocks per day covering morning through late night. Real places only. Logical geographic flow. Include a good mix of times across the full day.';
+  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+dowStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences, no explanation:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Tsukiji Outer Market","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Tsukiji Outer Market Tokyo Japan"}]}]}\n\nSTRICT RULES — you must follow every one:\n1. Only recommend places that are 100% real, currently open, and well-known. Do not invent or hallucinate place names.\n2. Use the full official name of each place exactly as it appears on Google Maps.\n3. Match each block type precisely — if type is Breakfast or Cafe, only recommend breakfast spots or cafes, never bars, clubs, or unrelated venues. If type is Museum, only recommend museums.\n4. If you are not certain a place is real and currently open, choose a different place you are certain about.\n5. Prioritise famous, highly-reviewed, well-visited places that are guaranteed to exist.\n6. mapsQuery must be: full official place name + city + country (e.g. "Eiffel Tower Paris France"). Never just the place name alone.\n7. 7-8 blocks per day covering morning through late night. Logical geographic flow within each day.';
   try{
     var rawText=await callGroq(prompt,null,4000);
     var text=rawText.replace(/```json|```/g,'').trim();
@@ -1028,7 +1028,8 @@ function buildDay(day,di,links){
       var isFood=t.indexOf('breakfast')>-1||t.indexOf('lunch')>-1||t.indexOf('dinner')>-1||t.indexOf('cafe')>-1||t.indexOf('food')>-1||t.indexOf('restaurant')>-1||t.indexOf('brunch')>-1||t.indexOf('bar')>-1||t.indexOf('drink')>-1;
       var isAttr=t.indexOf('tour')>-1||t.indexOf('museum')>-1||t.indexOf('visit')>-1||t.indexOf('attraction')>-1||t.indexOf('explore')>-1||t.indexOf('sightseeing')>-1||t.indexOf('activity')>-1||t.indexOf('experience')>-1;
       var isHotel=t.indexOf('hotel')>-1||t.indexOf('accommodation')>-1||t.indexOf('hostel')>-1||t.indexOf('stay')>-1||t.indexOf('check-in')>-1||t.indexOf('check in')>-1;
-      lhtml+='<a class="slink sl-m" href="https://maps.google.com/maps?q='+mq+'" target="_blank" rel="noopener">📍 Maps</a>';
+      var mapsUrl='https://www.google.com/maps/search/?api=1&query='+mq;
+      lhtml+='<a class="slink sl-m" href="'+mapsUrl+'" target="_blank" rel="noopener">📍 Maps</a>';
       // Rideshare: Uber deeplink, Lyft fallback
       var uberUrl='https://www.uber.com/ride?action=setPickup&dropoff[formatted_address]='+destEnc;
       var lyftUrl='https://www.lyft.com/rider/referrals/ride?destination='+destEnc;
@@ -1501,7 +1502,7 @@ async function randomizeStop(di,bi,btn){
   if(stopEl)stopEl.classList.add('replacing');
   if(btn){btn.disabled=true;btn.textContent='⏳';}
   try{
-    var prompt='I have a travel itinerary for "'+curCity+'". Replace this single stop with something DIFFERENT but equally good.\nCurrent stop: "'+b.place+'" (type: '+b.type+', time: '+b.time+')\nInterests: '+(vibes.join(', ')||'general')+'.\nReturn ONLY raw JSON (no markdown): {"time":"'+b.time+'","place":"New place name","type":"'+b.type+'","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$XX","mapsQuery":"Place City Country"}';
+    var prompt='I have a travel itinerary for "'+curCity+'". Replace this single stop with something DIFFERENT but equally good.\nCurrent stop: "'+b.place+'" (type: '+b.type+', time: '+b.time+')\nInterests: '+(vibes.join(', ')||'general')+'.\nRules: Only recommend a real, currently-open, well-known place. Match the type exactly — type is "'+b.type+'" so only suggest a real '+b.type+'. Use the full official name as on Google Maps. mapsQuery must be full place name + city + country.\nReturn ONLY raw JSON (no markdown): {"time":"'+b.time+'","place":"Full Official Place Name","type":"'+b.type+'","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$XX","mapsQuery":"Full Place Name '+curCity+' Country"}';
     var raw=await callGroq(prompt,null,550);
     raw=raw.replace(/```json|```/g,'').trim();
     var si=raw.indexOf('{'),ei=raw.lastIndexOf('}');
@@ -1554,7 +1555,7 @@ function renderSavedPlaces(){
   if(!places.length){grid.innerHTML='<div class="empty-state"><div class="empty-icon">🔖</div><h3>NO SAVED PLACES</h3><p>Tap the 🏷 button on any stop to save it here.</p></div>';return;}
   grid.innerHTML=places.map(function(p){
     var mq=encodeURIComponent(p.mapsQuery||p.place+' '+p.city);
-    return '<div class="place-card"><div class="place-card-name">'+p.place+'</div><div class="place-card-meta"><span>📍 '+p.city+'</span><span>'+p.type+'</span>'+(p.cost?'<span>'+p.cost+'</span>':'')+'<span>Saved '+p.savedAt+'</span></div><div class="place-card-actions"><a class="btn-sm btn-teal" href="https://maps.google.com/maps?q='+mq+'" target="_blank" rel="noopener" style="text-decoration:none;">📍 Maps</a><button class="btn-sm btn-rose" onclick="deleteSavedPlace('+p.id+')">🗑 Remove</button></div></div>';
+    return '<div class="place-card"><div class="place-card-name">'+p.place+'</div><div class="place-card-meta"><span>📍 '+p.city+'</span><span>'+p.type+'</span>'+(p.cost?'<span>'+p.cost+'</span>':'')+'<span>Saved '+p.savedAt+'</span></div><div class="place-card-actions"><a class="btn-sm btn-teal" href="https://www.google.com/maps/search/?api=1&query='+mq+'" target="_blank" rel="noopener" style="text-decoration:none;">📍 Maps</a><button class="btn-sm btn-rose" onclick="deleteSavedPlace('+p.id+')">🗑 Remove</button></div></div>';
   }).join('');
 }
 function deleteSavedPlace(id){
@@ -1828,7 +1829,7 @@ function renderStays(){
     var nights=s.checkin&&s.checkout?Math.round((new Date(s.checkout)-new Date(s.checkin))/(864e5)):0;
     var total=s.price&&nights?'$'+(parseFloat(s.price)*nights).toFixed(0)+' total':'';
     var bookUrl='https://www.booking.com/searchresults.html?aid=7956794&ss='+encodeURIComponent(s.hotel+(curCity?' '+curCity:''));
-    var mapsUrl='https://maps.google.com/maps?q='+encodeURIComponent(s.hotel+(curCity?' '+curCity:''));
+    var mapsUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(s.hotel+(curCity?' '+curCity:''));
     return '<div class="fl-card"><div class="fl-icon stay">🏨</div><div class="fl-info"><div class="fl-main">'+s.hotel+'</div><div class="fl-meta">'+fmtDate(s.checkin)+' → '+fmtDate(s.checkout)+(nights?' · '+nights+' night'+(nights!==1?'s':''):'')+( total?' · '+total:'')+(s.conf?' · #'+s.conf:'')+'</div></div><div class="fl-acts"><a class="btn-sm btn-teal" href="'+bookUrl+'" target="_blank" rel="noopener" style="text-decoration:none;">Book</a><a class="btn-sm btn-muted" href="'+mapsUrl+'" target="_blank" rel="noopener" style="text-decoration:none;">Map</a><button class="btn-sm btn-rose" onclick="delStay('+s.id+')">✕</button></div></div>';
   }).join('');
 }
@@ -1938,7 +1939,7 @@ async function scanPhoto(){
         if(si>-1&&ei>-1)text=text.slice(si,ei+1);
         var sc=repairJSON(text);
         var mq=encodeURIComponent(sc.mapsQuery||sc.place);
-        var stopHtml='<div class="stop" style="border-color:rgba(45,212,191,0.3)"><div class="stop-hdr"><div class="stop-n" style="background:linear-gradient(135deg,var(--rose),#f4a27a)">📸</div><div class="stop-time">SCANNED</div><div class="stop-name">'+sc.place+'</div><div class="stop-type">'+sc.type+'</div>'+(sc.cost?'<div class="stop-cost">'+sc.cost+'</div>':'')+'</div><div class="stop-body"><div class="stop-desc">'+sc.desc+'</div>'+(sc.tip?'<div class="stop-tip">💡 '+sc.tip+'</div>':'')+'<div class="stop-links"><a class="slink sl-m" href="https://maps.google.com/maps?q='+mq+'" target="_blank" rel="noopener">📍 Maps</a></div></div></div>';
+        var stopHtml='<div class="stop" style="border-color:rgba(45,212,191,0.3)"><div class="stop-hdr"><div class="stop-n" style="background:linear-gradient(135deg,var(--rose),#f4a27a)">📸</div><div class="stop-time">SCANNED</div><div class="stop-name">'+sc.place+'</div><div class="stop-type">'+sc.type+'</div>'+(sc.cost?'<div class="stop-cost">'+sc.cost+'</div>':'')+'</div><div class="stop-body"><div class="stop-desc">'+sc.desc+'</div>'+(sc.tip?'<div class="stop-tip">💡 '+sc.tip+'</div>':'')+'<div class="stop-links"><a class="slink sl-m" href="https://www.google.com/maps/search/?api=1&query='+mq+'" target="_blank" rel="noopener">📍 Maps</a></div></div></div>';
         var sec=document.getElementById('scannedStops');
         if(sec){
           if(!sec.querySelector('.scan-hdr'))sec.innerHTML='<div class="scan-hdr" style="font-family:Bebas Neue,sans-serif;font-size:1.1rem;letter-spacing:0.04em;color:var(--teal);margin:1.5rem 0 0.75rem;">📸 SCANNED PLACES</div><div id="scanList" style="display:grid;gap:0.75rem;"></div>';
