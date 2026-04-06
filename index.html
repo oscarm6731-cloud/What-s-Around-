@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0d0d14">
 <title>What's Around?</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
 <link rel="manifest" href="/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -18,8 +18,8 @@ html{-webkit-text-size-adjust:100%;}
 body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:background 0.3s,color 0.3s;}
 input,textarea,select,button{font-family:inherit;font-size:16px;-webkit-appearance:none;appearance:none;}
 button{cursor:pointer;border:none;background:none;color:inherit;}
-:root{--bg:#0d0d14;--bg2:#13121e;--card:#1a1928;--card2:#201f30;--line:rgba(255,255,255,0.07);--line2:rgba(255,255,255,0.12);--txt:#eeeaf8;--txt2:#a8a3c0;--txt3:#6b6685;--gold:#f5c842;--teal:#2dd4bf;--rose:#f4607a;--sky:#60a5fa;}
-body.light{--bg:#f5f4ff;--bg2:#edeaff;--card:#ffffff;--card2:#f0effe;--line:rgba(0,0,0,0.07);--line2:rgba(0,0,0,0.13);--txt:#1a1828;--txt2:#4a4560;--txt3:#8885a0;}
+:root{--bg:#0d0d14;--bg2:#111119;--card:#161620;--card2:#1c1c2a;--line:rgba(255,255,255,0.06);--line2:rgba(255,255,255,0.10);--txt:#f5f0eb;--txt2:#b0a898;--txt3:#6e6358;--gold:#f5c842;--teal:#2dd4bf;--rose:#f4607a;--sky:#60a5fa;}
+body.light{--bg:#faf8f5;--bg2:#f2ede8;--card:#ffffff;--card2:#f5f2ee;--line:rgba(0,0,0,0.06);--line2:rgba(0,0,0,0.11);--txt:#1a1610;--txt2:#5a5048;--txt3:#9a8e85;}
 body.light nav{background:rgba(245,244,255,0.92);}
 body.light .bg-orb::before{background:radial-gradient(circle,rgba(45,212,191,0.12) 0%,transparent 70%);}
 body.light .bg-orb::after{background:radial-gradient(circle,rgba(244,96,122,0.09) 0%,transparent 70%);}
@@ -58,7 +58,7 @@ body.light .dest-hero-grad{background:linear-gradient(to right,rgba(245,244,255,
 .saved-tog-btn.active{background:rgba(45,212,191,0.1);border-color:rgba(45,212,191,0.35);color:var(--teal);}
 .place-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1rem;margin-bottom:0.6rem;transition:border-color 0.2s;}
 .place-card:hover{border-color:var(--line2);}
-.place-card-name{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.03em;color:var(--txt);margin-bottom:0.2rem;}
+.place-card-name{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.03em;color:var(--txt);margin-bottom:0.2rem;}
 .place-card-meta{font-size:0.72rem;color:var(--txt3);display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.65rem;}
 .place-card-actions{display:flex;gap:0.35rem;}
 /* Best time calendar */
@@ -76,7 +76,7 @@ body.light .dest-hero-grad{background:linear-gradient(to right,rgba(245,244,255,
 .bt-badge{display:inline-block;padding:0.15rem 0.5rem;border-radius:5px;font-size:0.65rem;font-weight:700;margin-top:0.3rem;}
 /* Events section */
 .events-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.1rem;margin-top:1rem;}
-.events-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.04em;color:var(--txt);margin-bottom:0.15rem;}
+.events-title{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.04em;color:var(--txt);margin-bottom:0.15rem;}
 .events-sub{font-size:0.72rem;color:var(--txt3);margin-bottom:0.85rem;}
 .events-links{display:flex;flex-wrap:wrap;gap:0.4rem;}
 .elink{display:inline-flex;align-items:center;gap:0.25rem;padding:0.35rem 0.75rem;border-radius:8px;font-size:0.74rem;font-weight:600;text-decoration:none;transition:all 0.15s;background:var(--card2);border:1px solid var(--line2);color:var(--txt2);}
@@ -88,7 +88,7 @@ body.light .dest-hero-grad{background:linear-gradient(to right,rgba(245,244,255,
 .hotel-opt-left{display:flex;align-items:center;gap:0.6rem;}
 .hotel-opt-name{font-size:0.84rem;font-weight:600;color:var(--txt);}
 .hotel-opt-range{font-size:0.7rem;color:var(--txt3);margin-top:0.1rem;}
-.hotel-opt-price{font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--teal);}
+.hotel-opt-price{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;color:var(--teal);}
 /* Hidden gems highlight */
 .gems-active .gen-btn{background:linear-gradient(135deg,var(--gold),#f4a22a);box-shadow:0 10px 30px rgba(245,200,66,0.35);}
 /* wx clickable */
@@ -99,7 +99,7 @@ body.light .dest-hero-grad{background:linear-gradient(to right,rgba(245,244,255,
 .bg-orb::after{content:'';position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(244,96,122,0.06) 0%,transparent 70%);bottom:-150px;left:-100px;border-radius:50%;}
 .app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;}
 nav{position:sticky;top:0;z-index:200;background:rgba(13,13,20,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;height:56px;flex-shrink:0;}
-.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.05em;color:var(--txt);display:flex;align-items:center;gap:0.5rem;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.nav-logo{font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--txt);display:flex;align-items:center;gap:0.5rem;cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .nav-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal);animation:pdot 2s ease-in-out infinite;}
 @keyframes pdot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.7);}}
 .nav-tabs{display:flex;gap:0.1rem;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
@@ -111,7 +111,7 @@ nav{position:sticky;top:0;z-index:200;background:rgba(13,13,20,0.92);backdrop-fi
 .page.active{display:block;}
 .hero{padding:5rem 1.5rem 4rem;max-width:680px;margin:0 auto;text-align:center;}
 .hero-badge{display:inline-flex;align-items:center;gap:0.5rem;font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal);margin-bottom:1.5rem;border:1px solid rgba(45,212,191,0.2);padding:0.3rem 0.8rem;border-radius:100px;background:rgba(45,212,191,0.06);}
-.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,12vw,7rem);line-height:0.95;letter-spacing:0.02em;margin-bottom:1.2rem;color:var(--txt);}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,10vw,5.5rem);line-height:1.05;letter-spacing:-0.01em;margin-bottom:1.2rem;color:var(--txt);font-weight:800;}
 .hero h1 span{background:linear-gradient(135deg,var(--teal),var(--sky));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .hero-sub{font-size:1rem;color:var(--txt2);line-height:1.7;font-weight:300;margin-bottom:2.5rem;max-width:440px;margin-left:auto;margin-right:auto;}
 .hero-btns{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;}
@@ -134,7 +134,7 @@ nav{position:sticky;top:0;z-index:200;background:rgba(13,13,20,0.92);backdrop-fi
 .inp::placeholder{color:var(--txt3);}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.3rem;transition:border-color 0.2s;margin-bottom:0.85rem;}
 .card:focus-within{border-color:rgba(45,212,191,0.2);}
-.card-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.04em;color:var(--txt);margin-bottom:0.25rem;}
+.card-title{font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt3);margin-bottom:0.25rem;}
 .card-sub{font-size:0.75rem;color:var(--txt3);margin-bottom:1rem;}
 .opts{display:flex;flex-wrap:wrap;gap:0.4rem;}
 .opt{padding:0.5rem 0.9rem;background:var(--card2);border:1px solid var(--line2);border-radius:100px;font-size:0.8rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;}
@@ -145,10 +145,10 @@ nav{position:sticky;top:0;z-index:200;background:rgba(13,13,20,0.92);backdrop-fi
 .days-btn{width:38px;height:38px;border-radius:10px;background:var(--card2);border:1px solid var(--line2);color:var(--txt);font-size:1.2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
 .days-btn:hover{border-color:var(--teal);color:var(--teal);}
 .days-btn:active{transform:scale(0.9);}
-.days-num{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--txt);min-width:2.5rem;text-align:center;}
+.days-num{font-family:'DM Sans',sans-serif;font-size:2.4rem;font-weight:700;color:var(--txt);min-width:2.5rem;text-align:center;}
 .days-lbl{font-size:0.8rem;color:var(--txt3);}
 .budget-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0.9rem;}
-.budget-val{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--teal);}
+.budget-val{font-family:'DM Sans',sans-serif;font-size:2.4rem;font-weight:700;color:var(--teal);}
 .budget-desc{font-size:0.75rem;color:var(--txt3);}
 input[type=range]{width:100%;height:6px;background:var(--card2);border-radius:100px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--sky));border:3px solid var(--bg);box-shadow:0 0 10px rgba(45,212,191,0.4);cursor:pointer;}
@@ -164,15 +164,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .toggle input:checked~.t-thumb{left:20px;background:var(--teal);box-shadow:0 0 8px rgba(45,212,191,0.4);}
 #planner-page{padding:2rem 1.2rem 5rem;max-width:720px;margin:0 auto;}
 .planner-head{margin-bottom:2rem;}
-.planner-head h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,6vw,3rem);letter-spacing:0.03em;color:var(--txt);line-height:1.05;}
+.planner-head h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,6vw,2.8rem);letter-spacing:-0.01em;color:var(--txt);line-height:1.1;font-weight:700;}
 .planner-head p{font-size:0.88rem;color:var(--txt2);margin-top:0.4rem;}
-.gen-btn{width:100%;padding:1.05rem;background:linear-gradient(135deg,var(--teal),var(--sky));color:#0d0d14;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.08em;border:none;border-radius:14px;cursor:pointer;box-shadow:0 10px 30px rgba(45,212,191,0.3);transition:opacity 0.15s,transform 0.15s;margin-top:0.5rem;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.gen-btn{width:100%;padding:1.05rem;background:linear-gradient(135deg,var(--teal),var(--sky));color:#0d0d14;font-family:'DM Sans',sans-serif;font-weight:700;font-size:1.2rem;letter-spacing:0.08em;border:none;border-radius:14px;cursor:pointer;box-shadow:0 10px 30px rgba(45,212,191,0.3);transition:opacity 0.15s,transform 0.15s;margin-top:0.5rem;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
 .gen-btn:hover{opacity:0.88;transform:translateY(-2px);}
 .gen-btn:active{transform:scale(0.98);}
 .gen-btn:disabled{opacity:0.3;cursor:not-allowed;transform:none;box-shadow:none;}
 #results{display:none;margin-top:2.5rem;}
 .res-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem;}
-.res-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.03em;color:var(--txt);}
+.res-title{font-family:'Playfair Display',serif;font-size:2rem;letter-spacing:-0.01em;color:var(--txt);font-weight:700;}
 .res-sub{font-size:0.78rem;color:var(--txt3);margin-top:0.2rem;}
 .res-actions{display:flex;gap:0.4rem;flex-wrap:wrap;}
 .day-tabs{display:flex;gap:0.35rem;margin-bottom:1rem;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;-webkit-overflow-scrolling:touch;}
@@ -187,7 +187,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .stop-hdr{display:flex;align-items:center;gap:0.6rem;padding:0.85rem 1rem 0.7rem;border-bottom:1px solid var(--line);flex-wrap:wrap;}
 .stop-n{width:22px;height:22px;border-radius:6px;flex-shrink:0;background:linear-gradient(135deg,var(--teal),var(--sky));display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:#0d0d14;}
 .stop-time{font-size:0.66rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.15);padding:0.15rem 0.5rem;border-radius:5px;white-space:nowrap;}
-.stop-name{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.03em;color:var(--txt);flex:1;}
+.stop-name{font-family:'Playfair Display',serif;font-size:1rem;letter-spacing:0em;color:var(--txt);flex:1;font-weight:600;}
 .stop-type{font-size:0.64rem;color:var(--txt3);background:rgba(255,255,255,0.04);padding:0.14rem 0.45rem;border-radius:4px;white-space:nowrap;}
 .stop-cost{font-size:0.72rem;color:var(--gold);font-weight:600;white-space:nowrap;}
 .stop-body{padding:0.85rem 1rem;}
@@ -211,17 +211,17 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .toast.info{border-color:rgba(96,165,250,0.4);color:var(--sky);}
 #saved-page{padding:2rem 1.2rem 5rem;max-width:720px;margin:0 auto;}
 .saved-head{margin-bottom:1.8rem;}
-.saved-head h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,6vw,3rem);letter-spacing:0.03em;}
+.saved-head h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,6vw,2.8rem);letter-spacing:-0.01em;font-weight:700;}
 .saved-head p{font-size:0.85rem;color:var(--txt2);margin-top:0.35rem;}
 .saved-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0.85rem;}
 .saved-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.1rem;transition:border-color 0.2s,transform 0.2s;}
 .saved-card:hover{border-color:var(--line2);transform:translateY(-2px);}
-.saved-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.03em;margin-bottom:0.3rem;color:var(--txt);}
+.saved-title{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.03em;margin-bottom:0.3rem;color:var(--txt);}
 .saved-meta{font-size:0.72rem;color:var(--txt3);display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.8rem;}
 .saved-actions{display:flex;gap:0.35rem;}
 .empty-state{text-align:center;padding:4rem 1.5rem;color:var(--txt3);}
 .empty-icon{font-size:3rem;margin-bottom:0.8rem;}
-.empty-state h3{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.03em;color:var(--txt2);margin-bottom:0.4rem;}
+.empty-state h3{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1.3rem;letter-spacing:0.03em;color:var(--txt2);margin-bottom:0.4rem;}
 .empty-state p{font-size:0.83rem;}
 .modal-bg{display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;}
 .modal-bg.open{display:flex;}
@@ -229,7 +229,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .modal{background:var(--card);border:1px solid var(--line2);border-radius:20px 20px 0 0;padding:1.8rem;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;}
 @media(min-width:600px){.modal{border-radius:20px;}}
 .modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.4rem;}
-.modal-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.04em;color:var(--txt);}
+.modal-title{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1.3rem;letter-spacing:0.04em;color:var(--txt);}
 .modal-x{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid var(--line2);color:var(--txt2);font-size:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
 .modal-x:hover{color:var(--txt);background:rgba(255,255,255,0.1);}
 .pack-sec{margin-bottom:1.2rem;}
@@ -248,7 +248,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .chat-win.open{display:flex;}
 .chat-hdr{display:flex;align-items:center;gap:0.7rem;padding:0.9rem 1.1rem;border-bottom:1px solid var(--line);background:rgba(244,96,122,0.05);flex-shrink:0;}
 .chat-av{width:36px;height:36px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,var(--rose),#f4a27a);display:flex;align-items:center;justify-content:center;font-size:1rem;}
-.chat-name{font-family:'Bebas Neue',sans-serif;font-size:0.95rem;letter-spacing:0.04em;color:var(--txt);}
+.chat-name{font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.04em;color:var(--txt);}
 .chat-status{font-size:0.67rem;color:var(--teal);display:flex;align-items:center;gap:0.28rem;}
 .chat-sdot{width:5px;height:5px;background:var(--teal);border-radius:50%;box-shadow:0 0 5px var(--teal);}
 .chat-x{margin-left:auto;width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid var(--line);color:var(--txt2);font-size:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
@@ -308,7 +308,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .ap-list{position:absolute;top:calc(100% + 3px);left:0;right:0;background:var(--card);border:1px solid var(--line2);border-radius:10px;z-index:500;max-height:200px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5);}
 .ap-item{padding:0.55rem 0.85rem;font-size:0.8rem;cursor:pointer;color:var(--txt2);display:flex;align-items:center;gap:0.6rem;transition:background 0.1s;-webkit-tap-highlight-color:transparent;}
 .ap-item:hover{background:rgba(45,212,191,0.07);color:var(--txt);}
-.ap-code{font-family:'Bebas Neue',sans-serif;font-size:0.95rem;color:var(--teal);min-width:2.2rem;letter-spacing:0.05em;}
+.ap-code{font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.95rem;color:var(--teal);min-width:2.2rem;letter-spacing:0.05em;}
 .ap-name{flex:1;}
 .ap-city{font-size:0.65rem;color:var(--txt3);}
 .trip-toggle{display:flex;gap:0.4rem;margin-bottom:0.85rem;}
@@ -364,9 +364,88 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .hotel-platform-sub{font-size:0.62rem;color:var(--txt3);}
 /* ── Flight price estimate ── */
 .flight-est-row{display:flex;align-items:center;justify-content:space-between;margin-top:-0.1rem;margin-bottom:0.45rem;padding:0.28rem 0;}
-.flight-est-badge{font-family:'Bebas Neue',sans-serif;font-size:0.9rem;color:var(--teal);letter-spacing:0.04em;}
+.flight-est-badge{font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.9rem;color:var(--teal);letter-spacing:0.04em;}
 .flight-est-loading{font-size:0.67rem;color:var(--txt3);animation:pulse 1.2s ease infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+/* ── Trust banner ── */
+.trust-banner{background:rgba(45,212,191,0.04);border-bottom:1px solid rgba(45,212,191,0.09);padding:0.45rem 1.5rem;text-align:center;font-size:0.68rem;color:var(--txt3);letter-spacing:0.06em;font-weight:500;}
+.trust-banner strong{color:var(--teal);font-weight:600;}
+/* ── Progress bar ── */
+.planner-progress{margin-bottom:2rem;}
+.prog-steps{display:flex;align-items:center;margin-bottom:0.65rem;}
+.prog-step{display:flex;align-items:center;gap:0.3rem;flex:1;font-size:0.58rem;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--txt3);transition:color 0.3s;}
+.prog-step.active{color:var(--teal);}
+.ps-num{font-size:0.58rem;font-weight:800;letter-spacing:0.08em;color:var(--txt3);}
+.ps-lbl{font-size:0.6rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--txt3);}
+.prog-step.done .ps-num,.prog-step.done .ps-lbl{color:var(--teal);}
+.prog-line{flex:1;height:1px;background:var(--line2);margin:0 0.5rem;}
+.prog-dot{width:7px;height:7px;border-radius:50%;background:var(--line2);border:1.5px solid var(--line2);flex-shrink:0;transition:background 0.3s,border-color 0.3s;}
+.prog-step.active .prog-dot{background:var(--teal);border-color:var(--teal);}
+.prog-bar-track{height:2px;background:var(--card2);border-radius:2px;overflow:hidden;}
+.prog-bar-fill{height:100%;background:var(--teal);border-radius:2px;transition:width 0.5s cubic-bezier(0.34,1.56,0.64,1);}
+/* ── 3-step planner cards ── */
+.step-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:2rem;margin-bottom:1.25rem;transition:border-color 0.2s;}
+.step-card:focus-within{border-color:rgba(45,212,191,0.18);}
+.step-hdr{display:flex;align-items:center;gap:0.85rem;margin-bottom:1.75rem;}
+.step-badge{width:34px;height:34px;border-radius:10px;background:rgba(45,212,191,0.1);border:1px solid rgba(45,212,191,0.2);display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;color:var(--teal);letter-spacing:0.04em;flex-shrink:0;}
+.step-ttl{font-size:1rem;font-weight:700;color:var(--txt);}
+.step-divider{height:1px;background:var(--line);margin:1.5rem 0;}
+.step-sub{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt3);margin-bottom:0.55rem;}
+/* ── Bigger stop card padding ── */
+.stop-hdr{padding:1.1rem 1.25rem 0.9rem;}
+.stop-body{padding:1rem 1.25rem 1.1rem;}
+.stop-desc{font-size:0.85rem;line-height:1.72;}
+/* ── Premium gen button ── */
+.gen-btn{border-radius:16px;padding:1.25rem;font-size:1rem;font-weight:700;letter-spacing:0.06em;}
+/* ── Skeleton loading ── */
+.skeleton-wrap{display:grid;gap:0.85rem;}
+.skel-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.2rem;overflow:hidden;}
+.skel{background:linear-gradient(90deg,var(--card2) 25%,rgba(255,255,255,0.04) 50%,var(--card2) 75%);background-size:200% 100%;animation:shimmer 1.5s ease-in-out infinite;border-radius:6px;}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+.skel-row{display:flex;gap:0.6rem;align-items:center;margin-bottom:0.8rem;}
+.skel-dot{width:24px;height:24px;border-radius:6px;flex-shrink:0;}
+.skel-time{width:65px;height:14px;}
+.skel-title{flex:1;height:18px;}
+.skel-body{height:11px;margin-bottom:0.45rem;}
+.skel-body.half{width:60%;}
+/* ── Celebration overlay ── */
+.celebration-overlay{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:rgba(13,13,20,0);pointer-events:none;transition:background 0.35s;}
+.celebration-overlay.show{background:rgba(13,13,20,0.72);}
+.celeb-inner{text-align:center;transform:translateY(20px) scale(0.9);opacity:0;transition:all 0.45s cubic-bezier(0.34,1.56,0.64,1);}
+.celebration-overlay.show .celeb-inner{transform:translateY(0) scale(1);opacity:1;}
+.celeb-emoji{font-size:4.5rem;margin-bottom:0.8rem;display:block;}
+.celeb-title{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--txt);font-weight:700;line-height:1.2;}
+.celeb-sub{font-size:0.88rem;color:var(--txt2);margin-top:0.5rem;}
+/* ── Bottom nav (mobile only) ── */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:250;background:rgba(13,13,20,0.96);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--line);}
+@media(max-width:680px){.bottom-nav{display:flex;padding-bottom:env(safe-area-inset-bottom,0px);}}
+.bn-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:0.22rem;padding:0.7rem 0;border:none;background:transparent;color:var(--txt3);cursor:pointer;transition:color 0.15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-height:56px;}
+.bn-btn.active{color:var(--teal);}
+.bn-icon{font-size:1.25rem;line-height:1;}
+.bn-lbl{font-size:0.58rem;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;}
+@media(max-width:680px){#planner-page,#saved-page,.hero{padding-bottom:5.5rem !important;}.chat-fab{bottom:5.5rem !important;}}
+/* ── Regen animation ── */
+@keyframes regenIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.day-panel.active.regen .stop{animation:regenIn 0.3s ease both !important;}
+.day-panel.active.regen .stop:nth-child(2){animation-delay:0.05s !important;}
+.day-panel.active.regen .stop:nth-child(3){animation-delay:0.10s !important;}
+.day-panel.active.regen .stop:nth-child(4){animation-delay:0.15s !important;}
+.day-panel.active.regen .stop:nth-child(5){animation-delay:0.20s !important;}
+.day-panel.active.regen .stop:nth-child(6){animation-delay:0.25s !important;}
+.day-panel.active.regen .stop:nth-child(7){animation-delay:0.30s !important;}
+.day-panel.active.regen .stop:nth-child(8){animation-delay:0.35s !important;}
+/* ── Category pills ── */
+.cat-pills{display:flex;flex-wrap:wrap;gap:0.38rem;margin-top:0.65rem;}
+.cat-pill{padding:0.4rem 0.82rem;background:var(--card2);border:1px solid var(--line2);border-radius:100px;font-size:0.78rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.cat-pill:hover{background:var(--card);color:var(--txt);}
+.cat-pill.on{background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.4);color:var(--sky);}
+/* ── Verify links ── */
+.sl-yelp{background:rgba(244,96,122,0.08);border:1px solid rgba(244,96,122,0.2);color:var(--rose);}
+.sl-ta{background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);color:#34d399;}
+/* ── Radius badge on stop ── */
+.stop-radius{font-size:0.6rem;color:var(--txt3);background:rgba(255,255,255,0.04);border:1px solid var(--line);padding:0.12rem 0.42rem;border-radius:4px;white-space:nowrap;flex-shrink:0;}
+/* ── Active category banner ── */
+.cat-active-banner{background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.18);border-left:3px solid var(--sky);border-radius:8px;padding:0.5rem 0.85rem;margin-bottom:0.6rem;font-size:0.75rem;color:var(--sky);font-weight:500;}
 
 </style>
 </head>
@@ -386,12 +465,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
   </div>
   <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
 </nav>
+<div class="trust-banner">Real places &nbsp;·&nbsp; Verified locations &nbsp;·&nbsp; Updated daily</div>
 
 <!-- HOME -->
 
 <div class="page active" id="page-home">
   <div class="hero">
-    <h1>PLAN YOUR<br><span>PERFECT TRIP</span></h1>
+    <h1>Plan your<br><span>perfect trip</span></h1>
     <p class="hero-sub">Tell us where you're going. We'll build a day-by-day itinerary with real places, costs, and booking links.</p>
     <div class="hero-btns">
       <button class="btn-primary" onclick="goPage('planner')">✨ Start Planning</button>
@@ -406,15 +486,34 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 <div class="page" id="page-planner">
 <div id="planner-page">
   <div class="planner-head">
-    <h2>BUILD YOUR<br>ITINERARY</h2>
-    <p>Fill in the details — the more you add, the better your plan.</p>
+    <h2>Plan your perfect trip</h2>
+    <p>The more you share, the better your itinerary.</p>
   </div>
 
-  <div class="card">
-    <div class="card-title">01 · Where are you going?</div>
-    <div class="card-sub">City, country, or region</div>
+  <!-- Progress bar -->
+  <div class="planner-progress">
+    <div class="prog-steps">
+      <div class="prog-step active" id="prog-1"><span class="prog-dot"></span>Where &amp; When</div>
+      <div class="prog-line"><div class="prog-bar-track"><div class="prog-bar-fill" id="progFill" style="width:15%"></div></div></div>
+      <div class="prog-step" id="prog-2"><span class="prog-dot"></span>Your Vibe</div>
+      <div class="prog-line"><div class="prog-bar-track"><div class="prog-bar-fill" id="progFill2" style="width:0%"></div></div></div>
+      <div class="prog-step" id="prog-3"><span class="prog-dot"></span>Preferences</div>
+    </div>
+  </div>
+
+  <!-- Step 1: Where & When -->
+  <div class="step-card">
+    <div class="step-hdr">
+      <span class="step-badge">1</span>
+      <div>
+        <div class="step-ttl">Where &amp; When</div>
+        <div class="step-sub">Destination, dates &amp; duration</div>
+      </div>
+    </div>
+    <div class="step-divider"></div>
+
     <div class="city-inp-wrap">
-      <input class="inp" id="city" type="text" placeholder="City, state, country — or ZIP / postal code" oninput="onCityInput(this.value)" autocomplete="off">
+      <input class="inp" id="city" type="text" placeholder="City, state, country — or ZIP / postal code" oninput="onCityInput(this.value);updateProgress();" autocomplete="off">
       <div class="city-sugs" id="citySugs"></div>
     </div>
     <button class="near-me-btn" onclick="nearMe()">📍 Use my location</button>
@@ -427,18 +526,31 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
       </div>
       <span class="wx-unit" id="wxUnit">°C</span>
     </div>
-  </div>
 
-  <div class="card">
-    <div class="card-title">02 · How many days?</div>
-    <div class="days-row">
-      <button class="days-btn" onclick="chDays(-1)">−</button>
-      <div class="days-num" id="daysNum">3</div>
-      <button class="days-btn" onclick="chDays(1)">+</button>
-      <div class="days-lbl" id="daysLbl">days</div>
+    <div style="margin-top:1.1rem;">
+      <div class="card-sub" style="margin-bottom:0.45rem;">Search radius from city center</div>
+      <div class="opts" id="radiusOpts">
+        <button class="opt" onclick="setRadius(this,0.5)">0.5 mi</button>
+        <button class="opt" onclick="setRadius(this,1)">1 mi</button>
+        <button class="opt" onclick="setRadius(this,2)">2 mi</button>
+        <button class="opt on" onclick="setRadius(this,5)">5 mi</button>
+        <button class="opt" onclick="setRadius(this,10)">10 mi</button>
+        <button class="opt" onclick="setRadius(this,25)">25 mi</button>
+      </div>
     </div>
-    <div style="margin-top:0.9rem;">
-      <div style="font-size:0.72rem;color:var(--txt3);margin-bottom:0.5rem;">Which days of the week are you there?</div>
+
+    <div style="margin-top:1.1rem;">
+      <div class="card-sub" style="margin-bottom:0.45rem;">How many days?</div>
+      <div class="days-row">
+        <button class="days-btn" onclick="chDays(-1)">−</button>
+        <div class="days-num" id="daysNum">3</div>
+        <button class="days-btn" onclick="chDays(1)">+</button>
+        <div class="days-lbl" id="daysLbl">days</div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.1rem;">
+      <div class="card-sub" style="margin-bottom:0.5rem;">Which days of the week?</div>
       <div class="opts" id="dowOpts">
         <button class="opt" onclick="togDow(this,'Monday')">Mon</button>
         <button class="opt" onclick="togDow(this,'Tuesday')">Tue</button>
@@ -449,108 +561,144 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
         <button class="opt on" onclick="togDow(this,'Sunday')">Sun</button>
       </div>
     </div>
-  </div>
 
-  <div class="card">
-    <div class="card-title">03 · What's your vibe?</div>
-    <div class="card-sub">Pick all that apply</div>
-    <div class="opts">
-      <button class="opt" onclick="togOpt(this,'Culture')">🏛 Culture</button>
-      <button class="opt" onclick="togOpt(this,'Food')">🍽 Food</button>
-      <button class="opt" onclick="togOpt(this,'Nature')">🌿 Nature</button>
-      <button class="opt" onclick="togOpt(this,'Shopping')">🛍 Shopping</button>
-      <button class="opt" onclick="togOpt(this,'Nightlife')">🌙 Nightlife</button>
-      <button class="opt" onclick="togOpt(this,'Art')">🎨 Art</button>
-      <button class="opt" onclick="togOpt(this,'Wellness')">🧘 Wellness</button>
-      <button class="opt" onclick="togOpt(this,'Hidden Gems')">💎 Hidden Gems</button>
-      <button class="opt" onclick="togOpt(this,'Adventure')">🏄 Adventure</button>
-      <button class="opt" onclick="togOpt(this,'Photography')">📸 Photography</button>
-      <button class="opt" onclick="togOpt(this,'Drinks')">🍹 Drinks</button>
-    </div>
-    <input class="inp custom-vibe-inp" id="customVibe" type="text" placeholder="✏️ Anything specific? e.g. rooftop bars, hidden cafes, street art...">
-  </div>
-
-  <div class="card">
-    <div class="card-title">04 · Who's coming?</div>
-    <div class="opts" id="grpOpts">
-      <button class="opt on" onclick="selOpt('grpOpts',this,'Solo')">🙋 Solo</button>
-      <button class="opt" onclick="selOpt('grpOpts',this,'Couple')">👫 Couple</button>
-      <button class="opt" onclick="selOpt('grpOpts',this,'Friends')">👯 Friends</button>
-      <button class="opt" onclick="selOpt('grpOpts',this,'Family')">👨‍👩‍👧 Family</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">05 · Getting around</div>
-    <div class="opts" id="stylOpts">
-      <button class="opt on" onclick="selOpt('stylOpts',this,'Walking')">🚶 Walking</button>
-      <button class="opt" onclick="selOpt('stylOpts',this,'Transit')">🚇 Transit</button>
-      <button class="opt" onclick="selOpt('stylOpts',this,'Rideshare')">🚕 Rideshare</button>
-      <button class="opt" onclick="selOpt('stylOpts',this,'Driving')">🚗 Driving</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">06 · Daily budget</div>
-    <div class="budget-top">
-      <div>
-        <div class="budget-val" id="budgetVal">$150</div>
-        <div class="budget-desc" id="budgetDesc">Mid-range</div>
+    <div style="margin-top:1.1rem;">
+      <div class="card-sub" style="margin-bottom:0.45rem;">Travel dates <span style="font-size:0.68rem;color:var(--txt3);font-weight:400;">(optional — unlocks events &amp; hotel search)</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+        <div><div style="font-size:0.68rem;color:var(--txt3);margin-bottom:0.25rem;">Check-in</div><input class="inp" id="travelFrom" type="date" style="font-size:0.85rem;padding:0.6rem 0.8rem;width:100%;"></div>
+        <div><div style="font-size:0.68rem;color:var(--txt3);margin-bottom:0.25rem;">Check-out</div><input class="inp" id="travelTo" type="date" style="font-size:0.85rem;padding:0.6rem 0.8rem;width:100%;"></div>
       </div>
-      <div style="font-size:0.7rem;color:var(--txt3);align-self:flex-end;">per person · per day</div>
-    </div>
-    <input type="range" id="budgetRange" min="0" max="999" value="150" oninput="updBudget(this.value)">
-    <div class="slider-marks"><span>$0 Free</span><span>$250</span><span>$500</span><span>$999 Luxury</span></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">07 · Dietary preferences</div>
-    <div class="card-sub">We'll filter food stops accordingly</div>
-    <div class="opts" id="dietOpts">
-      <button class="opt" onclick="togDiet(this,'Vegetarian')">🌿 Vegetarian</button>
-      <button class="opt" onclick="togDiet(this,'Vegan')">🥗 Vegan</button>
-      <button class="opt" onclick="togDiet(this,'Halal')">🥩 Halal</button>
-      <button class="opt" onclick="togDiet(this,'Gluten-Free')">🌾 Gluten-Free</button>
-      <button class="opt" onclick="togDiet(this,'Pescatarian')">🐟 Pescatarian</button>
-      <button class="opt" onclick="togDiet(this,'Dairy-Free')">🥛 Dairy-Free</button>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-title">08 · Travel dates <span style="font-size:0.7rem;font-family:'DM Sans',sans-serif;color:var(--txt3);font-weight:400;">(optional — unlocks events & hotel search)</span></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.5rem;">
-      <div><div style="font-size:0.68rem;color:var(--txt3);margin-bottom:0.25rem;">Check-in</div><input class="inp" id="travelFrom" type="date" style="font-size:0.85rem;padding:0.6rem 0.8rem;width:100%;"></div>
-      <div><div style="font-size:0.68rem;color:var(--txt3);margin-bottom:0.25rem;">Check-out</div><input class="inp" id="travelTo" type="date" style="font-size:0.85rem;padding:0.6rem 0.8rem;width:100%;"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">09 · Settings</div>
-    <div class="toggle-row">
+  <!-- Step 2: Your Vibe -->
+  <div class="step-card">
+    <div class="step-hdr">
+      <span class="step-badge">2</span>
       <div>
-        <div class="toggle-lbl">🔗 Booking links</div>
-        <div class="toggle-sub">Maps, OpenTable, Viator</div>
+        <div class="step-ttl">Your Vibe</div>
+        <div class="step-sub">Category focus, mood &amp; travel style</div>
       </div>
-      <label class="toggle">
-        <input type="checkbox" id="linkToggle" checked>
-        <div class="t-track"></div>
-        <div class="t-thumb"></div>
-      </label>
     </div>
-    <div class="toggle-row" style="margin-top:0.4rem;">
-      <div>
-        <div class="toggle-lbl">💎 Hidden Gems Mode</div>
-        <div class="toggle-sub">Skip tourist traps — locals-only spots</div>
+    <div class="step-divider"></div>
+
+    <div class="card-sub" style="margin-bottom:0.45rem;">Focus every stop on one category (optional)</div>
+    <input class="inp" id="categorySearch" type="text" placeholder="e.g. coffee shops · rooftop bars · vegan restaurants" oninput="onCatInput(this.value);updateProgress();" autocomplete="off">
+    <div class="cat-pills">
+      <button class="cat-pill" onclick="setCat(this,'coffee shops')">☕ Coffee</button>
+      <button class="cat-pill" onclick="setCat(this,'parks and gardens')">🌳 Parks</button>
+      <button class="cat-pill" onclick="setCat(this,'bars')">🍺 Bars</button>
+      <button class="cat-pill" onclick="setCat(this,'restaurants and food')">🍕 Food</button>
+      <button class="cat-pill" onclick="setCat(this,'museums')">🏛 Museums</button>
+      <button class="cat-pill" onclick="setCat(this,'shopping')">🛍 Shopping</button>
+      <button class="cat-pill" onclick="setCat(this,'nightlife and clubs')">🌙 Nightlife</button>
+      <button class="cat-pill" onclick="setCat(this,'beaches')">🏖 Beaches</button>
+      <button class="cat-pill" onclick="setCat(this,'gyms and fitness')">💪 Gyms</button>
+      <button class="cat-pill" onclick="setCat(this,'entertainment and theaters')">🎭 Entertainment</button>
+    </div>
+
+    <div style="margin-top:1.1rem;">
+      <div class="card-sub" style="margin-bottom:0.45rem;">Pick your vibe — all that apply</div>
+      <div class="opts">
+        <button class="opt" onclick="togOpt(this,'Culture');updateProgress();">🏛 Culture</button>
+        <button class="opt" onclick="togOpt(this,'Food');updateProgress();">🍽 Food</button>
+        <button class="opt" onclick="togOpt(this,'Nature');updateProgress();">🌿 Nature</button>
+        <button class="opt" onclick="togOpt(this,'Shopping');updateProgress();">🛍 Shopping</button>
+        <button class="opt" onclick="togOpt(this,'Nightlife');updateProgress();">🌙 Nightlife</button>
+        <button class="opt" onclick="togOpt(this,'Art');updateProgress();">🎨 Art</button>
+        <button class="opt" onclick="togOpt(this,'Wellness');updateProgress();">🧘 Wellness</button>
+        <button class="opt" onclick="togOpt(this,'Hidden Gems');updateProgress();">💎 Hidden Gems</button>
+        <button class="opt" onclick="togOpt(this,'Adventure');updateProgress();">🏄 Adventure</button>
+        <button class="opt" onclick="togOpt(this,'Photography');updateProgress();">📸 Photography</button>
+        <button class="opt" onclick="togOpt(this,'Drinks');updateProgress();">🍹 Drinks</button>
       </div>
-      <label class="toggle">
-        <input type="checkbox" id="gemsToggle" onchange="toggleGems(this)">
-        <div class="t-track"></div>
-        <div class="t-thumb"></div>
-      </label>
+      <input class="inp custom-vibe-inp" id="customVibe" type="text" placeholder="✏️ Anything specific? e.g. rooftop bars, hidden cafes, street art..." style="margin-top:0.65rem;">
+    </div>
+
+    <div style="margin-top:1.1rem;">
+      <div class="card-sub" style="margin-bottom:0.45rem;">Who's coming?</div>
+      <div class="opts" id="grpOpts">
+        <button class="opt on" onclick="selOpt('grpOpts',this,'Solo')">🙋 Solo</button>
+        <button class="opt" onclick="selOpt('grpOpts',this,'Couple')">👫 Couple</button>
+        <button class="opt" onclick="selOpt('grpOpts',this,'Friends')">👯 Friends</button>
+        <button class="opt" onclick="selOpt('grpOpts',this,'Family')">👨‍👩‍👧 Family</button>
+      </div>
+    </div>
+
+    <div style="margin-top:1.1rem;">
+      <div class="card-sub" style="margin-bottom:0.45rem;">Getting around</div>
+      <div class="opts" id="stylOpts">
+        <button class="opt on" onclick="selOpt('stylOpts',this,'Walking')">🚶 Walking</button>
+        <button class="opt" onclick="selOpt('stylOpts',this,'Transit')">🚇 Transit</button>
+        <button class="opt" onclick="selOpt('stylOpts',this,'Rideshare')">🚕 Rideshare</button>
+        <button class="opt" onclick="selOpt('stylOpts',this,'Driving')">🚗 Driving</button>
+      </div>
     </div>
   </div>
 
-<button class="gen-btn" id="genBtn" onclick="generate()">BUILD MY ITINERARY ✨</button>
+  <!-- Step 3: Preferences -->
+  <div class="step-card">
+    <div class="step-hdr">
+      <span class="step-badge">3</span>
+      <div>
+        <div class="step-ttl">Preferences</div>
+        <div class="step-sub">Budget, diet &amp; settings</div>
+      </div>
+    </div>
+    <div class="step-divider"></div>
+
+    <div>
+      <div class="card-sub" style="margin-bottom:0.5rem;">Daily budget</div>
+      <div class="budget-top">
+        <div>
+          <div class="budget-val" id="budgetVal">$150</div>
+          <div class="budget-desc" id="budgetDesc">Mid-range</div>
+        </div>
+        <div style="font-size:0.7rem;color:var(--txt3);align-self:flex-end;">per person · per day</div>
+      </div>
+      <input type="range" id="budgetRange" min="0" max="999" value="150" oninput="updBudget(this.value);updateProgress();">
+      <div class="slider-marks"><span>$0 Free</span><span>$250</span><span>$500</span><span>$999 Luxury</span></div>
+    </div>
+
+    <div style="margin-top:1.1rem;">
+      <div class="card-sub" style="margin-bottom:0.45rem;">Dietary preferences</div>
+      <div class="opts" id="dietOpts">
+        <button class="opt" onclick="togDiet(this,'Vegetarian')">🌿 Vegetarian</button>
+        <button class="opt" onclick="togDiet(this,'Vegan')">🥗 Vegan</button>
+        <button class="opt" onclick="togDiet(this,'Halal')">🥩 Halal</button>
+        <button class="opt" onclick="togDiet(this,'Gluten-Free')">🌾 Gluten-Free</button>
+        <button class="opt" onclick="togDiet(this,'Pescatarian')">🐟 Pescatarian</button>
+        <button class="opt" onclick="togDiet(this,'Dairy-Free')">🥛 Dairy-Free</button>
+      </div>
+    </div>
+
+    <div style="margin-top:1.1rem;">
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-lbl">🔗 Booking links</div>
+          <div class="toggle-sub">Maps, OpenTable, Viator</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="linkToggle" checked>
+          <div class="t-track"></div>
+          <div class="t-thumb"></div>
+        </label>
+      </div>
+      <div class="toggle-row" style="margin-top:0.4rem;">
+        <div>
+          <div class="toggle-lbl">💎 Hidden Gems Mode</div>
+          <div class="toggle-sub">Skip tourist traps — locals-only spots</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="gemsToggle" onchange="toggleGems(this)">
+          <div class="t-track"></div>
+          <div class="t-thumb"></div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+<button class="gen-btn" id="genBtn" onclick="generate()">Build my itinerary ✨</button>
 <button class="btn-ghost" style="width:100%;margin-top:0.6rem;font-size:0.85rem;" onclick="openBestTime()">📅 Best Time to Visit</button>
 
   <div id="results">
@@ -597,7 +745,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 <div class="page" id="page-saved">
 <div id="saved-page">
   <div class="saved-head">
-    <h2>SAVED</h2>
+    <h2>Saved trips</h2>
     <p>Your trips and favourite places.</p>
   </div>
   <div class="saved-toggle">
@@ -612,6 +760,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 <footer class="affil-footer">
   <p><strong>What's Around?</strong> &mdash; Your free AI travel planner.<br>Booking links help keep this tool free. Thank you for using them.</p>
 </footer>
+
+<!-- Bottom nav (mobile) -->
+<div class="bottom-nav" id="bottomNav">
+  <button class="bn-btn active" id="bn-home" onclick="goPage('home')"><span class="bn-icon">🏠</span><span class="bn-lbl">Home</span></button>
+  <button class="bn-btn" id="bn-planner" onclick="goPage('planner')"><span class="bn-icon">✨</span><span class="bn-lbl">Plan</span></button>
+  <button class="bn-btn" id="bn-saved" onclick="goPage('saved')"><span class="bn-icon">💾</span><span class="bn-lbl">Saved</span></button>
+</div>
 
 </div><!-- .app -->
 
@@ -757,6 +912,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 
 <script>
 var days=3,budget=150,vibes=[],group='Solo',travelStyle='Walking';
+var searchRadius=5,categorySearch='';
 var tripDays=[],curCity='',curTitle='';
 var chatOpen=false,chatHistory=[],chatBusy=false,packChecked={};
 var wxTimer=null,toastTimer=null;
@@ -841,6 +997,10 @@ function goPage(id){
   document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
   document.getElementById('page-'+id).classList.add('active');
   document.getElementById('tab-'+id).classList.add('active');
+  // Sync bottom nav
+  document.querySelectorAll('.bn-btn').forEach(function(b){b.classList.remove('active');});
+  var bnBtn=document.getElementById('bn-'+id);
+  if(bnBtn)bnBtn.classList.add('active');
   if(id==='saved')renderSaved();
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -853,6 +1013,60 @@ function toast(msg,type){
   toastTimer=setTimeout(function(){el.classList.remove('show');},3800);
 }
 
+function updateProgress(){
+  var city=document.getElementById('city').value.trim();
+  var hasVibe=vibes.length>0||document.getElementById('categorySearch').value.trim().length>0;
+  var pct=15;
+  if(city.length>1){pct=45;}
+  if(city.length>1&&hasVibe){pct=75;}
+  var fill=document.getElementById('progFill');
+  var fill2=document.getElementById('progFill2');
+  var p2=document.getElementById('prog-2');
+  var p3=document.getElementById('prog-3');
+  if(fill){fill.style.width=(city.length>1?100:15)+'%';}
+  if(fill2){fill2.style.width=(hasVibe?100:0)+'%';}
+  if(p2){p2.classList.toggle('active',city.length>1);}
+  if(p3){p3.classList.toggle('active',hasVibe);}
+}
+
+function showCelebration(){
+  var overlay=document.getElementById('celebOverlay');
+  if(!overlay){
+    overlay=document.createElement('div');
+    overlay.id='celebOverlay';
+    overlay.className='celebration-overlay';
+    overlay.innerHTML='<div class="celeb-inner"><span class="celeb-emoji">✈️</span><div class="celeb-title">Your trip is ready!</div><div class="celeb-sub">Scroll down to explore your itinerary</div></div>';
+    overlay.onclick=function(){overlay.classList.remove('show');};
+    document.body.appendChild(overlay);
+  }
+  overlay.classList.add('show');
+  setTimeout(function(){overlay.classList.remove('show');},2800);
+}
+
+function buildSkeleton(count){
+  var html='<div class="skeleton-wrap">';
+  for(var i=0;i<count;i++){
+    html+='<div class="skel-card"><div class="skel" style="width:40%;height:0.75rem;margin-bottom:0.6rem;border-radius:6px;"></div><div class="skel" style="width:90%;height:0.65rem;margin-bottom:0.4rem;border-radius:6px;"></div><div class="skel" style="width:70%;height:0.65rem;border-radius:6px;"></div></div>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function setRadius(btn,val){
+  searchRadius=val;
+  document.querySelectorAll('#radiusOpts .opt').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+}
+function setCat(btn,val){
+  categorySearch=val;
+  var inp=document.getElementById('categorySearch');if(inp)inp.value=val;
+  document.querySelectorAll('.cat-pill').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+}
+function onCatInput(val){
+  categorySearch=val;
+  if(!val)document.querySelectorAll('.cat-pill').forEach(function(b){b.classList.remove('on');});
+}
 function togOpt(btn,val){
   btn.classList.toggle('on');
   if(btn.classList.contains('on'))vibes.push(val);
@@ -947,12 +1161,17 @@ async function generate(){
   btn.disabled=true;btn.textContent='BUILDING...';
   document.getElementById('results').style.display='block';
   document.getElementById('dayTabs').innerHTML='';
-  document.getElementById('dayPanels').innerHTML='<div class="loading"><div class="loading-ring"></div><div class="loading-txt">Crafting '+days+' day'+(days>1?'s':'')+' in '+city+'...</div><div class="loading-sub">Finding real places just for you</div></div>';
+  document.getElementById('dayPanels').innerHTML=buildSkeleton(5)+'<div class="loading" style="padding-top:0.5rem;"><div class="loading-ring"></div><div class="loading-txt">Crafting '+days+' day'+(days>1?'s':'')+' in '+city+'...</div><div class="loading-sub">Finding real places just for you</div></div>';
   document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
-  var dowStr=tripDows.length?'\nDays of the week visiting: '+tripDows.join(', ')+' — IMPORTANT: only recommend places that are open on those days. Avoid museums, markets, or spots typically closed on those days.':'';
-  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+dowStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences, no explanation:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Real place name","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Place City Country"}]}]}\n\nRules: 7-8 blocks per day covering morning through late night. Real places only. Logical geographic flow. Include a good mix of times across the full day.';
+  var dowStr=tripDows.length?'\nDays of the week visiting: '+tripDows.join(', ')+' — only recommend places open on those days.':'';
+  var catSearch=document.getElementById('categorySearch').value.trim();
+  categorySearch=catSearch;
+  var radiusStr='\nRADIUS: Every place must be within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of the city center of "'+city+'". No suburbs, no outskirts.';
+  var catStr=catSearch?'\nCATEGORY — MANDATORY: The user is ONLY looking for "'+catSearch+'". Every single stop must be a "'+catSearch+'". Do not include any other venue type. If you cannot find enough real "'+catSearch+'" places within '+searchRadius+' miles of '+city+', reduce the number of blocks rather than substituting a different category. This is non-negotiable.':'';
+  var sysPrompt='You are an expert local travel guide for '+city+'. You only recommend real, verified, currently-open businesses that appear on Google Maps and Yelp with actual reviews. You never invent place names. You never substitute a different category for what the user asked. You always stay within the specified radius of the city center.';
+  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+dowStr+radiusStr+catStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Tsukiji Outer Market","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Tsukiji Outer Market Tokyo Japan"}]}]}\n\nNON-NEGOTIABLE RULES:\n1. Only real places: 100% verified, currently open, with reviews on Google Maps or Yelp. Do not invent names.\n2. Full official name exactly as on Google Maps.\n3. Type must match exactly — Breakfast block = breakfast venue only, never a bar or club.\n4. If uncertain whether a place is open, pick a famous guaranteed-to-exist alternative.\n5. mapsQuery = full official name + city + country (e.g. "Tsukiji Outer Market Tokyo Japan").\n6. Stay within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of '+city+' city center. Do not recommend places in other cities or distant suburbs.\n7. 7-8 blocks per day unless category filter limits options — then fewer real places is better than wrong category.\n8. Only recommend places that appear on Google Maps, Yelp, and TripAdvisor.';
   try{
-    var rawText=await callGroq(prompt,null,4000);
+    var rawText=await callGroq(prompt,sysPrompt,4000);
     var text=rawText.replace(/```json|```/g,'').trim();
     var si=text.indexOf('{'),ei=text.lastIndexOf('}');
     if(si>-1&&ei>-1)text=text.slice(si,ei+1);
@@ -976,6 +1195,7 @@ async function generate(){
       panels.appendChild(panel);
     });
     toast('Itinerary ready! 🎉','ok');
+    showCelebration();
     bumpCounter();
     // Events + Hotels (non-blocking, fire after render)
     setTimeout(function(){renderEventsCard(city,travelFrom,travelTo);},300);
@@ -992,7 +1212,7 @@ async function generate(){
     
     console.error(err);
   }
-  btn.disabled=false;btn.textContent='BUILD MY ITINERARY ✨';
+  btn.disabled=false;btn.textContent='Build my itinerary ✨';
 }
 
 function switchDay(i){
@@ -1017,7 +1237,8 @@ function getRushWarn(timeStr){
 function buildDay(day,di,links){
   var blocks=day.blocks||[];
   var html='';
-  if(day.dayCost){html+='<div style="background:rgba(245,200,66,0.06);border:1px solid rgba(245,200,66,0.15);border-radius:10px;padding:0.7rem 1rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.7rem;color:var(--txt3)">Estimated day spend</span><span style="font-family:Bebas Neue,sans-serif;font-size:1.1rem;color:var(--gold)">'+day.dayCost+' per person</span></div>';}
+  if(categorySearch)html+='<div class="cat-active-banner">🔍 Showing only: <strong>'+categorySearch+'</strong> · within '+searchRadius+' mi of '+curCity+'</div>';
+  if(day.dayCost){html+='<div style="background:rgba(245,200,66,0.06);border:1px solid rgba(245,200,66,0.15);border-radius:10px;padding:0.7rem 1rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.7rem;color:var(--txt3)">Estimated day spend</span><span style="font-family:DM Sans,sans-serif;font-weight:700;font-size:1.1rem;color:var(--gold)">'+day.dayCost+' per person</span></div>';}
   blocks.forEach(function(b,bi){
     var t=(b.type||'').toLowerCase();
     var lhtml='';
@@ -1028,7 +1249,11 @@ function buildDay(day,di,links){
       var isFood=t.indexOf('breakfast')>-1||t.indexOf('lunch')>-1||t.indexOf('dinner')>-1||t.indexOf('cafe')>-1||t.indexOf('food')>-1||t.indexOf('restaurant')>-1||t.indexOf('brunch')>-1||t.indexOf('bar')>-1||t.indexOf('drink')>-1;
       var isAttr=t.indexOf('tour')>-1||t.indexOf('museum')>-1||t.indexOf('visit')>-1||t.indexOf('attraction')>-1||t.indexOf('explore')>-1||t.indexOf('sightseeing')>-1||t.indexOf('activity')>-1||t.indexOf('experience')>-1;
       var isHotel=t.indexOf('hotel')>-1||t.indexOf('accommodation')>-1||t.indexOf('hostel')>-1||t.indexOf('stay')>-1||t.indexOf('check-in')>-1||t.indexOf('check in')>-1;
-      lhtml+='<a class="slink sl-m" href="https://maps.google.com/maps?q='+mq+'" target="_blank" rel="noopener">📍 Maps</a>';
+      var mapsUrl='https://www.google.com/maps/search/?api=1&query='+mq;
+      lhtml+='<a class="slink sl-m" href="'+mapsUrl+'" target="_blank" rel="noopener">📍 Maps</a>';
+      // Verify links always shown
+      lhtml+='<a class="slink sl-yelp" href="https://www.yelp.com/search?find_desc='+encodeURIComponent(b.place)+'&find_loc='+encodeURIComponent(curCity)+'" target="_blank" rel="noopener">🔍 Yelp</a>';
+      lhtml+='<a class="slink sl-ta" href="https://www.tripadvisor.com/Search?q='+encodeURIComponent(b.place+' '+curCity)+'" target="_blank" rel="noopener">⭐ TA</a>';
       // Rideshare: Uber deeplink, Lyft fallback
       var uberUrl='https://www.uber.com/ride?action=setPickup&dropoff[formatted_address]='+destEnc;
       var lyftUrl='https://www.lyft.com/rider/referrals/ride?destination='+destEnc;
@@ -1046,7 +1271,7 @@ function buildDay(day,di,links){
     var rush=getRushWarn(b.time);
     var isSaved=isPlaceSaved(b.place,curCity);
     if(rush)html+='<div class="traffic-warn '+rush.cls+'">'+rush.msg+'</div>';
-    html+='<div class="stop" data-slot="'+slot+'" id="stop-'+di+'-'+bi+'"><div class="stop-hdr"><div class="stop-n">'+(bi+1)+'</div><div class="stop-time">'+b.time+'</div><div class="stop-name">'+b.place+'</div><div class="stop-type">'+b.type+'</div>'+(b.cost?'<div class="stop-cost">'+b.cost+'</div>':'')+'<button class="stop-act" onclick="randomizeStop('+di+','+bi+',this)" title="Swap this stop">🎲</button><button class="stop-act'+(isSaved?' saved-act':'')+'" id="save-act-'+di+'-'+bi+'" onclick="savePlace('+di+','+bi+',this)" title="Save this place">'+(isSaved?'🔖':'🏷')+'</button></div><div class="stop-body"><div class="stop-desc">'+b.desc+'</div>'+(b.tip?'<div class="stop-tip">💡 '+b.tip+'</div>':'')+(lhtml?'<div class="stop-links">'+lhtml+'</div>':'')+'</div></div>';
+    html+='<div class="stop" data-slot="'+slot+'" id="stop-'+di+'-'+bi+'"><div class="stop-hdr"><div class="stop-n">'+(bi+1)+'</div><div class="stop-time">'+b.time+'</div><div class="stop-name">'+b.place+'</div><div class="stop-type">'+b.type+'</div>'+(b.cost?'<div class="stop-cost">'+b.cost+'</div>':'')+'<div class="stop-radius">≤'+searchRadius+'mi</div><button class="stop-act" onclick="randomizeStop('+di+','+bi+',this)" title="Swap this stop">🎲</button><button class="stop-act'+(isSaved?' saved-act':'')+'" id="save-act-'+di+'-'+bi+'" onclick="savePlace('+di+','+bi+',this)" title="Save this place">'+(isSaved?'🔖':'🏷')+'</button></div><div class="stop-body"><div class="stop-desc">'+b.desc+'</div>'+(b.tip?'<div class="stop-tip">💡 '+b.tip+'</div>':'')+(lhtml?'<div class="stop-links">'+lhtml+'</div>':'')+'</div></div>';
   });
   return html;
 }
@@ -1501,7 +1726,8 @@ async function randomizeStop(di,bi,btn){
   if(stopEl)stopEl.classList.add('replacing');
   if(btn){btn.disabled=true;btn.textContent='⏳';}
   try{
-    var prompt='I have a travel itinerary for "'+curCity+'". Replace this single stop with something DIFFERENT but equally good.\nCurrent stop: "'+b.place+'" (type: '+b.type+', time: '+b.time+')\nInterests: '+(vibes.join(', ')||'general')+'.\nReturn ONLY raw JSON (no markdown): {"time":"'+b.time+'","place":"New place name","type":"'+b.type+'","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$XX","mapsQuery":"Place City Country"}';
+    var catNote=categorySearch?' The user is only looking for "'+categorySearch+'" — the replacement must also be a "'+categorySearch+'"':'';
+    var prompt='Replace one stop in a "'+curCity+'" itinerary. The replacement MUST be located in "'+curCity+'" within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of the city center. Do not suggest places in other cities.\nCurrent stop: "'+b.place+'" (type: '+b.type+', time: '+b.time+')\nInterests: '+(vibes.join(', ')||'general')+'.'+catNote+'\nRules: Real, currently-open, verified place only. Match type "'+b.type+'" exactly. Full official Google Maps name. mapsQuery = full name + city + country.\nReturn ONLY raw JSON (no markdown): {"time":"'+b.time+'","place":"Full Official Place Name","type":"'+b.type+'","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$XX","mapsQuery":"Full Place Name '+curCity+' Country"}';
     var raw=await callGroq(prompt,null,550);
     raw=raw.replace(/```json|```/g,'').trim();
     var si=raw.indexOf('{'),ei=raw.lastIndexOf('}');
@@ -1554,7 +1780,7 @@ function renderSavedPlaces(){
   if(!places.length){grid.innerHTML='<div class="empty-state"><div class="empty-icon">🔖</div><h3>NO SAVED PLACES</h3><p>Tap the 🏷 button on any stop to save it here.</p></div>';return;}
   grid.innerHTML=places.map(function(p){
     var mq=encodeURIComponent(p.mapsQuery||p.place+' '+p.city);
-    return '<div class="place-card"><div class="place-card-name">'+p.place+'</div><div class="place-card-meta"><span>📍 '+p.city+'</span><span>'+p.type+'</span>'+(p.cost?'<span>'+p.cost+'</span>':'')+'<span>Saved '+p.savedAt+'</span></div><div class="place-card-actions"><a class="btn-sm btn-teal" href="https://maps.google.com/maps?q='+mq+'" target="_blank" rel="noopener" style="text-decoration:none;">📍 Maps</a><button class="btn-sm btn-rose" onclick="deleteSavedPlace('+p.id+')">🗑 Remove</button></div></div>';
+    return '<div class="place-card"><div class="place-card-name">'+p.place+'</div><div class="place-card-meta"><span>📍 '+p.city+'</span><span>'+p.type+'</span>'+(p.cost?'<span>'+p.cost+'</span>':'')+'<span>Saved '+p.savedAt+'</span></div><div class="place-card-actions"><a class="btn-sm btn-teal" href="https://www.google.com/maps/search/?api=1&query='+mq+'" target="_blank" rel="noopener" style="text-decoration:none;">📍 Maps</a><button class="btn-sm btn-rose" onclick="deleteSavedPlace('+p.id+')">🗑 Remove</button></div></div>';
   }).join('');
 }
 function deleteSavedPlace(id){
@@ -1828,7 +2054,7 @@ function renderStays(){
     var nights=s.checkin&&s.checkout?Math.round((new Date(s.checkout)-new Date(s.checkin))/(864e5)):0;
     var total=s.price&&nights?'$'+(parseFloat(s.price)*nights).toFixed(0)+' total':'';
     var bookUrl='https://www.booking.com/searchresults.html?aid=7956794&ss='+encodeURIComponent(s.hotel+(curCity?' '+curCity:''));
-    var mapsUrl='https://maps.google.com/maps?q='+encodeURIComponent(s.hotel+(curCity?' '+curCity:''));
+    var mapsUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(s.hotel+(curCity?' '+curCity:''));
     return '<div class="fl-card"><div class="fl-icon stay">🏨</div><div class="fl-info"><div class="fl-main">'+s.hotel+'</div><div class="fl-meta">'+fmtDate(s.checkin)+' → '+fmtDate(s.checkout)+(nights?' · '+nights+' night'+(nights!==1?'s':''):'')+( total?' · '+total:'')+(s.conf?' · #'+s.conf:'')+'</div></div><div class="fl-acts"><a class="btn-sm btn-teal" href="'+bookUrl+'" target="_blank" rel="noopener" style="text-decoration:none;">Book</a><a class="btn-sm btn-muted" href="'+mapsUrl+'" target="_blank" rel="noopener" style="text-decoration:none;">Map</a><button class="btn-sm btn-rose" onclick="delStay('+s.id+')">✕</button></div></div>';
   }).join('');
 }
@@ -1938,10 +2164,10 @@ async function scanPhoto(){
         if(si>-1&&ei>-1)text=text.slice(si,ei+1);
         var sc=repairJSON(text);
         var mq=encodeURIComponent(sc.mapsQuery||sc.place);
-        var stopHtml='<div class="stop" style="border-color:rgba(45,212,191,0.3)"><div class="stop-hdr"><div class="stop-n" style="background:linear-gradient(135deg,var(--rose),#f4a27a)">📸</div><div class="stop-time">SCANNED</div><div class="stop-name">'+sc.place+'</div><div class="stop-type">'+sc.type+'</div>'+(sc.cost?'<div class="stop-cost">'+sc.cost+'</div>':'')+'</div><div class="stop-body"><div class="stop-desc">'+sc.desc+'</div>'+(sc.tip?'<div class="stop-tip">💡 '+sc.tip+'</div>':'')+'<div class="stop-links"><a class="slink sl-m" href="https://maps.google.com/maps?q='+mq+'" target="_blank" rel="noopener">📍 Maps</a></div></div></div>';
+        var stopHtml='<div class="stop" style="border-color:rgba(45,212,191,0.3)"><div class="stop-hdr"><div class="stop-n" style="background:linear-gradient(135deg,var(--rose),#f4a27a)">📸</div><div class="stop-time">SCANNED</div><div class="stop-name">'+sc.place+'</div><div class="stop-type">'+sc.type+'</div>'+(sc.cost?'<div class="stop-cost">'+sc.cost+'</div>':'')+'</div><div class="stop-body"><div class="stop-desc">'+sc.desc+'</div>'+(sc.tip?'<div class="stop-tip">💡 '+sc.tip+'</div>':'')+'<div class="stop-links"><a class="slink sl-m" href="https://www.google.com/maps/search/?api=1&query='+mq+'" target="_blank" rel="noopener">📍 Maps</a></div></div></div>';
         var sec=document.getElementById('scannedStops');
         if(sec){
-          if(!sec.querySelector('.scan-hdr'))sec.innerHTML='<div class="scan-hdr" style="font-family:Bebas Neue,sans-serif;font-size:1.1rem;letter-spacing:0.04em;color:var(--teal);margin:1.5rem 0 0.75rem;">📸 SCANNED PLACES</div><div id="scanList" style="display:grid;gap:0.75rem;"></div>';
+          if(!sec.querySelector('.scan-hdr'))sec.innerHTML='<div class="scan-hdr" style="font-family:DM Sans,sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:0.04em;color:var(--teal);margin:1.5rem 0 0.75rem;">📸 SCANNED PLACES</div><div id="scanList" style="display:grid;gap:0.75rem;"></div>';
           var list=document.getElementById('scanList');
           if(list)list.insertAdjacentHTML('beforeend',stopHtml);
         }

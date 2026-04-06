@@ -5,7 +5,7 @@ async function groqCall(key, model, msgs, maxTokens) {
   const r = await fetch(GROQ_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-    body: JSON.stringify({ model, messages: msgs, max_tokens: maxTokens })
+    body: JSON.stringify({ model, messages: msgs, max_tokens: maxTokens, temperature: 0.2 })
   });
   const d = await r.json();
   if (!r.ok) {
