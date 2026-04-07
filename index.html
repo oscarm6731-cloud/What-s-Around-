@@ -401,8 +401,6 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
 .card-title{font-size:1.2rem !important;letter-spacing:0.03em;}
 /* Micro-interactions */
 .opt:active,.btn-sm:active{transform:scale(0.91) !important;}
-/* Noise overlay */
-body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px;mix-blend-mode:overlay;}
 /* Mobile full bleed stop cards */
 @media(max-width:680px){
   .day-panel.active{gap:0.75rem;}
@@ -1660,7 +1658,7 @@ async function loadBestTime(city){
       var isAvoid=avoid.indexOf(m.m)>-1;
       var wxPct=(m.wx/5*100)+'%',crPct=(m.crowds/5*100)+'%',prPct=(m.price/5*100)+'%';
       var borderStyle=isBest?'border-color:rgba(45,212,191,0.45);background:rgba(45,212,191,0.05);':isAvoid?'border-color:rgba(244,96,122,0.25);':'';
-      return '<div class="bt-month" style="'+borderStyle+'" onclick="showMonthDetail(this,\''+m.m+'\',\''+encodeURIComponent(m.highlight||\'\')+'\',\''+encodeURIComponent(m.tip||\'\')+'\','+m.wx+','+m.crowds+','+m.price+')">'
+      return '<div class="bt-month" style="'+borderStyle+'" onclick="showMonthDetail(this,\''+m.m+'\',\''+encodeURIComponent(m.highlight||'')+'\',\''+encodeURIComponent(m.tip||'')+'\','+m.wx+','+m.crowds+','+m.price+')">'
         +'<div class="bt-month-name">'+m.m+'</div>'
         +'<div class="bt-bars">'
         +'<div class="bt-bar-wrap"><div class="bt-bar-label">wx</div><div class="bt-bar-bg"><div class="bt-bar-fill" style="width:'+wxPct+';background:'+wxColors[m.wx-1]+'"></div></div></div>'
