@@ -347,8 +347,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .opt:active,.btn-sm:active{transform:scale(0.91) !important;}
 .gen-btn:hover{box-shadow:0 16px 40px rgba(45,212,191,0.42) !important;}
 /* ── Traffic warnings ── */
-.traffic-warn{display:flex;align-items:center;gap:0.45rem;padding:0.45rem 0.85rem;background:rgba(245,200,66,0.07);border:1px solid rgba(245,200,66,0.18);border-left:3px solid var(--gold);border-radius:8px;font-size:0.73rem;color:var(--gold);font-weight:500;margin-bottom:0.38rem;animation:fadeUp 0.28s ease both;}
-.traffic-warn.rush-pm{background:rgba(244,96,122,0.07);border-color:rgba(244,96,122,0.2);border-left-color:var(--rose);color:var(--rose);}
+/* peak/quiet hour badges on stops */
+.stop-hours{display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.5rem;}
+.hr-badge{display:inline-flex;align-items:center;gap:0.25rem;font-size:0.67rem;font-weight:500;padding:0.2rem 0.55rem;border-radius:100px;line-height:1.4;}
+.hr-peak{background:rgba(244,96,122,0.07);border:1px solid rgba(244,96,122,0.18);color:var(--rose);}
+.hr-quiet{background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.18);color:var(--teal);}
 /* ── Rideshare link ── */
 .sl-ride{background:rgba(30,30,48,0.7);border:1px solid rgba(255,255,255,0.1);color:var(--txt2);}
 .sl-ride:hover{border-color:rgba(255,255,255,0.22);color:var(--txt);}
@@ -1169,7 +1172,7 @@ async function generate(){
   var radiusStr='\nRADIUS: Every place must be within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of the city center of "'+city+'". No suburbs, no outskirts.';
   var catStr=catSearch?'\nCATEGORY — MANDATORY: The user is ONLY looking for "'+catSearch+'". Every single stop must be a "'+catSearch+'". Do not include any other venue type. If you cannot find enough real "'+catSearch+'" places within '+searchRadius+' miles of '+city+', reduce the number of blocks rather than substituting a different category. This is non-negotiable.':'';
   var sysPrompt='You are an expert local travel guide for '+city+'. You only recommend real, verified, currently-open businesses that appear on Google Maps and Yelp with actual reviews. You never invent place names. You never substitute a different category for what the user asked. You always stay within the specified radius of the city center.';
-  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+dowStr+radiusStr+catStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Tsukiji Outer Market","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Tsukiji Outer Market Tokyo Japan"}]}]}\n\nNON-NEGOTIABLE RULES:\n1. Only real places: 100% verified, currently open, with reviews on Google Maps or Yelp. Do not invent names.\n2. Full official name exactly as on Google Maps.\n3. Type must match exactly — Breakfast block = breakfast venue only, never a bar or club.\n4. If uncertain whether a place is open, pick a famous guaranteed-to-exist alternative.\n5. mapsQuery = full official name + city + country (e.g. "Tsukiji Outer Market Tokyo Japan").\n6. Stay within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of '+city+' city center. Do not recommend places in other cities or distant suburbs.\n7. 7-8 blocks per day unless category filter limits options — then fewer real places is better than wrong category.\n8. Only recommend places that appear on Google Maps, Yelp, and TripAdvisor.';
+  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+dowStr+radiusStr+catStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Tsukiji Outer Market","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Tsukiji Outer Market Tokyo Japan","peakHours":"7am-9am, 12pm-2pm","quietHours":"Before 7am or after 2pm"}]}]}\n\nFor each block, include peakHours and quietHours ONLY if you are genuinely confident about that specific place\'s typical busy and quiet periods based on real-world knowledge. If you are not certain, omit those fields entirely or set them to empty string — never guess or fabricate crowd times.\n\nNON-NEGOTIABLE RULES:\n1. Only real places: 100% verified, currently open, with reviews on Google Maps or Yelp. Do not invent names.\n2. Full official name exactly as on Google Maps.\n3. Type must match exactly — Breakfast block = breakfast venue only, never a bar or club.\n4. If uncertain whether a place is open, pick a famous guaranteed-to-exist alternative.\n5. mapsQuery = full official name + city + country (e.g. "Tsukiji Outer Market Tokyo Japan").\n6. Stay within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of '+city+' city center. Do not recommend places in other cities or distant suburbs.\n7. 7-8 blocks per day unless category filter limits options — then fewer real places is better than wrong category.\n8. Only recommend places that appear on Google Maps, Yelp, and TripAdvisor.';
   try{
     var rawText=await callGroq(prompt,sysPrompt,4000);
     var text=rawText.replace(/```json|```/g,'').trim();
@@ -1220,19 +1223,6 @@ function switchDay(i){
   document.querySelectorAll('.day-panel').forEach(function(p,j){p.classList.toggle('active',j===i);});
 }
 
-function getRushWarn(timeStr){
-  var m=timeStr?timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i):null;
-  if(!m)return null;
-  var h=parseInt(m[1]),ap=(m[3]||'').toUpperCase();
-  if(ap==='PM'&&h!==12)h+=12;
-  if(ap==='AM'&&h===12)h=0;
-  if(h>=7&&h<9)return {cls:'',msg:'⚠️ Morning rush — peak traffic 7–9 AM. Leave 15–20 mins early.'};
-  if(h>=17&&h<19)return {cls:'rush-pm',msg:'⚠️ Evening rush — busiest roads 5–7 PM. Allow extra travel time.'};
-  // Weekend midday tourist rush
-  var hasWeekend=tripDows.some(function(d){return d==='Saturday'||d==='Sunday';});
-  if(hasWeekend&&h>=11&&h<14)return {cls:'',msg:'🧳 Weekend peak hours — popular spots get crowded 11 AM–2 PM.'};
-  return null;
-}
 
 function buildDay(day,di,links){
   var blocks=day.blocks||[];
@@ -1268,10 +1258,15 @@ function buildDay(day,di,links){
         lhtml+='<a class="slink sl-b" href="https://www.booking.com/searchresults.html?aid=7956794&ss='+placeEnc+'" target="_blank" rel="noopener">🏨 Book</a>';
     }
     var slot=getTimeSlot(b.time);
-    var rush=getRushWarn(b.time);
     var isSaved=isPlaceSaved(b.place,curCity);
-    if(rush)html+='<div class="traffic-warn '+rush.cls+'">'+rush.msg+'</div>';
-    html+='<div class="stop" data-slot="'+slot+'" id="stop-'+di+'-'+bi+'"><div class="stop-hdr"><div class="stop-n">'+(bi+1)+'</div><div class="stop-time">'+b.time+'</div><div class="stop-name">'+b.place+'</div><div class="stop-type">'+b.type+'</div>'+(b.cost?'<div class="stop-cost">'+b.cost+'</div>':'')+'<div class="stop-radius">≤'+searchRadius+'mi</div><button class="stop-act" onclick="randomizeStop('+di+','+bi+',this)" title="Swap this stop">🎲</button><button class="stop-act'+(isSaved?' saved-act':'')+'" id="save-act-'+di+'-'+bi+'" onclick="savePlace('+di+','+bi+',this)" title="Save this place">'+(isSaved?'🔖':'🏷')+'</button></div><div class="stop-body"><div class="stop-desc">'+b.desc+'</div>'+(b.tip?'<div class="stop-tip">💡 '+b.tip+'</div>':'')+(lhtml?'<div class="stop-links">'+lhtml+'</div>':'')+'</div></div>';
+    var hoursHtml='';
+    if(b.peakHours||b.quietHours){
+      hoursHtml='<div class="stop-hours">';
+      if(b.peakHours)hoursHtml+='<span class="hr-badge hr-peak">🔴 Peak: '+b.peakHours+'</span>';
+      if(b.quietHours)hoursHtml+='<span class="hr-badge hr-quiet">🟢 Quiet: '+b.quietHours+'</span>';
+      hoursHtml+='</div>';
+    }
+    html+='<div class="stop" data-slot="'+slot+'" id="stop-'+di+'-'+bi+'"><div class="stop-hdr"><div class="stop-n">'+(bi+1)+'</div><div class="stop-time">'+b.time+'</div><div class="stop-name">'+b.place+'</div><div class="stop-type">'+b.type+'</div>'+(b.cost?'<div class="stop-cost">'+b.cost+'</div>':'')+'<div class="stop-radius">≤'+searchRadius+'mi</div><button class="stop-act" onclick="randomizeStop('+di+','+bi+',this)" title="Swap this stop">🎲</button><button class="stop-act'+(isSaved?' saved-act':'')+'" id="save-act-'+di+'-'+bi+'" onclick="savePlace('+di+','+bi+',this)" title="Save this place">'+(isSaved?'🔖':'🏷')+'</button></div><div class="stop-body"><div class="stop-desc">'+b.desc+'</div>'+(b.tip?'<div class="stop-tip">💡 '+b.tip+'</div>':'')+hoursHtml+(lhtml?'<div class="stop-links">'+lhtml+'</div>':'')+'</div></div>';
   });
   return html;
 }
