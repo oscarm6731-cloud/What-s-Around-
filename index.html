@@ -62,18 +62,39 @@ body.light .dest-hero-grad{background:linear-gradient(to right,rgba(245,244,255,
 .place-card-meta{font-size:0.72rem;color:var(--txt3);display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.65rem;}
 .place-card-actions{display:flex;gap:0.35rem;}
 /* Best time calendar */
-.bt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-top:0.75rem;}
+.bt-summary{font-size:0.82rem;color:var(--txt2);line-height:1.65;background:rgba(45,212,191,0.04);border:1px solid rgba(45,212,191,0.12);border-radius:12px;padding:0.85rem 1rem;margin-bottom:1rem;}
+.bt-avoid{margin-top:0.5rem;font-size:0.75rem;color:var(--rose);opacity:0.85;}
+.bt-best-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:1.1rem;}
+.bt-best-card{background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.2);border-radius:12px;padding:0.65rem 0.7rem;text-align:center;}
+.bt-best-month{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;color:var(--teal);line-height:1;margin-bottom:0.2rem;}
+.bt-best-wx{font-size:0.65rem;color:var(--txt3);margin-bottom:0.2rem;}
+.bt-best-hl{font-size:0.62rem;color:var(--txt2);line-height:1.3;margin-top:0.25rem;}
+.bt-section-lbl{font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt3);margin-bottom:0.5rem;}
+.bt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;}
 @media(min-width:480px){.bt-grid{grid-template-columns:repeat(6,1fr);}}
-.bt-month{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:0.5rem 0.4rem;text-align:center;cursor:default;transition:border-color 0.15s;}
+.bt-month{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:0.5rem 0.4rem;text-align:center;cursor:pointer;transition:all 0.15s;}
 .bt-month:hover{border-color:var(--line2);}
-.bt-month-name{font-size:0.65rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--txt3);margin-bottom:0.4rem;}
+.bt-month.bt-month-sel{border-color:rgba(245,200,66,0.5);background:rgba(245,200,66,0.05);}
+.bt-month-name{font-size:0.65rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--txt);margin-bottom:0.4rem;}
+.bt-month-hl{font-size:0.52rem;color:var(--txt3);line-height:1.25;margin-top:0.3rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
 .bt-bars{display:flex;flex-direction:column;gap:3px;}
 .bt-bar-wrap{display:flex;align-items:center;gap:3px;}
+.bt-bar-label{font-size:0.45rem;color:var(--txt3);width:10px;flex-shrink:0;}
 .bt-bar-bg{flex:1;height:5px;background:var(--card);border-radius:3px;overflow:hidden;}
 .bt-bar-fill{height:100%;border-radius:3px;transition:width 0.4s;}
-.bt-legend{display:flex;gap:0.8rem;flex-wrap:wrap;margin-top:0.6rem;font-size:0.68rem;color:var(--txt3);}
-.bt-dot{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:3px;}
-.bt-badge{display:inline-block;padding:0.15rem 0.5rem;border-radius:5px;font-size:0.65rem;font-weight:700;margin-top:0.3rem;}
+.bt-legend{display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;margin-top:0.75rem;font-size:0.68rem;color:var(--txt3);}
+.bt-dot{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:3px;vertical-align:middle;}
+.bt-badge{display:inline-block;padding:0.12rem 0.45rem;border-radius:5px;font-size:0.6rem;font-weight:700;margin-top:0.25rem;}
+.bt-detail{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:1rem 1.1rem;margin-top:0.9rem;animation:fadeUp 0.22s ease both;}
+.bt-detail-month{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--txt);margin-bottom:0.6rem;letter-spacing:0.04em;}
+.bt-detail-stats{display:flex;gap:0;margin-bottom:0.75rem;}
+.bt-detail-stat{flex:1;display:flex;flex-direction:column;align-items:center;padding:0.5rem 0;border-right:1px solid var(--line);}
+.bt-detail-stat:last-child{border-right:none;}
+.bt-detail-icon{font-size:1rem;margin-bottom:0.2rem;}
+.bt-detail-val{font-size:0.8rem;font-weight:700;color:var(--txt);margin-bottom:0.1rem;}
+.bt-detail-lbl{font-size:0.55rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--txt3);}
+.bt-detail-hl{font-size:0.82rem;color:var(--txt2);margin-bottom:0.5rem;}
+.bt-detail-tip{font-size:0.78rem;color:var(--teal);border-left:2px solid var(--teal);padding-left:0.6rem;font-style:italic;}
 /* Events section */
 .events-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.1rem;margin-top:1rem;}
 .events-title{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.04em;color:var(--txt);margin-bottom:0.15rem;}
@@ -393,11 +414,13 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 .gen-btn:hover{box-shadow:0 16px 40px rgba(45,212,191,0.42) !important;}
 /* ── Traffic warnings ── */
 /* peak/quiet hour dots on stops */
-.stop-hours{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.7rem;}
-.hr-badge{display:inline-flex;align-items:center;gap:0.3rem;font-size:0.65rem;font-weight:400;color:var(--txt3);letter-spacing:0.02em;}
-.hr-badge::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.hr-peak::before{background:var(--rose);}
-.hr-quiet::before{background:#34d399;}
+.stop-hours{display:flex;flex-wrap:wrap;gap:0.55rem;margin-bottom:0.75rem;}
+.hr-badge{display:inline-flex;align-items:center;gap:0.35rem;font-size:0.7rem;font-weight:500;letter-spacing:0.01em;}
+.hr-badge::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.hr-peak{color:var(--rose);}
+.hr-peak::before{background:var(--rose);box-shadow:0 0 4px rgba(244,96,122,0.5);}
+.hr-quiet{color:#34d399;}
+.hr-quiet::before{background:#34d399;box-shadow:0 0 4px rgba(52,211,153,0.5);}
 /* ── Rideshare link ── */
 .sl-ride{background:rgba(30,30,48,0.7);border:1px solid rgba(255,255,255,0.1);color:var(--txt2);}
 .sl-ride:hover{border-color:rgba(255,255,255,0.22);color:var(--txt);}
@@ -907,10 +930,10 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 <div class="modal-bg" id="bestTimeModal" onclick="if(event.target===this)closeBestTime()">
   <div class="modal">
     <div class="modal-hdr">
-      <div class="modal-title">📅 BEST TIME TO VISIT</div>
+      <div class="modal-title">📅 Best time to visit</div>
       <button class="modal-x" onclick="closeBestTime()">✕</button>
     </div>
-    <div id="btCity" style="font-size:0.78rem;color:var(--txt3);margin-bottom:1rem;"></div>
+    <div id="btCity" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.05em;color:var(--txt);margin-bottom:0.75rem;"></div>
     <div id="btContent"><div class="loading"><div class="loading-ring"></div><div class="loading-txt">Analysing best months...</div></div></div>
   </div>
 </div>
@@ -1218,7 +1241,7 @@ async function generate(){
   var radiusStr='\nRADIUS: Every place must be within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of the city center of "'+city+'". No suburbs, no outskirts.';
   var catStr=catSearch?'\nCATEGORY — MANDATORY: The user is ONLY looking for "'+catSearch+'". Every single stop must be a "'+catSearch+'". Do not include any other venue type. If you cannot find enough real "'+catSearch+'" places within '+searchRadius+' miles of '+city+', reduce the number of blocks rather than substituting a different category. This is non-negotiable.':'';
   var sysPrompt='You are an expert local travel guide for '+city+'. You only recommend real, verified, currently-open businesses that appear on Google Maps and Yelp with actual reviews. You never invent place names. You never substitute a different category for what the user asked. You always stay within the specified radius of the city center.';
-  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+dowStr+radiusStr+catStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Tsukiji Outer Market","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Tsukiji Outer Market Tokyo Japan","peakHours":"7am-9am, 12pm-2pm","quietHours":"Before 7am or after 2pm"}]}]}\n\nFor each block, include peakHours and quietHours ONLY if you are genuinely confident about that specific place\'s typical busy and quiet periods based on real-world knowledge. If you are not certain, omit those fields entirely or set them to empty string — never guess or fabricate crowd times.\n\nNON-NEGOTIABLE RULES:\n1. Only real places: 100% verified, currently open, with reviews on Google Maps or Yelp. Do not invent names.\n2. Full official name exactly as on Google Maps.\n3. Type must match exactly — Breakfast block = breakfast venue only, never a bar or club.\n4. If uncertain whether a place is open, pick a famous guaranteed-to-exist alternative.\n5. mapsQuery = full official name + city + country (e.g. "Tsukiji Outer Market Tokyo Japan").\n6. Stay within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of '+city+' city center. Do not recommend places in other cities or distant suburbs.\n7. 7-8 blocks per day unless category filter limits options — then fewer real places is better than wrong category.\n8. Only recommend places that appear on Google Maps, Yelp, and TripAdvisor.';
+  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+dowStr+radiusStr+catStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Tsukiji Outer Market","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Tsukiji Outer Market Tokyo Japan","peakHours":"7am-9am, 12pm-2pm","quietHours":"Before 7am or after 2pm"}]}]}\n\nFor each block, include peakHours (busiest times) and quietHours (best low-crowd times) based on the typical patterns of that type of venue and your knowledge of the city. For famous landmarks, popular restaurants, museums and markets you will almost always know this — include it. For obscure spots where you truly have no knowledge, omit the fields. Keep each value short, e.g. "12pm–2pm" or "Before 10am, after 3pm".\n\nNON-NEGOTIABLE RULES:\n1. Only real places: 100% verified, currently open, with reviews on Google Maps or Yelp. Do not invent names.\n2. Full official name exactly as on Google Maps.\n3. Type must match exactly — Breakfast block = breakfast venue only, never a bar or club.\n4. If uncertain whether a place is open, pick a famous guaranteed-to-exist alternative.\n5. mapsQuery = full official name + city + country (e.g. "Tsukiji Outer Market Tokyo Japan").\n6. Stay within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of '+city+' city center. Do not recommend places in other cities or distant suburbs.\n7. 7-8 blocks per day unless category filter limits options — then fewer real places is better than wrong category.\n8. Only recommend places that appear on Google Maps, Yelp, and TripAdvisor.';
   try{
     var rawText=await callGroq(prompt,sysPrompt,4000);
     var text=rawText.replace(/```json|```/g,'').trim();
@@ -1599,30 +1622,83 @@ function openBestTime(){
 function closeBestTime(){document.getElementById('bestTimeModal').classList.remove('open');}
 async function loadBestTime(city){
   try{
-    var prompt='For "'+city+", rate each month for a traveller. Return ONLY raw JSON array (no markdown):\n[{\"m\":\"Jan\",\"wx\":3,\"crowds\":4,\"price\":3,\"note\":\"Brief 5-word note\"},{...}]\nwx=weather comfort 1-5, crowds=1(empty)–5(packed), price=1(cheap)–5(expensive). All 12 months.";
-    var raw=await callGroq(prompt,null,900);
+    var prompt='For the travel destination "'+city+'", return ONLY a raw JSON object (no markdown, no code fences):\n{"summary":"2 sentences: best overall season and worst time to visit.","avoid":"Month range to avoid and why in 1 sentence.","months":[{"m":"Jan","wx":3,"crowds":4,"price":3,"highlight":"Cherry blossoms peak","tip":"Short 1-sentence practical tip for this month"},...]}\nwx=weather comfort 1(awful)–5(perfect), crowds=1(empty)–5(packed), price=1(cheap)–5(expensive). All 12 months. highlight = the single most notable thing about visiting that month (festival, weather event, season, local event — be specific to '+city+'). tip = one practical sentence a traveller should know for that month.';
+    var raw=await callGroq(prompt,null,1800);
     raw=raw.replace(/```json|```/g,'').trim();
-    var si=raw.indexOf('['),ei=raw.lastIndexOf(']');
+    var si=raw.indexOf('{'),ei=raw.lastIndexOf('}');
     if(si>-1&&ei>-1)raw=raw.slice(si,ei+1);
-    var data=repairJSON(raw);
+    var parsed=repairJSON(raw);
+    var data=parsed.months||parsed; // fallback if AI returns array
+    if(!Array.isArray(data))data=Object.values(data);
     var city2=document.getElementById('city').value.trim()||curCity;
-    document.getElementById('btCity').textContent=city2+' — click a month to see details';
-    // Find best months (avg score)
-    var scored=data.map(function(m){return {m:m.m,score:(m.wx+(5-m.crowds)+( 5-m.price))/3,d:m};});
+    document.getElementById('btCity').textContent=city2;
+    // Score months
+    var scored=data.map(function(m){return {m:m.m,score:(m.wx+(5-m.crowds)+(5-m.price))/3,d:m};});
     scored.sort(function(a,b){return b.score-a.score;});
     var best=scored.slice(0,3).map(function(s){return s.m;});
+    var avoid=scored.slice(-2).map(function(s){return s.m;});
     var wxColors=['#ef4444','#f97316','#eab308','#84cc16','#22c55e'];
     var crowdColors=['#22c55e','#84cc16','#eab308','#f97316','#ef4444'];
     var priceColors=['#22c55e','#84cc16','#eab308','#f97316','#ef4444'];
-    var html='<div class="bt-grid">'+data.map(function(m){
+    var html='';
+    // Summary card
+    if(parsed.summary){
+      html+='<div class="bt-summary">'+parsed.summary+(parsed.avoid?'<div class="bt-avoid">⚠️ '+parsed.avoid+'</div>':'')+'</div>';
+    }
+    // Best months callout
+    html+='<div class="bt-best-row">';
+    scored.slice(0,3).forEach(function(s){
+      var m=s.d;
+      var wxLabel=['','Cold/Wet','Cool','Mild','Good','Perfect'][m.wx]||'';
+      html+='<div class="bt-best-card"><div class="bt-best-month">'+m.m+'</div><div class="bt-best-wx">☀️ '+wxLabel+'</div>'+(m.highlight?'<div class="bt-best-hl">'+m.highlight+'</div>':'')+'</div>';
+    });
+    html+='</div>';
+    // Month grid
+    html+='<div class="bt-section-lbl">All months</div>';
+    html+='<div class="bt-grid">'+data.map(function(m){
       var isBest=best.indexOf(m.m)>-1;
+      var isAvoid=avoid.indexOf(m.m)>-1;
       var wxPct=(m.wx/5*100)+'%',crPct=(m.crowds/5*100)+'%',prPct=(m.price/5*100)+'%';
-      return '<div class="bt-month" title="'+m.note+'" style="'+(isBest?'border-color:rgba(45,212,191,0.5);background:rgba(45,212,191,0.06);':'')+'"><div class="bt-month-name">'+m.m+'</div><div class="bt-bars"><div class="bt-bar-wrap" title="Weather: '+m.wx+'/5"><div class="bt-bar-bg"><div class="bt-bar-fill" style="width:'+wxPct+';background:'+wxColors[m.wx-1]+'"></div></div></div><div class="bt-bar-wrap" title="Crowds: '+m.crowds+'/5"><div class="bt-bar-bg"><div class="bt-bar-fill" style="width:'+crPct+';background:'+crowdColors[m.crowds-1]+'"></div></div></div><div class="bt-bar-wrap" title="Price: '+m.price+'/5"><div class="bt-bar-bg"><div class="bt-bar-fill" style="width:'+prPct+';background:'+priceColors[m.price-1]+'"></div></div></div></div>'+(isBest?'<div class="bt-badge" style="background:rgba(45,212,191,0.12);color:var(--teal);">Best</div>':'')+'</div>';
+      var borderStyle=isBest?'border-color:rgba(45,212,191,0.45);background:rgba(45,212,191,0.05);':isAvoid?'border-color:rgba(244,96,122,0.25);':'';
+      return '<div class="bt-month" style="'+borderStyle+'" onclick="showMonthDetail(this,\''+m.m+'\',\''+encodeURIComponent(m.highlight||\'\')+'\',\''+encodeURIComponent(m.tip||\'\')+'\','+m.wx+','+m.crowds+','+m.price+')">'
+        +'<div class="bt-month-name">'+m.m+'</div>'
+        +'<div class="bt-bars">'
+        +'<div class="bt-bar-wrap"><div class="bt-bar-label">wx</div><div class="bt-bar-bg"><div class="bt-bar-fill" style="width:'+wxPct+';background:'+wxColors[m.wx-1]+'"></div></div></div>'
+        +'<div class="bt-bar-wrap"><div class="bt-bar-label">👥</div><div class="bt-bar-bg"><div class="bt-bar-fill" style="width:'+crPct+';background:'+crowdColors[m.crowds-1]+'"></div></div></div>'
+        +'<div class="bt-bar-wrap"><div class="bt-bar-label">💰</div><div class="bt-bar-bg"><div class="bt-bar-fill" style="width:'+prPct+';background:'+priceColors[m.price-1]+'"></div></div></div>'
+        +'</div>'
+        +(isBest?'<div class="bt-badge" style="background:rgba(45,212,191,0.12);color:var(--teal);">✓ Best</div>':'')
+        +(m.highlight?'<div class="bt-month-hl">'+m.highlight+'</div>':'')
+        +'</div>';
     }).join('')+'</div>';
-    html+='<div class="bt-legend"><span><span class="bt-dot" style="background:#22c55e;"></span>Good weather</span><span><span class="bt-dot" style="background:#ef4444;"></span>Poor weather / packed / pricey</span></div>';
-    html+='<div style="margin-top:0.75rem;font-size:0.78rem;color:var(--txt2);"><strong style="color:var(--txt)">Best months:</strong> '+best.join(', ')+' · Hover/tap a month for details</div>';
+    // Legend
+    html+='<div class="bt-legend"><span><span class="bt-dot" style="background:#22c55e;"></span>Good</span><span><span class="bt-dot" style="background:#eab308;"></span>Avg</span><span><span class="bt-dot" style="background:#ef4444;"></span>Poor</span><span style="color:var(--txt3);font-size:0.63rem;">wx = weather · 👥 = crowds · 💰 = price · tap a month for details</span></div>';
+    // Detail panel (hidden until tap)
+    html+='<div class="bt-detail" id="btDetail" style="display:none;"></div>';
     document.getElementById('btContent').innerHTML=html;
   }catch(e){document.getElementById('btContent').innerHTML='<div style="color:var(--rose);padding:1rem;font-size:0.85rem;">Could not load best time data. Try again.</div>';}
+}
+
+function showMonthDetail(el,month,hlEnc,tipEnc,wx,crowds,price){
+  var hl=decodeURIComponent(hlEnc);
+  var tip=decodeURIComponent(tipEnc);
+  var detail=document.getElementById('btDetail');
+  if(!detail)return;
+  // Deselect all months
+  document.querySelectorAll('.bt-month').forEach(function(m){m.classList.remove('bt-month-sel');});
+  el.classList.add('bt-month-sel');
+  var wxLabel=['','Cold/Wet','Cool','Mild','Good','Perfect'][wx]||wx+'/5';
+  var crLabel=['','Empty','Quiet','Moderate','Busy','Very Crowded'][crowds]||crowds+'/5';
+  var prLabel=['','Budget','Affordable','Mid-range','Pricey','Expensive'][price]||price+'/5';
+  detail.style.display='block';
+  detail.innerHTML='<div class="bt-detail-month">'+month+'</div>'
+    +'<div class="bt-detail-stats">'
+    +'<div class="bt-detail-stat"><span class="bt-detail-icon">☀️</span><span class="bt-detail-val">'+wxLabel+'</span><span class="bt-detail-lbl">Weather</span></div>'
+    +'<div class="bt-detail-stat"><span class="bt-detail-icon">👥</span><span class="bt-detail-val">'+crLabel+'</span><span class="bt-detail-lbl">Crowds</span></div>'
+    +'<div class="bt-detail-stat"><span class="bt-detail-icon">💰</span><span class="bt-detail-val">'+prLabel+'</span><span class="bt-detail-lbl">Prices</span></div>'
+    +'</div>'
+    +(hl?'<div class="bt-detail-hl">'+hl+'</div>':'')
+    +(tip?'<div class="bt-detail-tip">💡 '+tip+'</div>':'');
 }
 
 // ── Events card ──
