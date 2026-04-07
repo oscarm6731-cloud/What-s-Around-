@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0d0d14">
 <title>What's Around?</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <link rel="manifest" href="/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -171,34 +171,70 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .gen-btn:active{transform:scale(0.98);}
 .gen-btn:disabled{opacity:0.3;cursor:not-allowed;transform:none;box-shadow:none;}
 #results{display:none;margin-top:2.5rem;}
-.res-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem;}
-.res-title{font-family:'Playfair Display',serif;font-size:2rem;letter-spacing:-0.01em;color:var(--txt);font-weight:700;}
-.res-sub{font-size:0.78rem;color:var(--txt3);margin-top:0.2rem;}
-.res-actions{display:flex;gap:0.4rem;flex-wrap:wrap;}
-.day-tabs{display:flex;gap:0.35rem;margin-bottom:1rem;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;-webkit-overflow-scrolling:touch;}
+/* ── Results header — editorial ── */
+.res-hdr{margin-bottom:0.6rem;}
+.res-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,7vw,3.6rem);letter-spacing:-0.02em;color:var(--txt);font-weight:800;line-height:1.05;margin-bottom:0.75rem;}
+.res-dateline{display:flex;flex-wrap:wrap;gap:0;margin-bottom:1rem;}
+.res-stat{display:flex;flex-direction:column;align-items:center;padding:0 1rem;border-right:1px solid var(--line);}
+.res-stat:first-child{padding-left:0;}
+.res-stat:last-child{border-right:none;}
+.res-stat-val{font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:700;color:var(--txt);line-height:1;}
+.res-stat-lbl{font-size:0.55rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--txt3);margin-top:0.2rem;}
+.res-divider{height:1px;background:var(--line);margin-bottom:1.25rem;}
+.res-sub{display:none;}
+.res-actions{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1rem;}
+/* ── Day tabs — bold editorial cards ── */
+.day-tabs{display:flex;gap:0.5rem;margin-bottom:1.25rem;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
 .day-tabs::-webkit-scrollbar{display:none;}
-.day-tab{padding:0.42rem 0.9rem;white-space:nowrap;background:var(--card);border:1px solid var(--line);border-radius:8px;font-size:0.76rem;font-weight:500;color:var(--txt2);cursor:pointer;flex-shrink:0;transition:all 0.15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
-.day-tab:hover{color:var(--txt);border-color:var(--line2);}
-.day-tab.active{background:rgba(45,212,191,0.1);border-color:rgba(45,212,191,0.35);color:var(--teal);}
+.day-tab{display:flex;flex-direction:column;align-items:flex-start;padding:0.7rem 1.1rem;white-space:nowrap;background:var(--card);border:1px solid var(--line);border-bottom:3px solid transparent;border-radius:10px 10px 0 0;cursor:pointer;flex-shrink:0;transition:all 0.18s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-width:90px;}
+.day-tab:hover{border-color:var(--line2);border-bottom-color:var(--line2);}
+.day-tab.active{background:var(--card2);border-color:var(--line);border-bottom-color:var(--teal);}
+.day-tab-num{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;line-height:1;color:var(--txt3);transition:color 0.18s;letter-spacing:0.05em;}
+.day-tab.active .day-tab-num{color:var(--txt);}
+.day-tab-theme{font-size:0.56rem;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--txt3);margin-top:0.15rem;white-space:normal;max-width:100px;line-height:1.3;transition:color 0.18s;}
+.day-tab.active .day-tab-theme{color:var(--teal);}
 .day-panel{display:none;}
-.day-panel.active{display:grid;gap:0.75rem;}
-.stop{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:border-color 0.2s;}
-.stop:hover{border-color:var(--line2);}
-.stop-hdr{display:flex;align-items:center;gap:0.6rem;padding:0.85rem 1rem 0.7rem;border-bottom:1px solid var(--line);flex-wrap:wrap;}
-.stop-n{width:22px;height:22px;border-radius:6px;flex-shrink:0;background:linear-gradient(135deg,var(--teal),var(--sky));display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:#0d0d14;}
-.stop-time{font-size:0.66rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.15);padding:0.15rem 0.5rem;border-radius:5px;white-space:nowrap;}
-.stop-name{font-family:'Playfair Display',serif;font-size:1rem;letter-spacing:0em;color:var(--txt);flex:1;font-weight:600;}
-.stop-type{font-size:0.64rem;color:var(--txt3);background:rgba(255,255,255,0.04);padding:0.14rem 0.45rem;border-radius:4px;white-space:nowrap;}
-.stop-cost{font-size:0.72rem;color:var(--gold);font-weight:600;white-space:nowrap;}
-.stop-body{padding:0.85rem 1rem;}
-.stop-desc{font-size:0.82rem;color:var(--txt2);line-height:1.62;margin-bottom:0.6rem;font-weight:300;}
-.stop-tip{font-size:0.74rem;color:var(--teal);background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.12);padding:0.35rem 0.65rem;border-radius:6px;margin-bottom:0.7rem;display:inline-block;}
-.stop-links{display:flex;flex-wrap:wrap;gap:0.35rem;}
-.slink{display:inline-flex;align-items:center;gap:0.25rem;padding:0.28rem 0.65rem;border-radius:7px;font-size:0.7rem;font-weight:600;text-decoration:none;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
-.slink:hover{transform:translateY(-1px);opacity:0.85;}
-.sl-m{background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.2);color:var(--sky);}
-.sl-o{background:rgba(244,96,122,0.08);border:1px solid rgba(244,96,122,0.2);color:var(--rose);}
-.sl-v{background:rgba(245,200,66,0.08);border:1px solid rgba(245,200,66,0.2);color:var(--gold);}
+.day-panel.active{display:grid;gap:1.25rem;}
+/* ── Stop cards — editorial ── */
+.stop{position:relative;background:var(--card);border:1px solid var(--line);border-radius:0 0 16px 16px;overflow:hidden;transition:all 0.22s cubic-bezier(0.25,0.46,0.45,0.94);}
+.stop:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,0,0,0.32);}
+/* Left accent bar by type */
+.stop::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--stop-accent,var(--teal));}
+/* Faded background number */
+.stop-bg-num{position:absolute;right:0.6rem;top:50%;transform:translateY(-50%);font-family:'Bebas Neue',sans-serif;font-size:6rem;line-height:1;color:rgba(255,255,255,0.03);pointer-events:none;user-select:none;letter-spacing:-0.02em;}
+body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
+.stop-inner{padding:1.25rem 1.4rem 1.4rem 1.7rem;position:relative;}
+/* Time pill floated top-right */
+.stop-time{position:absolute;top:1.1rem;right:1.2rem;font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--stop-accent,var(--teal));background:transparent;border:1px solid var(--stop-accent,var(--teal));padding:0.18rem 0.55rem;border-radius:100px;opacity:0.85;white-space:nowrap;}
+/* Suppress old stop header */
+.stop-hdr{display:none;}
+.stop-n{display:none;}
+.stop-body{padding:0;}
+/* Place name headline */
+.stop-name{font-family:'Bebas Neue',sans-serif;font-size:1.65rem;line-height:1.1;letter-spacing:0.04em;color:var(--txt);display:block;margin-bottom:0.2rem;padding-right:4.5rem;}
+/* Type label in accent color */
+.stop-type-lbl{font-size:0.58rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--stop-accent,var(--teal));margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem;}
+.stop-cost-inline{font-family:'DM Sans',sans-serif;font-size:0.65rem;font-weight:600;color:var(--gold);background:rgba(245,200,66,0.08);border:1px solid rgba(245,200,66,0.18);padding:0.1rem 0.45rem;border-radius:4px;}
+/* Description */
+.stop-desc{font-family:'DM Sans',sans-serif;font-size:0.85rem;color:var(--txt2);line-height:1.72;font-weight:300;margin-bottom:0.75rem;position:relative;}
+.stop-desc-inner{overflow:hidden;transition:max-height 0.35s ease;}
+.stop-desc-inner.collapsed{max-height:3.8em;}
+.stop-read-more{font-size:0.72rem;font-weight:500;color:var(--teal);cursor:pointer;border:none;background:none;padding:0;margin-bottom:0.65rem;display:none;}
+/* Tip as pull quote */
+.stop-tip{font-family:'DM Sans',sans-serif;font-style:italic;font-size:0.8rem;color:var(--teal);border-left:2px solid var(--teal);padding:0.3rem 0 0.3rem 0.75rem;margin:0 0 0.85rem;opacity:0.88;}
+/* Links as minimal text */
+.stop-links{display:flex;flex-wrap:wrap;gap:0.2rem 0.6rem;padding-top:0.75rem;border-top:1px solid var(--line);}
+.stop-cost{display:none;}
+.slink{display:inline-flex;align-items:center;gap:0.2rem;font-size:0.67rem;font-weight:500;text-decoration:none;transition:opacity 0.15s,color 0.15s;-webkit-tap-highlight-color:transparent;letter-spacing:0.04em;padding:0.12rem 0;border:none;background:none;}
+.slink:hover{opacity:0.7;}
+.sl-m{color:var(--sky);}
+.sl-o{color:var(--rose);}
+.sl-v{color:var(--gold);}
+.sl-ride{color:#9de8c8;}
+.sl-g{color:var(--teal);}
+.sl-b{color:var(--sky);}
+.sl-yelp{color:var(--rose);}
+.sl-ta{color:#34d399;}
 .loading{text-align:center;padding:4rem 2rem;}
 .loading-ring{width:44px;height:44px;border-radius:50%;border:3px solid var(--card2);border-top-color:var(--teal);animation:spin 0.85s linear infinite;margin:0 auto 1rem;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -320,38 +356,48 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .site-row-desc{font-size:0.68rem;color:var(--txt3);margin-top:0.1rem;}
 
 /* ── Design overhaul ── */
-/* Enhanced stop cards */
-.stop{transition:all 0.22s cubic-bezier(0.25,0.46,0.45,0.94);}
-.stop:hover{border-color:rgba(45,212,191,0.22);transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,0.28);}
-.stop-name{font-size:1.12rem !important;letter-spacing:0.02em;}
-/* Time-of-day accent borders */
-.stop[data-slot="morning"]{border-left:3px solid rgba(245,200,66,0.5);}
-.stop[data-slot="afternoon"]{border-left:3px solid rgba(96,165,250,0.5);}
-.stop[data-slot="evening"]{border-left:3px solid rgba(244,96,122,0.5);}
-.stop[data-slot="night"]{border-left:3px solid rgba(149,96,244,0.5);}
-.stop[data-slot="latenight"]{border-left:3px solid rgba(45,212,191,0.5);}
-/* Staggered stop animation */
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-.day-panel.active .stop{animation:fadeUp 0.3s ease both;}
-.day-panel.active .stop:nth-child(1){animation-delay:0.03s;}
-.day-panel.active .stop:nth-child(2){animation-delay:0.07s;}
-.day-panel.active .stop:nth-child(3){animation-delay:0.11s;}
-.day-panel.active .stop:nth-child(4){animation-delay:0.15s;}
-.day-panel.active .stop:nth-child(5){animation-delay:0.19s;}
-.day-panel.active .stop:nth-child(6){animation-delay:0.23s;}
-.day-panel.active .stop:nth-child(7){animation-delay:0.27s;}
-.day-panel.active .stop:nth-child(8){animation-delay:0.31s;}
+/* Stop accent colors by type */
+.stop[data-type="food"]{--stop-accent:var(--teal);}
+.stop[data-type="explore"]{--stop-accent:var(--gold);}
+.stop[data-type="nightlife"]{--stop-accent:var(--rose);}
+.stop[data-type="culture"]{--stop-accent:var(--sky);}
+.stop[data-type="morning"]{--stop-accent:rgba(245,200,66,0.9);}
+.stop[data-type="afternoon"]{--stop-accent:rgba(96,165,250,0.9);}
+.stop[data-type="evening"]{--stop-accent:rgba(244,96,122,0.9);}
+.stop[data-type="night"]{--stop-accent:rgba(149,96,244,0.9);}
+/* Staggered stop animation — 80ms steps */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.day-panel.active .stop{animation:fadeUp 0.38s ease both;}
+.day-panel.active .stop:nth-child(1){animation-delay:0s;}
+.day-panel.active .stop:nth-child(2){animation-delay:0.08s;}
+.day-panel.active .stop:nth-child(3){animation-delay:0.16s;}
+.day-panel.active .stop:nth-child(4){animation-delay:0.24s;}
+.day-panel.active .stop:nth-child(5){animation-delay:0.32s;}
+.day-panel.active .stop:nth-child(6){animation-delay:0.40s;}
+.day-panel.active .stop:nth-child(7){animation-delay:0.48s;}
+.day-panel.active .stop:nth-child(8){animation-delay:0.56s;}
 /* Bigger planner card titles */
 .card-title{font-size:1.2rem !important;letter-spacing:0.03em;}
 /* Micro-interactions */
 .opt:active,.btn-sm:active{transform:scale(0.91) !important;}
+/* Noise overlay */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px;mix-blend-mode:overlay;}
+/* Mobile full bleed stop cards */
+@media(max-width:680px){
+  .day-panel.active{gap:0.75rem;}
+  .stop{border-radius:0 0 12px 12px;margin:0 -1rem;}
+  #results{padding-left:0;padding-right:0;}
+  .stop-inner{padding:1rem 1.2rem 1.2rem 1.5rem;}
+  .stop-name{font-size:1.45rem;}
+}
 .gen-btn:hover{box-shadow:0 16px 40px rgba(45,212,191,0.42) !important;}
 /* ── Traffic warnings ── */
-/* peak/quiet hour badges on stops */
-.stop-hours{display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.5rem;}
-.hr-badge{display:inline-flex;align-items:center;gap:0.25rem;font-size:0.67rem;font-weight:500;padding:0.2rem 0.55rem;border-radius:100px;line-height:1.4;}
-.hr-peak{background:rgba(244,96,122,0.07);border:1px solid rgba(244,96,122,0.18);color:var(--rose);}
-.hr-quiet{background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.18);color:var(--teal);}
+/* peak/quiet hour dots on stops */
+.stop-hours{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.7rem;}
+.hr-badge{display:inline-flex;align-items:center;gap:0.3rem;font-size:0.65rem;font-weight:400;color:var(--txt3);letter-spacing:0.02em;}
+.hr-badge::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.hr-peak::before{background:var(--rose);}
+.hr-quiet::before{background:#34d399;}
 /* ── Rideshare link ── */
 .sl-ride{background:rgba(30,30,48,0.7);border:1px solid rgba(255,255,255,0.1);color:var(--txt2);}
 .sl-ride:hover{border-color:rgba(255,255,255,0.22);color:var(--txt);}
@@ -394,10 +440,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .step-ttl{font-size:1rem;font-weight:700;color:var(--txt);}
 .step-divider{height:1px;background:var(--line);margin:1.5rem 0;}
 .step-sub{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt3);margin-bottom:0.55rem;}
-/* ── Bigger stop card padding ── */
-.stop-hdr{padding:1.1rem 1.25rem 0.9rem;}
-.stop-body{padding:1rem 1.25rem 1.1rem;}
-.stop-desc{font-size:0.85rem;line-height:1.72;}
+/* ── Stop card layout — editorial override ── */
+.stop-hdr{display:none !important;}
+.stop-body{padding:0 !important;}
+.stop-desc{font-size:0.85rem;line-height:1.72;font-weight:300;}
 /* ── Premium gen button ── */
 .gen-btn{border-radius:16px;padding:1.25rem;font-size:1rem;font-weight:700;letter-spacing:0.06em;}
 /* ── Skeleton loading ── */
@@ -710,10 +756,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
       <div class="dest-hero-grad"></div>
     </div>
     <div class="res-hdr">
-      <div>
-        <div class="res-title" id="resTitle">YOUR ITINERARY</div>
-        <div class="res-sub" id="resSub"></div>
-      </div>
+      <div class="res-title" id="resTitle">Your Itinerary</div>
+      <div class="res-dateline" id="resDateline"></div>
+      <div class="res-divider"></div>
+      <div class="res-sub" id="resSub" style="display:none"></div>
       <div class="res-actions">
         <button class="btn-sm btn-teal" onclick="generate()">🎲 Regen</button>
         <button class="btn-sm btn-muted" onclick="saveTrip()">💾 Save</button>
@@ -981,7 +1027,7 @@ function shareTrip(){
           tabs.innerHTML='';panels.innerHTML='';
           tripDays.forEach(function(day,i){
             var tab=document.createElement('button');tab.className='day-tab'+(i===0?' active':'');
-            tab.textContent='Day '+day.dayNum+(day.theme?' · '+day.theme:'');
+            tab.innerHTML='<span class="day-tab-num">Day '+day.dayNum+'</span>'+(day.theme?'<span class="day-tab-theme">'+day.theme+'</span>':'');
             (function(idx){tab.onclick=function(){switchDay(idx);};})(i);
             tabs.appendChild(tab);
             var panel=document.createElement('div');panel.className='day-panel'+(i===0?' active':'');
@@ -1181,14 +1227,26 @@ async function generate(){
     var parsed=repairJSON(text);
     tripDays=parsed.days||[];
     curTitle=parsed.title||(days+' Days in '+city);
-    document.getElementById('resTitle').textContent=curTitle.toUpperCase();
-    document.getElementById('resSub').textContent=tripDays.reduce(function(s,d){return s+(d.blocks||[]).length;},0)+' stops · '+days+' day'+(days>1?'s':'')+' · '+city+' · $'+budget+'/day · '+group+(parsed.totalCost?' · '+parsed.totalCost+' est.':'');
+    document.getElementById('resTitle').textContent=curTitle;
+    var totalStops=tripDays.reduce(function(s,d){return s+(d.blocks||[]).length;},0);
+    var dateline=document.getElementById('resDateline');
+    if(dateline){
+      var stats=[
+        {val:totalStops,lbl:'Stops'},
+        {val:days,lbl:'Days'},
+        {val:city,lbl:'Destination'},
+        {val:'$'+budget,lbl:'Per Day'},
+        {val:group,lbl:'Group'},
+      ];
+      if(parsed.totalCost)stats.push({val:parsed.totalCost,lbl:'Est. Cost'});
+      dateline.innerHTML=stats.map(function(s){return '<div class="res-stat"><span class="res-stat-val">'+s.val+'</span><span class="res-stat-lbl">'+s.lbl+'</span></div>';}).join('');
+    }
     var tabs=document.getElementById('dayTabs'),panels=document.getElementById('dayPanels');
     tabs.innerHTML='';panels.innerHTML='';
     tripDays.forEach(function(day,i){
       var tab=document.createElement('button');
       tab.className='day-tab'+(i===0?' active':'');
-      tab.textContent='Day '+day.dayNum+(day.theme?' · '+day.theme:'');
+      tab.innerHTML='<span class="day-tab-num">Day '+day.dayNum+'</span>'+(day.theme?'<span class="day-tab-theme">'+day.theme+'</span>':'');
       (function(idx){tab.onclick=function(){switchDay(idx);};})(i);
       tabs.appendChild(tab);
       var panel=document.createElement('div');
@@ -1224,6 +1282,14 @@ function switchDay(i){
 }
 
 
+function getStopType(t){
+  t=(t||'').toLowerCase();
+  if(t.indexOf('breakfast')>-1||t.indexOf('brunch')>-1||t.indexOf('lunch')>-1||t.indexOf('dinner')>-1||t.indexOf('cafe')>-1||t.indexOf('food')>-1||t.indexOf('restaurant')>-1||t.indexOf('bar')>-1||t.indexOf('drink')>-1)return 'food';
+  if(t.indexOf('museum')>-1||t.indexOf('gallery')>-1||t.indexOf('theatre')>-1||t.indexOf('theater')>-1||t.indexOf('culture')>-1||t.indexOf('historic')>-1||t.indexOf('art')>-1)return 'culture';
+  if(t.indexOf('night')>-1||t.indexOf('club')>-1||t.indexOf('bar')>-1||t.indexOf('lounge')>-1)return 'nightlife';
+  return 'explore';
+}
+
 function buildDay(day,di,links){
   var blocks=day.blocks||[];
   var html='';
@@ -1231,6 +1297,7 @@ function buildDay(day,di,links){
   if(day.dayCost){html+='<div style="background:rgba(245,200,66,0.06);border:1px solid rgba(245,200,66,0.15);border-radius:10px;padding:0.7rem 1rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.7rem;color:var(--txt3)">Estimated day spend</span><span style="font-family:DM Sans,sans-serif;font-weight:700;font-size:1.1rem;color:var(--gold)">'+day.dayCost+' per person</span></div>';}
   blocks.forEach(function(b,bi){
     var t=(b.type||'').toLowerCase();
+    var stopType=getStopType(t);
     var lhtml='';
     if(links){
       var mq=encodeURIComponent(b.mapsQuery||b.place+' '+curCity);
@@ -1241,34 +1308,59 @@ function buildDay(day,di,links){
       var isHotel=t.indexOf('hotel')>-1||t.indexOf('accommodation')>-1||t.indexOf('hostel')>-1||t.indexOf('stay')>-1||t.indexOf('check-in')>-1||t.indexOf('check in')>-1;
       var mapsUrl='https://www.google.com/maps/search/?api=1&query='+mq;
       lhtml+='<a class="slink sl-m" href="'+mapsUrl+'" target="_blank" rel="noopener">📍 Maps</a>';
-      // Verify links always shown
       lhtml+='<a class="slink sl-yelp" href="https://www.yelp.com/search?find_desc='+encodeURIComponent(b.place)+'&find_loc='+encodeURIComponent(curCity)+'" target="_blank" rel="noopener">🔍 Yelp</a>';
       lhtml+='<a class="slink sl-ta" href="https://www.tripadvisor.com/Search?q='+encodeURIComponent(b.place+' '+curCity)+'" target="_blank" rel="noopener">⭐ TA</a>';
-      // Rideshare: Uber deeplink, Lyft fallback
       var uberUrl='https://www.uber.com/ride?action=setPickup&dropoff[formatted_address]='+destEnc;
       var lyftUrl='https://www.lyft.com/rider/referrals/ride?destination='+destEnc;
       lhtml+='<a class="slink sl-ride" href="'+uberUrl+'" target="_blank" rel="noopener" title="Open in Uber app or browser. Tap to try Lyft instead." onclick="handleRideTap(event,\''+lyftUrl+'\')">🚗 Ride</a>';
-      if(isFood)
-        lhtml+='<a class="slink sl-o" href="https://www.google.com/search?q='+encodeURIComponent('reserve table '+b.place+' '+curCity)+'" target="_blank" rel="noopener">🍽 Reserve</a>';
-      if(isAttr){
-        lhtml+='<a class="slink sl-v" href="https://www.viator.com/search/'+placeEnc+'?pid=P00107301" target="_blank" rel="noopener">🎟 Viator</a>';
-        lhtml+='<a class="slink sl-g" href="https://www.getyourguide.com/s/?q='+placeEnc+'&partner_id=T1EGNP0" target="_blank" rel="noopener">🎫 GYG</a>';
-      }
-      if(isHotel)
-        lhtml+='<a class="slink sl-b" href="https://www.booking.com/searchresults.html?aid=7956794&ss='+placeEnc+'" target="_blank" rel="noopener">🏨 Book</a>';
+      if(isFood)lhtml+='<a class="slink sl-o" href="https://www.google.com/search?q='+encodeURIComponent('reserve table '+b.place+' '+curCity)+'" target="_blank" rel="noopener">🍽 Reserve</a>';
+      if(isAttr){lhtml+='<a class="slink sl-v" href="https://www.viator.com/search/'+placeEnc+'?pid=P00107301" target="_blank" rel="noopener">🎟 Viator</a>';lhtml+='<a class="slink sl-g" href="https://www.getyourguide.com/s/?q='+placeEnc+'&partner_id=T1EGNP0" target="_blank" rel="noopener">🎫 GYG</a>';}
+      if(isHotel)lhtml+='<a class="slink sl-b" href="https://www.booking.com/searchresults.html?aid=7956794&ss='+placeEnc+'" target="_blank" rel="noopener">🏨 Book</a>';
     }
     var slot=getTimeSlot(b.time);
     var isSaved=isPlaceSaved(b.place,curCity);
+    // Hours dots
     var hoursHtml='';
     if(b.peakHours||b.quietHours){
       hoursHtml='<div class="stop-hours">';
-      if(b.peakHours)hoursHtml+='<span class="hr-badge hr-peak">🔴 Peak: '+b.peakHours+'</span>';
-      if(b.quietHours)hoursHtml+='<span class="hr-badge hr-quiet">🟢 Quiet: '+b.quietHours+'</span>';
+      if(b.peakHours)hoursHtml+='<span class="hr-badge hr-peak">Peak: '+b.peakHours+'</span>';
+      if(b.quietHours)hoursHtml+='<span class="hr-badge hr-quiet">Quiet: '+b.quietHours+'</span>';
       hoursHtml+='</div>';
     }
-    html+='<div class="stop" data-slot="'+slot+'" id="stop-'+di+'-'+bi+'"><div class="stop-hdr"><div class="stop-n">'+(bi+1)+'</div><div class="stop-time">'+b.time+'</div><div class="stop-name">'+b.place+'</div><div class="stop-type">'+b.type+'</div>'+(b.cost?'<div class="stop-cost">'+b.cost+'</div>':'')+'<div class="stop-radius">≤'+searchRadius+'mi</div><button class="stop-act" onclick="randomizeStop('+di+','+bi+',this)" title="Swap this stop">🎲</button><button class="stop-act'+(isSaved?' saved-act':'')+'" id="save-act-'+di+'-'+bi+'" onclick="savePlace('+di+','+bi+',this)" title="Save this place">'+(isSaved?'🔖':'🏷')+'</button></div><div class="stop-body"><div class="stop-desc">'+b.desc+'</div>'+(b.tip?'<div class="stop-tip">💡 '+b.tip+'</div>':'')+hoursHtml+(lhtml?'<div class="stop-links">'+lhtml+'</div>':'')+'</div></div>';
+    // Type label
+    var typeLbl='<div class="stop-type-lbl">'+b.type+(b.cost?'<span class="stop-cost-inline">'+b.cost+'</span>':'')+'</div>';
+    // Description with read-more for long text
+    var desc=b.desc||'';
+    var needsMore=desc.length>160;
+    var descHtml='<div class="stop-desc"><div class="stop-desc-inner'+(needsMore?' collapsed':'')+'" id="desc-'+di+'-'+bi+'">'+desc+'</div>'+(needsMore?'<button class="stop-read-more" id="rm-'+di+'-'+bi+'" onclick="toggleDesc('+di+','+bi+')" style="display:block">Read more ↓</button>':'')+'</div>';
+    // Tip as pull quote
+    var tipHtml=b.tip?'<div class="stop-tip">'+b.tip+'</div>':'';
+    // Actions
+    var actHtml='<div style="display:flex;gap:0.35rem;margin-bottom:0.75rem;"><button class="stop-act" onclick="randomizeStop('+di+','+bi+',this)" title="Swap this stop">🎲 Swap</button><button class="stop-act'+(isSaved?' saved-act':'')+'" id="save-act-'+di+'-'+bi+'" onclick="savePlace('+di+','+bi+',this)" title="Save">'+(isSaved?'🔖 Saved':'🏷 Save')+'</button></div>';
+    var numStr=(bi+1)<10?'0'+(bi+1):(bi+1)+'';
+    html+='<div class="stop" data-slot="'+slot+'" data-type="'+stopType+'" id="stop-'+di+'-'+bi+'">'
+      +'<div class="stop-bg-num">'+numStr+'</div>'
+      +'<div class="stop-inner">'
+      +'<div class="stop-time">'+b.time+'</div>'
+      +'<div class="stop-name">'+b.place+'</div>'
+      +typeLbl
+      +descHtml
+      +tipHtml
+      +hoursHtml
+      +actHtml
+      +(lhtml?'<div class="stop-links">'+lhtml+'</div>':'')
+      +'</div></div>';
   });
   return html;
+}
+
+function toggleDesc(di,bi){
+  var el=document.getElementById('desc-'+di+'-'+bi);
+  var btn=document.getElementById('rm-'+di+'-'+bi);
+  if(!el)return;
+  var collapsed=el.classList.contains('collapsed');
+  el.classList.toggle('collapsed',!collapsed);
+  if(btn)btn.textContent=collapsed?'Read less ↑':'Read more ↓';
 }
 
 function handleRideTap(e,lyftUrl){
@@ -1310,7 +1402,7 @@ function loadTrip(id){
   tabs.innerHTML='';panels.innerHTML='';
   tripDays.forEach(function(day,i){
     var tab=document.createElement('button');tab.className='day-tab'+(i===0?' active':'');
-    tab.textContent='Day '+day.dayNum+(day.theme?' · '+day.theme:'');
+    tab.innerHTML='<span class="day-tab-num">Day '+day.dayNum+'</span>'+(day.theme?'<span class="day-tab-theme">'+day.theme+'</span>':'');
     (function(idx){tab.onclick=function(){switchDay(idx);};})(i);
     tabs.appendChild(tab);
     var panel=document.createElement('div');panel.className='day-panel'+(i===0?' active':'');
