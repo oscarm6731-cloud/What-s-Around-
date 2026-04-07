@@ -1658,7 +1658,7 @@ async function loadBestTime(city){
       var isAvoid=avoid.indexOf(m.m)>-1;
       var wxPct=(m.wx/5*100)+'%',crPct=(m.crowds/5*100)+'%',prPct=(m.price/5*100)+'%';
       var borderStyle=isBest?'border-color:rgba(45,212,191,0.45);background:rgba(45,212,191,0.05);':isAvoid?'border-color:rgba(244,96,122,0.25);':'';
-      return '<div class="bt-month" style="'+borderStyle+'" onclick="showMonthDetail(this,\''+m.m+'\',\''+encodeURIComponent(m.highlight||\'\')+'\',\''+encodeURIComponent(m.tip||\'\')+'\','+m.wx+','+m.crowds+','+m.price+')">'
+      return '<div class="bt-month" style="'+borderStyle+'" onclick="showMonthDetail(this,\''+m.m+'\',\''+encodeURIComponent(m.highlight||'')+'\',\''+encodeURIComponent(m.tip||'')+'\','+m.wx+','+m.crowds+','+m.price+')">'
         +'<div class="bt-month-name">'+m.m+'</div>'
         +'<div class="bt-bars">'
         +'<div class="bt-bar-wrap"><div class="bt-bar-label">wx</div><div class="bt-bar-bg"><div class="bt-bar-fill" style="width:'+wxPct+';background:'+wxColors[m.wx-1]+'"></div></div></div>'
