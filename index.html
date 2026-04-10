@@ -525,6 +525,29 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
 /* ── Active category banner ── */
 .cat-active-banner{background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.18);border-left:3px solid var(--sky);border-radius:8px;padding:0.5rem 0.85rem;margin-bottom:0.6rem;font-size:0.75rem;color:var(--sky);font-weight:500;}
 
+/* ── Step Wizard ── */
+.wiz-indicator{display:flex;align-items:center;margin-bottom:2rem;padding:0 0.25rem;}
+.wiz-ind-step{display:flex;flex-direction:column;align-items:center;gap:0.4rem;flex-shrink:0;}
+.wiz-ind-dot{width:44px;height:44px;border-radius:50%;background:var(--card2);border:2px solid var(--line2);display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;color:var(--txt3);transition:all 0.38s cubic-bezier(0.34,1.56,0.64,1);}
+.wiz-ind-lbl{font-size:0.58rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--txt3);transition:color 0.3s;white-space:nowrap;text-align:center;}
+.wiz-ind-step.active .wiz-ind-dot{background:var(--teal);border-color:var(--teal);color:#0d0d14;box-shadow:0 0 0 6px rgba(45,212,191,0.15),0 4px 16px rgba(45,212,191,0.35);}
+.wiz-ind-step.active .wiz-ind-lbl{color:var(--teal);}
+.wiz-ind-step.done .wiz-ind-dot{background:rgba(45,212,191,0.12);border-color:rgba(45,212,191,0.5);color:var(--teal);font-size:0.85rem;}
+.wiz-ind-step.done .wiz-ind-lbl{color:rgba(45,212,191,0.7);}
+.wiz-ind-conn{flex:1;height:2px;background:var(--line2);margin:0 0.5rem;position:relative;overflow:hidden;margin-bottom:1.4rem;border-radius:2px;}
+.wiz-ind-fill{position:absolute;left:0;top:0;height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--sky));transition:width 0.5s ease;border-radius:2px;}
+.wiz-viewport{overflow:hidden;}
+.wiz-track{display:flex;width:300%;align-items:flex-start;transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);}
+.wiz-slide{width:calc(100%/3);flex-shrink:0;min-width:0;}
+.wiz-nav{display:flex;gap:0.75rem;margin-top:1.25rem;margin-bottom:0.5rem;}
+.wiz-btn-back{padding:0 1.4rem;height:52px;border-radius:14px;background:transparent;border:1px solid var(--line2);color:var(--txt2);font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:500;transition:all 0.15s;flex-shrink:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.wiz-btn-back:hover{color:var(--txt);border-color:var(--line);}
+.wiz-btn-back:active{transform:scale(0.97);}
+.wiz-btn-next{flex:1;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--teal),var(--sky));color:#0d0d14;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;letter-spacing:0.05em;border:none;transition:opacity 0.15s,transform 0.15s,box-shadow 0.15s;box-shadow:0 8px 24px rgba(45,212,191,0.28);-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.wiz-btn-next:hover{opacity:0.88;transform:translateY(-1px);box-shadow:0 12px 32px rgba(45,212,191,0.4);}
+.wiz-btn-next:active{transform:scale(0.97);}
+.wiz-gen-btn{flex:1;height:52px;border-radius:14px;padding:0;font-size:0.95rem;margin-top:0 !important;}
+
 </style>
 </head>
 <body>
@@ -568,18 +591,30 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
     <p>The more you share, the better your itinerary.</p>
   </div>
 
-  <!-- Progress bar -->
-  <div class="planner-progress">
-    <div class="prog-steps">
-      <div class="prog-step active" id="prog-1"><span class="prog-dot"></span>Where &amp; When</div>
-      <div class="prog-line"><div class="prog-bar-track"><div class="prog-bar-fill" id="progFill" style="width:15%"></div></div></div>
-      <div class="prog-step" id="prog-2"><span class="prog-dot"></span>Your Vibe</div>
-      <div class="prog-line"><div class="prog-bar-track"><div class="prog-bar-fill" id="progFill2" style="width:0%"></div></div></div>
-      <div class="prog-step" id="prog-3"><span class="prog-dot"></span>Preferences</div>
+  <!-- Step indicator -->
+  <div class="wiz-indicator">
+    <div class="wiz-ind-step active" id="wis-1">
+      <div class="wiz-ind-dot"><span>1</span></div>
+      <div class="wiz-ind-lbl">Where &amp; When</div>
+    </div>
+    <div class="wiz-ind-conn"><div class="wiz-ind-fill" id="wil-1"></div></div>
+    <div class="wiz-ind-step" id="wis-2">
+      <div class="wiz-ind-dot"><span>2</span></div>
+      <div class="wiz-ind-lbl">Your Vibe</div>
+    </div>
+    <div class="wiz-ind-conn"><div class="wiz-ind-fill" id="wil-2"></div></div>
+    <div class="wiz-ind-step" id="wis-3">
+      <div class="wiz-ind-dot"><span>3</span></div>
+      <div class="wiz-ind-lbl">Preferences</div>
     </div>
   </div>
 
-  <!-- Step 1: Where & When -->
+  <!-- Wizard slider -->
+  <div class="wiz-viewport">
+  <div class="wiz-track" id="wizTrack">
+
+  <!-- Slide 1: Where & When -->
+  <div class="wiz-slide" id="wiz-slide-1">
   <div class="step-card">
     <div class="step-hdr">
       <span class="step-badge">1</span>
@@ -591,7 +626,7 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
     <div class="step-divider"></div>
 
     <div class="city-inp-wrap">
-      <input class="inp" id="city" type="text" placeholder="City, state, country — or ZIP / postal code" oninput="onCityInput(this.value);updateProgress();" autocomplete="off">
+      <input class="inp" id="city" type="text" placeholder="City, state, country — or ZIP / postal code" oninput="onCityInput(this.value);" autocomplete="off">
       <div class="city-sugs" id="citySugs"></div>
     </div>
     <button class="near-me-btn" onclick="nearMe()">📍 Use my location</button>
@@ -648,8 +683,14 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
       </div>
     </div>
   </div>
+  <div class="wiz-nav">
+    <div></div>
+    <button class="wiz-btn-next" onclick="wizNext()">Continue →</button>
+  </div>
+  </div><!-- /wiz-slide-1 -->
 
-  <!-- Step 2: Your Vibe -->
+  <!-- Slide 2: Your Vibe -->
+  <div class="wiz-slide" id="wiz-slide-2">
   <div class="step-card">
     <div class="step-hdr">
       <span class="step-badge">2</span>
@@ -664,17 +705,17 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
     <div style="margin-top:1.1rem;">
       <div class="card-sub" style="margin-bottom:0.45rem;">Pick your vibe — all that apply</div>
       <div class="opts">
-        <button class="opt" onclick="togOpt(this,'Culture');updateProgress();">🏛 Culture</button>
-        <button class="opt" onclick="togOpt(this,'Food');updateProgress();">🍽 Food</button>
-        <button class="opt" onclick="togOpt(this,'Nature');updateProgress();">🌿 Nature</button>
-        <button class="opt" onclick="togOpt(this,'Shopping');updateProgress();">🛍 Shopping</button>
-        <button class="opt" onclick="togOpt(this,'Nightlife');updateProgress();">🌙 Nightlife</button>
-        <button class="opt" onclick="togOpt(this,'Art');updateProgress();">🎨 Art</button>
-        <button class="opt" onclick="togOpt(this,'Wellness');updateProgress();">🧘 Wellness</button>
-        <button class="opt" onclick="togOpt(this,'Hidden Gems');updateProgress();">💎 Hidden Gems</button>
-        <button class="opt" onclick="togOpt(this,'Adventure');updateProgress();">🏄 Adventure</button>
-        <button class="opt" onclick="togOpt(this,'Photography');updateProgress();">📸 Photography</button>
-        <button class="opt" onclick="togOpt(this,'Drinks');updateProgress();">🍹 Drinks</button>
+        <button class="opt" onclick="togOpt(this,'Culture');">🏛 Culture</button>
+        <button class="opt" onclick="togOpt(this,'Food');">🍽 Food</button>
+        <button class="opt" onclick="togOpt(this,'Nature');">🌿 Nature</button>
+        <button class="opt" onclick="togOpt(this,'Shopping');">🛍 Shopping</button>
+        <button class="opt" onclick="togOpt(this,'Nightlife');">🌙 Nightlife</button>
+        <button class="opt" onclick="togOpt(this,'Art');">🎨 Art</button>
+        <button class="opt" onclick="togOpt(this,'Wellness');">🧘 Wellness</button>
+        <button class="opt" onclick="togOpt(this,'Hidden Gems');">💎 Hidden Gems</button>
+        <button class="opt" onclick="togOpt(this,'Adventure');">🏄 Adventure</button>
+        <button class="opt" onclick="togOpt(this,'Photography');">📸 Photography</button>
+        <button class="opt" onclick="togOpt(this,'Drinks');">🍹 Drinks</button>
       </div>
       <input class="inp custom-vibe-inp" id="customVibe" type="text" placeholder="✏️ Anything specific? e.g. rooftop bars, hidden cafes, street art..." style="margin-top:0.65rem;">
     </div>
@@ -699,8 +740,14 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
       </div>
     </div>
   </div>
+  <div class="wiz-nav">
+    <button class="wiz-btn-back" onclick="wizBack()">← Back</button>
+    <button class="wiz-btn-next" onclick="wizNext()">Continue →</button>
+  </div>
+  </div><!-- /wiz-slide-2 -->
 
-  <!-- Step 3: Preferences -->
+  <!-- Slide 3: Preferences -->
+  <div class="wiz-slide" id="wiz-slide-3">
   <div class="step-card">
     <div class="step-hdr">
       <span class="step-badge">3</span>
@@ -720,7 +767,7 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
         </div>
         <div style="font-size:0.7rem;color:var(--txt3);align-self:flex-end;">per person · per day</div>
       </div>
-      <input type="range" id="budgetRange" min="0" max="999" value="150" oninput="updBudget(this.value);updateProgress();">
+      <input type="range" id="budgetRange" min="0" max="999" value="150" oninput="updBudget(this.value);">
       <div class="slider-marks"><span>$0 Free</span><span>$250</span><span>$500</span><span>$999 Luxury</span></div>
     </div>
 
@@ -785,8 +832,15 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
     </div>
   </div>
 
-<button class="gen-btn" id="genBtn" onclick="generate()">Build my itinerary ✨</button>
-<button class="btn-ghost" style="width:100%;margin-top:0.6rem;font-size:0.85rem;" onclick="openBestTime()">📅 Best Time to Visit</button>
+  <div class="wiz-nav">
+    <button class="wiz-btn-back" onclick="wizBack()">← Back</button>
+    <button class="wiz-btn-next gen-btn wiz-gen-btn" id="genBtn" onclick="generate()">Build my itinerary ✨</button>
+  </div>
+  <button class="btn-ghost" style="width:100%;margin-top:0.5rem;font-size:0.85rem;" onclick="openBestTime()">📅 Best Time to Visit</button>
+
+  </div><!-- /wiz-slide-3 -->
+  </div><!-- /wiz-track -->
+  </div><!-- /wiz-viewport -->
 
   <div id="results">
     <div class="dest-hero" id="destHero">
@@ -1079,6 +1133,43 @@ function shareTrip(){
   }catch(e){}
 })();
 
+// ── Wizard ──
+var wizStep=1;
+function goWizStep(n){
+  if(n<1||n>3)return;
+  var pct=(n-1)*(100/3);
+  document.getElementById('wizTrack').style.transform='translateX(-'+pct+'%)';
+  wizStep=n;
+  updateWizIndicator();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function updateWizIndicator(){
+  for(var i=1;i<=3;i++){
+    var el=document.getElementById('wis-'+i);
+    if(!el)continue;
+    var dot=el.querySelector('.wiz-ind-dot span');
+    el.classList.remove('active','done');
+    if(i<wizStep){
+      el.classList.add('done');
+      if(dot)dot.textContent='✓';
+    } else {
+      if(dot)dot.textContent=i;
+    }
+    if(i===wizStep)el.classList.add('active');
+    if(i<3){var line=document.getElementById('wil-'+i);if(line)line.style.width=(i<wizStep?'100%':'0%');}
+  }
+}
+function wizNext(){
+  if(wizStep===1){
+    var city=document.getElementById('city').value.trim();
+    if(!city){toast('Please enter a destination first','err');return;}
+  }
+  if(wizStep<3)goWizStep(wizStep+1);
+}
+function wizBack(){
+  if(wizStep>1)goWizStep(wizStep-1);
+}
+
 function goPage(id){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
   document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
@@ -1089,6 +1180,7 @@ function goPage(id){
   var bnBtn=document.getElementById('bn-'+id);
   if(bnBtn)bnBtn.classList.add('active');
   if(id==='saved')renderSaved();
+  if(id==='planner')goWizStep(1);
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
