@@ -505,10 +505,18 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
 .day-panel.active.regen .stop:nth-child(7){animation-delay:0.30s !important;}
 .day-panel.active.regen .stop:nth-child(8){animation-delay:0.35s !important;}
 /* ── Category pills ── */
-.cat-pills{display:flex;flex-wrap:wrap;gap:0.38rem;margin-top:0.65rem;}
-.cat-pill{padding:0.4rem 0.82rem;background:var(--card2);border:1px solid var(--line2);border-radius:100px;font-size:0.78rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.cat-pills{display:flex;flex-wrap:wrap;gap:0.38rem;}
+.cat-pill{padding:0.38rem 0.78rem;background:var(--card2);border:1px solid var(--line2);border-radius:100px;font-size:0.76rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
 .cat-pill:hover{background:var(--card);color:var(--txt);}
 .cat-pill.on{background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.4);color:var(--sky);}
+/* Optional category section */
+.cat-optional-wrap{margin-bottom:1rem;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+.cat-optional-toggle{width:100%;display:flex;justify-content:space-between;align-items:center;padding:0.9rem 1.1rem;background:var(--card);border:none;cursor:pointer;font-size:0.82rem;font-weight:500;color:var(--txt2);-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:color 0.15s;}
+.cat-optional-toggle:hover{color:var(--txt);}
+.cat-optional-toggle[aria-expanded="true"]{color:var(--txt);}
+.cat-optional-arrow{font-size:1rem;color:var(--txt3);transition:transform 0.2s;display:inline-block;}
+.cat-optional-toggle[aria-expanded="true"] .cat-optional-arrow{transform:rotate(90deg);}
+.cat-optional-body{padding:0.9rem 1.1rem 1.1rem;background:var(--card);border-top:1px solid var(--line);}
 /* ── Verify links ── */
 .sl-yelp{background:rgba(244,96,122,0.08);border:1px solid rgba(244,96,122,0.2);color:var(--rose);}
 .sl-ta{background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);color:#34d399;}
@@ -647,25 +655,11 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
       <span class="step-badge">2</span>
       <div>
         <div class="step-ttl">Your Vibe</div>
-        <div class="step-sub">Category focus, mood &amp; travel style</div>
+        <div class="step-sub">Mood &amp; travel style</div>
       </div>
     </div>
     <div class="step-divider"></div>
 
-    <div class="card-sub" style="margin-bottom:0.45rem;">Focus every stop on one category (optional)</div>
-    <input class="inp" id="categorySearch" type="text" placeholder="e.g. coffee shops · rooftop bars · vegan restaurants" oninput="onCatInput(this.value);updateProgress();" autocomplete="off">
-    <div class="cat-pills">
-      <button class="cat-pill" onclick="setCat(this,'coffee shops')">☕ Coffee</button>
-      <button class="cat-pill" onclick="setCat(this,'parks and gardens')">🌳 Parks</button>
-      <button class="cat-pill" onclick="setCat(this,'bars')">🍺 Bars</button>
-      <button class="cat-pill" onclick="setCat(this,'restaurants and food')">🍕 Food</button>
-      <button class="cat-pill" onclick="setCat(this,'museums')">🏛 Museums</button>
-      <button class="cat-pill" onclick="setCat(this,'shopping')">🛍 Shopping</button>
-      <button class="cat-pill" onclick="setCat(this,'nightlife and clubs')">🌙 Nightlife</button>
-      <button class="cat-pill" onclick="setCat(this,'beaches')">🏖 Beaches</button>
-      <button class="cat-pill" onclick="setCat(this,'gyms and fitness')">💪 Gyms</button>
-      <button class="cat-pill" onclick="setCat(this,'entertainment and theaters')">🎭 Entertainment</button>
-    </div>
 
     <div style="margin-top:1.1rem;">
       <div class="card-sub" style="margin-bottom:0.45rem;">Pick your vibe — all that apply</div>
@@ -764,6 +758,29 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
           <div class="t-track"></div>
           <div class="t-thumb"></div>
         </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Optional: Category filter -->
+  <div class="cat-optional-wrap">
+    <button class="cat-optional-toggle" id="catToggleBtn" onclick="toggleCatSection()" aria-expanded="false">
+      <span>Filter by category</span>
+      <span class="cat-optional-arrow" id="catArrow">›</span>
+    </button>
+    <div class="cat-optional-body" id="catOptionalBody" style="display:none;">
+      <input class="inp" id="categorySearch" type="text" placeholder="e.g. coffee shops, rooftop bars, vegan restaurants" oninput="onCatInput(this.value);" autocomplete="off" style="margin-bottom:0.65rem;">
+      <div class="cat-pills">
+        <button class="cat-pill" onclick="setCat(this,'coffee shops')">Coffee</button>
+        <button class="cat-pill" onclick="setCat(this,'parks and gardens')">Parks</button>
+        <button class="cat-pill" onclick="setCat(this,'bars')">Bars</button>
+        <button class="cat-pill" onclick="setCat(this,'restaurants and food')">Food</button>
+        <button class="cat-pill" onclick="setCat(this,'museums')">Museums</button>
+        <button class="cat-pill" onclick="setCat(this,'shopping')">Shopping</button>
+        <button class="cat-pill" onclick="setCat(this,'nightlife and clubs')">Nightlife</button>
+        <button class="cat-pill" onclick="setCat(this,'beaches')">Beaches</button>
+        <button class="cat-pill" onclick="setCat(this,'gyms and fitness')">Gyms</button>
+        <button class="cat-pill" onclick="setCat(this,'entertainment and theaters')">Entertainment</button>
       </div>
     </div>
   </div>
@@ -1127,6 +1144,15 @@ function setRadius(btn,val){
   document.querySelectorAll('#radiusOpts .opt').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');
 }
+function toggleCatSection(){
+  var body=document.getElementById('catOptionalBody');
+  var btn=document.getElementById('catToggleBtn');
+  var arrow=document.getElementById('catArrow');
+  if(!body)return;
+  var open=body.style.display!=='none';
+  body.style.display=open?'none':'block';
+  btn.setAttribute('aria-expanded',open?'false':'true');
+}
 function setCat(btn,val){
   categorySearch=val;
   var inp=document.getElementById('categorySearch');if(inp)inp.value=val;
@@ -1149,7 +1175,7 @@ function selOpt(gid,btn,val){
   if(gid==='stylOpts')travelStyle=val;
 }
 function chDays(d){
-  days=Math.max(1,Math.min(10,days+d));
+  days=Math.max(1,Math.min(14,days+d));
   document.getElementById('daysNum').textContent=days;
   document.getElementById('daysLbl').textContent=days===1?'day':'days';
 }
@@ -1239,9 +1265,11 @@ async function generate(){
   var radiusStr='\nRADIUS: Every place must be within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of the city center of "'+city+'". No suburbs, no outskirts.';
   var catStr=catSearch?'\nCATEGORY — MANDATORY: The user is ONLY looking for "'+catSearch+'". Every single stop must be a "'+catSearch+'". Do not include any other venue type. If you cannot find enough real "'+catSearch+'" places within '+searchRadius+' miles of '+city+', reduce the number of blocks rather than substituting a different category. This is non-negotiable.':'';
   var sysPrompt='You are an expert local travel guide for '+city+'. You only recommend real, verified, currently-open businesses that appear on Google Maps and Yelp with actual reviews. You never invent place names. You never substitute a different category for what the user asked. You always stay within the specified radius of the city center.';
-  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+dowStr+radiusStr+catStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Tsukiji Outer Market","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Tsukiji Outer Market Tokyo Japan","peakHours":"7am-9am, 12pm-2pm","quietHours":"Before 7am or after 2pm"}]}]}\n\nFor each block, include peakHours (busiest times) and quietHours (best low-crowd times) based on the typical patterns of that type of venue and your knowledge of the city. For famous landmarks, popular restaurants, museums and markets you will almost always know this — include it. For obscure spots where you truly have no knowledge, omit the fields. Keep each value short, e.g. "12pm–2pm" or "Before 10am, after 3pm".\n\nNON-NEGOTIABLE RULES:\n1. Only real places: 100% verified, currently open, with reviews on Google Maps or Yelp. Do not invent names.\n2. Full official name exactly as on Google Maps.\n3. Type must match exactly — Breakfast block = breakfast venue only, never a bar or club.\n4. If uncertain whether a place is open, pick a famous guaranteed-to-exist alternative.\n5. mapsQuery = full official name + city + country (e.g. "Tsukiji Outer Market Tokyo Japan").\n6. Stay within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of '+city+' city center. Do not recommend places in other cities or distant suburbs.\n7. 7-8 blocks per day unless category filter limits options — then fewer real places is better than wrong category.\n8. Only recommend places that appear on Google Maps, Yelp, and TripAdvisor.';
+  var blocksPerDay=days<=5?'5-6':days<=9?'4-5':'3-4';
+  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+dowStr+radiusStr+catStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Tsukiji Outer Market","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Tsukiji Outer Market Tokyo Japan","peakHours":"7am-9am, 12pm-2pm","quietHours":"Before 7am or after 2pm"}]}]}\n\nFor each block, include peakHours (busiest times) and quietHours (best low-crowd times) based on the typical patterns of that type of venue and your knowledge of the city. For famous landmarks, popular restaurants, museums and markets you will almost always know this — include it. For obscure spots where you truly have no knowledge, omit the fields. Keep each value short, e.g. "12pm–2pm" or "Before 10am, after 3pm".\n\nNON-NEGOTIABLE RULES:\n1. Only real places: 100% verified, currently open, with reviews on Google Maps or Yelp. Do not invent names.\n2. Full official name exactly as on Google Maps.\n3. Type must match exactly — Breakfast block = breakfast venue only, never a bar or club.\n4. If uncertain whether a place is open, pick a famous guaranteed-to-exist alternative.\n5. mapsQuery = full official name + city + country (e.g. "Tsukiji Outer Market Tokyo Japan").\n6. Stay within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of '+city+' city center. Do not recommend places in other cities or distant suburbs.\n7. '+blocksPerDay+' blocks per day — keep descriptions concise (1-2 sentences) to stay within token limits.\n8. Only recommend places that appear on Google Maps, Yelp, and TripAdvisor.';
+  var genTokens=Math.min(8000, 2000 + days * 900);
   try{
-    var rawText=await callGroq(prompt,sysPrompt,4000);
+    var rawText=await callGroq(prompt,sysPrompt,genTokens);
     var text=rawText.replace(/```json|```/g,'').trim();
     var si=text.indexOf('{'),ei=text.lastIndexOf('}');
     if(si>-1&&ei>-1)text=text.slice(si,ei+1);
