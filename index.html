@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0d0d14">
 <title>What's Around?</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
 <link rel="manifest" href="/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,8 +19,8 @@ html{-webkit-text-size-adjust:100%;}
 body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:background 0.3s,color 0.3s;}
 input,textarea,select,button{font-family:inherit;font-size:16px;-webkit-appearance:none;appearance:none;}
 button{cursor:pointer;border:none;background:none;color:inherit;}
-:root{--bg:#0d0d14;--bg2:#111119;--card:#161620;--card2:#1c1c2a;--line:rgba(255,255,255,0.06);--line2:rgba(255,255,255,0.10);--txt:#f5f0eb;--txt2:#b0a898;--txt3:#6e6358;--gold:#f5c842;--teal:#2dd4bf;--rose:#f4607a;--sky:#60a5fa;}
-body.light{--bg:#faf8f5;--bg2:#f2ede8;--card:#ffffff;--card2:#f5f2ee;--line:rgba(0,0,0,0.06);--line2:rgba(0,0,0,0.11);--txt:#1a1610;--txt2:#5a5048;--txt3:#9a8e85;}
+:root{--bg:#080810;--bg2:#0f0e1a;--card:#151423;--card2:#1b1a2e;--line:rgba(255,255,255,0.06);--line2:rgba(255,255,255,0.10);--txt:#f0ece8;--txt2:#a89eb8;--txt3:#5a5570;--gold:#f5c842;--teal:#00e5c3;--rose:#ff6b6b;--sky:#60a5fa;}
+body.light{--bg:#faf8f5;--bg2:#f2ede8;--card:#ffffff;--card2:#f5f2ee;--line:rgba(0,0,0,0.06);--line2:rgba(0,0,0,0.11);--txt:#1a1610;--txt2:#5a5048;--txt3:#9a8e85;--teal:#00c9ac;--rose:#e85555;}
 body.light nav{background:rgba(245,244,255,0.92);}
 body.light .bg-orb::before{background:radial-gradient(circle,rgba(45,212,191,0.12) 0%,transparent 70%);}
 body.light .bg-orb::after{background:radial-gradient(circle,rgba(244,96,122,0.09) 0%,transparent 70%);}
@@ -420,6 +420,14 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
 .hr-peak::before{background:var(--rose);box-shadow:0 0 4px rgba(244,96,122,0.5);}
 .hr-quiet{color:#34d399;}
 .hr-quiet::before{background:#34d399;box-shadow:0 0 4px rgba(52,211,153,0.5);}
+/* ── Stop address ── */
+.stop-address-wrap{padding-top:0.65rem;border-top:1px solid var(--line);margin-top:0.1rem;}
+.stop-address{display:inline-flex;align-items:flex-start;gap:0.3rem;font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--txt3);text-decoration:none;line-height:1.5;letter-spacing:0.01em;transition:color 0.15s;-webkit-tap-highlight-color:transparent;}
+.stop-address:hover{color:var(--txt2);}
+.stop-address-icon{flex-shrink:0;font-style:normal;}
+.stop-address-text{text-decoration:underline;text-decoration-color:rgba(255,255,255,0.1);text-underline-offset:2px;}
+.stop-address:hover .stop-address-text{text-decoration-color:rgba(45,229,195,0.4);color:var(--teal);}
+.stop-address-search .stop-address-text{font-style:italic;}
 /* ── Rideshare link ── */
 .sl-ride{background:rgba(30,30,48,0.7);border:1px solid rgba(255,255,255,0.1);color:var(--txt2);}
 .sl-ride:hover{border-color:rgba(255,255,255,0.22);color:var(--txt);}
@@ -1357,9 +1365,9 @@ async function generate(){
   categorySearch=catSearch;
   var radiusStr='\nRADIUS: Every place must be within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of the city center of "'+city+'". No suburbs, no outskirts.';
   var catStr=catSearch?'\nCATEGORY — MANDATORY: The user is ONLY looking for "'+catSearch+'". Every single stop must be a "'+catSearch+'". Do not include any other venue type. If you cannot find enough real "'+catSearch+'" places within '+searchRadius+' miles of '+city+', reduce the number of blocks rather than substituting a different category. This is non-negotiable.':'';
-  var sysPrompt='You are an expert local travel guide for '+city+'. You only recommend real, verified, currently-open businesses that appear on Google Maps and Yelp with actual reviews. You never invent place names. You never substitute a different category for what the user asked. You always stay within the specified radius of the city center.';
+  var sysPrompt='You are a precise travel guide for '+city+' with a strict zero-hallucination policy. Rules you must never break: (1) Only recommend places you are highly confident exist right now and are currently open. (2) Only provide an address if you are 100% certain it is the real current street address — if uncertain return empty string "". Never invent street names, numbers, or postal codes. (3) Only provide peakHours and quietHours if you know them from real-world knowledge — if uncertain return "". (4) Only provide costs if you have reasonable confidence in the price range — if uncertain return "". (5) Never substitute a different category for what the user asked. (6) Prioritise famous, well-established, highly-reviewed places where you have strong knowledge. (7) Always stay within the specified radius of the city center.';
   var blocksPerDay=days<=5?'5-6':days<=9?'4-5':'3-4';
-  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+dowStr+radiusStr+catStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Tsukiji Outer Market","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Tsukiji Outer Market Tokyo Japan","peakHours":"7am-9am, 12pm-2pm","quietHours":"Before 7am or after 2pm"}]}]}\n\nFor each block, include peakHours (busiest times) and quietHours (best low-crowd times) based on the typical patterns of that type of venue and your knowledge of the city. For famous landmarks, popular restaurants, museums and markets you will almost always know this — include it. For obscure spots where you truly have no knowledge, omit the fields. Keep each value short, e.g. "12pm–2pm" or "Before 10am, after 3pm".\n\nNON-NEGOTIABLE RULES:\n1. Only real places: 100% verified, currently open, with reviews on Google Maps or Yelp. Do not invent names.\n2. Full official name exactly as on Google Maps.\n3. Type must match exactly — Breakfast block = breakfast venue only, never a bar or club.\n4. If uncertain whether a place is open, pick a famous guaranteed-to-exist alternative.\n5. mapsQuery = full official name + city + country (e.g. "Tsukiji Outer Market Tokyo Japan").\n6. Stay within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of '+city+' city center. Do not recommend places in other cities or distant suburbs.\n7. '+blocksPerDay+' blocks per day — keep descriptions concise (1-2 sentences) to stay within token limits.\n8. Only recommend places that appear on Google Maps, Yelp, and TripAdvisor.';
+  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+dowStr+radiusStr+catStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Tsukiji Outer Market","address":"5-2-1 Tsukiji, Chuo City, Tokyo 104-0045","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Tsukiji Outer Market Tokyo Japan","peakHours":"7am-9am, 12pm-2pm","quietHours":"Before 7am or after 2pm"}]}]}\n\nADDRESS RULES (zero-hallucination policy): address = full street address ONLY if you are 100% certain it is the real, current address of this specific place. If you are not certain, set address to "" (empty string). Never guess, approximate, or invent addresses. It is far better to return "" than a wrong address.\n\nPEAK/QUIET HOURS: Include only when you have real-world knowledge of that specific venue. For famous landmarks, busy restaurants, and markets you will usually know this. For obscure spots, return "".\n\nNON-NEGOTIABLE RULES:\n1. Only real places: 100% verified, currently open, with reviews on Google Maps or Yelp. Do not invent names.\n2. Full official name exactly as on Google Maps.\n3. Type must match exactly — Breakfast block = breakfast venue only, never a bar or club.\n4. If uncertain whether a place is open, pick a famous guaranteed-to-exist alternative.\n5. mapsQuery = full official name + city + country (e.g. "Tsukiji Outer Market Tokyo Japan").\n6. Stay within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of '+city+' city center. Do not recommend places in other cities or distant suburbs.\n7. '+blocksPerDay+' blocks per day — keep descriptions concise (1-2 sentences) to stay within token limits.\n8. Only recommend places that appear on Google Maps, Yelp, and TripAdvisor.\n9. cost, tip, peakHours, quietHours — return "" if not confident. Never guess.';
   var genTokens=Math.min(8000, 2000 + days * 900);
   try{
     var rawText=await callGroq(prompt,sysPrompt,genTokens);
@@ -1448,8 +1456,6 @@ function buildDay(day,di,links){
       var isFood=t.indexOf('breakfast')>-1||t.indexOf('lunch')>-1||t.indexOf('dinner')>-1||t.indexOf('cafe')>-1||t.indexOf('food')>-1||t.indexOf('restaurant')>-1||t.indexOf('brunch')>-1||t.indexOf('bar')>-1||t.indexOf('drink')>-1;
       var isAttr=t.indexOf('tour')>-1||t.indexOf('museum')>-1||t.indexOf('visit')>-1||t.indexOf('attraction')>-1||t.indexOf('explore')>-1||t.indexOf('sightseeing')>-1||t.indexOf('activity')>-1||t.indexOf('experience')>-1;
       var isHotel=t.indexOf('hotel')>-1||t.indexOf('accommodation')>-1||t.indexOf('hostel')>-1||t.indexOf('stay')>-1||t.indexOf('check-in')>-1||t.indexOf('check in')>-1;
-      var mapsUrl='https://www.google.com/maps/search/?api=1&query='+mq;
-      lhtml+='<a class="slink sl-m" href="'+mapsUrl+'" target="_blank" rel="noopener">📍 Maps</a>';
       lhtml+='<a class="slink sl-yelp" href="https://www.yelp.com/search?find_desc='+encodeURIComponent(b.place)+'&find_loc='+encodeURIComponent(curCity)+'" target="_blank" rel="noopener">🔍 Yelp</a>';
       lhtml+='<a class="slink sl-ta" href="https://www.tripadvisor.com/Search?q='+encodeURIComponent(b.place+' '+curCity)+'" target="_blank" rel="noopener">⭐ TA</a>';
       var uberUrl='https://www.uber.com/ride?action=setPickup&dropoff[formatted_address]='+destEnc;
@@ -1479,6 +1485,16 @@ function buildDay(day,di,links){
     var tipHtml=b.tip?'<div class="stop-tip">'+b.tip+'</div>':'';
     // Actions
     var actHtml='<div style="display:flex;gap:0.35rem;margin-bottom:0.75rem;"><button class="stop-act" onclick="randomizeStop('+di+','+bi+',this)" title="Swap this stop">🎲 Swap</button><button class="stop-act'+(isSaved?' saved-act':'')+'" id="save-act-'+di+'-'+bi+'" onclick="savePlace('+di+','+bi+',this)" title="Save">'+(isSaved?'🔖 Saved':'🏷 Save')+'</button></div>';
+    // Address line — confirmed address or fallback search link
+    var addrHtml='';
+    if(b.address&&b.address.trim()){
+      var addrMapUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(b.address);
+      addrHtml='<div class="stop-address-wrap"><a class="stop-address" href="'+addrMapUrl+'" target="_blank" rel="noopener"><span class="stop-address-icon">📍</span><span class="stop-address-text">'+b.address+'</span></a></div>';
+    } else if(links){
+      var fallbackMq=encodeURIComponent(b.mapsQuery||b.place+' '+curCity);
+      var fallbackUrl='https://www.google.com/maps/search/?api=1&query='+fallbackMq;
+      addrHtml='<div class="stop-address-wrap"><a class="stop-address stop-address-search" href="'+fallbackUrl+'" target="_blank" rel="noopener"><span class="stop-address-icon">📍</span><span class="stop-address-text">Search on Maps</span></a></div>';
+    }
     var numStr=(bi+1)<10?'0'+(bi+1):(bi+1)+'';
     html+='<div class="stop" data-slot="'+slot+'" data-type="'+stopType+'" id="stop-'+di+'-'+bi+'">'
       +'<div class="stop-bg-num">'+numStr+'</div>'
@@ -1491,6 +1507,7 @@ function buildDay(day,di,links){
       +hoursHtml
       +actHtml
       +(lhtml?'<div class="stop-links">'+lhtml+'</div>':'')
+      +addrHtml
       +'</div></div>';
   });
   return html;
@@ -2009,7 +2026,7 @@ async function randomizeStop(di,bi,btn){
   if(btn){btn.disabled=true;btn.textContent='⏳';}
   try{
     var catNote=categorySearch?' The user is only looking for "'+categorySearch+'" — the replacement must also be a "'+categorySearch+'"':'';
-    var prompt='Replace one stop in a "'+curCity+'" itinerary. The replacement MUST be located in "'+curCity+'" within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of the city center. Do not suggest places in other cities.\nCurrent stop: "'+b.place+'" (type: '+b.type+', time: '+b.time+')\nInterests: '+(vibes.join(', ')||'general')+'.'+catNote+'\nRules: Real, currently-open, verified place only. Match type "'+b.type+'" exactly. Full official Google Maps name. mapsQuery = full name + city + country.\nReturn ONLY raw JSON (no markdown): {"time":"'+b.time+'","place":"Full Official Place Name","type":"'+b.type+'","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$XX","mapsQuery":"Full Place Name '+curCity+' Country"}';
+    var prompt='Replace one stop in a "'+curCity+'" itinerary. The replacement MUST be located in "'+curCity+'" within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of the city center. Do not suggest places in other cities.\nCurrent stop: "'+b.place+'" (type: '+b.type+', time: '+b.time+')\nInterests: '+(vibes.join(', ')||'general')+'.'+catNote+'\nRules: Real, currently-open, verified place only. Match type "'+b.type+'" exactly. Full official Google Maps name. mapsQuery = full name + city + country. address = full street address ONLY if 100% certain — otherwise return "".\nReturn ONLY raw JSON (no markdown): {"time":"'+b.time+'","place":"Full Official Place Name","address":"Full street address or empty string","type":"'+b.type+'","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$XX","mapsQuery":"Full Place Name '+curCity+' Country"}';
     var raw=await callGroq(prompt,null,550);
     raw=raw.replace(/```json|```/g,'').trim();
     var si=raw.indexOf('{'),ei=raw.lastIndexOf('}');
@@ -2435,7 +2452,7 @@ async function scanPhoto(){
     reader.onload=async function(e){
       var dataUrl=e.target.result;
       try{
-        var prompt='Identify the location, food dish, restaurant, attraction, or place shown in this image. Return ONLY raw JSON with no markdown: {"place":"Exact place or dish name","type":"Restaurant|Attraction|Landmark|Food|Market|Hotel","desc":"Two vivid sentences about this place.","tip":"One practical visitor tip.","cost":"~$XX","mapsQuery":"Place City Country"}';
+        var prompt='Identify the location, food dish, restaurant, attraction, or place shown in this image. Return ONLY raw JSON with no markdown: {"place":"Exact place or dish name","address":"Full street address only if 100% certain, otherwise empty string","type":"Restaurant|Attraction|Landmark|Food|Market|Hotel","desc":"Two vivid sentences about this place.","tip":"One practical visitor tip.","cost":"~$XX","mapsQuery":"Place City Country"}';
         var r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:prompt}],image:dataUrl,max_tokens:500})});
         var raw=await r.text();
         var d;try{d=JSON.parse(raw);}catch(ex){throw new Error('Server error: '+raw.slice(0,120));}
