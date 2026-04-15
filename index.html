@@ -534,7 +534,44 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
 /* ── Active category banner ── */
 .cat-active-banner{background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.18);border-left:3px solid var(--sky);border-radius:8px;padding:0.5rem 0.85rem;margin-bottom:0.6rem;font-size:0.75rem;color:var(--sky);font-weight:500;}
 
-/* ── Step Wizard ── */
+/* ── Stop card photo ── */
+.stop-photo-wrap{overflow:hidden;height:145px;background:var(--card2);flex-shrink:0;}
+.stop-photo{width:100%;height:145px;object-fit:cover;display:block;transition:opacity 0.35s,transform 0.4s;transform:scale(1.01);}
+.stop:hover .stop-photo{transform:scale(1.04);}
+/* Meta row — rating, price, open/closed, distance */
+.stop-meta-row{display:flex;flex-wrap:wrap;align-items:center;gap:0.28rem 0.55rem;margin-bottom:0.6rem;}
+.stop-rating{font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.8rem;color:var(--gold);letter-spacing:0.02em;}
+.stop-price{font-size:0.75rem;font-weight:700;color:var(--teal);letter-spacing:0.08em;}
+.stop-dist{font-size:0.68rem;color:var(--txt3);}
+.stop-visits{font-size:0.68rem;color:var(--txt3);}
+.stop-open-badge{display:inline-flex;align-items:center;gap:0.22rem;font-size:0.6rem;font-weight:700;padding:0.12rem 0.48rem;border-radius:100px;letter-spacing:0.05em;}
+.stop-open-badge.open{background:rgba(52,211,153,0.1);color:#34d399;border:1px solid rgba(52,211,153,0.3);}
+.stop-open-badge.closed{background:rgba(255,107,107,0.1);color:var(--rose);border:1px solid rgba(255,107,107,0.3);}
+/* Hours display text */
+.stop-hours-text{font-size:0.69rem;color:var(--txt3);margin-bottom:0.55rem;line-height:1.45;}
+/* Contact links */
+.stop-contact{display:flex;flex-wrap:wrap;gap:0.25rem 0.75rem;margin-top:0.45rem;padding-top:0.55rem;border-top:1px solid var(--line);}
+.stop-contact-link{font-family:'DM Mono',monospace;font-size:0.63rem;color:var(--teal);text-decoration:none;-webkit-tap-highlight-color:transparent;transition:opacity 0.15s;}
+.stop-contact-link:hover{opacity:0.7;}
+/* Uber button */
+.stop-uber-btn{display:flex;align-items:center;justify-content:center;gap:0.4rem;width:100%;padding:0.6rem;margin-top:0.75rem;background:#000000;color:#ffffff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.8rem;border-radius:10px;text-decoration:none;letter-spacing:0.05em;transition:opacity 0.15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.stop-uber-btn:hover{opacity:0.82;}
+/* ── Trending section ── */
+#trendingSection{display:none;margin-bottom:1.5rem;}
+.trending-hdr{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt3);margin-bottom:0.65rem;}
+.trending-loading{display:flex;justify-content:center;padding:0.8rem 0;}
+.trending-scroll{display:flex;gap:0.65rem;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px;}
+.trending-scroll::-webkit-scrollbar{display:none;}
+.trend-card{flex-shrink:0;width:115px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform 0.18s,border-color 0.18s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.trend-card:hover{transform:translateY(-3px);border-color:var(--line2);}
+.trend-photo{width:100%;height:70px;object-fit:cover;display:block;background:var(--card2);}
+.trend-photo-empty{width:100%;height:70px;background:var(--card2);}
+.trend-name{font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.7rem;color:var(--txt);padding:0.45rem 0.5rem 0.2rem;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.trend-cat{font-size:0.58rem;color:var(--txt3);padding:0 0.5rem 0.45rem;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+/* ── Sort + Price filter pills ── */
+.fsq-sort-opts .opt,.fsq-price-opts .opt{font-size:0.75rem;}
+
+</style>
 .wiz-indicator{display:flex;align-items:center;margin-bottom:2rem;padding:0 0.25rem;}
 .wiz-ind-step{display:flex;flex-direction:column;align-items:center;gap:0.4rem;flex-shrink:0;}
 .wiz-ind-dot{width:44px;height:44px;border-radius:50%;background:var(--card2);border:2px solid var(--line2);display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;color:var(--txt3);transition:all 0.38s cubic-bezier(0.34,1.56,0.64,1);}
@@ -658,6 +695,26 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
         <button class="opt on" onclick="setRadius(this,5)">5 mi</button>
         <button class="opt" onclick="setRadius(this,10)">10 mi</button>
         <button class="opt" onclick="setRadius(this,25)">25 mi</button>
+      </div>
+    </div>
+
+    <div style="margin-top:1.1rem;">
+      <div class="card-sub" style="margin-bottom:0.45rem;">Sort results by</div>
+      <div class="opts fsq-sort-opts" id="sortOpts">
+        <button class="opt on" onclick="setFsqSort(this,'RATING')">⭐ Rating</button>
+        <button class="opt" onclick="setFsqSort(this,'DISTANCE')">📍 Distance</button>
+        <button class="opt" onclick="setFsqSort(this,'POPULARITY')">🔥 Popular</button>
+      </div>
+    </div>
+
+    <div style="margin-top:1.1rem;">
+      <div class="card-sub" style="margin-bottom:0.45rem;">Price level</div>
+      <div class="opts fsq-price-opts" id="priceOpts">
+        <button class="opt on" onclick="setFsqPrice(this,'')">All</button>
+        <button class="opt" onclick="setFsqPrice(this,'1')">$</button>
+        <button class="opt" onclick="setFsqPrice(this,'2')">$$</button>
+        <button class="opt" onclick="setFsqPrice(this,'3')">$$$</button>
+        <button class="opt" onclick="setFsqPrice(this,'4')">$$$$</button>
       </div>
     </div>
 
@@ -880,6 +937,7 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
       <button class="time-chip" onclick="setTimeFilter('night',this)">🌙 Night</button>
       <button class="time-chip" onclick="setTimeFilter('latenight',this)">🌃 Late Night</button>
     </div>
+    <div id="trendingSection"></div>
     <div class="day-tabs" id="dayTabs"></div>
     <div id="dayPanels"></div>
     <div id="scannedStops"></div>
@@ -1066,6 +1124,126 @@ var searchRadius=5,categorySearch='';
 var tripDays=[],curCity='',curTitle='';
 var chatOpen=false,chatHistory=[],chatBusy=false,packChecked={};
 var wxTimer=null,toastTimer=null;
+var fsqSort='RATING',fsqPrice='';
+var trendingPlaces=[];
+var usedFsqIds=new Set();
+
+function setFsqSort(btn,val){
+  fsqSort=val;
+  document.querySelectorAll('#sortOpts .opt').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+}
+function setFsqPrice(btn,val){
+  fsqPrice=val;
+  document.querySelectorAll('#priceOpts .opt').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+}
+
+// Build time-slot plan for one day
+function getDaySlots(dayIdx,vibes,customVibe,catSearch,count){
+  count=count||5;
+  if(catSearch){
+    var times=['9:00 AM','11:00 AM','1:00 PM','3:30 PM','6:00 PM','8:30 PM'];
+    return times.slice(0,count).map(function(t,i){return{time:t,query:catSearch,type:catSearch};});
+  }
+  var base=[
+    {time:'8:30 AM',query:'coffee breakfast cafe',type:'Breakfast'},
+    {time:'10:30 AM',query:'museum gallery landmark',type:'Culture'},
+    {time:'1:00 PM',query:'restaurant lunch',type:'Lunch'},
+    {time:'3:30 PM',query:'park garden outdoor',type:'Explore'},
+    {time:'7:00 PM',query:'restaurant dinner',type:'Dinner'},
+    {time:'9:30 PM',query:'bar cocktails lounge',type:'Drinks'}
+  ];
+  if(vibes.indexOf('Shopping')>-1)base[3]={time:'3:30 PM',query:'shopping boutique market',type:'Shopping'};
+  if(vibes.indexOf('Nature')>-1)base[3]={time:'3:30 PM',query:'park nature garden hiking',type:'Nature'};
+  if(vibes.indexOf('Art')>-1)base[1]={time:'10:30 AM',query:'art gallery contemporary museum',type:'Art'};
+  if(vibes.indexOf('Nightlife')>-1)base[5]={time:'9:30 PM',query:'bar nightclub club lounge',type:'Nightlife'};
+  if(vibes.indexOf('Wellness')>-1)base[3]={time:'3:30 PM',query:'spa yoga wellness fitness',type:'Wellness'};
+  if(vibes.indexOf('Adventure')>-1)base[3]={time:'3:30 PM',query:'outdoor adventure sports activity',type:'Adventure'};
+  if(customVibe)base[Math.min(3,count-1)]={time:base[Math.min(3,count-1)].time,query:customVibe,type:customVibe};
+  return base.slice(0,count);
+}
+
+// Build a stop block from a raw Foursquare place object
+function buildBlockFromFsq(fsqPlace,slot){
+  var loc=fsqPlace.location||{};
+  var lat=loc.latitude||loc.lat||'';
+  var lng=loc.longitude||loc.lng||'';
+  var address=loc.formatted_address||[loc.address,loc.locality,loc.region,loc.country].filter(Boolean).join(', ')||'';
+  var catName=fsqPlace.categories&&fsqPlace.categories[0]?fsqPlace.categories[0].name:slot.type;
+  var photo='';
+  if(fsqPlace.photos&&fsqPlace.photos.length>0){
+    photo=fsqPlace.photos[0].prefix+'300x200'+fsqPlace.photos[0].suffix;
+  }
+  var priceStr=fsqPlace.price?'$'.repeat(fsqPlace.price):'';
+  var distMi=fsqPlace.distance?(fsqPlace.distance/1609.34).toFixed(1):null;
+  var isOpen=null,hoursDisplay=null;
+  if(fsqPlace.hours){isOpen=typeof fsqPlace.hours.open_now==='boolean'?fsqPlace.hours.open_now:null;hoursDisplay=fsqPlace.hours.display||null;}
+  var visits=fsqPlace.stats&&fsqPlace.stats.total_visits?fsqPlace.stats.total_visits:null;
+  return{
+    place:fsqPlace.name,
+    fsq_id:fsqPlace.fsq_id||fsqPlace.name,
+    address:address,
+    lat:lat,
+    lng:lng,
+    fsqCategory:catName,
+    photo:photo,
+    rating:typeof fsqPlace.rating==='number'?fsqPlace.rating:null,
+    visits:visits,
+    price:priceStr,
+    distance:distMi,
+    isOpen:isOpen,
+    hoursDisplay:hoursDisplay,
+    tel:fsqPlace.tel||null,
+    website:fsqPlace.website||null,
+    time:slot.time,
+    type:slot.type,
+    mapsQuery:fsqPlace.name+' '+curCity,
+    cost:priceStr,
+    peakHours:'',
+    quietHours:'',
+    desc:'',
+    tip:''
+  };
+}
+
+// Trending section
+async function fetchTrending(city,radMeters){
+  var el=document.getElementById('trendingSection');
+  if(!el)return;
+  el.style.display='block';
+  el.innerHTML='<div class="trending-hdr">🔥 Trending in '+city+'</div><div class="trending-loading"><div class="loading-ring" style="width:26px;height:26px;border-width:2px;margin:0 auto;"></div></div>';
+  try{
+    var r=await fetch('/api/places?query=popular&near='+encodeURIComponent(city)+'&radius='+radMeters+'&sort=POPULARITY&limit=5');
+    var d=await r.json();
+    trendingPlaces=d.results||[];
+    if(!trendingPlaces.length){el.style.display='none';return;}
+    var html='<div class="trending-hdr">🔥 Trending in '+city+'</div><div class="trending-scroll">';
+    trendingPlaces.forEach(function(p,i){
+      var photo=p.photos&&p.photos[0]?p.photos[0].prefix+'100x100'+p.photos[0].suffix:'';
+      var cat=p.categories&&p.categories[0]?p.categories[0].name:'';
+      var rating=typeof p.rating==='number'?'⭐ '+p.rating.toFixed(1):'';
+      html+='<div class="trend-card" onclick="openTrendingPlace('+i+')">'
+        +(photo?'<img class="trend-photo" src="'+photo+'" onerror="this.style.display=\'none\'" loading="lazy">':'<div class="trend-photo-empty"></div>')
+        +'<div class="trend-name">'+p.name+'</div>'
+        +'<div class="trend-cat">'+(cat||'')+(rating?' · '+rating:'')+'</div>'
+        +'</div>';
+    });
+    html+='</div>';
+    el.innerHTML=html;
+  }catch(e){if(el)el.style.display='none';}
+}
+function openTrendingPlace(i){
+  var p=trendingPlaces[i];
+  if(!p)return;
+  var loc=p.location||{};
+  var lat=loc.latitude||loc.lat||'';
+  var lng=loc.longitude||loc.lng||'';
+  var url=lat&&lng
+    ?'https://www.google.com/maps/search/?api=1&query='+lat+','+lng
+    :'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.name+' '+curCity);
+  window.open(url,'_blank','noopener');
+}
 
 // Theme
 function toggleTheme(){
@@ -1340,88 +1518,157 @@ async function generate(){
   var city=document.getElementById('city').value.trim();
   if(!city){toast('Please enter a destination!','err');return;}
   curCity=city;
+  usedFsqIds=new Set();
   // Hero photo
   var heroEl=document.getElementById('destHero'),heroImg=document.getElementById('destHeroImg');
   if(heroEl&&heroImg){heroImg.style.opacity='0';heroImg.src='https://source.unsplash.com/featured/1200x400/?'+encodeURIComponent(city)+',travel,city';heroEl.style.display='block';}
-  // Remove old email capture
   var oldCap=document.getElementById('emailCapture');if(oldCap)oldCap.remove();
   var links=document.getElementById('linkToggle').checked;
   var customVibe=document.getElementById('customVibe').value.trim();
-  var vibeStr=(vibes.length?vibes.join(', '):'General sightseeing')+(customVibe?' · '+customVibe:'');
-  var budgetDesc=document.getElementById('budgetDesc').textContent;
-  var dietStr=dietaryPrefs.length?'\nDietary: '+dietaryPrefs.join(', ')+' — all food stops must comply.':'';
   var travelFrom=document.getElementById('travelFrom').value;
   var travelTo=document.getElementById('travelTo').value;
-  var dateStr=travelFrom?'\nTravel dates: '+travelFrom+(travelTo?' to '+travelTo:''):'';
-  var gemsStr=document.getElementById('gemsToggle').checked?'\nIMPORTANT: Hidden Gems Mode — avoid all tourist traps, famous chains, overcrowded spots. Only local favorites, neighborhood gems, places locals actually use. No Eiffel Tower, no TripAdvisor top-10.':'';
+  var catSearch=document.getElementById('categorySearch').value.trim();
+  categorySearch=catSearch;
+  var blocksPerDayNum=days<=5?5:days<=9?4:3;
+  var radMeters=Math.round(searchRadius*1609.34);
   var btn=document.getElementById('genBtn');
   btn.disabled=true;btn.textContent='BUILDING...';
   document.getElementById('results').style.display='block';
   document.getElementById('dayTabs').innerHTML='';
-  document.getElementById('dayPanels').innerHTML=buildSkeleton(5)+'<div class="loading" style="padding-top:0.5rem;"><div class="loading-ring"></div><div class="loading-txt">Crafting '+days+' day'+(days>1?'s':'')+' in '+city+'...</div><div class="loading-sub">Finding real places just for you</div></div>';
+  document.getElementById('dayPanels').innerHTML=buildSkeleton(5)+'<div class="loading" style="padding-top:0.5rem;"><div class="loading-ring"></div><div class="loading-txt">Finding real places in '+city+'...</div><div class="loading-sub">Searching verified venues for '+days+' day'+(days>1?'s':'')+'</div></div>';
   document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
-  var dowStr=tripDows.length?'\nDays of the week visiting: '+tripDows.join(', ')+' — only recommend places open on those days.':'';
-  var catSearch=document.getElementById('categorySearch').value.trim();
-  categorySearch=catSearch;
-  var radiusStr='\nRADIUS: Every place must be within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of the city center of "'+city+'". No suburbs, no outskirts.';
-  var catStr=catSearch?'\nCATEGORY — MANDATORY: The user is ONLY looking for "'+catSearch+'". Every single stop must be a "'+catSearch+'". Do not include any other venue type. If you cannot find enough real "'+catSearch+'" places within '+searchRadius+' miles of '+city+', reduce the number of blocks rather than substituting a different category. This is non-negotiable.':'';
-  var sysPrompt='You are a precise travel guide for '+city+' with a strict zero-hallucination policy. Rules you must never break: (1) Only recommend places you are highly confident exist right now and are currently open. (2) Only provide an address if you are 100% certain it is the real current street address — if uncertain return empty string "". Never invent street names, numbers, or postal codes. (3) Only provide peakHours and quietHours if you know them from real-world knowledge — if uncertain return "". (4) Only provide costs if you have reasonable confidence in the price range — if uncertain return "". (5) Never substitute a different category for what the user asked. (6) Prioritise famous, well-established, highly-reviewed places where you have strong knowledge. (7) Always stay within the specified radius of the city center.';
-  var blocksPerDay=days<=5?'5-6':days<=9?'4-5':'3-4';
-  var prompt='Create a '+days+'-day travel itinerary for "'+city+'".\nInterests: '+vibeStr+'\nGroup: '+group+'\nTransport: '+travelStyle+'\nBudget: $'+budget+'/day ('+budgetDesc+')'+dateStr+dietStr+gemsStr+dowStr+radiusStr+catStr+'\n\nReturn ONLY a raw JSON object, no markdown, no code fences:\n{"title":"3 Days in Tokyo","totalCost":"~$450","days":[{"dayNum":1,"theme":"temples and street food","dayCost":"~$120","blocks":[{"time":"9:00 AM","place":"Tsukiji Outer Market","address":"5-2-1 Tsukiji, Chuo City, Tokyo 104-0045","type":"Breakfast","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$12","mapsQuery":"Tsukiji Outer Market Tokyo Japan","peakHours":"7am-9am, 12pm-2pm","quietHours":"Before 7am or after 2pm"}]}]}\n\nADDRESS RULES (zero-hallucination policy): address = full street address ONLY if you are 100% certain it is the real, current address of this specific place. If you are not certain, set address to "" (empty string). Never guess, approximate, or invent addresses. It is far better to return "" than a wrong address.\n\nPEAK/QUIET HOURS: Include only when you have real-world knowledge of that specific venue. For famous landmarks, busy restaurants, and markets you will usually know this. For obscure spots, return "".\n\nNON-NEGOTIABLE RULES:\n1. Only real places: 100% verified, currently open, with reviews on Google Maps or Yelp. Do not invent names.\n2. Full official name exactly as on Google Maps.\n3. Type must match exactly — Breakfast block = breakfast venue only, never a bar or club.\n4. If uncertain whether a place is open, pick a famous guaranteed-to-exist alternative.\n5. mapsQuery = full official name + city + country (e.g. "Tsukiji Outer Market Tokyo Japan").\n6. Stay within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of '+city+' city center. Do not recommend places in other cities or distant suburbs.\n7. '+blocksPerDay+' blocks per day — keep descriptions concise (1-2 sentences) to stay within token limits.\n8. Only recommend places that appear on Google Maps, Yelp, and TripAdvisor.\n9. cost, tip, peakHours, quietHours — return "" if not confident. Never guess.';
-  var genTokens=Math.min(8000, 2000 + days * 900);
-  try{
-    var rawText=await callGroq(prompt,sysPrompt,genTokens);
-    var text=rawText.replace(/```json|```/g,'').trim();
-    var si=text.indexOf('{'),ei=text.lastIndexOf('}');
-    if(si>-1&&ei>-1)text=text.slice(si,ei+1);
-    var parsed=repairJSON(text);
-    tripDays=parsed.days||[];
-    curTitle=parsed.title||(days+' Days in '+city);
-    document.getElementById('resTitle').textContent=curTitle;
-    var totalStops=tripDays.reduce(function(s,d){return s+(d.blocks||[]).length;},0);
-    var dateline=document.getElementById('resDateline');
-    if(dateline){
-      var stats=[
-        {val:totalStops,lbl:'Stops'},
-        {val:days,lbl:'Days'},
-        {val:city,lbl:'Destination'},
-        {val:'$'+budget,lbl:'Per Day'},
-        {val:group,lbl:'Group'},
-      ];
-      if(parsed.totalCost)stats.push({val:parsed.totalCost,lbl:'Est. Cost'});
-      dateline.innerHTML=stats.map(function(s){return '<div class="res-stat"><span class="res-stat-val">'+s.val+'</span><span class="res-stat-lbl">'+s.lbl+'</span></div>';}).join('');
-    }
-    var tabs=document.getElementById('dayTabs'),panels=document.getElementById('dayPanels');
-    tabs.innerHTML='';panels.innerHTML='';
-    tripDays.forEach(function(day,i){
-      var tab=document.createElement('button');
-      tab.className='day-tab'+(i===0?' active':'');
-      tab.innerHTML='<span class="day-tab-num">Day '+day.dayNum+'</span>'+(day.theme?'<span class="day-tab-theme">'+day.theme+'</span>':'');
-      (function(idx){tab.onclick=function(){switchDay(idx);};})(i);
-      tabs.appendChild(tab);
-      var panel=document.createElement('div');
-      panel.className='day-panel'+(i===0?' active':'');
-      panel.id='p-'+i;
-      panel.innerHTML=buildDay(day,i,links);
-      panels.appendChild(panel);
+
+  // Build all slots for all days
+  var allDaySlots=[];
+  for(var d=0;d<days;d++){
+    allDaySlots.push(getDaySlots(d,vibes,customVibe,catSearch,blocksPerDayNum));
+  }
+
+  // Group unique queries to minimise Foursquare API calls
+  var queryMap={};
+  allDaySlots.forEach(function(daySlots){
+    daySlots.forEach(function(slot){
+      if(!queryMap[slot.query])queryMap[slot.query]=slot;
     });
-    toast('Itinerary ready! 🎉','ok');
-    showCelebration();
-    bumpCounter();
-    // Events + Hotels (non-blocking, fire after render)
-    setTimeout(function(){renderEventsCard(city,travelFrom,travelTo);},300);
-    setTimeout(function(){renderHotelsCard(city,travelFrom,travelTo);},600);
-    // Email capture (show once per session)
-    if(!sessionStorage.getItem('wa_email_shown')){
-      var emailHtml='<div class="email-capture" id="emailCapture"><div style="flex:1;min-width:160px;"><div style="font-size:0.82rem;font-weight:600;color:var(--txt);">📧 Email this itinerary</div><div style="font-size:0.7rem;color:var(--txt3);margin-top:0.15rem;">Get a copy + travel tips in your inbox</div></div><div style="display:flex;gap:0.4rem;flex:1;min-width:200px;"><input class="inp" id="emailInp" type="email" placeholder="your@email.com" style="flex:1;font-size:0.85rem;padding:0.55rem 0.8rem;"><button class="btn-sm btn-teal" onclick="submitEmail()">Send ✓</button></div></div>';
-      var panels=document.getElementById('dayPanels');
-      if(panels)panels.insertAdjacentHTML('afterend',emailHtml);
+  });
+  var uniqueQueries=Object.keys(queryMap);
+
+  // Fetch all unique queries in parallel
+  var fsqResults={};
+  try{
+    var fetchLimit=Math.max(blocksPerDayNum+3,8);
+    await Promise.all(uniqueQueries.map(async function(q){
+      var url='/api/places?query='+encodeURIComponent(q)+'&near='+encodeURIComponent(city)+'&radius='+radMeters+'&sort='+encodeURIComponent(fsqSort)+'&limit='+fetchLimit+(fsqPrice?'&price='+encodeURIComponent(fsqPrice):'');
+      var r=await fetch(url);
+      var d2=await r.json();
+      fsqResults[q]=d2.results||[];
+    }));
+  }catch(e){
+    document.getElementById('dayPanels').innerHTML='<div class="loading"><div class="loading-txt" style="color:var(--rose)">Network error: '+e.message+'</div></div>';
+    btn.disabled=false;btn.textContent='Build my itinerary ✨';
+    return;
+  }
+
+  // Fire trending non-blocking
+  fetchTrending(city,radMeters);
+
+  // Assign places to slots, deduplicating by fsq_id
+  var allBlocks=[];
+  var queryUsedIdx={};
+  uniqueQueries.forEach(function(q){queryUsedIdx[q]=0;});
+
+  tripDays=allDaySlots.map(function(daySlots,di){
+    var blocks=[];
+    daySlots.forEach(function(slot){
+      var pool=fsqResults[slot.query]||[];
+      var picked=null;
+      while(queryUsedIdx[slot.query]<pool.length){
+        var candidate=pool[queryUsedIdx[slot.query]];
+        queryUsedIdx[slot.query]++;
+        var fid=candidate.fsq_id||candidate.name;
+        if(!usedFsqIds.has(fid)){
+          usedFsqIds.add(fid);
+          picked=candidate;
+          break;
+        }
+      }
+      if(picked){
+        var block=buildBlockFromFsq(picked,slot);
+        block._slotIdx=allBlocks.length;
+        blocks.push(block);
+        allBlocks.push(block);
+      }
+    });
+    return{dayNum:di+1,theme:vibes.length?vibes.slice(0,2).join(' & '):'Explore',dayCost:'',blocks:blocks};
+  });
+
+  var totalStops=allBlocks.length;
+  if(!totalStops){
+    document.getElementById('dayPanels').innerHTML='<div class="loading"><div class="loading-txt" style="color:var(--rose)">No verified places found in "'+city+'". Try a different city name or expand the search radius.</div></div>';
+    btn.disabled=false;btn.textContent='Build my itinerary ✨';
+    return;
+  }
+
+  // Step 2: Groq for descriptions only
+  document.getElementById('dayPanels').innerHTML=buildSkeleton(5)+'<div class="loading" style="padding-top:0.5rem;"><div class="loading-ring"></div><div class="loading-txt">Writing descriptions...</div><div class="loading-sub">Almost there!</div></div>';
+  var placeList=allBlocks.map(function(b,i){return{id:String(i),name:b.place,type:b.type};});
+  var descPrompt='Write descriptions and tips for these real places in '+city+'. Return ONLY a raw JSON array, no markdown:\n[{"id":"0","desc":"Two vivid sentences.","tip":"One practical tip."},...]\n\nPlaces:\n'+placeList.map(function(p){return p.id+'. '+p.name+' ('+p.type+')';}).join('\n');
+  var descSys='You are a travel writer. For each place write exactly 2 vivid descriptive sentences as "desc", and 1 practical local tip as "tip". Return ONLY the JSON array.';
+  try{
+    var rawDesc=await callGroq(descPrompt,descSys,Math.min(4000,400+totalStops*100));
+    rawDesc=rawDesc.replace(/```json|```/g,'').trim();
+    var si=rawDesc.indexOf('['),ei=rawDesc.lastIndexOf(']');
+    if(si>-1&&ei>-1){
+      var descArr=JSON.parse(rawDesc.slice(si,ei+1));
+      descArr.forEach(function(item){
+        var idx=parseInt(item.id);
+        if(!isNaN(idx)&&allBlocks[idx]){
+          allBlocks[idx].desc=item.desc||'';
+          allBlocks[idx].tip=item.tip||'';
+        }
+      });
     }
-  }catch(err){
-    var errMsg=err.message||'Unknown error';
-    document.getElementById('dayPanels').innerHTML='<div class="loading"><div class="loading-txt" style="color:var(--rose)">Error: '+errMsg+'</div></div>';
-    
-    console.error(err);
+  }catch(e){/* descriptions optional */}
+
+  // Title + dateline
+  curTitle=days+' Days in '+city;
+  document.getElementById('resTitle').textContent=curTitle;
+  var dateline=document.getElementById('resDateline');
+  if(dateline){
+    var stats=[
+      {val:totalStops,lbl:'Stops'},
+      {val:days,lbl:'Days'},
+      {val:city,lbl:'Destination'},
+      {val:'$'+budget,lbl:'Per Day'},
+      {val:group,lbl:'Group'},
+    ];
+    dateline.innerHTML=stats.map(function(s){return '<div class="res-stat"><span class="res-stat-val">'+s.val+'</span><span class="res-stat-lbl">'+s.lbl+'</span></div>';}).join('');
+  }
+
+  // Render tabs + panels
+  var tabs=document.getElementById('dayTabs'),panels=document.getElementById('dayPanels');
+  tabs.innerHTML='';panels.innerHTML='';
+  tripDays.forEach(function(day,i){
+    var tab=document.createElement('button');
+    tab.className='day-tab'+(i===0?' active':'');
+    tab.innerHTML='<span class="day-tab-num">Day '+day.dayNum+'</span>'+(day.theme?'<span class="day-tab-theme">'+day.theme+'</span>':'');
+    (function(idx){tab.onclick=function(){switchDay(idx);};})(i);
+    tabs.appendChild(tab);
+    var panel=document.createElement('div');
+    panel.className='day-panel'+(i===0?' active':'');
+    panel.id='p-'+i;
+    panel.innerHTML=buildDay(day,i,links);
+    panels.appendChild(panel);
+  });
+  toast('Itinerary ready! 🎉','ok');
+  showCelebration();
+  bumpCounter();
+  setTimeout(function(){renderEventsCard(city,travelFrom,travelTo);},300);
+  setTimeout(function(){renderHotelsCard(city,travelFrom,travelTo);},600);
+  if(!sessionStorage.getItem('wa_email_shown')){
+    var emailHtml='<div class="email-capture" id="emailCapture"><div style="flex:1;min-width:160px;"><div style="font-size:0.82rem;font-weight:600;color:var(--txt);">📧 Email this itinerary</div><div style="font-size:0.7rem;color:var(--txt3);margin-top:0.15rem;">Get a copy + travel tips in your inbox</div></div><div style="display:flex;gap:0.4rem;flex:1;min-width:200px;"><input class="inp" id="emailInp" type="email" placeholder="your@email.com" style="flex:1;font-size:0.85rem;padding:0.55rem 0.8rem;"><button class="btn-sm btn-teal" onclick="submitEmail()">Send ✓</button></div></div>';
+    var panelsEl=document.getElementById('dayPanels');
+    if(panelsEl)panelsEl.insertAdjacentHTML('afterend',emailHtml);
   }
   btn.disabled=false;btn.textContent='Build my itinerary ✨';
 }
@@ -1444,13 +1691,11 @@ function buildDay(day,di,links){
   var blocks=day.blocks||[];
   var html='';
   if(categorySearch)html+='<div class="cat-active-banner">🔍 Showing only: <strong>'+categorySearch+'</strong> · within '+searchRadius+' mi of '+curCity+'</div>';
-  if(day.dayCost){html+='<div style="background:rgba(245,200,66,0.06);border:1px solid rgba(245,200,66,0.15);border-radius:10px;padding:0.7rem 1rem;margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.7rem;color:var(--txt3)">Estimated day spend</span><span style="font-family:DM Sans,sans-serif;font-weight:700;font-size:1.1rem;color:var(--gold)">'+day.dayCost+' per person</span></div>';}
   blocks.forEach(function(b,bi){
     var t=(b.type||'').toLowerCase();
     var stopType=getStopType(t);
     var lhtml='';
     if(links){
-      var mq=encodeURIComponent(b.mapsQuery||b.place+' '+curCity);
       var placeEnc=encodeURIComponent(b.place+' '+curCity);
       var destEnc=encodeURIComponent(b.mapsQuery||b.place+' '+curCity);
       var isFood=t.indexOf('breakfast')>-1||t.indexOf('lunch')>-1||t.indexOf('dinner')>-1||t.indexOf('cafe')>-1||t.indexOf('food')>-1||t.indexOf('restaurant')>-1||t.indexOf('brunch')>-1||t.indexOf('bar')>-1||t.indexOf('drink')>-1;
@@ -1458,25 +1703,31 @@ function buildDay(day,di,links){
       var isHotel=t.indexOf('hotel')>-1||t.indexOf('accommodation')>-1||t.indexOf('hostel')>-1||t.indexOf('stay')>-1||t.indexOf('check-in')>-1||t.indexOf('check in')>-1;
       lhtml+='<a class="slink sl-yelp" href="https://www.yelp.com/search?find_desc='+encodeURIComponent(b.place)+'&find_loc='+encodeURIComponent(curCity)+'" target="_blank" rel="noopener">🔍 Yelp</a>';
       lhtml+='<a class="slink sl-ta" href="https://www.tripadvisor.com/Search?q='+encodeURIComponent(b.place+' '+curCity)+'" target="_blank" rel="noopener">⭐ TA</a>';
-      var uberUrl='https://www.uber.com/ride?action=setPickup&dropoff[formatted_address]='+destEnc;
       var lyftUrl='https://www.lyft.com/rider/referrals/ride?destination='+destEnc;
-      lhtml+='<a class="slink sl-ride" href="'+uberUrl+'" target="_blank" rel="noopener" title="Open in Uber app or browser. Tap to try Lyft instead." onclick="handleRideTap(event,\''+lyftUrl+'\')">🚗 Ride</a>';
+      var uberUrl='https://www.uber.com/ride?action=setPickup&dropoff[formatted_address]='+destEnc;
+      lhtml+='<a class="slink sl-ride" href="'+uberUrl+'" target="_blank" rel="noopener" title="Open in Uber app or browser." onclick="handleRideTap(event,\''+lyftUrl+'\')">🚗 Ride</a>';
       if(isFood)lhtml+='<a class="slink sl-o" href="https://www.google.com/search?q='+encodeURIComponent('reserve table '+b.place+' '+curCity)+'" target="_blank" rel="noopener">🍽 Reserve</a>';
       if(isAttr){lhtml+='<a class="slink sl-v" href="https://www.viator.com/search/'+placeEnc+'?pid=P00107301" target="_blank" rel="noopener">🎟 Viator</a>';lhtml+='<a class="slink sl-g" href="https://www.getyourguide.com/s/?q='+placeEnc+'&partner_id=T1EGNP0" target="_blank" rel="noopener">🎫 GYG</a>';}
       if(isHotel)lhtml+='<a class="slink sl-b" href="https://www.booking.com/searchresults.html?aid=7956794&ss='+placeEnc+'" target="_blank" rel="noopener">🏨 Book</a>';
     }
     var slot=getTimeSlot(b.time);
     var isSaved=isPlaceSaved(b.place,curCity);
-    // Hours dots
+    // Photo header
+    var photoHtml='';
+    if(b.photo){photoHtml='<div class="stop-photo-wrap"><img class="stop-photo" src="'+b.photo+'" alt="'+b.place+'" loading="lazy" onerror="this.parentNode.style.display=\'none\'"></div>';}
+    // Meta row: rating, price, open/closed badge, distance, visits
+    var metaHtml='<div class="stop-meta-row">';
+    if(typeof b.rating==='number')metaHtml+='<span class="stop-rating">⭐ '+b.rating.toFixed(1)+'</span>';
+    if(b.price)metaHtml+='<span class="stop-price">'+b.price+'</span>';
+    if(typeof b.isOpen==='boolean')metaHtml+='<span class="stop-open-badge '+(b.isOpen?'open':'closed')+'">'+(b.isOpen?'Open':'Closed')+'</span>';
+    if(b.distance)metaHtml+='<span class="stop-dist">'+b.distance+' mi</span>';
+    if(b.visits)metaHtml+='<span class="stop-visits">'+Number(b.visits).toLocaleString()+' visits</span>';
+    metaHtml+='</div>';
+    // Foursquare hours text
     var hoursHtml='';
-    if(b.peakHours||b.quietHours){
-      hoursHtml='<div class="stop-hours">';
-      if(b.peakHours)hoursHtml+='<span class="hr-badge hr-peak">Peak: '+b.peakHours+'</span>';
-      if(b.quietHours)hoursHtml+='<span class="hr-badge hr-quiet">Quiet: '+b.quietHours+'</span>';
-      hoursHtml+='</div>';
-    }
+    if(b.hoursDisplay)hoursHtml='<div class="stop-hours-text">'+b.hoursDisplay+'</div>';
     // Type label
-    var typeLbl='<div class="stop-type-lbl">'+b.type+(b.cost?'<span class="stop-cost-inline">'+b.cost+'</span>':'')+'</div>';
+    var typeLbl='<div class="stop-type-lbl">'+b.type+(b.fsqCategory&&b.fsqCategory!==b.type?'<span class="stop-cost-inline">'+b.fsqCategory+'</span>':'')+'</div>';
     // Description with read-more for long text
     var desc=b.desc||'';
     var needsMore=desc.length>160;
@@ -1485,29 +1736,45 @@ function buildDay(day,di,links){
     var tipHtml=b.tip?'<div class="stop-tip">'+b.tip+'</div>':'';
     // Actions
     var actHtml='<div style="display:flex;gap:0.35rem;margin-bottom:0.75rem;"><button class="stop-act" onclick="randomizeStop('+di+','+bi+',this)" title="Swap this stop">🎲 Swap</button><button class="stop-act'+(isSaved?' saved-act':'')+'" id="save-act-'+di+'-'+bi+'" onclick="savePlace('+di+','+bi+',this)" title="Save">'+(isSaved?'🔖 Saved':'🏷 Save')+'</button></div>';
-    // Address line — confirmed address or fallback search link
+    // Address
     var addrHtml='';
     if(b.address&&b.address.trim()){
       var addrMapUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(b.address);
       addrHtml='<div class="stop-address-wrap"><a class="stop-address" href="'+addrMapUrl+'" target="_blank" rel="noopener"><span class="stop-address-icon">📍</span><span class="stop-address-text">'+b.address+'</span></a></div>';
-    } else if(links){
+    } else {
       var fallbackMq=encodeURIComponent(b.mapsQuery||b.place+' '+curCity);
       var fallbackUrl='https://www.google.com/maps/search/?api=1&query='+fallbackMq;
       addrHtml='<div class="stop-address-wrap"><a class="stop-address stop-address-search" href="'+fallbackUrl+'" target="_blank" rel="noopener"><span class="stop-address-icon">📍</span><span class="stop-address-text">Search on Maps</span></a></div>';
     }
+    // Contact + Uber
+    var contactHtml='';
+    var lat=b.lat||'',lng=b.lng||'';
+    var uberDeep=lat&&lng?'uber://?action=setPickup&dropoff[latitude]='+lat+'&dropoff[longitude]='+lng+'&dropoff[nickname]='+encodeURIComponent(b.place):'';
+    var uberFallback='https://www.uber.com/ride?action=setPickup&dropoff[formatted_address]='+encodeURIComponent(b.mapsQuery||b.place+' '+curCity);
+    var uberHref=uberDeep||uberFallback;
+    if(b.tel||b.website||uberHref){
+      contactHtml='<div class="stop-contact">';
+      if(b.tel)contactHtml+='<a class="stop-contact-link" href="tel:'+b.tel+'" rel="noopener">📞 '+b.tel+'</a>';
+      if(b.website)contactHtml+='<a class="stop-contact-link" href="'+b.website+'" target="_blank" rel="noopener">🌐 Website</a>';
+      contactHtml+='</div>';
+      contactHtml+='<a class="stop-uber-btn" href="'+uberHref+'" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>Ride with Uber</a>';
+    }
     var numStr=(bi+1)<10?'0'+(bi+1):(bi+1)+'';
     html+='<div class="stop" data-slot="'+slot+'" data-type="'+stopType+'" id="stop-'+di+'-'+bi+'">'
       +'<div class="stop-bg-num">'+numStr+'</div>'
+      +photoHtml
       +'<div class="stop-inner">'
       +'<div class="stop-time">'+b.time+'</div>'
       +'<div class="stop-name">'+b.place+'</div>'
       +typeLbl
+      +metaHtml
+      +hoursHtml
       +descHtml
       +tipHtml
-      +hoursHtml
       +actHtml
       +(lhtml?'<div class="stop-links">'+lhtml+'</div>':'')
       +addrHtml
+      +contactHtml
       +'</div></div>';
   });
   return html;
@@ -2025,21 +2292,40 @@ async function randomizeStop(di,bi,btn){
   if(stopEl)stopEl.classList.add('replacing');
   if(btn){btn.disabled=true;btn.textContent='⏳';}
   try{
-    var catNote=categorySearch?' The user is only looking for "'+categorySearch+'" — the replacement must also be a "'+categorySearch+'"':'';
-    var prompt='Replace one stop in a "'+curCity+'" itinerary. The replacement MUST be located in "'+curCity+'" within '+searchRadius+' mile'+(searchRadius!==1?'s':'')+' of the city center. Do not suggest places in other cities.\nCurrent stop: "'+b.place+'" (type: '+b.type+', time: '+b.time+')\nInterests: '+(vibes.join(', ')||'general')+'.'+catNote+'\nRules: Real, currently-open, verified place only. Match type "'+b.type+'" exactly. Full official Google Maps name. mapsQuery = full name + city + country. address = full street address ONLY if 100% certain — otherwise return "".\nReturn ONLY raw JSON (no markdown): {"time":"'+b.time+'","place":"Full Official Place Name","address":"Full street address or empty string","type":"'+b.type+'","desc":"Two vivid sentences.","tip":"One practical tip.","cost":"~$XX","mapsQuery":"Full Place Name '+curCity+' Country"}';
-    var raw=await callGroq(prompt,null,550);
-    raw=raw.replace(/```json|```/g,'').trim();
-    var si=raw.indexOf('{'),ei=raw.lastIndexOf('}');
-    if(si>-1&&ei>-1)raw=raw.slice(si,ei+1);
-    var nb=repairJSON(raw);
+    var radMeters=Math.round(searchRadius*1609.34);
+    var q=categorySearch||b.type||'attraction';
+    var url='/api/places?query='+encodeURIComponent(q)+'&near='+encodeURIComponent(curCity)+'&radius='+radMeters+'&sort=RATING&limit=15';
+    var r=await fetch(url);
+    var d=await r.json();
+    var pool=d.results||[];
+    var picked=null;
+    for(var i=0;i<pool.length;i++){
+      var fid=pool[i].fsq_id||pool[i].name;
+      if(!usedFsqIds.has(fid)){usedFsqIds.add(fid);picked=pool[i];break;}
+    }
+    if(!picked&&pool.length){picked=pool[Math.floor(Math.random()*pool.length)];}
+    if(!picked){
+      if(stopEl)stopEl.classList.remove('replacing');
+      if(btn){btn.disabled=false;btn.textContent='🎲 Swap';}
+      toast('No alternatives found nearby','err');
+      return;
+    }
+    var nb=buildBlockFromFsq(picked,{time:b.time,type:b.type,query:q});
+    // Get desc from Groq
+    try{
+      var dp='Write a description and tip for "'+nb.place+'" in '+curCity+'. Return ONLY raw JSON: {"desc":"Two vivid sentences.","tip":"One practical tip."}';
+      var raw=await callGroq(dp,null,200);
+      raw=raw.replace(/```json|```/g,'').trim();
+      var si=raw.indexOf('{'),ei=raw.lastIndexOf('}');
+      if(si>-1&&ei>-1){var dt=JSON.parse(raw.slice(si,ei+1));nb.desc=dt.desc||'';nb.tip=dt.tip||'';}
+    }catch(e){/* desc optional */}
     tripDays[di].blocks[bi]=nb;
-    // Re-render just this panel
     var panel=document.getElementById('p-'+di);
     if(panel){panel.innerHTML=buildDay(tripDays[di],di,document.getElementById('linkToggle').checked);}
     toast('🎲 Swapped to: '+nb.place,'ok');
   }catch(e){
     if(stopEl)stopEl.classList.remove('replacing');
-    if(btn){btn.disabled=false;btn.textContent='🎲';}
+    if(btn){btn.disabled=false;btn.textContent='🎲 Swap';}
     toast('Could not swap stop','err');
   }
 }
