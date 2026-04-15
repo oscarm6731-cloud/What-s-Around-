@@ -5,7 +5,8 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const { query, near, radius, sort, price, limit } = req.query;
-  const key = process.env.FOURSQUARE_KEY;
+  const rawKey = (process.env.FOURSQUARE_KEY || '').trim();
+  const key = rawKey.replace(/^Bearer\s+/i, '');
   if (!key) return res.status(500).json({ error: 'No Foursquare key configured' });
 
   const params = new URLSearchParams({
