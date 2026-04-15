@@ -1556,10 +1556,12 @@ async function generate(){
   var fsqResults={};
   try{
     var fetchLimit=Math.max(blocksPerDayNum+3,8);
+    var fsqApiError='';
     await Promise.all(uniqueQueries.map(async function(q){
       var url='/api/places?query='+encodeURIComponent(q)+'&near='+encodeURIComponent(city)+'&radius='+radMeters+'&sort='+encodeURIComponent(fsqSort)+'&limit='+fetchLimit+(fsqPrice?'&price='+encodeURIComponent(fsqPrice):'');
       var r=await fetch(url);
       var d2=await r.json();
+      if(d2.fsq_error&&!fsqApiError)fsqApiError=d2.fsq_error;
       fsqResults[q]=d2.results||[];
     }));
   }catch(e){
@@ -1603,7 +1605,8 @@ async function generate(){
 
   var totalStops=allBlocks.length;
   if(!totalStops){
-    document.getElementById('dayPanels').innerHTML='<div class="loading"><div class="loading-txt" style="color:var(--rose)">No verified places found in "'+city+'". Try a different city name or expand the search radius.</div></div>';
+    var errDetail=fsqApiError?'<div class="loading-sub" style="color:var(--rose);margin-top:0.5rem;word-break:break-all;">API: '+fsqApiError+'</div>':'';
+    document.getElementById('dayPanels').innerHTML='<div class="loading"><div class="loading-txt" style="color:var(--rose)">No verified places found in "'+city+'". Try a different city name or expand the search radius.</div>'+errDetail+'</div>';
     btn.disabled=false;btn.textContent='Build my itinerary ✨';
     return;
   }
