@@ -1554,16 +1554,27 @@ async function generate(){
 
   // Fetch all unique queries in parallel
   var fsqResults={};
+  var fsqFirstError=null;
   try{
     var fetchLimit=Math.max(blocksPerDayNum+3,8);
     await Promise.all(uniqueQueries.map(async function(q){
       var url='/api/places?query='+encodeURIComponent(q)+'&near='+encodeURIComponent(city)+'&radius='+radMeters+'&sort='+encodeURIComponent(fsqSort)+'&limit='+fetchLimit+(fsqPrice?'&price='+encodeURIComponent(fsqPrice):'');
       var r=await fetch(url);
       var d2=await r.json();
-      fsqResults[q]=d2.results||[];
+      if(d2.error){
+        if(!fsqFirstError)fsqFirstError=d2.error;
+        fsqResults[q]=[];
+      } else {
+        fsqResults[q]=d2.results||[];
+      }
     }));
   }catch(e){
     document.getElementById('dayPanels').innerHTML='<div class="loading"><div class="loading-txt" style="color:var(--rose)">Network error: '+e.message+'</div></div>';
+    btn.disabled=false;btn.textContent='Build my itinerary ✨';
+    return;
+  }
+  if(fsqFirstError){
+    document.getElementById('dayPanels').innerHTML='<div class="loading"><div class="loading-txt" style="color:var(--rose)">Foursquare API error: '+fsqFirstError+'</div></div>';
     btn.disabled=false;btn.textContent='Build my itinerary ✨';
     return;
   }
