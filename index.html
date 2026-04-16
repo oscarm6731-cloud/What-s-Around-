@@ -611,7 +611,6 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
   </div>
   <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
 </nav>
-<div class="trust-banner">Real places &nbsp;·&nbsp; Verified locations &nbsp;·&nbsp; Updated daily</div>
 
 <!-- HOME -->
 
@@ -623,7 +622,6 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
       <button class="btn-primary" onclick="goPage('planner')">✨ Start Planning</button>
       <button class="btn-ghost" onclick="surprise()">🎲 Surprise Me</button>
     </div>
-    <div class="counter-badge"><span>🧳</span><span id="counterText"></span></div>
   </div>
 </div>
 
@@ -685,26 +683,6 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
       <span class="wx-unit" id="wxUnit">°C</span>
     </div>
 
-    <div style="margin-top:1.1rem;">
-      <div class="card-sub" style="margin-bottom:0.45rem;">Search radius from city center</div>
-      <div class="opts" id="radiusOpts">
-        <button class="opt" onclick="setRadius(this,0.5)">0.5 mi</button>
-        <button class="opt" onclick="setRadius(this,1)">1 mi</button>
-        <button class="opt" onclick="setRadius(this,2)">2 mi</button>
-        <button class="opt on" onclick="setRadius(this,5)">5 mi</button>
-        <button class="opt" onclick="setRadius(this,10)">10 mi</button>
-        <button class="opt" onclick="setRadius(this,25)">25 mi</button>
-      </div>
-    </div>
-
-    <div style="margin-top:1.1rem;">
-      <div class="card-sub" style="margin-bottom:0.45rem;">Sort results by</div>
-      <div class="opts fsq-sort-opts" id="sortOpts">
-        <button class="opt on" onclick="setFsqSort(this,'RATING')">⭐ Rating</button>
-        <button class="opt" onclick="setFsqSort(this,'DISTANCE')">📍 Distance</button>
-        <button class="opt" onclick="setFsqSort(this,'POPULARITY')">🔥 Popular</button>
-      </div>
-    </div>
 
     <div style="margin-top:1.1rem;">
       <div class="card-sub" style="margin-bottom:0.45rem;">Price level</div>
@@ -727,18 +705,6 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
       </div>
     </div>
 
-    <div style="margin-top:1.1rem;">
-      <div class="card-sub" style="margin-bottom:0.5rem;">Which days of the week?</div>
-      <div class="opts" id="dowOpts">
-        <button class="opt" onclick="togDow(this,'Monday')">Mon</button>
-        <button class="opt" onclick="togDow(this,'Tuesday')">Tue</button>
-        <button class="opt" onclick="togDow(this,'Wednesday')">Wed</button>
-        <button class="opt" onclick="togDow(this,'Thursday')">Thu</button>
-        <button class="opt" onclick="togDow(this,'Friday')">Fri</button>
-        <button class="opt on" onclick="togDow(this,'Saturday')">Sat</button>
-        <button class="opt on" onclick="togDow(this,'Sunday')">Sun</button>
-      </div>
-    </div>
 
     <div style="margin-top:1.1rem;">
       <div class="card-sub" style="margin-bottom:0.45rem;">Travel dates <span style="font-size:0.68rem;color:var(--txt3);font-weight:400;">(optional — unlocks events &amp; hotel search)</span></div>
@@ -795,15 +761,6 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
       </div>
     </div>
 
-    <div style="margin-top:1.1rem;">
-      <div class="card-sub" style="margin-bottom:0.45rem;">Getting around</div>
-      <div class="opts" id="stylOpts">
-        <button class="opt on" onclick="selOpt('stylOpts',this,'Walking')">🚶 Walking</button>
-        <button class="opt" onclick="selOpt('stylOpts',this,'Transit')">🚇 Transit</button>
-        <button class="opt" onclick="selOpt('stylOpts',this,'Rideshare')">🚕 Rideshare</button>
-        <button class="opt" onclick="selOpt('stylOpts',this,'Driving')">🚗 Driving</button>
-      </div>
-    </div>
   </div>
   <div class="wiz-nav">
     <button class="wiz-btn-back" onclick="wizBack()">← Back</button>
@@ -836,17 +793,6 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
       <div class="slider-marks"><span>$0 Free</span><span>$250</span><span>$500</span><span>$999 Luxury</span></div>
     </div>
 
-    <div style="margin-top:1.1rem;">
-      <div class="card-sub" style="margin-bottom:0.45rem;">Dietary preferences</div>
-      <div class="opts" id="dietOpts">
-        <button class="opt" onclick="togDiet(this,'Vegetarian')">🌿 Vegetarian</button>
-        <button class="opt" onclick="togDiet(this,'Vegan')">🥗 Vegan</button>
-        <button class="opt" onclick="togDiet(this,'Halal')">🥩 Halal</button>
-        <button class="opt" onclick="togDiet(this,'Gluten-Free')">🌾 Gluten-Free</button>
-        <button class="opt" onclick="togDiet(this,'Pescatarian')">🐟 Pescatarian</button>
-        <button class="opt" onclick="togDiet(this,'Dairy-Free')">🥛 Dairy-Free</button>
-      </div>
-    </div>
 
     <div style="margin-top:1.1rem;">
       <div class="toggle-row">
@@ -856,17 +802,6 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
         </div>
         <label class="toggle">
           <input type="checkbox" id="linkToggle" checked>
-          <div class="t-track"></div>
-          <div class="t-thumb"></div>
-        </label>
-      </div>
-      <div class="toggle-row" style="margin-top:0.4rem;">
-        <div>
-          <div class="toggle-lbl">💎 Hidden Gems Mode</div>
-          <div class="toggle-sub">Skip tourist traps — locals-only spots</div>
-        </div>
-        <label class="toggle">
-          <input type="checkbox" id="gemsToggle" onchange="toggleGems(this)">
           <div class="t-track"></div>
           <div class="t-thumb"></div>
         </label>
@@ -1118,20 +1053,15 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
 <div class="toast" id="toast"></div>
 
 <script>
-var days=3,budget=150,vibes=[],group='Solo',travelStyle='Walking';
-var searchRadius=5,categorySearch='';
+var days=3,budget=150,vibes=[],group='Solo';
+var categorySearch='';
 var tripDays=[],curCity='',curTitle='';
 var chatOpen=false,chatHistory=[],chatBusy=false,packChecked={};
 var wxTimer=null,toastTimer=null;
-var fsqSort='RATING',fsqPrice='';
+var fsqPrice='';
 var trendingPlaces=[];
 var usedFsqIds=new Set();
 
-function setFsqSort(btn,val){
-  fsqSort=val;
-  document.querySelectorAll('#sortOpts .opt').forEach(function(b){b.classList.remove('on');});
-  btn.classList.add('on');
-}
 function setFsqPrice(btn,val){
   fsqPrice=val;
   document.querySelectorAll('#priceOpts .opt').forEach(function(b){b.classList.remove('on');});
@@ -1207,13 +1137,13 @@ function buildBlockFromFsq(fsqPlace,slot){
 }
 
 // Trending section
-async function fetchTrending(city,radMeters){
+async function fetchTrending(city){
   var el=document.getElementById('trendingSection');
   if(!el)return;
   el.style.display='block';
   el.innerHTML='<div class="trending-hdr">🔥 Trending in '+city+'</div><div class="trending-loading"><div class="loading-ring" style="width:26px;height:26px;border-width:2px;margin:0 auto;"></div></div>';
   try{
-    var r=await fetch('/api/places?query=popular&near='+encodeURIComponent(city)+'&radius='+radMeters+'&sort=POPULARITY&limit=5');
+    var r=await fetch('/api/places?query=popular+trending&near='+encodeURIComponent(city)+'&sort=POPULARITY&limit=5');
     var d=await r.json();
     trendingPlaces=d.results||[];
     if(!trendingPlaces.length){el.style.display='none';return;}
@@ -1258,19 +1188,6 @@ function toggleTheme(){
     });
   }
 })();
-
-// Trip counter
-(function(){
-  var base=parseInt(localStorage.getItem('wa_total_trips')||'0')||847;
-  var el=document.getElementById('counterText');
-  if(el)el.textContent=base.toLocaleString()+' itineraries planned';
-})();
-function bumpCounter(){
-  var n=(parseInt(localStorage.getItem('wa_total_trips')||'847'))+1;
-  localStorage.setItem('wa_total_trips',n);
-  var el=document.getElementById('counterText');
-  if(el)el.textContent=n.toLocaleString()+' itineraries planned';
-}
 
 // Share trip
 function shareTrip(){
@@ -1417,11 +1334,6 @@ function buildSkeleton(count){
   return html;
 }
 
-function setRadius(btn,val){
-  searchRadius=val;
-  document.querySelectorAll('#radiusOpts .opt').forEach(function(b){b.classList.remove('on');});
-  btn.classList.add('on');
-}
 function toggleCatSection(){
   var body=document.getElementById('catOptionalBody');
   var btn=document.getElementById('catToggleBtn');
@@ -1450,7 +1362,6 @@ function selOpt(gid,btn,val){
   document.querySelectorAll('#'+gid+' .opt').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');
   if(gid==='grpOpts')group=val;
-  if(gid==='stylOpts')travelStyle=val;
 }
 function chDays(d){
   days=Math.max(1,Math.min(14,days+d));
@@ -1529,12 +1440,11 @@ async function generate(){
   var catSearch=document.getElementById('categorySearch').value.trim();
   categorySearch=catSearch;
   var blocksPerDayNum=days<=5?5:days<=9?4:3;
-  var radMeters=Math.round(searchRadius*1609.34);
   var btn=document.getElementById('genBtn');
   btn.disabled=true;btn.textContent='BUILDING...';
   document.getElementById('results').style.display='block';
   document.getElementById('dayTabs').innerHTML='';
-  document.getElementById('dayPanels').innerHTML=buildSkeleton(5)+'<div class="loading" style="padding-top:0.5rem;"><div class="loading-ring"></div><div class="loading-txt">Finding real places in '+city+'...</div><div class="loading-sub">Searching verified venues for '+days+' day'+(days>1?'s':'')+'</div></div>';
+  document.getElementById('dayPanels').innerHTML=buildSkeleton(5)+'<div class="loading" style="padding-top:0.5rem;"><div class="loading-ring"></div><div class="loading-txt">Finding real places in '+city+'...</div><div class="loading-sub">Building your '+days+'-day itinerary...</div</div>';
   document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
 
   // Build all slots for all days
@@ -1558,7 +1468,7 @@ async function generate(){
     var fetchLimit=Math.max(blocksPerDayNum+3,8);
     var fsqApiError='';
     await Promise.all(uniqueQueries.map(async function(q){
-      var url='/api/places?query='+encodeURIComponent(q)+'&near='+encodeURIComponent(city)+'&radius='+radMeters+'&sort='+encodeURIComponent(fsqSort)+'&limit='+fetchLimit+(fsqPrice?'&price='+encodeURIComponent(fsqPrice):'');
+      var url='/api/places?query='+encodeURIComponent(q)+'&near='+encodeURIComponent(city)+'&limit='+fetchLimit+(fsqPrice?'&price='+encodeURIComponent(fsqPrice):'');
       var r=await fetch(url);
       var d2=await r.json();
       if(d2.fsq_error&&!fsqApiError)fsqApiError=d2.fsq_error;
@@ -1571,7 +1481,7 @@ async function generate(){
   }
 
   // Fire trending non-blocking
-  fetchTrending(city,radMeters);
+  fetchTrending(city);
 
   // Assign places to slots, deduplicating by fsq_id
   var allBlocks=[];
@@ -1692,7 +1602,7 @@ function getStopType(t){
 function buildDay(day,di,links){
   var blocks=day.blocks||[];
   var html='';
-  if(categorySearch)html+='<div class="cat-active-banner">🔍 Showing only: <strong>'+categorySearch+'</strong> · within '+searchRadius+' mi of '+curCity+'</div>';
+  if(categorySearch)html+='<div class="cat-active-banner">🔍 Showing only: <strong>'+categorySearch+'</strong> in '+curCity+'</div>';
   blocks.forEach(function(b,bi){
     var t=(b.type||'').toLowerCase();
     var stopType=getStopType(t);
@@ -1995,25 +1905,8 @@ function updateWxDisplay(){
 }
 
 // ── Hidden Gems ──
-function toggleGems(cb){
-  var plannerPage=document.getElementById('planner-page');
-  if(plannerPage)plannerPage.classList.toggle('gems-active',cb.checked);
-  toast(cb.checked?'💎 Hidden Gems Mode on — no tourist traps!':'Hidden Gems Mode off','info');
-}
 
 // ── Dietary ──
-var dietaryPrefs=[];
-var tripDows=['Saturday','Sunday'];
-function togDow(btn,val){
-  btn.classList.toggle('on');
-  if(btn.classList.contains('on'))tripDows.push(val);
-  else tripDows=tripDows.filter(function(v){return v!==val;});
-}
-function togDiet(btn,val){
-  btn.classList.toggle('on');
-  if(btn.classList.contains('on'))dietaryPrefs.push(val);
-  else dietaryPrefs=dietaryPrefs.filter(function(v){return v!==val;});
-}
 
 // ── Best Time to Visit ──
 function openBestTime(){
@@ -2294,9 +2187,8 @@ async function randomizeStop(di,bi,btn){
   if(stopEl)stopEl.classList.add('replacing');
   if(btn){btn.disabled=true;btn.textContent='⏳';}
   try{
-    var radMeters=Math.round(searchRadius*1609.34);
     var q=categorySearch||b.type||'attraction';
-    var url='/api/places?query='+encodeURIComponent(q)+'&near='+encodeURIComponent(curCity)+'&radius='+radMeters+'&sort=RATING&limit=15';
+    var url='/api/places?query='+encodeURIComponent(q)+'&near='+encodeURIComponent(curCity)+'&limit=15';
     var r=await fetch(url);
     var d=await r.json();
     var pool=d.results||[];
