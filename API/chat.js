@@ -1,18 +1,33 @@
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const MAX_HISTORY = 8;
+const TIMEOUT_MS = 25000;
 
 async function groqCall(key, model, msgs, maxTokens) {
-  const r = await fetch(GROQ_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-    body: JSON.stringify({ model, messages: msgs, max_tokens: maxTokens, temperature: 0.2 })
-  });
-  const d = await r.json();
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  let r, d;
+  try {
+    r = await fetch(GROQ_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+      body: JSON.stringify({ model, messages: msgs, max_tokens: maxTokens, temperature: 0.2 }),
+      signal: controller.signal
+    });
+    d = await r.json();
+  } catch (fetchErr) {
+    const e = new Error(fetchErr.name === 'AbortError' ? 'Request timed out' : fetchErr.message);
+    e.isTimeout = true;
+    throw e;
+  } finally {
+    clearTimeout(timer);
+  }
   if (!r.ok) {
     const err = d.error ? d.error.message : 'Groq error';
     const isRateLimit = r.status === 429 || (err && err.toLowerCase().includes('rate limit'));
+    const isTimeout = !!(err && (err.toLowerCase().includes('timeout') || err.toLowerCase().includes('stream idle')));
     const e = new Error(err);
     e.isRateLimit = isRateLimit;
+    e.isTimeout = isTimeout;
     throw e;
   }
   return d.choices && d.choices[0] ? d.choices[0].message.content : '';
@@ -28,7 +43,7 @@ module.exports = async (req, res) => {
   if (!key) return res.status(500).json({ error: 'No API key configured' });
   try {
     const body = req.body || {};
-    const maxTokens = body.max_tokens || 4000;
+    const maxTokens = Math.min(body.max_tokens || 1200, 1500);
     let msgs, model;
 
     if (body.image) {
@@ -38,7 +53,6 @@ module.exports = async (req, res) => {
     } else {
       msgs = [];
       if (body.system) msgs.push({ role: 'system', content: body.system });
-      // Trim conversation history to last MAX_HISTORY messages to reduce token usage
       const history = (body.messages || []).slice(-MAX_HISTORY);
       history.forEach(m => msgs.push({ role: m.role, content: m.content }));
       model = 'llama-3.3-70b-versatile';
@@ -48,8 +62,8 @@ module.exports = async (req, res) => {
     try {
       text = await groqCall(key, model, msgs, maxTokens);
     } catch (e) {
-      // Fallback to smaller model on rate limit (text only — vision model has no fallback)
-      if (e.isRateLimit && !body.image) {
+      // Fallback to faster smaller model on rate limit or timeout (text only)
+      if ((e.isRateLimit || e.isTimeout) && !body.image) {
         text = await groqCall(key, 'llama-3.1-8b-instant', msgs, maxTokens);
       } else {
         throw e;

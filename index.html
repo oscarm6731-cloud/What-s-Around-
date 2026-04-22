@@ -622,6 +622,306 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
 .wiz-gen-btn{flex:1;height:52px;border-radius:14px;padding:0;font-size:0.95rem;margin-top:0 !important;}
 
 </style>
+
+<style>
+/* ═══════════════════════════════════════════════════
+   PREMIUM UI OVERRIDE — cascades over base styles
+   ═══════════════════════════════════════════════════ */
+
+/* ── Refined tokens ── */
+:root{
+  --bg:#080812;--bg2:#0e0d1c;--card:#11101f;--card2:#17162a;
+  --line:rgba(255,255,255,0.058);--line2:rgba(255,255,255,0.11);
+  --txt:#ede9ff;--txt2:#9b92be;--txt3:#514d6b;
+  --teal:#00e5c3;--rose:#ff5f7e;--sky:#60a5fa;--gold:#f5c842;
+  --sh1:0 2px 12px rgba(0,0,0,0.45);
+  --sh2:0 8px 32px rgba(0,0,0,0.55);
+  --sh3:0 20px 60px rgba(0,0,0,0.65);
+  --r:12px;--r2:18px;--r3:24px;
+}
+body.light{
+  --bg:#f7f5ff;--bg2:#edeaf8;--card:#ffffff;--card2:#f2eef9;
+  --line:rgba(0,0,0,0.058);--line2:rgba(0,0,0,0.11);
+  --txt:#100e1e;--txt2:#4a4468;--txt3:#9890b4;
+  --teal:#00b89a;--rose:#e84f70;
+  --sh1:0 2px 12px rgba(0,0,0,0.07);
+  --sh2:0 8px 32px rgba(0,0,0,0.1);
+  --sh3:0 20px 60px rgba(0,0,0,0.14);
+}
+
+/* ── Smooth rendering ── */
+body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+
+/* ── Page fade-in ── */
+.page.active{animation:pgIn 0.28s ease both;}
+@keyframes pgIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── Navigation ── */
+nav{height:62px;background:rgba(8,8,18,0.9);backdrop-filter:blur(32px) saturate(200%);-webkit-backdrop-filter:blur(32px) saturate(200%);padding:0 1.5rem;gap:0.75rem;}
+body.light nav{background:rgba(247,245,255,0.92);}
+.nav-logo{font-size:1rem;letter-spacing:0.22em;gap:0.6rem;}
+.nav-dot{width:7px;height:7px;box-shadow:0 0 14px rgba(0,229,195,0.9);}
+.nav-tab{padding:0.44rem 0.95rem;font-size:0.81rem;border-radius:10px;font-weight:500;transition:all 0.18s;}
+.nav-tab.active{font-weight:650;background:rgba(0,229,195,0.1);color:var(--teal);}
+.theme-btn{width:36px;height:36px;border-radius:10px;}
+
+/* ── Ambient orbs — larger and softer ── */
+.bg-orb::before{width:800px;height:800px;background:radial-gradient(circle,rgba(0,229,195,0.055) 0%,transparent 68%);top:-280px;right:-200px;}
+.bg-orb::after{width:600px;height:600px;background:radial-gradient(circle,rgba(255,95,126,0.048) 0%,transparent 68%);bottom:-200px;left:-150px;}
+
+/* ── Hero ── */
+.hero{padding:6rem 1.5rem 5rem;}
+.hero h1{font-size:clamp(3.2rem,11vw,6rem);letter-spacing:-0.02em;line-height:1.02;margin-bottom:1.4rem;}
+.hero-sub{font-size:1.05rem;line-height:1.75;margin-bottom:3rem;max-width:480px;}
+.hero-btns{gap:0.85rem;}
+
+/* ── Buttons — primary ── */
+.btn-primary{padding:0.92rem 2.2rem;border-radius:var(--r);font-size:0.95rem;
+  box-shadow:0 6px 22px rgba(0,229,195,0.26);
+  transition:transform 0.2s ease,box-shadow 0.2s ease,opacity 0.15s;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(0,229,195,0.42);opacity:1;}
+.btn-primary:active{transform:scale(0.97);}
+.btn-primary:focus-visible{outline:2px solid var(--teal);outline-offset:3px;box-shadow:none;}
+
+/* ── Buttons — ghost ── */
+.btn-ghost{padding:0.92rem 2rem;border-radius:var(--r);font-size:0.93rem;
+  border:1px solid var(--line2);transition:all 0.2s;}
+.btn-ghost:hover{background:rgba(255,255,255,0.07);color:var(--txt);border-color:rgba(255,255,255,0.2);}
+
+/* ── Buttons — small ── */
+.btn-sm{padding:0.48rem 1rem;border-radius:9px;font-size:0.8rem;}
+.btn-teal{background:rgba(0,229,195,0.1);border:1px solid rgba(0,229,195,0.25);color:var(--teal);}
+.btn-teal:hover{background:rgba(0,229,195,0.18);}
+.btn-rose{background:rgba(255,95,126,0.1);border:1px solid rgba(255,95,126,0.25);color:var(--rose);}
+.btn-rose:hover{background:rgba(255,95,126,0.18);}
+.btn-muted{background:rgba(255,255,255,0.04);border:1px solid var(--line2);color:var(--txt2);}
+.btn-muted:hover{background:rgba(255,255,255,0.08);color:var(--txt);}
+
+/* ── Inputs ── */
+.inp{padding:0.9rem 1.1rem;border-radius:var(--r);border:1.5px solid var(--line2);
+  background:var(--card2);font-size:1rem;transition:border-color 0.22s,box-shadow 0.22s,background 0.22s;}
+.inp:focus{border-color:rgba(0,229,195,0.55);box-shadow:0 0 0 4px rgba(0,229,195,0.1);background:var(--card);}
+
+/* ── Generic cards ── */
+.card{border-radius:var(--r2);padding:1.45rem;box-shadow:var(--sh1);
+  transition:border-color 0.22s,box-shadow 0.22s;}
+.card:hover{box-shadow:var(--sh2);}
+
+/* ── Option pills ── */
+.opt{padding:0.52rem 1.05rem;border-radius:100px;font-size:0.82rem;transition:all 0.18s;}
+.opt.on{background:rgba(0,229,195,0.1);border-color:rgba(0,229,195,0.42);color:var(--teal);}
+.opt:hover:not(.on){background:var(--card);color:var(--txt);}
+
+/* ── Days / budget numbers ── */
+.days-btn{width:40px;height:40px;border-radius:var(--r);border:1.5px solid var(--line2);}
+.days-btn:hover{border-color:var(--teal);color:var(--teal);}
+.days-num{font-size:2.6rem;}
+.budget-val{font-size:2.6rem;}
+input[type=range]::-webkit-slider-thumb{width:24px;height:24px;box-shadow:0 0 14px rgba(0,229,195,0.55);}
+
+/* ── Toggle switch ── */
+.toggle-row{border-radius:var(--r);padding:0.88rem 1.1rem;transition:border-color 0.18s;}
+.toggle-row:hover{border-color:var(--line2);}
+.t-track{border-radius:100px;}
+.toggle input:checked~.t-thumb{box-shadow:0 0 12px rgba(0,229,195,0.55);}
+
+/* ── Generate button ── */
+.gen-btn{border-radius:var(--r2);padding:1.2rem;font-size:1.05rem;letter-spacing:0.07em;
+  box-shadow:0 10px 32px rgba(0,229,195,0.3);transition:transform 0.2s,box-shadow 0.2s,opacity 0.15s;}
+.gen-btn:hover{transform:translateY(-2px);box-shadow:0 18px 44px rgba(0,229,195,0.44);opacity:1;}
+.gen-btn:active{transform:scale(0.98);}
+
+/* ── Planner page ── */
+#planner-page{padding:2.2rem 1.4rem 5.5rem;}
+.planner-head{margin-bottom:2.2rem;}
+.planner-head h2{font-size:clamp(2.1rem,6vw,3rem);letter-spacing:-0.015em;}
+.planner-head p{font-size:0.9rem;line-height:1.65;}
+
+/* ── Wizard step indicator ── */
+.wiz-indicator{margin-bottom:2.2rem;}
+.wiz-ind-dot{width:46px;height:46px;font-size:1rem;font-weight:700;border:2px solid var(--line2);}
+.wiz-ind-step.active .wiz-ind-dot{box-shadow:0 0 0 6px rgba(0,229,195,0.14),0 4px 18px rgba(0,229,195,0.38);}
+.wiz-ind-fill{background:linear-gradient(90deg,var(--teal),var(--sky));}
+
+/* ── Wizard nav buttons ── */
+.wiz-btn-back{height:54px;border-radius:var(--r2);border:1.5px solid var(--line2);}
+.wiz-btn-next{height:54px;border-radius:var(--r2);box-shadow:0 8px 26px rgba(0,229,195,0.3);}
+.wiz-btn-next:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(0,229,195,0.44);}
+
+/* ── Step cards ── */
+.step-card{border-radius:var(--r3);padding:2.1rem;box-shadow:var(--sh1);transition:border-color 0.22s,box-shadow 0.22s;}
+.step-card:focus-within{box-shadow:var(--sh2);}
+.step-badge{width:36px;height:36px;border-radius:var(--r);}
+.step-hdr{margin-bottom:1.85rem;}
+.step-divider{margin:1.6rem 0;}
+
+/* ── Results header ── */
+.res-title{font-size:clamp(2.2rem,7vw,3.9rem);letter-spacing:-0.022em;}
+
+/* ── Day tabs ── */
+.day-tab{border-radius:var(--r) var(--r) 0 0;padding:0.78rem 1.2rem;
+  transition:all 0.2s;min-width:94px;}
+.day-tab:hover{background:var(--card2);}
+.day-tab.active{border-bottom-color:var(--teal);}
+.day-tab-num{font-size:1.55rem;}
+.day-panel.active{gap:1.35rem;}
+
+/* ── Stop cards ── */
+.stop{border-radius:0 0 var(--r2) var(--r2);
+  transition:transform 0.22s ease,box-shadow 0.22s ease;}
+.stop:hover{transform:translateY(-3px);box-shadow:var(--sh3);}
+.stop-inner{padding:1.35rem 1.55rem 1.5rem 1.85rem;}
+.stop-name{font-size:1.7rem;line-height:1.07;padding-right:5.5rem;}
+.stop-time{border-radius:100px;font-size:0.63rem;padding:0.2rem 0.58rem;}
+.stop-desc{font-size:0.86rem;line-height:1.76;}
+.stop-tip{border-left:2px solid var(--teal);padding-left:0.8rem;font-size:0.81rem;}
+.stop-links{padding-top:0.82rem;}
+
+/* ── Loading ── */
+.loading{padding:4.5rem 2rem;}
+.loading-ring{width:44px;height:44px;border-width:3px;}
+.loading-txt{font-size:0.88rem;font-weight:500;}
+
+/* ── Toast ── */
+.toast{border-radius:var(--r2);padding:0.78rem 1.45rem;font-size:0.84rem;box-shadow:var(--sh3);}
+
+/* ── Skeleton ── */
+.skel-card{border-radius:var(--r2);padding:1.35rem;}
+
+/* ── Modals ── */
+.modal{border-radius:var(--r3) var(--r3) 0 0;padding:1.9rem;box-shadow:var(--sh3);}
+@media(min-width:600px){.modal{border-radius:var(--r3);}}
+.modal-hdr{margin-bottom:1.5rem;}
+.modal-title{font-size:1.28rem;letter-spacing:0.02em;}
+.modal-x{width:32px;height:32px;border-radius:9px;}
+
+/* ── Chat FAB ── */
+.chat-fab{width:58px;height:58px;border-radius:var(--r2);font-size:1.45rem;
+  box-shadow:0 8px 28px rgba(255,95,126,0.42);}
+.chat-fab:hover{transform:scale(1.1);box-shadow:0 14px 38px rgba(255,95,126,0.56);}
+
+/* ── Chat window ── */
+.chat-win{border-radius:var(--r3);box-shadow:var(--sh3);}
+.chat-hdr{padding:1rem 1.2rem;border-radius:var(--r3) var(--r3) 0 0;}
+.chat-av{border-radius:var(--r);}
+.cmsg.ai .cmsg-bub{border-radius:4px 14px 14px 14px;}
+.cmsg.user .cmsg-bub{border-radius:14px 4px 14px 14px;}
+.chat-inp{border-radius:var(--r);padding:0.6rem 0.88rem;border:1.5px solid var(--line2);}
+.chat-inp:focus{border-color:rgba(255,95,126,0.52);}
+.chat-send{border-radius:var(--r);}
+
+/* ── City autocomplete ── */
+.city-sugs{border-radius:var(--r2);box-shadow:var(--sh3);}
+.city-sug{padding:0.82rem 1.1rem;}
+.city-sug-country{border-radius:5px;}
+
+/* ── Near me button ── */
+.near-me-btn{border-radius:9px;padding:0.44rem 0.95rem;}
+
+/* ── Saved page ── */
+#saved-page{padding:2.2rem 1.4rem 5.5rem;}
+.saved-head{margin-bottom:1.9rem;}
+.saved-head h2{font-size:clamp(2.1rem,6vw,3rem);letter-spacing:-0.015em;}
+.saved-card{border-radius:var(--r2);box-shadow:var(--sh1);}
+.saved-card:hover{box-shadow:var(--sh2);transform:translateY(-3px);}
+.saved-tog-btn{border-radius:var(--r);padding:0.5rem 1.1rem;}
+.saved-tog-btn.active{background:rgba(0,229,195,0.1);border-color:rgba(0,229,195,0.38);color:var(--teal);}
+.place-card{border-radius:var(--r2);padding:1.1rem;}
+.place-card:hover{box-shadow:var(--sh2);}
+
+/* ── Explore page ── */
+#explore-page{padding:2.2rem 1.4rem 6rem;max-width:700px;}
+.explore-head h2{font-size:clamp(2.1rem,6vw,3rem);letter-spacing:-0.015em;}
+.explore-form{border-radius:var(--r3);padding:1.8rem;box-shadow:var(--sh1);}
+.ecat{border-radius:100px;padding:0.48rem 0.92rem;font-size:0.8rem;transition:all 0.18s;}
+.ecat:hover:not(.on){background:var(--card);color:var(--txt);}
+.ecat.on{background:rgba(0,229,195,0.1);border-color:rgba(0,229,195,0.42);color:var(--teal);}
+.etime{border-radius:100px;padding:0.48rem 0.98rem;font-size:0.8rem;transition:all 0.18s;}
+.etime:hover:not(.on){background:var(--card);color:var(--txt);}
+.etime.on{background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.42);color:var(--sky);}
+.explore-card{border-radius:var(--r2);padding:1.15rem 1.2rem;box-shadow:var(--sh1);}
+.explore-card:hover{box-shadow:var(--sh2);transform:translateY(-2px);}
+.explore-card-link{border-radius:7px;}
+.explore-card-link:hover{border-color:rgba(0,229,195,0.42);}
+
+/* ── Empty states ── */
+.empty-state{padding:5rem 1.5rem;}
+.empty-icon{font-size:3.5rem;margin-bottom:1rem;}
+.empty-state h3{font-size:1.4rem;letter-spacing:0.015em;margin-bottom:0.5rem;}
+.empty-state p{font-size:0.85rem;line-height:1.7;}
+
+/* ── Bottom nav ── */
+.bottom-nav{background:rgba(8,8,18,0.97);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);}
+body.light .bottom-nav{background:rgba(247,245,255,0.97);}
+.bn-btn{transition:color 0.18s;}
+.bn-btn.active{color:var(--teal);}
+.bn-lbl{font-size:0.6rem;letter-spacing:0.06em;}
+
+/* ── Trending cards ── */
+.trend-card{border-radius:var(--r2);}
+.trend-card:hover{transform:translateY(-4px);box-shadow:var(--sh2);}
+
+/* ── Events / Hotels ── */
+.events-card{border-radius:var(--r2);}
+.hotel-opt{border-radius:var(--r);}
+.hotel-opt:hover{transform:translateY(-1px);}
+.elink{border-radius:9px;}
+
+/* ── Flights & stays ── */
+.fl-tab{border-radius:var(--r);}
+.fl-tab.active{background:rgba(0,229,195,0.1);border-color:rgba(0,229,195,0.38);color:var(--teal);}
+.fl-card{border-radius:var(--r);}
+.fl-icon{border-radius:var(--r);}
+.site-row{border-radius:var(--r);transition:all 0.2s;}
+.site-row:hover{transform:translateX(3px);}
+.ap-list{border-radius:var(--r);}
+.trip-btn{border-radius:9px;}
+.trip-btn.active{background:rgba(0,229,195,0.1);border-color:rgba(0,229,195,0.38);color:var(--teal);}
+
+/* ── Category pills ── */
+.cat-pill{border-radius:100px;}
+.cat-pill.on{background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.42);color:var(--sky);}
+.cat-optional-wrap{border-radius:var(--r2);}
+.cat-optional-toggle{padding:0.95rem 1.15rem;}
+.cat-optional-body{border-radius:0 0 var(--r2) var(--r2);}
+
+/* ── Best time calendar ── */
+.bt-detail{border-radius:var(--r2);}
+.bt-best-card{border-radius:var(--r);}
+.bt-month{border-radius:var(--r);}
+
+/* ── Pack items ── */
+.pack-item{border-radius:9px;}
+.pack-item.checked{background:rgba(0,229,195,0.07);}
+
+/* ── Stop meta badges ── */
+.stop-open-badge{border-radius:100px;}
+.stop-open-badge.open{background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);}
+.stop-open-badge.closed{background:rgba(255,95,126,0.1);border:1px solid rgba(255,95,126,0.3);}
+
+/* ── Hotel platform ── */
+.hotel-platform-btn{border-radius:var(--r);}
+.hotel-platform-icon{border-radius:8px;}
+
+/* ── Footer ── */
+.affil-footer{padding:1.6rem 1.5rem 3rem;margin-top:2.5rem;}
+
+/* ── Mobile ── */
+@media(max-width:680px){
+  .hero{padding:4.5rem 1.3rem 4rem;}
+  .hero h1{font-size:clamp(2.8rem,12vw,4rem);}
+  #planner-page,#saved-page,#explore-page{padding-left:1rem;padding-right:1rem;}
+  .step-card{padding:1.5rem;}
+  .stop-inner{padding:1.1rem 1.25rem 1.25rem 1.6rem;}
+  .stop-name{font-size:1.5rem;}
+  .explore-form{padding:1.3rem;}
+  nav{padding:0 1rem;}
+}
+
+/* ── Keyboard focus ring ── */
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px;}
+button:focus-visible,a:focus-visible{outline:2px solid var(--teal);outline-offset:2px;}
+</style>
 </head>
 <body>
 <div class="bg-orb"></div>
@@ -1774,24 +2074,29 @@ async function generate(){
 
   // Step 2: Groq for descriptions only
   document.getElementById('dayPanels').innerHTML=buildSkeleton(5)+'<div class="loading" style="padding-top:0.5rem;"><div class="loading-ring"></div><div class="loading-txt">Writing descriptions...</div><div class="loading-sub">Almost there!</div></div>';
-  var placeList=allBlocks.map(function(b,i){return{id:String(i),name:b.place,type:b.type};});
-  var descPrompt='Write descriptions and tips for these real places in '+city+'. Return ONLY a raw JSON array, no markdown:\n[{"id":"0","desc":"Two vivid sentences.","tip":"One practical tip."},...]\n\nPlaces:\n'+placeList.map(function(p){return p.id+'. '+p.name+' ('+p.type+')';}).join('\n');
-  var descSys='You are a travel writer. For each place write exactly 2 vivid descriptive sentences as "desc", and 1 practical local tip as "tip". Return ONLY the JSON array.';
-  try{
-    var rawDesc=await callGroq(descPrompt,descSys,Math.min(4000,400+totalStops*100));
-    rawDesc=rawDesc.replace(/```json|```/g,'').trim();
-    var si=rawDesc.indexOf('['),ei=rawDesc.lastIndexOf(']');
-    if(si>-1&&ei>-1){
-      var descArr=JSON.parse(rawDesc.slice(si,ei+1));
-      descArr.forEach(function(item){
-        var idx=parseInt(item.id);
-        if(!isNaN(idx)&&allBlocks[idx]){
-          allBlocks[idx].desc=item.desc||'';
-          allBlocks[idx].tip=item.tip||'';
-        }
-      });
-    }
-  }catch(e){/* descriptions optional */}
+  // Batch description requests in chunks of 6 to avoid stream idle timeouts
+  var descSys='You are a travel writer. For each place write exactly 2 vivid descriptive sentences as "desc", and 1 practical local tip as "tip". Return ONLY a raw JSON array, no markdown.';
+  var BATCH=6;
+  for(var bStart=0;bStart<allBlocks.length;bStart+=BATCH){
+    var chunk=allBlocks.slice(bStart,bStart+BATCH);
+    var chunkList=chunk.map(function(b,ci){return{id:String(bStart+ci),name:b.place,type:b.type};});
+    var descPrompt='Describe these places in '+city+'. Return ONLY raw JSON array:\n[{"id":"0","desc":"Two vivid sentences.","tip":"One practical tip."},...]\n\nPlaces:\n'+chunkList.map(function(p){return p.id+'. '+p.name+' ('+p.type+')';}).join('\n');
+    try{
+      var rawDesc=await callGroq(descPrompt,descSys,Math.min(900,120+chunk.length*130));
+      rawDesc=rawDesc.replace(/```json|```/g,'').trim();
+      var si=rawDesc.indexOf('['),ei=rawDesc.lastIndexOf(']');
+      if(si>-1&&ei>-1){
+        var descArr=JSON.parse(rawDesc.slice(si,ei+1));
+        descArr.forEach(function(item){
+          var idx=parseInt(item.id);
+          if(!isNaN(idx)&&allBlocks[idx]){
+            allBlocks[idx].desc=item.desc||'';
+            allBlocks[idx].tip=item.tip||'';
+          }
+        });
+      }
+    }catch(e){/* descriptions optional — continue with remaining batches */}
+  }
 
   // Title + dateline
   curTitle=days+' Days in '+city;
@@ -2096,13 +2401,20 @@ async function callGroq(userPrompt,system,maxTok){
   var msgs=[];
   if(system)msgs.push({role:"system",content:system});
   msgs.push({role:"user",content:userPrompt});
-  var r=await fetch("/api/chat",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({messages:msgs,max_tokens:maxTok||4000})
-  });
-  var raw=await r.text();
-  var d;
+  var controller=new AbortController();
+  var timer=setTimeout(function(){controller.abort();},28000);
+  var r,raw,d;
+  try{
+    r=await fetch("/api/chat",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({messages:msgs,max_tokens:Math.min(maxTok||1200,1500)}),
+      signal:controller.signal
+    });
+    raw=await r.text();
+  }catch(fetchErr){
+    throw new Error(fetchErr.name==='AbortError'?'Request timed out':fetchErr.message);
+  }finally{clearTimeout(timer);}
   try{d=JSON.parse(raw);}catch(e){throw new Error("Server error: "+raw.slice(0,120));}
   if(!r.ok)throw new Error(d.error||"API error "+r.status);
   return d.content&&d.content[0]?d.content[0].text:"";
