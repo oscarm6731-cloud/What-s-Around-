@@ -271,6 +271,34 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
 .saved-head{margin-bottom:1.8rem;}
 .saved-head h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,6vw,2.8rem);letter-spacing:-0.01em;font-weight:700;}
 .saved-head p{font-size:0.85rem;color:var(--txt2);margin-top:0.35rem;}
+/* Explore page */
+.explore-head{margin-bottom:1.6rem;}
+.explore-head h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,6vw,2.8rem);letter-spacing:-0.01em;font-weight:700;}
+.explore-head p{font-size:0.85rem;color:var(--txt2);margin-top:0.35rem;}
+#explore-page{max-width:680px;margin:0 auto;padding:2rem 1.5rem 6rem;}
+.explore-form{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.5rem;margin-bottom:1.5rem;}
+.explore-section-lbl{font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt3);margin-bottom:0.55rem;}
+.explore-cats{display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.2rem;}
+.ecat{padding:0.42rem 0.85rem;background:var(--card2);border:1px solid var(--line);border-radius:100px;font-size:0.78rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
+.ecat:hover{border-color:var(--line2);color:var(--txt);}
+.ecat.on{background:rgba(45,212,191,0.1);border-color:rgba(45,212,191,0.4);color:var(--teal);}
+.explore-times{display:flex;flex-wrap:wrap;gap:0.4rem;}
+.etime{padding:0.42rem 0.9rem;background:var(--card2);border:1px solid var(--line);border-radius:100px;font-size:0.78rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
+.etime:hover{border-color:var(--line2);color:var(--txt);}
+.etime.on{background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.4);color:var(--sky);}
+.explore-results-hdr{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt3);margin-bottom:0.85rem;}
+.explore-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem 1.1rem;margin-bottom:0.65rem;transition:border-color 0.18s;}
+.explore-card:hover{border-color:var(--line2);}
+.explore-card-name{font-weight:700;font-size:0.98rem;color:var(--txt);margin-bottom:0.18rem;}
+.explore-card-cat{font-size:0.72rem;color:var(--teal);font-weight:600;margin-bottom:0.2rem;}
+.explore-card-addr{font-size:0.73rem;color:var(--txt3);margin-bottom:0.55rem;line-height:1.45;}
+.explore-card-row{display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;}
+.explore-card-badge{display:inline-flex;align-items:center;gap:0.2rem;padding:0.2rem 0.5rem;border-radius:6px;font-size:0.67rem;font-weight:700;background:var(--card2);border:1px solid var(--line);color:var(--txt2);}
+.explore-card-badge.gold{color:var(--gold);border-color:rgba(245,200,66,0.25);background:rgba(245,200,66,0.06);}
+.explore-card-links{margin-left:auto;display:flex;gap:0.3rem;}
+.explore-card-link{display:inline-flex;align-items:center;gap:0.2rem;padding:0.22rem 0.55rem;border-radius:6px;font-size:0.67rem;font-weight:600;text-decoration:none;background:var(--card2);border:1px solid var(--line2);color:var(--txt2);cursor:pointer;transition:all 0.13s;}
+.explore-card-link:hover{color:var(--txt);border-color:rgba(45,212,191,0.4);}
+.explore-card-link.saved-act{color:var(--gold);border-color:rgba(245,200,66,0.3);}
 .saved-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0.85rem;}
 .saved-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.1rem;transition:border-color 0.2s,transform 0.2s;}
 .saved-card:hover{border-color:var(--line2);transform:translateY(-2px);}
@@ -607,6 +635,7 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
   <div class="nav-tabs">
     <button class="nav-tab active" id="tab-home" onclick="goPage('home')">Home</button>
     <button class="nav-tab" id="tab-planner" onclick="goPage('planner')">Planner</button>
+    <button class="nav-tab" id="tab-explore" onclick="goPage('explore')">Explore</button>
     <button class="nav-tab" id="tab-saved" onclick="goPage('saved')">Saved</button>
   </div>
   <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
@@ -899,6 +928,56 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
 </div>
 </div>
 
+<!-- EXPLORE -->
+
+<div class="page" id="page-explore">
+<div id="explore-page">
+  <div class="explore-head">
+    <h2>Find a Place</h2>
+    <p>Pick a city, category, and time of day.</p>
+  </div>
+
+  <div class="explore-form">
+    <!-- City -->
+    <div class="city-inp-wrap" style="margin-bottom:0.55rem;">
+      <input class="inp" id="exploreCity" type="text" placeholder="City, country — or ZIP / postal code" oninput="onExploreCityInput(this.value)" autocomplete="off">
+      <div class="city-sugs" id="exploreCitySugs"></div>
+    </div>
+    <button class="near-me-btn" onclick="nearMeExplore()" style="margin-bottom:1.1rem;">📍 Use my location</button>
+
+    <!-- Categories -->
+    <div class="explore-section-lbl">Category</div>
+    <div class="explore-cats" id="exploreCats">
+      <button class="ecat" data-q="restaurant dining food" onclick="togExplorecat(this)">🍽 Restaurants</button>
+      <button class="ecat" data-q="coffee cafe espresso bakery" onclick="togExplorecat(this)">☕ Coffee &amp; Cafes</button>
+      <button class="ecat" data-q="bar cocktails nightlife drinks" onclick="togExplorecat(this)">🍸 Bars</button>
+      <button class="ecat" data-q="street food local eats market snacks" onclick="togExplorecat(this)">🥡 Street Food</button>
+      <button class="ecat" data-q="museum gallery art exhibition" onclick="togExplorecat(this)">🏛 Museums</button>
+      <button class="ecat" data-q="landmark monument attraction sightseeing" onclick="togExplorecat(this)">🗺 Landmarks</button>
+      <button class="ecat" data-q="park garden nature outdoor" onclick="togExplorecat(this)">🌿 Parks</button>
+      <button class="ecat" data-q="shopping boutique market retail" onclick="togExplorecat(this)">🛍 Shopping</button>
+      <button class="ecat" data-q="spa yoga fitness wellness" onclick="togExplorecat(this)">🧘 Wellness</button>
+      <button class="ecat" data-q="theater cinema entertainment show" onclick="togExplorecat(this)">🎭 Entertainment</button>
+      <button class="ecat" data-q="hotel rooftop lounge luxury" onclick="togExplorecat(this)">🏨 Hotels</button>
+      <button class="ecat" data-q="club nightclub late night party" onclick="togExplorecat(this)">🎉 Nightlife</button>
+    </div>
+
+    <!-- Time of day -->
+    <div class="explore-section-lbl" style="margin-top:1.1rem;">Time of Day <span style="font-size:0.68rem;color:var(--txt3);font-weight:400;">(optional)</span></div>
+    <div class="explore-times" id="exploreTimes">
+      <button class="etime" data-mod="perfect for morning, breakfast and brunch" onclick="togExploretime(this)">🌅 Morning</button>
+      <button class="etime" data-mod="great for afternoon lunch and daytime visits" onclick="togExploretime(this)">☀️ Afternoon</button>
+      <button class="etime" data-mod="ideal for evening dinner and sunset" onclick="togExploretime(this)">🌆 Evening</button>
+      <button class="etime" data-mod="open late night after 9pm" onclick="togExploretime(this)">🌙 Night</button>
+    </div>
+
+    <button class="btn-primary" style="width:100%;margin-top:1.4rem;padding:0.9rem;" onclick="runExplore()">🔍 Find Places</button>
+  </div>
+
+  <div id="exploreResults"></div>
+</div>
+</div>
+
 <footer class="affil-footer">
   <p><strong>What's Around?</strong> &mdash; Your free AI travel planner.<br>Booking links help keep this tool free. Thank you for using them.</p>
 </footer>
@@ -907,6 +986,7 @@ body.light .stop-bg-num{color:rgba(0,0,0,0.04);}
 <div class="bottom-nav" id="bottomNav">
   <button class="bn-btn active" id="bn-home" onclick="goPage('home')"><span class="bn-icon">🏠</span><span class="bn-lbl">Home</span></button>
   <button class="bn-btn" id="bn-planner" onclick="goPage('planner')"><span class="bn-icon">✨</span><span class="bn-lbl">Plan</span></button>
+  <button class="bn-btn" id="bn-explore" onclick="goPage('explore')"><span class="bn-icon">🔍</span><span class="bn-lbl">Explore</span></button>
   <button class="bn-btn" id="bn-saved" onclick="goPage('saved')"><span class="bn-icon">💾</span><span class="bn-lbl">Saved</span></button>
 </div>
 
@@ -1066,6 +1146,177 @@ function setFsqPrice(btn,val){
   fsqPrice=val;
   document.querySelectorAll('#priceOpts .opt').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');
+}
+
+// ── EXPLORE TAB ──────────────────────────────────────────────
+var exploreCity='';
+var exploreBusy=false;
+
+function onExploreCityInput(val){
+  exploreCity=val;
+  var sugs=document.getElementById('exploreCitySugs');
+  if(val.length<2){sugs.style.display='none';return;}
+  clearTimeout(window._expCityT);
+  window._expCityT=setTimeout(function(){loadExploreSugs(val);},320);
+}
+
+function loadExploreSugs(val){
+  var sugs=document.getElementById('exploreCitySugs');
+  sugs.style.display='block';
+  sugs.innerHTML='<div class="city-sug" style="color:var(--txt3);font-size:0.8rem;">Searching...</div>';
+  fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    system:'You are a location autocomplete engine. Return ONLY a valid JSON array of up to 4 city suggestions matching the query. Format: [{"name":"City","country":"Country","desc":"Brief 1-line description"}]. No markdown.',
+    messages:[{role:'user',content:'Autocomplete city: '+val}],max_tokens:200
+  })})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    var text=(d.content&&d.content[0]?d.content[0].text:'').replace(/```json|```/g,'').trim();
+    var si=text.indexOf('['),ei=text.lastIndexOf(']');
+    var cities=[];
+    if(si>-1&&ei>-1){try{cities=JSON.parse(text.slice(si,ei+1));}catch(e){}}
+    if(!cities.length){sugs.style.display='none';return;}
+    sugs.innerHTML='';
+    cities.forEach(function(c){
+      var d2=document.createElement('div');d2.className='city-sug';
+      d2.innerHTML='<div class="city-sug-top"><span class="city-sug-name">'+c.name+'</span><span class="city-sug-country">'+c.country+'</span></div>'+(c.desc?'<div class="city-sug-desc">'+c.desc+'</div>':'');
+      d2.onclick=function(){
+        exploreCity=c.name+', '+c.country;
+        document.getElementById('exploreCity').value=exploreCity;
+        sugs.style.display='none';
+      };
+      sugs.appendChild(d2);
+    });
+  })
+  .catch(function(){sugs.style.display='none';});
+}
+
+function nearMeExplore(){
+  if(!navigator.geolocation){toast('Geolocation not supported','err');return;}
+  navigator.geolocation.getCurrentPosition(function(pos){
+    fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      system:'You are a geocoding API. Given coordinates return ONLY a JSON object: {"city":"City Name","country":"Country"}. No markdown.',
+      messages:[{role:'user',content:'What city is at '+pos.coords.latitude.toFixed(4)+','+pos.coords.longitude.toFixed(4)+'?'}],max_tokens:60
+    })})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var text=(d.content&&d.content[0]?d.content[0].text:'').replace(/```json|```/g,'').trim();
+      var si=text.indexOf('{'),ei=text.lastIndexOf('}');
+      if(si>-1&&ei>-1){
+        var obj;try{obj=JSON.parse(text.slice(si,ei+1));}catch(e){}
+        if(obj&&obj.city){
+          exploreCity=obj.city+(obj.country?', '+obj.country:'');
+          document.getElementById('exploreCity').value=exploreCity;
+          return;
+        }
+      }
+      toast('Could not detect city','err');
+    })
+    .catch(function(){toast('Location error','err');});
+  },function(){toast('Location access denied','err');});
+}
+
+function togExplorecat(btn){
+  btn.classList.toggle('on');
+}
+
+function togExploretime(btn){
+  var wasOn=btn.classList.contains('on');
+  document.querySelectorAll('#exploreTimes .etime').forEach(function(b){b.classList.remove('on');});
+  if(!wasOn)btn.classList.add('on');
+}
+
+async function runExplore(){
+  if(exploreBusy)return;
+  var city=document.getElementById('exploreCity').value.trim();
+  if(!city){toast('Enter a city first','err');return;}
+  var cats=[];
+  document.querySelectorAll('#exploreCats .ecat.on').forEach(function(b){cats.push(b.getAttribute('data-q'));});
+  if(!cats.length){toast('Pick at least one category','err');return;}
+  var timeBtn=document.querySelector('#exploreTimes .etime.on');
+  var timeMod=timeBtn?timeBtn.getAttribute('data-mod'):'';
+
+  var query=cats.join(' OR ')+' '+(timeMod?'('+timeMod+')':'');
+  var resultsEl=document.getElementById('exploreResults');
+  resultsEl.innerHTML='<div class="loading" style="padding:2rem 0;"><div class="loading-ring"></div><div class="loading-txt">Finding places in '+city+'...</div></div>';
+  exploreBusy=true;
+
+  try{
+    var limit=cats.length>1?12:8;
+    var r=await fetch('/api/places?query='+encodeURIComponent(query)+'&near='+encodeURIComponent(city)+'&limit='+limit);
+    var d=await r.json();
+    var places=d.results||[];
+    if(!places.length){
+      resultsEl.innerHTML='<div class="empty-state"><div class="empty-icon">📍</div><h3>No places found</h3><p>Try different categories or a different city.</p></div>';
+    } else {
+      renderExploreResults(places,city,cats.map(function(c){return c.split(' ')[0];}).join(', '));
+    }
+  } catch(e){
+    resultsEl.innerHTML='<div class="empty-state"><div class="empty-icon">⚠️</div><h3>Error</h3><p>'+e.message+'</p></div>';
+  }
+  exploreBusy=false;
+}
+
+function renderExploreResults(places,city,catLabel){
+  var el=document.getElementById('exploreResults');
+  var timeBtn=document.querySelector('#exploreTimes .etime.on');
+  var timeLabel=timeBtn?timeBtn.textContent.trim():'';
+  var sub=places.length+' places found in '+city+(timeLabel?' · '+timeLabel:'');
+  var html='<div class="explore-results-hdr">'+sub+'</div>';
+  places.forEach(function(p,i){
+    var loc=p.location||{};
+    var addr=loc.formatted_address||city;
+    var cat=p.categories&&p.categories[0]?p.categories[0].name:'';
+    var lat=loc.latitude,lng=loc.longitude;
+    var mapsUrl=lat&&lng?'https://www.google.com/maps/search/?api=1&query='+lat+','+lng+'&query_place_id='+encodeURIComponent(p.name)
+      :'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.name+' '+city);
+    var price=p.price?'$'.repeat(p.price):'';
+    var rating=p.rating?'⭐ '+(typeof p.rating==='number'?p.rating.toFixed(1):p.rating):'';
+    var savedPlaces=JSON.parse(localStorage.getItem('wa_saved_places')||'[]');
+    var isSaved=savedPlaces.some(function(sp){return sp.fsq_id===p.fsq_id;});
+    html+='<div class="explore-card" id="exp-card-'+i+'">'
+      +'<div class="explore-card-name">'+p.name+'</div>'
+      +(cat?'<div class="explore-card-cat">'+cat+'</div>':'')
+      +'<div class="explore-card-addr">'+addr+'</div>'
+      +'<div class="explore-card-row">'
+      +(rating?'<span class="explore-card-badge gold">'+rating+'</span>':'')
+      +(price?'<span class="explore-card-badge">'+price+'</span>':'')
+      +'<div class="explore-card-links">'
+      +(p.website?'<a class="explore-card-link" href="'+p.website+'" target="_blank" rel="noopener">🌐 Website</a>':'')
+      +'<a class="explore-card-link" href="'+mapsUrl+'" target="_blank" rel="noopener">🗺 Map</a>'
+      +'<button class="explore-card-link'+(isSaved?' saved-act':'')+'" id="exp-save-'+i+'" onclick="saveExplorePlace('+i+',this)">'+(isSaved?'🔖 Saved':'+ Save')+'</button>'
+      +'</div></div></div>';
+  });
+  el.innerHTML=html;
+  el._places=places;
+}
+
+function saveExplorePlace(idx,btn){
+  var el=document.getElementById('exploreResults');
+  var places=el._places;
+  if(!places||!places[idx])return;
+  var p=places[idx];
+  var saved=JSON.parse(localStorage.getItem('wa_saved_places')||'[]');
+  var city=document.getElementById('exploreCity').value.trim();
+  var already=saved.findIndex(function(s){return s.fsq_id===p.fsq_id;});
+  if(already>-1){
+    saved.splice(already,1);
+    localStorage.setItem('wa_saved_places',JSON.stringify(saved));
+    btn.textContent='+ Save';btn.classList.remove('saved-act');
+    toast('Removed from saved places','info');
+  } else {
+    var loc=p.location||{};
+    saved.push({
+      fsq_id:p.fsq_id,name:p.name,
+      address:loc.formatted_address||city,
+      category:p.categories&&p.categories[0]?p.categories[0].name:'',
+      rating:p.rating,price:p.price,
+      website:p.website,city:city,
+      savedAt:Date.now()
+    });
+    localStorage.setItem('wa_saved_places',JSON.stringify(saved.slice(0,100)));
+    btn.textContent='🔖 Saved';btn.classList.add('saved-act');
+    toast('Place saved! View in Saved tab.','ok');
+  }
 }
 
 // Build time-slot plan for one day
@@ -2255,12 +2506,44 @@ function switchSaved(tab){
 }
 function renderSavedPlaces(){
   var grid=document.getElementById('savedPlacesGrid');
-  var places=JSON.parse(localStorage.getItem('wa_places')||'[]');
-  if(!places.length){grid.innerHTML='<div class="empty-state"><div class="empty-icon">🔖</div><h3>NO SAVED PLACES</h3><p>Tap the 🏷 button on any stop to save it here.</p></div>';return;}
-  grid.innerHTML=places.map(function(p){
-    var mq=encodeURIComponent(p.mapsQuery||p.place+' '+p.city);
-    return '<div class="place-card"><div class="place-card-name">'+p.place+'</div><div class="place-card-meta"><span>📍 '+p.city+'</span><span>'+p.type+'</span>'+(p.cost?'<span>'+p.cost+'</span>':'')+'<span>Saved '+p.savedAt+'</span></div><div class="place-card-actions"><a class="btn-sm btn-teal" href="https://www.google.com/maps/search/?api=1&query='+mq+'" target="_blank" rel="noopener" style="text-decoration:none;">📍 Maps</a><button class="btn-sm btn-rose" onclick="deleteSavedPlace('+p.id+')">🗑 Remove</button></div></div>';
-  }).join('');
+  var itinPlaces=JSON.parse(localStorage.getItem('wa_places')||'[]');
+  var explorePlaces=JSON.parse(localStorage.getItem('wa_saved_places')||'[]');
+  if(!itinPlaces.length&&!explorePlaces.length){
+    grid.innerHTML='<div class="empty-state"><div class="empty-icon">🔖</div><h3>NO SAVED PLACES</h3><p>Tap the 🏷 button on any stop, or save places from the Explore tab.</p></div>';
+    return;
+  }
+  var html='';
+  if(explorePlaces.length){
+    html+='<div class="explore-results-hdr" style="margin-bottom:0.7rem;">From Explore ('+explorePlaces.length+')</div>';
+    html+=explorePlaces.map(function(p,i){
+      var mq=encodeURIComponent(p.name+' '+p.city);
+      var price=p.price?'$'.repeat(p.price):'';
+      var rating=p.rating?'⭐ '+(typeof p.rating==='number'?p.rating.toFixed(1):p.rating):'';
+      return '<div class="place-card"><div class="place-card-name">'+p.name+'</div><div class="place-card-meta">'
+        +(p.category?'<span>'+p.category+'</span>':'')
+        +'<span>📍 '+p.city+'</span>'
+        +(rating?'<span>'+rating+'</span>':'')
+        +(price?'<span>'+price+'</span>':'')
+        +'</div><div class="place-card-actions">'
+        +(p.website?'<a class="btn-sm btn-muted" href="'+p.website+'" target="_blank" rel="noopener" style="text-decoration:none;">🌐 Site</a>':'')
+        +'<a class="btn-sm btn-teal" href="https://www.google.com/maps/search/?api=1&query='+mq+'" target="_blank" rel="noopener" style="text-decoration:none;">📍 Maps</a>'
+        +'<button class="btn-sm btn-rose" onclick="deleteExploreSaved(\''+p.fsq_id+'\')">🗑 Remove</button>'
+        +'</div></div>';
+    }).join('');
+  }
+  if(itinPlaces.length){
+    if(explorePlaces.length)html+='<div class="explore-results-hdr" style="margin:1.2rem 0 0.7rem;">From Itinerary ('+itinPlaces.length+')</div>';
+    html+=itinPlaces.map(function(p){
+      var mq=encodeURIComponent(p.mapsQuery||p.place+' '+p.city);
+      return '<div class="place-card"><div class="place-card-name">'+p.place+'</div><div class="place-card-meta"><span>📍 '+p.city+'</span><span>'+p.type+'</span>'+(p.cost?'<span>'+p.cost+'</span>':'')+'</div><div class="place-card-actions"><a class="btn-sm btn-teal" href="https://www.google.com/maps/search/?api=1&query='+mq+'" target="_blank" rel="noopener" style="text-decoration:none;">📍 Maps</a><button class="btn-sm btn-rose" onclick="deleteSavedPlace('+p.id+')">🗑 Remove</button></div></div>';
+    }).join('');
+  }
+  grid.innerHTML=html;
+}
+function deleteExploreSaved(fsqId){
+  var places=JSON.parse(localStorage.getItem('wa_saved_places')||'[]');
+  localStorage.setItem('wa_saved_places',JSON.stringify(places.filter(function(p){return p.fsq_id!==fsqId;})));
+  renderSavedPlaces();
 }
 function deleteSavedPlace(id){
   var places=JSON.parse(localStorage.getItem('wa_places')||'[]');
