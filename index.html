@@ -922,6 +922,725 @@ body.light .bottom-nav{background:rgba(247,245,255,0.97);}
 :focus-visible{outline:2px solid var(--teal);outline-offset:2px;}
 button:focus-visible,a:focus-visible{outline:2px solid var(--teal);outline-offset:2px;}
 </style>
+
+<style>
+/* ═══════════════════════════════════════════════════
+   PREMIUM ENHANCEMENT PASS — visual polish layer
+   ═══════════════════════════════════════════════════ */
+
+/* ── Trust banner ── */
+.trust-banner{
+  background:linear-gradient(90deg,transparent,rgba(0,229,195,0.04),rgba(96,165,250,0.03),rgba(0,229,195,0.04),transparent);
+  border-bottom:1px solid rgba(0,229,195,0.09);
+  padding:0.5rem 1.5rem;
+  text-align:center;
+  font-size:0.68rem;
+  color:var(--txt3);
+  letter-spacing:0.09em;
+  font-weight:500;
+}
+.trust-banner strong{color:var(--teal);font-weight:700;}
+body.light .trust-banner{background:linear-gradient(90deg,transparent,rgba(0,184,154,0.04),rgba(96,165,250,0.03),rgba(0,184,154,0.04),transparent);}
+
+/* ── Hero staggered reveal ── */
+.hero-badge{animation:fadeUp 0.42s ease both;}
+.hero h1{animation:fadeUp 0.48s ease 0.07s both;}
+.hero-sub{animation:fadeUp 0.48s ease 0.15s both;}
+.hero-btns{animation:fadeUp 0.48s ease 0.22s both;}
+.hero-features{animation:fadeUp 0.48s ease 0.3s both;}
+
+/* ── Hero badge refined ── */
+.hero-badge{
+  display:inline-flex;align-items:center;gap:0.55rem;
+  font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:1.65rem;
+  border:1px solid rgba(0,229,195,0.24);
+  padding:0.35rem 1rem;border-radius:100px;
+  background:rgba(0,229,195,0.05);
+  backdrop-filter:blur(8px);
+}
+.hero-badge::before{
+  content:'';display:inline-block;
+  width:5px;height:5px;border-radius:50%;
+  background:var(--teal);box-shadow:0 0 8px var(--teal);
+  animation:pdot 2s ease-in-out infinite;
+}
+
+/* ── Hero heading refinement ── */
+.hero h1{
+  font-size:clamp(3.2rem,11vw,6.2rem);
+  letter-spacing:-0.025em;
+  line-height:1.01;
+  margin-bottom:1.4rem;
+}
+.hero h1 span{
+  background:linear-gradient(135deg,var(--teal) 20%,var(--sky) 65%,rgba(96,165,250,0.7) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 32px rgba(0,229,195,0.22));
+}
+
+/* ── Hero sub text ── */
+.hero-sub{
+  font-size:1.05rem;
+  line-height:1.78;
+  margin-bottom:2.8rem;
+  max-width:460px;
+  color:var(--txt2);
+}
+
+/* ── Hero feature pills ── */
+.hero-features{
+  display:flex;flex-wrap:wrap;gap:0.45rem;
+  justify-content:center;margin-top:2.4rem;
+}
+.hero-feature{
+  display:inline-flex;align-items:center;gap:0.38rem;
+  padding:0.38rem 0.88rem;
+  background:rgba(255,255,255,0.035);
+  border:1px solid var(--line);
+  border-radius:100px;
+  font-size:0.73rem;color:var(--txt3);font-weight:500;
+  transition:background 0.2s,border-color 0.2s,color 0.2s,transform 0.2s;
+  cursor:default;
+}
+.hero-feature:hover{
+  background:rgba(0,229,195,0.06);
+  border-color:rgba(0,229,195,0.2);
+  color:var(--txt2);transform:translateY(-1px);
+}
+body.light .hero-feature{background:rgba(0,0,0,0.025);}
+body.light .hero-feature:hover{background:rgba(0,184,154,0.06);}
+
+/* ── Hero page padding ── */
+.hero{padding:6.5rem 1.5rem 5.5rem;}
+
+/* ── Primary button glow pulse ── */
+@keyframes btnGlow{
+  0%,100%{box-shadow:0 6px 22px rgba(0,229,195,0.26);}
+  50%{box-shadow:0 8px 30px rgba(0,229,195,0.44);}
+}
+.btn-primary{animation:btnGlow 3s ease-in-out infinite;}
+.btn-primary:hover{animation:none;box-shadow:0 12px 36px rgba(0,229,195,0.5);}
+.btn-primary:active{animation:none;}
+.btn-primary:disabled{animation:none;}
+
+/* ── Navigation refinements ── */
+nav{
+  border-bottom:1px solid rgba(255,255,255,0.055);
+  box-shadow:0 1px 0 rgba(0,0,0,0.3);
+}
+.nav-logo{
+  font-size:0.95rem;
+  letter-spacing:0.24em;
+  gap:0.65rem;
+}
+.nav-logo:hover{opacity:0.82;}
+.nav-tab{
+  font-size:0.8rem;
+  letter-spacing:0.02em;
+}
+.nav-tab.active{
+  font-weight:600;
+  position:relative;
+}
+.nav-tab.active::after{
+  content:'';
+  position:absolute;
+  bottom:-1px;left:50%;transform:translateX(-50%);
+  width:16px;height:2px;
+  background:var(--teal);
+  border-radius:2px 2px 0 0;
+}
+
+/* ── Ambient background orbs — animated ── */
+@keyframes orbDrift1{
+  0%,100%{transform:translate(0,0) scale(1);}
+  33%{transform:translate(-40px,30px) scale(1.04);}
+  66%{transform:translate(25px,-20px) scale(0.97);}
+}
+@keyframes orbDrift2{
+  0%,100%{transform:translate(0,0) scale(1);}
+  40%{transform:translate(30px,40px) scale(1.03);}
+  75%{transform:translate(-20px,-35px) scale(0.98);}
+}
+.bg-orb::before{animation:orbDrift1 18s ease-in-out infinite;}
+.bg-orb::after{animation:orbDrift2 22s ease-in-out infinite;}
+
+/* ── Third ambient orb — center bottom ── */
+.bg-orb{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+
+/* ── Cards — glass micro-depth ── */
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  position:relative;overflow:hidden;
+}
+.card::after{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.016) 0%,transparent 60%);
+  pointer-events:none;border-radius:inherit;
+}
+.step-card::after{
+  background:linear-gradient(135deg,rgba(255,255,255,0.022) 0%,transparent 55%);
+}
+
+/* ── Step cards — deeper shadow on focus ── */
+.step-card{
+  border-radius:var(--r3);
+  box-shadow:var(--sh1);
+  transition:box-shadow 0.3s,border-color 0.3s;
+}
+.step-card:focus-within{
+  box-shadow:0 0 0 1px rgba(0,229,195,0.22),var(--sh2);
+  border-color:rgba(0,229,195,0.16);
+}
+
+/* ── Step badge glow ── */
+.step-badge{
+  background:rgba(0,229,195,0.1);
+  border:1px solid rgba(0,229,195,0.25);
+  box-shadow:0 0 16px rgba(0,229,195,0.12);
+  font-size:0.75rem;font-weight:800;
+}
+
+/* ── Step header ── */
+.step-ttl{font-size:1.05rem;font-weight:700;letter-spacing:0.01em;}
+.step-sub{font-size:0.72rem;color:var(--txt3);letter-spacing:0.05em;margin-top:0.18rem;}
+
+/* ── Planner head ── */
+.planner-head h2,.saved-head h2,.explore-head h2{
+  background:linear-gradient(135deg,var(--txt) 50%,var(--txt2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+/* ── Results title gradient ── */
+.res-title{
+  background:linear-gradient(135deg,var(--txt) 40%,var(--txt2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+/* ── Gen button premium glow ── */
+.gen-btn{
+  background:linear-gradient(135deg,var(--teal) 0%,#00cbb0 40%,var(--sky) 100%);
+  position:relative;overflow:hidden;
+}
+.gen-btn::after{
+  content:'';
+  position:absolute;
+  inset:-1px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.18) 0%,transparent 50%,rgba(255,255,255,0.05) 100%);
+  border-radius:inherit;
+  pointer-events:none;
+}
+@keyframes genPulse{0%,100%{box-shadow:0 10px 32px rgba(0,229,195,0.3);}50%{box-shadow:0 14px 44px rgba(0,229,195,0.48);}}
+.gen-btn:not(:disabled){animation:genPulse 3s ease-in-out infinite;}
+.gen-btn:hover:not(:disabled){animation:none;transform:translateY(-3px);box-shadow:0 20px 50px rgba(0,229,195,0.52);}
+.gen-btn:disabled{animation:none;}
+
+/* ── Wizard step indicator ── */
+.wiz-ind-dot{font-size:1.05rem;font-weight:800;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);}
+.wiz-ind-step.active .wiz-ind-dot{
+  box-shadow:0 0 0 5px rgba(0,229,195,0.12),0 0 0 10px rgba(0,229,195,0.06),0 4px 18px rgba(0,229,195,0.38);
+}
+.wiz-ind-conn{border-radius:2px;}
+
+/* ── Wizard nav buttons ── */
+.wiz-btn-next{
+  background:linear-gradient(135deg,var(--teal),var(--sky));
+  position:relative;overflow:hidden;
+}
+.wiz-btn-next::after{
+  content:'';position:absolute;inset:-1px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.16) 0%,transparent 50%);
+  border-radius:inherit;pointer-events:none;
+}
+
+/* ── Inputs — enhanced ── */
+.inp{
+  border:1.5px solid var(--line2);
+  transition:border-color 0.22s,box-shadow 0.22s,background 0.22s,transform 0.15s;
+}
+.inp:focus{
+  border-color:rgba(0,229,195,0.55);
+  box-shadow:0 0 0 4px rgba(0,229,195,0.09);
+  background:var(--card);
+  transform:none;
+}
+.inp:hover:not(:focus){border-color:rgba(255,255,255,0.16);}
+body.light .inp:hover:not(:focus){border-color:rgba(0,0,0,0.2);}
+
+/* ── Option pills — micro-bounce on select ── */
+@keyframes optPop{0%{transform:scale(1);}50%{transform:scale(1.06);}100%{transform:scale(1);}}
+.opt.on{animation:optPop 0.22s ease;}
+.ecat.on{animation:optPop 0.22s ease;}
+
+/* ── Time chips — polished ── */
+.time-chip{
+  font-size:0.75rem;font-weight:500;
+  padding:0.36rem 0.82rem;
+  border-radius:100px;
+  transition:all 0.18s;
+}
+.time-chip.active{
+  background:rgba(0,229,195,0.12);
+  border-color:rgba(0,229,195,0.38);
+  color:var(--teal);
+  box-shadow:0 2px 10px rgba(0,229,195,0.15);
+}
+
+/* ── Stop cards — more premium ── */
+.stop{
+  border-radius:0 0 var(--r2) var(--r2);
+  transition:transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94),box-shadow 0.25s;
+  border:1px solid var(--line);
+  overflow:hidden;
+}
+.stop:hover{
+  transform:translateY(-4px);
+  box-shadow:0 24px 64px rgba(0,0,0,0.4);
+  border-color:rgba(255,255,255,0.1);
+}
+/* Stop header tab — colored bar gets a subtle glow */
+.stop::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--stop-accent,var(--teal));
+  box-shadow:0 0 12px var(--stop-accent,var(--teal));
+}
+
+/* ── Day tabs — more defined ── */
+.day-tab{
+  border-radius:var(--r) var(--r) 0 0;
+  padding:0.78rem 1.2rem;
+  transition:all 0.2s;
+  min-width:94px;
+}
+.day-tab.active{
+  background:var(--card2);
+  border-bottom-color:var(--teal);
+  box-shadow:inset 0 -2px 0 var(--teal);
+}
+.day-tab-num{
+  font-size:1.55rem;
+  background:linear-gradient(135deg,var(--txt),var(--txt2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.day-tab.active .day-tab-num{
+  background:linear-gradient(135deg,var(--teal),var(--sky));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+/* ── Place cards (saved / explore) — depth ── */
+.place-card,.explore-card,.saved-card{
+  transition:transform 0.22s ease,box-shadow 0.22s ease,border-color 0.22s;
+}
+.place-card:hover,.explore-card:hover{
+  transform:translateY(-3px);
+  box-shadow:var(--sh2);
+  border-color:rgba(0,229,195,0.18);
+}
+
+/* ── Explore form — premium glass card ── */
+.explore-form{
+  border-radius:var(--r3);
+  box-shadow:var(--sh2);
+  position:relative;overflow:hidden;
+}
+.explore-form::before{
+  content:'';position:absolute;
+  inset:-1px;pointer-events:none;
+  border-radius:inherit;
+  background:linear-gradient(135deg,rgba(255,255,255,0.035) 0%,transparent 60%);
+}
+
+/* ── Chat FAB — ripple ring ── */
+@keyframes fabRing{
+  0%{box-shadow:0 0 0 0 rgba(255,95,126,0.38),0 8px 28px rgba(255,95,126,0.42);}
+  70%{box-shadow:0 0 0 14px rgba(255,95,126,0),0 8px 28px rgba(255,95,126,0.42);}
+  100%{box-shadow:0 0 0 0 rgba(255,95,126,0),0 8px 28px rgba(255,95,126,0.42);}
+}
+.chat-fab{animation:fabRing 3.2s ease-out infinite;}
+.chat-fab:hover{animation:none;box-shadow:0 14px 40px rgba(255,95,126,0.56);}
+.chat-fab:active{animation:none;}
+
+/* ── Modal — premium glass ── */
+.modal{
+  border-radius:var(--r3) var(--r3) 0 0;
+  box-shadow:0 -4px 80px rgba(0,0,0,0.6);
+  position:relative;overflow:hidden;
+}
+@media(min-width:600px){.modal{border-radius:var(--r3);box-shadow:var(--sh3);}}
+.modal::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,0.025) 0%,transparent 50%);
+}
+.modal-hdr{
+  border-bottom:1px solid var(--line);
+  padding-bottom:1rem;
+}
+.modal-title{
+  font-size:1.05rem;letter-spacing:0.08em;
+  background:linear-gradient(135deg,var(--txt),var(--txt2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+/* ── Toast — crisp ── */
+.toast{
+  border-radius:var(--r2);
+  font-size:0.84rem;
+  font-weight:600;letter-spacing:0.01em;
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+}
+
+/* ── Loading ring — glow ── */
+.loading-ring{
+  box-shadow:0 0 16px rgba(0,229,195,0.3);
+}
+.loading-txt{font-weight:600;font-size:0.88rem;letter-spacing:0.02em;}
+
+/* ── Skeleton — more organic shimmer ── */
+.skel{
+  background:linear-gradient(100deg,var(--card2) 20%,rgba(255,255,255,0.055) 50%,var(--card2) 80%);
+  background-size:250% 100%;
+  animation:shimmer 1.8s ease-in-out infinite;
+}
+
+/* ── Saved cards grid ── */
+.saved-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:1rem;
+}
+.saved-card{
+  border-radius:var(--r2);
+  box-shadow:var(--sh1);
+  transition:transform 0.22s ease,box-shadow 0.22s ease,border-color 0.22s;
+  position:relative;overflow:hidden;
+}
+.saved-card::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,0.018) 0%,transparent 55%);
+  border-radius:inherit;
+}
+.saved-card:hover{transform:translateY(-4px);box-shadow:var(--sh2);}
+
+/* ── Empty state — more personality ── */
+.empty-state{
+  padding:5rem 1.5rem;
+  background:radial-gradient(ellipse at 50% 60%,rgba(0,229,195,0.04) 0%,transparent 70%);
+  border-radius:var(--r3);
+  border:1px solid var(--line);
+  margin:1rem 0;
+}
+.empty-icon{
+  font-size:3.5rem;margin-bottom:1.1rem;
+  filter:drop-shadow(0 4px 16px rgba(0,229,195,0.25));
+}
+.empty-state h3{font-size:1.35rem;letter-spacing:0.01em;color:var(--txt2);margin-bottom:0.55rem;}
+.empty-state p{font-size:0.85rem;line-height:1.72;max-width:280px;margin:0 auto;}
+
+/* ── Bottom nav — refined ── */
+.bottom-nav{
+  border-top:1px solid var(--line);
+  box-shadow:0 -1px 0 rgba(0,0,0,0.3);
+}
+.bn-btn{
+  transition:color 0.2s,transform 0.15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.bn-btn.active .bn-icon{
+  filter:drop-shadow(0 0 6px rgba(0,229,195,0.6));
+}
+.bn-btn:active{transform:scale(0.9);}
+.bn-lbl{font-size:0.59rem;letter-spacing:0.07em;margin-top:0.05rem;}
+
+/* ── Trending cards ── */
+.trend-card{
+  border-radius:var(--r2);
+  overflow:hidden;
+  transition:transform 0.22s ease,box-shadow 0.22s ease;
+}
+.trend-card:hover{transform:translateY(-5px);box-shadow:var(--sh2);}
+
+/* ── Hotel options ── */
+.hotel-opt{
+  border-radius:var(--r);
+  transition:transform 0.2s ease,border-color 0.2s,box-shadow 0.2s;
+}
+.hotel-opt:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--sh1);
+  border-color:rgba(0,229,195,0.3);
+}
+
+/* ── Events links ── */
+.elink{
+  border-radius:9px;
+  transition:all 0.2s;
+}
+.elink:hover{
+  color:var(--txt);
+  border-color:rgba(0,229,195,0.4);
+  transform:translateY(-1px);
+}
+
+/* ── Best time calendar ── */
+.bt-best-card{
+  border-radius:var(--r);
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.bt-best-card:hover{transform:translateY(-2px);box-shadow:var(--sh1);}
+.bt-month{
+  border-radius:var(--r);
+  transition:all 0.18s;
+}
+.bt-month:hover{transform:translateY(-1px);box-shadow:var(--sh1);}
+
+/* ── Res actions buttons row ── */
+.res-actions{
+  display:flex;gap:0.4rem;flex-wrap:wrap;
+  margin-bottom:1.1rem;
+}
+.res-actions .btn-sm{
+  border-radius:9px;
+  transition:all 0.18s;
+}
+.res-actions .btn-sm:hover{transform:translateY(-1px);}
+
+/* ── Near-me button ── */
+.near-me-btn{
+  border-radius:9px;
+  padding:0.44rem 0.98rem;
+  font-size:0.77rem;
+  transition:all 0.2s;
+}
+.near-me-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(96,165,250,0.2);}
+
+/* ── Days row buttons ── */
+.days-btn{transition:all 0.18s;}
+.days-btn:hover{transform:scale(1.08);box-shadow:0 4px 14px rgba(0,229,195,0.2);}
+
+/* ── Affil footer ── */
+.affil-footer{
+  background:linear-gradient(180deg,transparent,rgba(0,229,195,0.02));
+  border-top:1px solid var(--line);
+}
+
+/* ── Mobile tightening ── */
+@media(max-width:680px){
+  .hero{padding:5rem 1.2rem 4.5rem;}
+  .hero h1{font-size:clamp(2.9rem,12.5vw,4.2rem);}
+  .trust-banner{font-size:0.63rem;padding:0.42rem 1rem;}
+  .hero-features{gap:0.38rem;margin-top:1.8rem;}
+  .hero-feature{font-size:0.7rem;padding:0.34rem 0.75rem;}
+  .hero-badge{font-size:0.65rem;}
+  .gen-btn:not(:disabled){animation:none;}
+  .btn-primary{animation:none;}
+}
+
+/* ── Page eyebrow labels ── */
+.page-eyebrow{
+  display:inline-flex;align-items:center;gap:0.45rem;
+  font-size:0.66rem;font-weight:700;letter-spacing:0.18em;
+  text-transform:uppercase;color:var(--teal);
+  margin-bottom:0.65rem;
+  opacity:0.85;
+}
+
+/* ── High-contrast text improvement ── */
+.card-title{font-size:0.72rem !important;letter-spacing:0.11em;color:var(--txt3);}
+.step-sub{text-transform:uppercase;}
+
+/* ── Explore page section labels ── */
+.explore-section-lbl{
+  font-size:0.63rem;font-weight:700;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--txt3);
+  margin-bottom:0.6rem;
+  display:flex;align-items:center;gap:0.5rem;
+}
+.explore-section-lbl::before{
+  content:'';display:inline-block;
+  width:12px;height:1.5px;
+  background:linear-gradient(90deg,var(--teal),transparent);
+  flex-shrink:0;
+}
+
+/* ── Stop tip quote mark ── */
+.stop-tip{
+  border-left:2px solid var(--stop-accent,var(--teal));
+  padding-left:0.8rem;
+  font-size:0.81rem;
+  opacity:0.88;
+  letter-spacing:0.01em;
+}
+
+/* ── Page transition smooth ── */
+.page.active{
+  animation:pgIn 0.3s cubic-bezier(0.25,0.46,0.45,0.94) both;
+}
+@keyframes pgIn{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ── Budget/days display — warm gradient ── */
+.budget-val{
+  background:linear-gradient(135deg,var(--teal),var(--sky));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.days-num{
+  background:linear-gradient(135deg,var(--txt),var(--txt2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+/* ── Range slider track ── */
+input[type=range]{
+  background:linear-gradient(90deg,var(--teal),var(--sky));
+  background-size:var(--pct,0%) 100%;
+  background-repeat:no-repeat;
+  border-radius:100px;
+}
+
+/* ── City suggestion dropdown — more polished ── */
+.city-sugs{
+  border-radius:var(--r2);
+  box-shadow:0 16px 48px rgba(0,0,0,0.55);
+  border:1px solid var(--line2);
+  overflow:hidden;
+}
+.city-sug{
+  padding:0.85rem 1.15rem;
+  border-bottom:1px solid var(--line);
+  transition:background 0.15s;
+}
+.city-sug:last-child{border-bottom:none;}
+.city-sug:hover{background:rgba(0,229,195,0.07);}
+.city-sug-name{font-size:0.88rem;font-weight:700;}
+.city-sug-country{
+  font-size:0.68rem;color:var(--txt3);
+  background:var(--card2);
+  padding:0.1rem 0.45rem;
+  border-radius:5px;
+  border:1px solid var(--line);
+}
+.city-sug-desc{font-size:0.75rem;color:var(--txt2);margin-top:0.32rem;line-height:1.55;}
+
+/* ── Weather banner ── */
+.wx-banner{
+  border-radius:var(--r);
+  transition:background 0.2s,border-color 0.2s;
+}
+.wx-banner:hover{border-color:rgba(0,229,195,0.25);}
+
+/* ── Toggle row hover ── */
+.toggle-row{
+  transition:border-color 0.2s,background 0.2s;
+}
+.toggle-row:hover{
+  background:var(--card);
+  border-color:var(--line2);
+}
+
+/* ── Pack list items ── */
+.pack-item{border-radius:9px;transition:all 0.18s;}
+.pack-item:hover{border-color:var(--line2);}
+.pack-item.checked{
+  background:rgba(0,229,195,0.07);
+  border-color:rgba(0,229,195,0.25);
+}
+
+/* ── Flight/Stay cards ── */
+.fl-card{
+  border-radius:var(--r);
+  transition:border-color 0.2s,transform 0.2s;
+}
+.fl-card:hover{border-color:var(--line2);transform:translateX(2px);}
+
+/* ── Site rows (booking links) ── */
+.site-row{
+  border-radius:var(--r);
+  transition:all 0.2s;
+}
+.site-row:hover{
+  border-color:rgba(0,229,195,0.3);
+  transform:translateX(4px);
+  background:rgba(0,229,195,0.04);
+}
+
+/* ── Category optional section ── */
+.cat-optional-wrap{
+  border-radius:var(--r2);
+  border:1px solid var(--line);
+  overflow:hidden;
+  transition:border-color 0.2s;
+}
+.cat-optional-wrap:focus-within{border-color:rgba(0,229,195,0.2);}
+.cat-optional-toggle{
+  padding:0.95rem 1.15rem;
+  font-size:0.83rem;
+}
+
+/* ── Stop read-more button ── */
+.stop-read-more{
+  color:var(--teal);
+  font-size:0.73rem;
+  font-weight:600;
+  letter-spacing:0.02em;
+  transition:opacity 0.2s;
+}
+.stop-read-more:hover{opacity:0.7;}
+
+/* ── Stop hours badges ── */
+.hr-badge{
+  padding:0.18rem 0.5rem;
+  border-radius:6px;
+  font-size:0.69rem;
+  font-weight:600;
+}
+.hr-peak{background:rgba(255,95,126,0.08);border:1px solid rgba(255,95,126,0.18);}
+.hr-quiet{background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.18);}
+
+/* ── Stop cost inline badge ── */
+.stop-cost-inline{
+  background:rgba(245,200,66,0.08);
+  border:1px solid rgba(245,200,66,0.2);
+  border-radius:5px;
+  padding:0.1rem 0.48rem;
+  font-size:0.66rem;font-weight:700;
+}
+
+/* ── Stop links (booking row) ── */
+.slink{
+  font-size:0.69rem;font-weight:600;
+  padding:0.22rem 0.55rem;
+  border-radius:7px;
+  transition:all 0.18s;
+  border:1px solid transparent;
+}
+.sl-m{background:rgba(96,165,250,0.07);border-color:rgba(96,165,250,0.18);color:var(--sky);}
+.sl-m:hover{background:rgba(96,165,250,0.14);}
+.sl-o{background:rgba(255,95,126,0.07);border-color:rgba(255,95,126,0.18);color:var(--rose);}
+.sl-o:hover{background:rgba(255,95,126,0.14);}
+.sl-v{background:rgba(245,200,66,0.07);border-color:rgba(245,200,66,0.18);color:var(--gold);}
+.sl-v:hover{background:rgba(245,200,66,0.14);}
+.sl-g{background:rgba(0,229,195,0.07);border-color:rgba(0,229,195,0.18);color:var(--teal);}
+.sl-g:hover{background:rgba(0,229,195,0.14);}
+.sl-ta{background:rgba(52,211,153,0.07);border-color:rgba(52,211,153,0.18);color:#34d399;}
+.sl-ta:hover{background:rgba(52,211,153,0.14);}
+
+/* ── Print — hide decorative elements ── */
+@media print{
+  .bg-orb,.trust-banner,.chat-fab,.chat-win,.bottom-nav,nav{display:none;}
+  .page{display:block !important;}
+}
+</style>
 </head>
 <body>
 <div class="bg-orb"></div>
@@ -941,15 +1660,25 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--teal);outline-offse
   <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
 </nav>
 
+<div class="trust-banner">✦ <strong>AI-powered</strong> &nbsp;·&nbsp; Real places &amp; booking links &nbsp;·&nbsp; 100% free</div>
+
 <!-- HOME -->
 
 <div class="page active" id="page-home">
   <div class="hero">
+    <div class="hero-badge">✦ AI Travel Planner</div>
     <h1>Plan your<br><span>perfect trip</span></h1>
     <p class="hero-sub">Tell us where you're going. We'll build a day-by-day itinerary with real places, costs, and booking links.</p>
     <div class="hero-btns">
       <button class="btn-primary" onclick="goPage('planner')">✨ Start Planning</button>
       <button class="btn-ghost" onclick="surprise()">🎲 Surprise Me</button>
+    </div>
+    <div class="hero-features">
+      <span class="hero-feature">🗺 Day-by-day itinerary</span>
+      <span class="hero-feature">🌦 Live weather</span>
+      <span class="hero-feature">🔗 Booking links</span>
+      <span class="hero-feature">💬 AI concierge</span>
+      <span class="hero-feature">📸 Photo scan</span>
     </div>
   </div>
 </div>
@@ -959,6 +1688,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--teal);outline-offse
 <div class="page" id="page-planner">
 <div id="planner-page">
   <div class="planner-head">
+    <div class="page-eyebrow">✦ Trip Planner</div>
     <h2>Plan your perfect trip</h2>
     <p>The more you share, the better your itinerary.</p>
   </div>
@@ -1216,6 +1946,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--teal);outline-offse
 <div class="page" id="page-saved">
 <div id="saved-page">
   <div class="saved-head">
+    <div class="page-eyebrow">✦ My Collection</div>
     <h2>Saved trips</h2>
     <p>Your trips and favourite places.</p>
   </div>
@@ -1233,6 +1964,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--teal);outline-offse
 <div class="page" id="page-explore">
 <div id="explore-page">
   <div class="explore-head">
+    <div class="page-eyebrow">✦ Discover</div>
     <h2>Find a Place</h2>
     <p>Pick a city, category, and time of day.</p>
   </div>
