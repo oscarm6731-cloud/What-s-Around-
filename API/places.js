@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const { query, near, sort, price, limit } = req.query;
+  const { query, near, ll, sort, price, limit } = req.query;
   const key = process.env.GROQ_API_KEY;
   if (!key) return res.status(500).json({ error: 'No Groq API key configured' });
   if (!near) return res.status(400).json({ error: 'near parameter required' });
@@ -16,18 +16,19 @@ module.exports = async (req, res) => {
                  : sort === 'RATING'     ? 'highest-rated'
                  : 'well-known';
   const priceHint = price ? ` at price level ${price}/4` : '';
+  const coordHint = ll ? ` (coordinates: ${ll})` : '';
 
-  const prompt = `List ${n} real, specific, ${sortHint} places in ${near} for: "${query || 'popular attractions'}"${priceHint}.
+  const prompt = `List ${n} real, specific, ${sortHint} places in ${near}${coordHint} for: "${query || 'popular attractions'}"${priceHint}.
 
 Return ONLY a valid JSON array, no markdown:
 [{"name":"Exact Place Name","address":"Full street address, ${near}","category":"Specific Type","rating":8.5,"price":2,"lat":0.0,"lng":0.0,"website":"https://... or null"}]
 
 Rules:
-- Only real places that actually exist
+- Only real places that actually exist in ${near}
 - rating: 6.0–10.0 (iconic landmarks ~9+, solid locals ~7–8)
 - price: 1=free/cheap 2=moderate 3=expensive 4=luxury, null if N/A
 - category: specific e.g. "Buddhist Temple", "Specialty Coffee Shop", "Contemporary Art Museum"
-- lat/lng: real coordinates if you know them, otherwise 0
+- lat/lng: real coordinates for ${near}, otherwise 0
 - No duplicates`;
 
   try {
